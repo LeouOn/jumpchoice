@@ -3,7 +3,6 @@
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
 import {
-  generateRequestSchema,
   BUILT_IN_TOOLS,
   BUILT_IN_AGENTS,
   getDefaultBuiltInAgentSettings,
@@ -13,7 +12,6 @@ import {
   DEFAULT_AGENT_MAX_TOKENS,
   MAX_AGENT_MAX_TOKENS,
   MIN_AGENT_MAX_TOKENS,
-  LOCAL_SIDECAR_CONNECTION_ID,
   resolveMacros,
   resolveDeferredCharacterMacros,
   hasDeferredCharacterMacros,
@@ -55,7 +53,6 @@ import {
 } from "../services/lorebook/game-lorebook-scope.js";
 import { lorebookEntryPassesContextFilters, type GameStateForScanning } from "../services/lorebook/keyword-scanner.js";
 import { injectAtDepth } from "../services/lorebook/prompt-injector.js";
-import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { resolveConnectionImageDefaults } from "../services/image/image-generation-defaults.js";
 import { loadImageGenerationUserSettings } from "../services/image/image-generation-settings.js";
 import { extractLeadingThinkingBlocks } from "../services/llm/inline-thinking.js";
@@ -84,7 +81,6 @@ import { executeAgent, normalizeAgentContextSize, resolveAgentResultType } from 
 import { listCharacterSprites } from "../services/game/sprite.service.js";
 import { generateChatBackground } from "../services/game/game-asset-generation.js";
 import { sanitizeGameNpcAvatarUrls } from "../services/game/npc-avatar-utils.js";
-import { getLocalSidecarProvider, LOCAL_SIDECAR_MODEL } from "../services/llm/local-sidecar.js";
 import {
   parseCharacterCommands,
   parseDirectMessageCommands,
@@ -202,6 +198,16 @@ import {
   buildGenerationReplay,
   normalizeGenerationReplay,
 } from "./generate/generation-replay.js";
+import {
+  validateGenerateRequest,
+} from "./generate/validation.routes.js";
+import {
+  createGenerationProvider,
+  createSummaryProvider,
+  seedLocalSidecarIntoCache,
+  seedDefaultAgentConnectionIntoCache,
+  type AgentProviderCache,
+} from "./generate/provider.routes.js";
 import {
   createJournal,
   addLocationEntry,
@@ -869,7 +875,7 @@ export async function generateRoutes(app: FastifyInstance) {
    * Streams AI generation via Server-Sent Events.
    */
   app.post("/", async (req, reply) => {
-    const input = generateRequestSchema.parse(req.body);
+    const input = validateGenerateRequest(req.body);
     const requestDebug = input.debugMode === true;
     const debugLog = (message: string, ...args: any[]) => {
       logDebugOverride(requestDebug, message, ...args);
@@ -1882,14 +1888,7 @@ export async function generateRoutes(app: FastifyInstance) {
           const summarySourceMessages = input.regenerateMessageId
             ? scopedMessages.filter((m: any) => m.id !== input.regenerateMessageId)
             : scopedMessages;
-          const summaryProvider = createLLMProvider(
-            conn.provider,
-            baseUrl,
-            conn.apiKey,
-            conn.maxContext,
-            conn.openrouterProvider,
-            conn.maxTokensOverride,
-          );
+          const summaryProvider = createSummaryProvider(conn, baseUrl);
           const summaryRun = await generateMissingConversationSummaries({
             messages: summarySourceMessages,
             metadata: chatMeta,
@@ -3014,15 +3013,8 @@ export async function generateRoutes(app: FastifyInstance) {
         }
 
         // Create provider
-        const provider = createLLMProvider(
-          conn.provider,
-          baseUrl,
-          conn.apiKey,
-          conn.maxContext,
-          conn.openrouterProvider,
-          conn.maxTokensOverride,
-          conn.claudeFastMode === "true",
-        );
+        const provider = createGenerationProvider(conn, baseUrl);
+
 
         // ────────────────────────────────────────
         // Agent Pipeline: resolve enabled agents
@@ -3038,39 +3030,14 @@ export async function generateRoutes(app: FastifyInstance) {
         const resolvedAgents: ResolvedAgent[] = [];
         // Cache per-connection providers so agents sharing the same connection batch together
         const chatConnectionMaxParallelJobs = Number(conn.maxParallelJobs) || 1;
-        const agentProviderCache = new Map<
-          string,
-          { provider: BaseLLMProvider; model: string; maxParallelJobs: number }
-        >();
+        const agentProviderCache: AgentProviderCache = new Map();
         const localSidecarAvailableForTrackers =
           sidecarModelService.getConfig().useForTrackers && sidecarModelService.getConfiguredModelRef() !== null;
-        if (localSidecarAvailableForTrackers) {
-          agentProviderCache.set(LOCAL_SIDECAR_CONNECTION_ID, {
-            provider: getLocalSidecarProvider(),
-            model: LOCAL_SIDECAR_MODEL,
-            maxParallelJobs: 1,
-          });
-        }
+        seedLocalSidecarIntoCache(agentProviderCache, localSidecarAvailableForTrackers);
 
         // Check if there's a connection marked as default for all agents
         const defaultAgentConn = await connections.getDefaultForAgents();
-        if (defaultAgentConn) {
-          const dBaseUrl = resolveBaseUrl(defaultAgentConn);
-          if (dBaseUrl) {
-            agentProviderCache.set(defaultAgentConn.id, {
-              provider: createLLMProvider(
-                defaultAgentConn.provider,
-                dBaseUrl,
-                defaultAgentConn.apiKey,
-                defaultAgentConn.maxContext,
-                defaultAgentConn.openrouterProvider,
-                defaultAgentConn.maxTokensOverride,
-              ),
-              model: defaultAgentConn.model,
-              maxParallelJobs: Number(defaultAgentConn.maxParallelJobs) || 1,
-            });
-          }
-        }
+        await seedDefaultAgentConnectionIntoCache(agentProviderCache, defaultAgentConn);
 
         const agentConnectionWarnings: AgentConnectionWarning[] = [];
         const skippedLocalSidecarAgents: string[] = [];
@@ -3114,16 +3081,9 @@ export async function generateRoutes(app: FastifyInstance) {
               const agentConn = await connections.getWithKey(effectiveConnectionId);
               if (agentConn) {
                 const agentBaseUrl = resolveBaseUrl(agentConn);
-                if (agentBaseUrl) {
-                  agentProvider = createLLMProvider(
-                    agentConn.provider,
-                    agentBaseUrl,
-                    agentConn.apiKey,
-                    agentConn.maxContext,
-                    agentConn.openrouterProvider,
-                    agentConn.maxTokensOverride,
-                  );
-                  agentModel = agentConn.model;
+                      if (agentBaseUrl) {
+                        agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
+                        agentModel = agentConn.model;
                   agentMaxParallelJobs = Number(agentConn.maxParallelJobs) || 1;
                   agentProviderCache.set(effectiveConnectionId, {
                     provider: agentProvider,
@@ -3258,14 +3218,7 @@ export async function generateRoutes(app: FastifyInstance) {
                     if (agentConn) {
                       const agentBaseUrl = resolveBaseUrl(agentConn);
                       if (agentBaseUrl) {
-                        agentProvider = createLLMProvider(
-                          agentConn.provider,
-                          agentBaseUrl,
-                          agentConn.apiKey,
-                          agentConn.maxContext,
-                          agentConn.openrouterProvider,
-                          agentConn.maxTokensOverride,
-                        );
+                        agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
                         agentModel = agentConn.model;
                         agentMaxParallelJobs = Number(agentConn.maxParallelJobs) || 1;
                         agentProviderCache.set(effectiveConnectionId, {
@@ -8787,14 +8740,7 @@ export async function generateRoutes(app: FastifyInstance) {
                       const selfieNegativePrompt = ((chatMeta.selfieNegativePrompt as string) ?? "").trim();
                       const selfiePromptTemplate =
                         typeof chatMeta.selfiePrompt === "string" ? chatMeta.selfiePrompt.trim() : "";
-                      const promptBuilder = createLLMProvider(
-                        conn.provider,
-                        baseUrl,
-                        conn.apiKey,
-                        conn.maxContext,
-                        conn.openrouterProvider,
-                        conn.maxTokensOverride,
-                      );
+                      const promptBuilder = createSummaryProvider(conn, baseUrl);
                       const selfiePromptContext = {
                         appearance,
                         charName,
