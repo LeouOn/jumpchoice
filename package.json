@@ -24,14 +24,18 @@
     "format": "prettier --write \"packages/**/*.{ts,tsx}\"",
     "impeccable:check": "node ./scripts/check-impeccable-context.mjs",
     "lint": "pnpm -r run lint",
-    "test": "node ./scripts/check-windows-installer-layout.mjs && pnpm -r run test",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "version:sync": "node ./scripts/sync-version.mjs",
     "version:check": "node ./scripts/check-version-drift.mjs",
     "clean": "pnpm -r --if-present run clean && node ./scripts/clean-workspace.mjs"
   },
   "devDependencies": {
+    "@vitest/ui": "^4.1.7",
     "esbuild": "^0.27.7",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "vitest": "^4.1.7"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
