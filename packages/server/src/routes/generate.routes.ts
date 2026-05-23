@@ -2318,10 +2318,6 @@ export async function generateRoutes(app: FastifyInstance) {
 
           conversationSystemPrompt = resolvePromptMacros(conversationSystemPrompt);
 
-          const narrativeContext = new NarrativeContext();
-          const narrativePrompt = narrativeContext.buildSystemPrompt();
-          conversationSystemPrompt = `${narrativePrompt}\n\n${conversationSystemPrompt}`;
-
           finalMessages = [
             { role: "system" as const, content: conversationSystemPrompt },
             ...finalMessages,
