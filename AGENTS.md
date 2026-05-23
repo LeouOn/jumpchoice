@@ -78,25 +78,3 @@ JumpChoice includes a narrative engine that shapes AI responses. Key points:
 - Tests are in `packages/server/tests/narrative-*.test.ts`
 
 When modifying generation logic, ensure narrative context is preserved.
-
-## Narrative Engine
-
-JumpChoice includes a narrative engine that shapes AI responses. Key points:
-
-- **NarrativeContext** is created per-request in generate.routes.ts
-- Configuration is loaded from `packages/server/narrative-config.json`
-- System prompt includes principles + persona + CoT
-- Tests are in `packages/server/tests/narrative-*.test.ts`
-
-When modifying generation logic, ensure narrative context is preserved.
-
-## Narrative Engine
-
-JumpChoice includes a narrative engine that shapes AI responses. Key points:
-
-- **NarrativeContext** is created per-request in generate.routes.ts
-- Configuration is loaded from `packages/server/narrative-config.json`
-- System prompt includes principles + persona + CoT
-- Tests are in `packages/server/tests/narrative-*.test.ts`
-
-When modifying generation logic, ensure narrative context is preserved.
