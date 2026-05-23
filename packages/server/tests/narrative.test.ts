@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { NarrativeEngine } from "../src/services/narrative/narrative-engine.service.js";
+import { PersonaManager } from "../src/services/narrative/persona-manager.service.js";
 import type { NarratorPersona, ChainOfThoughtMode } from "@jumpchoice/shared";
 
 const testPersona: NarratorPersona = {
@@ -117,6 +118,52 @@ describe("NarrativeEngine", () => {
       const engine = new NarrativeEngine();
       const badPersona = { ...testPersona, prompt: "   " };
       expect(() => engine.setPersona(badPersona)).toThrow("Persona prompt must be non-empty");
+    });
+  });
+
+  describe("PersonaManager integration", () => {
+    it("should use PersonaManager active persona in buildSystemPrompt", () => {
+      const engine = new NarrativeEngine();
+      const manager = new PersonaManager();
+      manager.setActivePersona("noir");
+      engine.setPersonaManager(manager);
+
+      const prompt = engine.buildSystemPrompt();
+      expect(prompt).toContain("NARRATOR PERSONA:");
+      expect(prompt).toContain("noir");
+    });
+
+    it("should prefer PersonaManager persona over direct persona", () => {
+      const engine = new NarrativeEngine();
+      engine.setPersona(testPersona);
+
+      const manager = new PersonaManager();
+      manager.setActivePersona("cozy");
+      engine.setPersonaManager(manager);
+
+      const prompt = engine.buildSystemPrompt();
+      expect(prompt).toContain("cozy");
+      expect(prompt).not.toContain(testPersona.prompt);
+    });
+
+    it("should fall back to direct persona when manager has no active", () => {
+      const engine = new NarrativeEngine();
+      engine.setPersona(testPersona);
+
+      const manager = new PersonaManager();
+      engine.setPersonaManager(manager);
+
+      const prompt = engine.buildSystemPrompt();
+      expect(prompt).toContain(testPersona.prompt);
+    });
+
+    it("should set and get PersonaManager", () => {
+      const engine = new NarrativeEngine();
+      expect(engine.getPersonaManager()).toBeNull();
+
+      const manager = new PersonaManager();
+      engine.setPersonaManager(manager);
+      expect(engine.getPersonaManager()).toBe(manager);
     });
   });
 

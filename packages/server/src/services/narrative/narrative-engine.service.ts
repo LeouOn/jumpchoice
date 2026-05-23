@@ -1,9 +1,11 @@
 import type { NarrativePrinciples, NarratorPersona, ChainOfThoughtMode } from '@jumpchoice/shared';
 import { DEFAULT_NARRATIVE_PRINCIPLES } from '@jumpchoice/shared';
+import type { PersonaManager } from './persona-manager.service.js';
 
 export class NarrativeEngine {
   private principles: NarrativePrinciples;
   private persona: NarratorPersona | null = null;
+  private personaManager: PersonaManager | null = null;
   private cotMode: ChainOfThoughtMode | null = null;
 
   constructor(principles?: Partial<NarrativePrinciples>) {
@@ -28,6 +30,14 @@ export class NarrativeEngine {
     return this.persona;
   }
 
+  setPersonaManager(manager: PersonaManager): void {
+    this.personaManager = manager;
+  }
+
+  getPersonaManager(): PersonaManager | null {
+    return this.personaManager;
+  }
+
   setCOTMode(mode: ChainOfThoughtMode): void {
     if (!mode.phases || mode.phases.length === 0) {
       throw new Error('COT mode must have at least one phase');
@@ -42,8 +52,9 @@ export class NarrativeEngine {
   buildSystemPrompt(): string {
     let prompt = this.principles.description;
 
-    if (this.persona) {
-      prompt += `\n\nNARRATOR PERSONA:\n${this.persona.prompt}`;
+    const activePersona = this.personaManager?.getActivePersona() ?? this.persona;
+    if (activePersona) {
+      prompt += `\n\nNARRATOR PERSONA:\n${activePersona.prompt}`;
     }
 
     if (this.cotMode) {
