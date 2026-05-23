@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach } from "vitest";
 import { NarrativeContext } from "../src/services/narrative/narrative-context.service.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
@@ -7,14 +7,16 @@ import { dirname, join } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-describe("Generation Pipeline Integration", () => {
+describe("Narrative Context", () => {
   let context: NarrativeContext;
   let config: { defaultPersona: string; defaultCOTMode: string };
 
-  beforeEach(() => {
+  beforeAll(() => {
     const configPath = join(__dirname, "../narrative-config.json");
     config = JSON.parse(readFileSync(configPath, "utf-8"));
+  });
 
+  beforeEach(() => {
     context = new NarrativeContext();
     context.setPersona(config.defaultPersona);
     context.setCOTMode(config.defaultCOTMode);
@@ -55,31 +57,31 @@ describe("Generation Pipeline Integration", () => {
     it("should include persona when set", () => {
       const prompt = context.buildSystemPrompt();
       expect(prompt).toContain("NARRATOR PERSONA");
-      expect(prompt).toContain("Noir Narrator");
+      expect(prompt).toMatch(/NARRATOR PERSONA[\s\S]*noir/i);
     });
 
     it("should include COT when set", () => {
       const prompt = context.buildSystemPrompt();
       expect(prompt).toContain("CHAIN OF THOUGHT");
-      expect(prompt).toContain("Main CoT");
+      expect(prompt).toMatch(/CHAIN OF THOUGHT\s*\([^)]*main[^)]*\)/i);
     });
 
     it("should change persona dynamically", () => {
       let prompt = context.buildSystemPrompt();
-      expect(prompt).toContain("Noir Narrator");
+      expect(prompt).toMatch(/NARRATOR PERSONA[\s\S]*noir/i);
 
       context.setPersona("cozy");
       prompt = context.buildSystemPrompt();
-      expect(prompt).toContain("Cozy Narrator");
+      expect(prompt).toMatch(/NARRATOR PERSONA[\s\S]*cozy/i);
     });
 
     it("should change COT mode dynamically", () => {
       let prompt = context.buildSystemPrompt();
-      expect(prompt).toContain("Main CoT");
+      expect(prompt).toMatch(/CHAIN OF THOUGHT\s*\([^)]*main[^)]*\)/i);
 
       context.setCOTMode("fast");
       prompt = context.buildSystemPrompt();
-      expect(prompt).toContain("Fast CoT");
+      expect(prompt).toMatch(/CHAIN OF THOUGHT\s*\([^)]*fast[^)]*\)/i);
     });
   });
 
@@ -98,12 +100,28 @@ describe("Generation Pipeline Integration", () => {
       expect(prompt).not.toContain("CHAIN OF THOUGHT");
     });
 
-    it("should handle invalid persona gracefully", () => {
+    it("should throw on invalid persona", () => {
       expect(() => context.setPersona("invalid")).toThrow();
     });
 
-    it("should handle invalid COT mode gracefully", () => {
+    it("should throw on invalid COT mode", () => {
       expect(() => context.setCOTMode("invalid")).toThrow();
+    });
+
+    it("should include persona but not COT when only persona is set", () => {
+      const partialContext = new NarrativeContext();
+      partialContext.setPersona("noir");
+      const prompt = partialContext.buildSystemPrompt();
+      expect(prompt).toMatch(/NARRATOR PERSONA[\s\S]*noir/i);
+      expect(prompt).not.toContain("CHAIN OF THOUGHT");
+    });
+
+    it("should include COT but not persona when only COT is set", () => {
+      const partialContext = new NarrativeContext();
+      partialContext.setCOTMode("main");
+      const prompt = partialContext.buildSystemPrompt();
+      expect(prompt).not.toContain("NARRATOR PERSONA");
+      expect(prompt).toMatch(/CHAIN OF THOUGHT\s*\([^)]*main[^)]*\)/i);
     });
   });
 
@@ -120,11 +138,11 @@ describe("Generation Pipeline Integration", () => {
 
     it("should include all COT phases for main mode", () => {
       const prompt = context.buildSystemPrompt();
-      expect(prompt).toContain("1.");
-      expect(prompt).toContain("2.");
-      expect(prompt).toContain("3.");
-      expect(prompt).toContain("4.");
-      expect(prompt).toContain("5.");
+      expect(prompt).toMatch(/1\.\s+\w+/);
+      expect(prompt).toMatch(/2\.\s+\w+/);
+      expect(prompt).toMatch(/3\.\s+\w+/);
+      expect(prompt).toMatch(/4\.\s+\w+/);
+      expect(prompt).toMatch(/5\.\s+\w+/);
     });
 
     it("should include persona style information", () => {
