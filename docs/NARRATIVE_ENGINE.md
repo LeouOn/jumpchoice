@@ -179,7 +179,7 @@ context.setCOTMode('fast');
 The narrative engine integrates into the generation pipeline automatically:
 
 1. `NarrativeContext` is created for each generation request
-2. Configuration is loaded from `narrative-config.json`
+2. Configuration is loaded from `narrative-config.json` when `NarrativeContext` is instantiated in the generation pipeline
 3. System prompt is built with principles + persona + CoT
 4. Prompt is injected into the generation context
 5. AI generates response following the narrative framework
@@ -191,6 +191,8 @@ The narrative engine integrates into the generation pipeline automatically:
 Create a new persona object:
 
 ```typescript
+import { NarratorPersona, DEFAULT_NARRATOR_PERSONAS } from '@jumpchoice/shared';
+
 const customPersona: NarratorPersona = {
   id: 'mystery',
   name: 'Mystery Narrator',
@@ -215,6 +217,8 @@ const manager = new PersonaManager([...DEFAULT_NARRATOR_PERSONAS, customPersona]
 Create a new CoT mode:
 
 ```typescript
+import { ChainOfThoughtMode, DEFAULT_COT_MODES } from '@jumpchoice/shared';
+
 const customMode: ChainOfThoughtMode = {
   id: 'analytical',
   name: 'Analytical CoT',
@@ -236,6 +240,13 @@ Add to COTManager:
 const manager = new COTManager([...DEFAULT_COT_MODES, customMode]);
 ```
 
+### Validation
+
+The narrative engine validates inputs:
+- `setPersona()` throws if persona prompt is empty
+- `setCOTMode()` throws if phases array is empty
+- Invalid persona/COT mode IDs throw errors
+
 ## Testing
 
 Run narrative engine tests:
@@ -244,7 +255,7 @@ Run narrative engine tests:
 pnpm test narrative
 ```
 
-All 19 tests should pass, covering:
+All 49 tests should pass, covering:
 - Narrative principles
 - Persona management
 - CoT modes
@@ -252,6 +263,8 @@ All 19 tests should pass, covering:
 - Edge cases
 
 ## Future Enhancements
+
+*Note: These features are planned but subject to change.*
 
 Planned features:
 - Per-character persona settings
