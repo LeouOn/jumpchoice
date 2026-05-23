@@ -4,13 +4,6 @@ import { getLocalSidecarProvider, LOCAL_SIDECAR_MODEL } from "../../services/llm
 import { LOCAL_SIDECAR_CONNECTION_ID } from "@jumpchoice/shared";
 import { resolveBaseUrl } from "./generate-route-utils.js";
 
-export interface ProviderContext {
-  provider: BaseLLMProvider;
-  model: string;
-  baseUrl: string;
-  maxParallelJobs: number;
-}
-
 export interface ConnectionLike {
   id: string;
   provider: string;
@@ -42,7 +35,7 @@ export function createGenerationProvider(
   );
 }
 
-export function createSummaryProvider(
+export function createStandardProvider(
   conn: ConnectionLike,
   baseUrl: string,
 ): BaseLLMProvider {

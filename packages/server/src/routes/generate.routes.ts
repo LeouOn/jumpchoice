@@ -203,7 +203,7 @@ import {
 } from "./generate/validation.routes.js";
 import {
   createGenerationProvider,
-  createSummaryProvider,
+  createStandardProvider,
   seedLocalSidecarIntoCache,
   seedDefaultAgentConnectionIntoCache,
   type AgentProviderCache,
@@ -1888,7 +1888,7 @@ export async function generateRoutes(app: FastifyInstance) {
           const summarySourceMessages = input.regenerateMessageId
             ? scopedMessages.filter((m: any) => m.id !== input.regenerateMessageId)
             : scopedMessages;
-          const summaryProvider = createSummaryProvider(conn, baseUrl);
+          const summaryProvider = createStandardProvider(conn, baseUrl);
           const summaryRun = await generateMissingConversationSummaries({
             messages: summarySourceMessages,
             metadata: chatMeta,
@@ -3079,19 +3079,19 @@ export async function generateRoutes(app: FastifyInstance) {
               agentMaxParallelJobs = cached.maxParallelJobs;
             } else {
               const agentConn = await connections.getWithKey(effectiveConnectionId);
-              if (agentConn) {
-                const agentBaseUrl = resolveBaseUrl(agentConn);
-                if (agentBaseUrl) {
-                  agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
-                  agentModel = agentConn.model;
-                  agentMaxParallelJobs = Number(agentConn.maxParallelJobs) || 1;
-                  agentProviderCache.set(effectiveConnectionId, {
-                    provider: agentProvider,
-                    model: agentModel,
-                    maxParallelJobs: agentMaxParallelJobs,
-                  });
-                }
-              }
+                    if (agentConn) {
+                      const agentBaseUrl = resolveBaseUrl(agentConn);
+                      if (agentBaseUrl) {
+                        agentProvider = createStandardProvider(agentConn, agentBaseUrl);
+                        agentModel = agentConn.model;
+                        agentMaxParallelJobs = Number(agentConn.maxParallelJobs) || 1;
+                        agentProviderCache.set(effectiveConnectionId, {
+                          provider: agentProvider,
+                          model: agentModel,
+                          maxParallelJobs: agentMaxParallelJobs,
+                        });
+                      }
+                    }
             }
           }
 
@@ -3216,10 +3216,10 @@ export async function generateRoutes(app: FastifyInstance) {
                   } else {
                     const agentConn = await connections.getWithKey(effectiveConnectionId);
                     if (agentConn) {
-                const agentBaseUrl = resolveBaseUrl(agentConn);
-                if (agentBaseUrl) {
-                  agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
-                  agentModel = agentConn.model;
+                      const agentBaseUrl = resolveBaseUrl(agentConn);
+                      if (agentBaseUrl) {
+                        agentProvider = createStandardProvider(agentConn, agentBaseUrl);
+                        agentModel = agentConn.model;
                         agentMaxParallelJobs = Number(agentConn.maxParallelJobs) || 1;
                         agentProviderCache.set(effectiveConnectionId, {
                           provider: agentProvider,
@@ -8740,7 +8740,7 @@ export async function generateRoutes(app: FastifyInstance) {
                       const selfieNegativePrompt = ((chatMeta.selfieNegativePrompt as string) ?? "").trim();
                       const selfiePromptTemplate =
                         typeof chatMeta.selfiePrompt === "string" ? chatMeta.selfiePrompt.trim() : "";
-                      const promptBuilder = createSummaryProvider(conn, baseUrl);
+                      const promptBuilder = createStandardProvider(conn, baseUrl);
                       const selfiePromptContext = {
                         appearance,
                         charName,
