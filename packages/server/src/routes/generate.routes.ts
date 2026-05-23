@@ -1945,9 +1945,9 @@ export async function generateRoutes(app: FastifyInstance) {
               if (!hapticService.connected) {
                 try {
                   await hapticService.connect(getChatHapticIntifaceUrl(chatMeta));
-                } catch {
-                  logger.warn("[haptic] Auto-connect to Intiface Central failed — is the server running?");
-                }
+        } catch (err) {
+          logger.warn(err, "[narrative] Failed to load narrative-config.json; using defaults");
+        }
               }
               if (hapticService.connected && hapticService.devices.length > 0) {
                 const hapticNum =
@@ -6655,15 +6655,39 @@ export async function generateRoutes(app: FastifyInstance) {
         };
 
         const narrativeContext = new NarrativeContext();
+        try {
+          const overridePath = join(DATA_DIR, "narrative-config.json");
+          const defaultPath = join(DATA_DIR, "..", "narrative-config.json");
+          const narrativeConfigPath = existsSync(overridePath) ? overridePath : defaultPath;
+          if (existsSync(narrativeConfigPath)) {
+            const narrativeConfig = JSON.parse(readFileSync(narrativeConfigPath, "utf-8"));
+            if (typeof narrativeConfig.defaultPersona === "string") {
+              narrativeContext.setPersona(narrativeConfig.defaultPersona);
+            }
+            if (typeof narrativeConfig.defaultCOTMode === "string") {
+              narrativeContext.setCOTMode(narrativeConfig.defaultCOTMode);
+            }
+          }
+        } catch (err) {
+          logger.warn(err, "[narrative] Failed to load narrative-config.json; using defaults");
+        }
         const narrativePrompt = narrativeContext.buildSystemPrompt();
-        const firstSystemIdx = finalMessages.findIndex((m) => m.role === "system");
-        if (firstSystemIdx >= 0) {
-          finalMessages[firstSystemIdx] = {
-            ...finalMessages[firstSystemIdx]!,
-            content: `${narrativePrompt}\n\n${finalMessages[firstSystemIdx]!.content}`,
-          };
-        } else {
-          finalMessages.unshift({ role: "system" as const, content: narrativePrompt });
+        if (narrativePrompt) {
+          const lastSystemIdx = (() => {
+            for (let i = finalMessages.length - 1; i >= 0; i--) {
+              if (finalMessages[i]!.role === "system") return i;
+            }
+            return -1;
+          })();
+          if (lastSystemIdx >= 0) {
+            const content = finalMessages[lastSystemIdx]!.content;
+            finalMessages[lastSystemIdx] = {
+              ...finalMessages[lastSystemIdx]!,
+              content: content ? `${content}\n\n${narrativePrompt}` : narrativePrompt,
+            };
+          } else {
+            finalMessages.push({ role: "system" as const, content: narrativePrompt });
+          }
         }
 
         const buildCharacterInstruction = (charId: string, charName: string) => {

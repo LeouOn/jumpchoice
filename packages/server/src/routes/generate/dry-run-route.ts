@@ -49,6 +49,11 @@ import {
 import { buildGenerationPromptPresetCandidates, type PromptPresetCandidateSource } from "./prompt-preset-selection.js";
 import { createGameStateStorage, type GameStateVisibleAnchor } from "../../services/storage/game-state.storage.js";
 import { logger } from "../../lib/logger.js";
+import { NarrativeContext } from "../../services/narrative/narrative-context.service.js";
+import { DATA_DIR } from "../../utils/data-dir.js";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
+
 
 type WrapFormat = "xml" | "markdown" | "none";
 
@@ -1390,6 +1395,42 @@ export async function registerDryRunRoute(app: FastifyInstance) {
       finalMessages = wrapConversationHistoryAndLastMessageInPlace(finalMessages, wrapFormat, {
         excludeTrailingImpersonationInstruction: impersonate,
       });
+    }
+
+    const narrativeContext = new NarrativeContext();
+    try {
+      const overridePath = join(DATA_DIR, "narrative-config.json");
+      const defaultPath = join(DATA_DIR, "..", "narrative-config.json");
+      const narrativeConfigPath = existsSync(overridePath) ? overridePath : defaultPath;
+      if (existsSync(narrativeConfigPath)) {
+        const narrativeConfig = JSON.parse(readFileSync(narrativeConfigPath, "utf-8"));
+        if (typeof narrativeConfig.defaultPersona === "string") {
+          narrativeContext.setPersona(narrativeConfig.defaultPersona);
+        }
+        if (typeof narrativeConfig.defaultCOTMode === "string") {
+          narrativeContext.setCOTMode(narrativeConfig.defaultCOTMode);
+        }
+      }
+    } catch (err) {
+      logger.warn(err, "[narrative] Failed to load narrative-config.json; using defaults");
+    }
+    const narrativePrompt = narrativeContext.buildSystemPrompt();
+    if (narrativePrompt) {
+      const lastSystemIdx = (() => {
+        for (let i = finalMessages.length - 1; i >= 0; i--) {
+          if (finalMessages[i]!.role === "system") return i;
+        }
+        return -1;
+      })();
+      if (lastSystemIdx >= 0) {
+        const content = finalMessages[lastSystemIdx]!.content;
+        finalMessages[lastSystemIdx] = {
+          ...finalMessages[lastSystemIdx]!,
+          content: content ? `${content}\n\n${narrativePrompt}` : narrativePrompt,
+        };
+      } else {
+        finalMessages.push({ role: "system" as const, content: narrativePrompt });
+      }
     }
 
     if (typeof chatParams?.assistantPrefill === "string") assistantPrefill = chatParams.assistantPrefill;
