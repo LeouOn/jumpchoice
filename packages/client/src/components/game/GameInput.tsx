@@ -9,7 +9,7 @@ import { SpeechToTextButton } from "../ui/SpeechToTextButton";
 import { useUIStore } from "../../stores/ui.store";
 import { useChatStore } from "../../stores/chat.store";
 import { translateDraftText } from "../../lib/draft-translation";
-import type { DiceRollResult } from "@marinara-engine/shared";
+import type { DiceRollResult } from "@jumpchoice/shared";
 
 interface Attachment {
   type: string;

@@ -5,7 +5,7 @@ import { desc, eq } from "drizzle-orm";
 import type { DB } from "../../db/connection.js";
 import { installedExtensions } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
-import type { CreateExtensionInput, InstalledExtension, UpdateExtensionInput } from "@marinara-engine/shared";
+import type { CreateExtensionInput, InstalledExtension, UpdateExtensionInput } from "@jumpchoice/shared";
 
 type ExtensionRow = typeof installedExtensions.$inferSelect;
 

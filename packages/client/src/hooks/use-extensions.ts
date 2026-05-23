@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "../lib/api-client";
 import { useUIStore } from "../stores/ui.store";
-import type { CreateExtensionInput, InstalledExtension, UpdateExtensionInput } from "@marinara-engine/shared";
+import type { CreateExtensionInput, InstalledExtension, UpdateExtensionInput } from "@jumpchoice/shared";
 
 export const extensionKeys = {
   all: ["extensions"] as const,

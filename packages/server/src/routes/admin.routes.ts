@@ -5,7 +5,7 @@ import type { FastifyInstance, FastifyReply } from "fastify";
 import { ne } from "drizzle-orm";
 import { existsSync, readdirSync, rmSync } from "fs";
 import { join } from "path";
-import { PROFESSOR_MARI_ID } from "@marinara-engine/shared";
+import { PROFESSOR_MARI_ID } from "@jumpchoice/shared";
 import { DATA_DIR } from "../utils/data-dir.js";
 import * as schema from "../db/schema/index.js";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";

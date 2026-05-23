@@ -77,7 +77,7 @@ import {
   type AgentPhase,
   type AgentResultType,
   type ToolDefinition,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 function createCustomAgentType(name: string): string {
   const slug =

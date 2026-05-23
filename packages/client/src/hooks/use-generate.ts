@@ -14,7 +14,7 @@ import {
   EDITABLE_CHARACTER_CARD_FIELDS,
   type CharacterCardFieldUpdate,
   type EditableCharacterCardField,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 type RetryAgentsOptions = {
   lorebookKeeperBackfill?: boolean;
@@ -278,7 +278,7 @@ import { characterKeys } from "./use-characters";
 import { lorebookKeys } from "./use-lorebooks";
 import { playNotificationPing } from "../lib/notification-sound";
 import { stripGmTagsKeepReadables } from "../lib/game-tag-parser";
-import type { Chat, GameMap, Message } from "@marinara-engine/shared";
+import type { Chat, GameMap, Message } from "@jumpchoice/shared";
 
 function sortMessagesByCreatedAt(messages: Message[]): Message[] {
   return [...messages].sort((a, b) => {
@@ -450,7 +450,7 @@ async function refreshVisibleGameStateAfterGeneration(chatId: string) {
 
   const refreshPromise = (async () => {
     try {
-      const gs = await api.get<import("@marinara-engine/shared").GameState | null>(`/chats/${chatId}/game-state`);
+      const gs = await api.get<import("@jumpchoice/shared").GameState | null>(`/chats/${chatId}/game-state`);
       if (useChatStore.getState().activeChatId === chatId) {
         useGameStateStore.getState().setGameState(gs ?? null);
       }

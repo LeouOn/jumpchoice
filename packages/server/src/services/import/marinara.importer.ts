@@ -2,8 +2,8 @@
 // Import: Marinara Engine native format (.marinara.json)
 // ──────────────────────────────────────────────
 import type { DB } from "../../db/connection.js";
-import { lorebookFilterModeSchema } from "@marinara-engine/shared";
-import type { ExportEnvelope, ExportType, LorebookFilterMode, LorebookMatchingSource } from "@marinara-engine/shared";
+import { lorebookFilterModeSchema } from "@jumpchoice/shared";
+import type { ExportEnvelope, ExportType, LorebookFilterMode, LorebookMatchingSource } from "@jumpchoice/shared";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createCharacterGalleryStorage } from "../storage/character-gallery.storage.js";
 import { createLorebooksStorage } from "../storage/lorebooks.storage.js";

@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { useCallback, useMemo } from "react";
 import { useRegexScripts, type RegexScriptRow } from "./use-regex-scripts";
-import { applyRegexReplacement, type RegexPlacement } from "@marinara-engine/shared";
+import { applyRegexReplacement, type RegexPlacement } from "@jumpchoice/shared";
 
 /**
  * Parses a RegexScriptRow from DB into a usable form.

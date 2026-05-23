@@ -16,7 +16,7 @@ import type {
   GameNpc,
   GameActiveState,
   SceneSpotifyTrackCandidate,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useUIStore } from "../stores/ui.store";
 
 interface AnalyzeSceneInput {

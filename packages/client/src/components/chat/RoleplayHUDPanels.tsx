@@ -40,7 +40,7 @@ import type {
   InventoryItem,
   PresentCharacter,
   QuestProgress,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 interface CombinedPlayerPanelProps {
   showPersona: boolean;

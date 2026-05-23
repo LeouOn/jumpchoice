@@ -3,7 +3,7 @@
 // Shows NPCs present in the current scene with
 // avatars and reputation.
 // ──────────────────────────────────────────────
-import type { GameNpc } from "@marinara-engine/shared";
+import type { GameNpc } from "@jumpchoice/shared";
 import { Users, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { cn } from "../../lib/utils";

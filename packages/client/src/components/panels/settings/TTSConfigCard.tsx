@@ -22,8 +22,8 @@ import { useTTSConfig, useUpdateTTSConfig, useTTSVoices } from "../../../hooks/u
 import { useCharacters } from "../../../hooks/use-characters";
 import { ttsService } from "../../../lib/tts-service";
 import { parseCharacterDisplayData } from "../../../lib/character-display";
-import type { TTSConfig, TTSSource, TTSVoiceAssignment, TTSVoiceMode } from "@marinara-engine/shared";
-import { ELEVENLABS_TTS_LANGUAGE_OPTIONS, TTS_API_KEY_MASK } from "@marinara-engine/shared";
+import type { TTSConfig, TTSSource, TTSVoiceAssignment, TTSVoiceMode } from "@jumpchoice/shared";
+import { ELEVENLABS_TTS_LANGUAGE_OPTIONS, TTS_API_KEY_MASK } from "@jumpchoice/shared";
 import { HelpTooltip } from "../../ui/HelpTooltip";
 
 // ── Sub-components ───────────────────────────────

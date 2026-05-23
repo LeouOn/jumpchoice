@@ -6,7 +6,7 @@ import {
   type Persona,
   type PresentCharacter,
   type QuestProgress,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useUIStore } from "../../../stores/ui.store";
 import { useChatStore } from "../../../stores/chat.store";
 import { useGameStateStore } from "../../../stores/game-state.store";

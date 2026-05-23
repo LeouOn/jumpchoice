@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
 import { useUIStore } from "../stores/ui.store";
-import type { CreateThemeInput, Theme, UpdateThemeInput } from "@marinara-engine/shared";
+import type { CreateThemeInput, Theme, UpdateThemeInput } from "@jumpchoice/shared";
 
 export const themeKeys = {
   all: ["themes"] as const,

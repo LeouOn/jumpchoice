@@ -11,7 +11,7 @@ import {
   type ChatPreset,
   type ChatPresetSettings,
   type ExportEnvelope,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createChatPresetsStorage, sanitizePresetSettings } from "../services/storage/chat-presets.storage.js";
 
 function toSafeExportName(name: string, fallback: string) {

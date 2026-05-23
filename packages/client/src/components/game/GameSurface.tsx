@@ -88,9 +88,9 @@ import type {
   HudWidget,
   SceneSpotifyTrackCandidate,
   SceneSpotifyTrackSelection,
-} from "@marinara-engine/shared";
-import type { SceneSegmentEffect } from "@marinara-engine/shared";
-import { scoreMusic, scoreAmbient } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { SceneSegmentEffect } from "@jumpchoice/shared";
+import { scoreMusic, scoreAmbient } from "@jumpchoice/shared";
 import { GameNarration, formatNarration } from "./GameNarration";
 import { GameInput } from "./GameInput";
 import { GameMapPanel, MobileMapButton } from "./GameMap";
@@ -125,7 +125,7 @@ import {
 } from "./game-asset-generation-payload";
 import { ChatGalleryDrawer } from "../chat/ChatGalleryDrawer";
 import type { ReadableTag } from "../../lib/game-tag-parser";
-import type { DirectionCommand, GameNpc } from "@marinara-engine/shared";
+import type { DirectionCommand, GameNpc } from "@jumpchoice/shared";
 
 type JournalReadable = ReadableTag & {
   sourceMessageId?: string | null;
@@ -137,7 +137,7 @@ type GameAssetGenerationPayload = {
   backgroundTag?: string;
   npcsNeedingAvatars?: Array<{ name: string; description: string }>;
   forceNpcAvatarNames?: string[];
-  illustration?: import("@marinara-engine/shared").SceneIllustrationRequest;
+  illustration?: import("@jumpchoice/shared").SceneIllustrationRequest;
   debugMode?: boolean;
   imageSizes?: {
     background?: { width: number; height: number };
@@ -943,7 +943,7 @@ const GameCombatUI = lazy(async () => {
 });
 
 import { Modal } from "../ui/Modal";
-import type { Chat, SessionSummary, Combatant, Message, GameCombatStateSnapshot } from "@marinara-engine/shared";
+import type { Chat, SessionSummary, Combatant, Message, GameCombatStateSnapshot } from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../chat/chat-area.types";
 
 /** Typewriter component for the intro screen — reveals text character-by-character. */
@@ -1870,7 +1870,7 @@ export function GameSurface({
     const existing = useGameStateStore.getState().current;
     if (existing?.chatId === activeChatId) return;
     api
-      .get<import("@marinara-engine/shared").GameState | null>(`/chats/${activeChatId}/game-state`)
+      .get<import("@jumpchoice/shared").GameState | null>(`/chats/${activeChatId}/game-state`)
       .then((gs) => {
         if (gs) {
           useGameStateStore.getState().setGameState(gs);
@@ -2010,7 +2010,7 @@ export function GameSurface({
     statuses: CombatStatusTag[];
     messageId: string;
   } | null>(null);
-  const [pendingSkillCheck, setPendingSkillCheck] = useState<import("@marinara-engine/shared").SkillCheckResult | null>(
+  const [pendingSkillCheck, setPendingSkillCheck] = useState<import("@jumpchoice/shared").SkillCheckResult | null>(
     null,
   );
   const [pendingReaction, setPendingReaction] = useState<{
@@ -3109,7 +3109,7 @@ export function GameSurface({
   // isn't displayed until backgrounds/music/etc. are ready.
   const sceneReadyMsgIdRef = useRef<string | undefined>(undefined);
   const applySceneResultRef = useRef<
-    ((result: import("@marinara-engine/shared").SceneAnalysis) => void | Promise<void>) | null
+    ((result: import("@jumpchoice/shared").SceneAnalysis) => void | Promise<void>) | null
   >(null);
   const [sceneReadyTick, setSceneReadyTick] = useState(0);
   void sceneReadyTick; // used only to trigger re-renders
@@ -4127,7 +4127,7 @@ export function GameSurface({
     [clearFailedNpcAvatars, fetchManifest, installGeneratedIllustration],
   );
 
-  async function applySceneResult(result: import("@marinara-engine/shared").SceneAnalysis, msg: { id: string }) {
+  async function applySceneResult(result: import("@jumpchoice/shared").SceneAnalysis, msg: { id: string }) {
     console.log("[scene-analysis] Result from model:", JSON.stringify(result, null, 2));
     setSceneAnalysisFailed(false);
     // NOTE: Game state transitions are owned exclusively by the GM model via [state: ...] tags.

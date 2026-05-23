@@ -43,7 +43,7 @@ export async function personaMakerRoutes(app: FastifyInstance) {
 
     let baseUrl = conn.baseUrl;
     if (!baseUrl) {
-      const { PROVIDERS } = await import("@marinara-engine/shared");
+      const { PROVIDERS } = await import("@jumpchoice/shared");
       const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
       baseUrl = providerDef?.defaultBaseUrl ?? "";
     }

@@ -6,7 +6,7 @@
 // The active chat's autonomous messaging is handled by ConversationView.
 
 import { useEffect, useRef } from "react";
-import type { Chat } from "@marinara-engine/shared";
+import type { Chat } from "@jumpchoice/shared";
 import type { AvatarCropValue } from "../lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";

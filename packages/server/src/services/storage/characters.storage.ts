@@ -5,7 +5,7 @@ import { and, desc, eq } from "drizzle-orm";
 import type { DB } from "../../db/connection.js";
 import { characters, characterCardVersions, personas, characterGroups, personaGroups } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
-import type { CharacterData } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 import { normalizeTimestampOverrides, type TimestampOverrides } from "../import/import-timestamps.js";
 
 function resolveTimestamps(overrides?: TimestampOverrides | null) {

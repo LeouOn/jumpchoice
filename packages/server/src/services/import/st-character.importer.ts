@@ -6,7 +6,7 @@ import { characters as charactersTable } from "../../db/schema/index.js";
 import { logger } from "../../lib/logger.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { importSTLorebook } from "./st-lorebook.importer.js";
-import type { CharacterData } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 import { existsSync, mkdirSync } from "fs";
 import { writeFile } from "fs/promises";
 import { join } from "path";

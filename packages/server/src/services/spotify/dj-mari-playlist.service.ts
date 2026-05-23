@@ -1,5 +1,5 @@
 // Spotify DJ Mari - AI playlist composer
-import { PROVIDERS } from "@marinara-engine/shared";
+import { PROVIDERS } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { createLLMProvider } from "../llm/provider-registry.js";

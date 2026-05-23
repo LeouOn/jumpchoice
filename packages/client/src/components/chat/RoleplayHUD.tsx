@@ -37,7 +37,7 @@ import type {
   QuestProgress,
   CustomTrackerField,
   Message,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { HudPosition } from "../../stores/ui.store";
 
 const ACTIONS_DROPDOWN_WIDTH_PX = 288;

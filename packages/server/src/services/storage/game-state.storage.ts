@@ -5,7 +5,7 @@ import { eq, and, ne, desc, inArray } from "drizzle-orm";
 import type { DB } from "../../db/connection.js";
 import { gameStateSnapshots } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
-import { coerceGameStateTextValue, type GameState } from "@marinara-engine/shared";
+import { coerceGameStateTextValue, type GameState } from "@jumpchoice/shared";
 
 export type GameStateVisibleAnchor = { messageId: string; swipeIndex: number };
 

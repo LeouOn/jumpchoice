@@ -11,7 +11,7 @@
 // parseNarrationSegments segment-indexing logic just enough to do that.
 // ──────────────────────────────────────────────
 
-import { formatSkillCheckResultSummary, type SkillCheckResult } from "@marinara-engine/shared";
+import { formatSkillCheckResultSummary, type SkillCheckResult } from "@jumpchoice/shared";
 
 /**
  * Strip GM command tags from message content.

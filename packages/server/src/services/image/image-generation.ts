@@ -21,7 +21,7 @@ import {
   type ComfyUiDefaults,
   type ImageGenerationDefaultsProfile,
   type NovelAiDefaults,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isImageLocalUrlsEnabled } from "../../config/runtime-config.js";
 import { generateRunPodComfyUI } from "./runpod-comfyui.service.js";
 import { normalizeLoopbackUrl, safeFetch, validateOutboundUrl } from "../../utils/security.js";

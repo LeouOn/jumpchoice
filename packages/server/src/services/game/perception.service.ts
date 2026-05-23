@@ -8,7 +8,7 @@
 // narration without an extra LLM call.
 // ──────────────────────────────────────────────
 
-import type { RPGAttributes } from "@marinara-engine/shared";
+import type { RPGAttributes } from "@jumpchoice/shared";
 
 export interface PerceptionContext {
   /** Player's Perception skill modifier (from playerStats.skills) */

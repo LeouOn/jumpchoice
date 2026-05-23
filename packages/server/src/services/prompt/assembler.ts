@@ -16,8 +16,8 @@ import type {
   LorebookEntryTimingState,
   MacroContext,
   ResolveMacroOptions,
-} from "@marinara-engine/shared";
-import { resolveMacros } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { resolveMacros } from "@jumpchoice/shared";
 import { wrapContent, wrapGroup } from "./format-engine.js";
 import { expandMarker, type MarkerContext } from "./marker-expander.js";
 import { mergeAdjacentMessages, squashLeadingSystemMessages } from "./merger.js";

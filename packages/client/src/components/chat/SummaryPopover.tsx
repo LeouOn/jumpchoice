@@ -43,7 +43,7 @@ import {
   normalizeChatSummaryEntries,
   type ChatSummaryEntry,
   type ChatSummaryPromptTemplate,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 
 interface SummaryPopoverProps {

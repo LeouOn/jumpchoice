@@ -23,7 +23,7 @@ import type {
   MessageSwipe,
   DaySummaryEntry,
   WeekSummaryEntry,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export const chatKeys = {
   all: ["chats"] as const,

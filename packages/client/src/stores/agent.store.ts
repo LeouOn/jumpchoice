@@ -2,7 +2,7 @@
 // Zustand Store: Agent Slice
 // ──────────────────────────────────────────────
 import { create } from "zustand";
-import type { AgentResult, CharacterCardFieldUpdate } from "@marinara-engine/shared";
+import type { AgentResult, CharacterCardFieldUpdate } from "@jumpchoice/shared";
 import type { AgentFailure } from "../lib/agent-failures";
 
 /**

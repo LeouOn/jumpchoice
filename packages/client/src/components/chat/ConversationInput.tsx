@@ -50,7 +50,7 @@ import { MariThinkingIndicator } from "./MariThinkingIndicator";
 import { MariCapabilityNotice } from "./MariCapabilityNotice";
 import { SlashCommandFeedback } from "./SlashCommandFeedback";
 import { QuickReplyMenu, type QuickReplyAction } from "./QuickReplyMenu";
-import { buildGuidedGenerationInstructionMessage, type Message } from "@marinara-engine/shared";
+import { buildGuidedGenerationInstructionMessage, type Message } from "@jumpchoice/shared";
 
 interface Attachment {
   type: string;

@@ -16,7 +16,7 @@ import { useStartChatFromCharacter } from "../../hooks/use-start-chat-from-chara
 import { getCharacterTitle } from "../../lib/character-display";
 import { cn, getAvatarCropStyle, type AvatarCropValue } from "../../lib/utils";
 import { useUIStore } from "../../stores/ui.store";
-import type { CharacterData } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 
 type SortOption = "name-asc" | "name-desc" | "newest" | "oldest" | "favorites";
 

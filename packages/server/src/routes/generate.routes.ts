@@ -20,7 +20,7 @@ import {
   LIMITS,
   coerceGameStateTextValue,
   appendChatSummaryEntryToMetadata,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   AgentContext,
   AgentResult,
@@ -34,7 +34,7 @@ import type {
   PlayerStats,
   LorebookEntryTimingState,
   ChatSummaryEntry,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createPromptsStorage } from "../services/storage/prompts.storage.js";
@@ -135,7 +135,7 @@ import { extractFileText, getSourceFilePath } from "./knowledge-sources.routes.j
 import { gameStateSnapshots as gameStateSnapshotsTable } from "../db/schema/index.js";
 import { chats as chatsTable } from "../db/schema/index.js";
 import { eq } from "drizzle-orm";
-import { PROFESSOR_MARI_ID } from "@marinara-engine/shared";
+import { PROFESSOR_MARI_ID } from "@jumpchoice/shared";
 import { chunkAndEmbedMessages, embedMemoryRecallTexts, recallMemories } from "../services/memory-recall.js";
 import { resolveMemoryRecallEmbeddingSource } from "../services/memory-recall-embedding.js";
 import { warmLorebookEntryEmbeddings } from "../services/lorebook/embeddings.js";
@@ -227,7 +227,7 @@ import {
   type PerceptionContext,
 } from "../services/game/perception.service.js";
 import { getMoraleTier, formatMoraleContext } from "../services/game/morale.service.js";
-import type { GameMap, GameNpc, LorebookEntry } from "@marinara-engine/shared";
+import type { GameMap, GameNpc, LorebookEntry } from "@jumpchoice/shared";
 import { sidecarModelService } from "../services/sidecar/sidecar-model.service.js";
 
 function bumpCharacterVersion(value: unknown): string {
@@ -3651,12 +3651,12 @@ export async function generateRoutes(app: FastifyInstance) {
             !Array.isArray(chatMeta.gameBlueprint)
               ? (chatMeta.gameBlueprint as { campaignPlan?: GameCampaignPlan; hudWidgets?: unknown })
               : null;
-          const gameMap = (chatMeta.gameMap as import("@marinara-engine/shared").GameMap) || null;
+          const gameMap = (chatMeta.gameMap as import("@jumpchoice/shared").GameMap) || null;
           const gameNpcs = Array.isArray(chatMeta.gameNpcs)
-            ? (chatMeta.gameNpcs as import("@marinara-engine/shared").GameNpc[])
+            ? (chatMeta.gameNpcs as import("@jumpchoice/shared").GameNpc[])
             : [];
           const sessionSummaries = Array.isArray(chatMeta.gamePreviousSessionSummaries)
-            ? (chatMeta.gamePreviousSessionSummaries as import("@marinara-engine/shared").SessionSummary[])
+            ? (chatMeta.gamePreviousSessionSummaries as import("@jumpchoice/shared").SessionSummary[])
             : [];
           const playerNotes =
             typeof chatMeta.gamePlayerNotes === "string" ? chatMeta.gamePlayerNotes.trim() : undefined;
@@ -3868,7 +3868,7 @@ export async function generateRoutes(app: FastifyInstance) {
           }
 
           const gmCtx: GmPromptContext = {
-            gameActiveState: gameActiveState as import("@marinara-engine/shared").GameActiveState,
+            gameActiveState: gameActiveState as import("@jumpchoice/shared").GameActiveState,
             storyArc,
             plotTwists,
             map: gameMap,
@@ -4029,7 +4029,7 @@ export async function generateRoutes(app: FastifyInstance) {
               hasSceneModel,
               hudWidgets: gmCtx.hudWidgets,
               turnNumber: gameTurnNumber,
-              gameActiveState: gameActiveState as import("@marinara-engine/shared").GameActiveState,
+              gameActiveState: gameActiveState as import("@jumpchoice/shared").GameActiveState,
               sessionNumber,
               gameTime,
               map: gameMap,
@@ -5846,7 +5846,7 @@ export async function generateRoutes(app: FastifyInstance) {
         // ────────────────────────────────────────
         if (resolvedAgents.some((a) => a.type === "html")) {
           const htmlAgent = resolvedAgents.find((a) => a.type === "html")!;
-          const { getDefaultAgentPrompt } = await import("@marinara-engine/shared");
+          const { getDefaultAgentPrompt } = await import("@jumpchoice/shared");
           const htmlPrompt = (htmlAgent.promptTemplate || getDefaultAgentPrompt("html")).trim();
           if (htmlPrompt) {
             const htmlBlock = wrapFormat === "markdown" ? `\n## Immersive HTML\n${htmlPrompt}` : htmlPrompt;

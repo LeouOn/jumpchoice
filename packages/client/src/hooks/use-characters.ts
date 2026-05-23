@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
-import type { CharacterCardVersion } from "@marinara-engine/shared";
+import type { CharacterCardVersion } from "@jumpchoice/shared";
 
 export const characterKeys = {
   all: ["characters"] as const,

@@ -1,7 +1,7 @@
 import { execFileSync, spawn, type ChildProcess } from "child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { join } from "path";
-import type { SidecarDownloadProgress, SidecarRuntimeInfo } from "@marinara-engine/shared";
+import type { SidecarDownloadProgress, SidecarRuntimeInfo } from "@jumpchoice/shared";
 import { getDataDir } from "../../utils/data-dir.js";
 import { isAbortError, retry } from "./sidecar-download.js";
 

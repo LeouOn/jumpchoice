@@ -45,7 +45,7 @@ import { useUIStore, type UserStatus } from "../../stores/ui.store";
 import { cn, getAvatarCropStyle, type AvatarCropValue } from "../../lib/utils";
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import type { Chat, ChatFolder, ChatMode } from "@marinara-engine/shared";
+import type { Chat, ChatFolder, ChatMode } from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal";
 import { Reorder, useDragControls } from "framer-motion";
 import { parseChatMetadata } from "../../lib/chat-display";

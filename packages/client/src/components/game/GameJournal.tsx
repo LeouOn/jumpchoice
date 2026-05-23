@@ -12,7 +12,7 @@ import { api } from "../../lib/api-client";
 import { applyInlineMarkdown, renderMarkdownBlocks } from "../../lib/markdown";
 import { AnimatedText } from "./AnimatedText";
 
-import type { GameNpc } from "@marinara-engine/shared";
+import type { GameNpc } from "@jumpchoice/shared";
 
 interface JournalEntry {
   timestamp: string;

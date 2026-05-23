@@ -22,7 +22,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import type { SidecarBackend, SidecarQuantization, SidecarRuntimePreference } from "@marinara-engine/shared";
+import type { SidecarBackend, SidecarQuantization, SidecarRuntimePreference } from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal.js";
 import { useSidecarStore } from "../../stores/sidecar.store.js";
 

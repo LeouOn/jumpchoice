@@ -8,7 +8,7 @@ import {
   type AgentContext,
   type AgentResult,
   type GameMap,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { eq } from "drizzle-orm";
 import { listCharacterSprites } from "../../services/game/sprite.service.js";
 import { DATA_DIR } from "../../utils/data-dir.js";

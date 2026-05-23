@@ -1,4 +1,4 @@
-import { LOCAL_SIDECAR_CONNECTION_ID, PROVIDERS } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID, PROVIDERS } from "@jumpchoice/shared";
 import type { DB } from "../db/connection.js";
 import { logger } from "../lib/logger.js";
 import { isLocalEmbedderAvailable } from "./local-embedder.js";

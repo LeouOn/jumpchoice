@@ -2,7 +2,7 @@
 // Game: Dice Roll Result Display
 // ──────────────────────────────────────────────
 import { useEffect, useState } from "react";
-import type { DiceRollResult } from "@marinara-engine/shared";
+import type { DiceRollResult } from "@jumpchoice/shared";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 

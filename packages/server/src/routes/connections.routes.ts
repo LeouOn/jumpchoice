@@ -2,7 +2,7 @@
 // Routes: Connections
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { MODEL_LISTS, createConnectionSchema, inferImageSource } from "@marinara-engine/shared";
+import { MODEL_LISTS, createConnectionSchema, inferImageSource } from "@jumpchoice/shared";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { fetchOpenAIChatGPTModels, getOpenAIChatGPTAuth } from "../services/llm/openai-chatgpt-auth.js";
@@ -273,7 +273,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       }
 
       // Simple models list fetch to verify the key works
-      const { PROVIDERS } = await import("@marinara-engine/shared");
+      const { PROVIDERS } = await import("@jumpchoice/shared");
       const provider = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
       let baseUrl = conn.baseUrl || provider?.defaultBaseUrl || "";
 
@@ -384,7 +384,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       // Claude (Subscription) has no remote /models endpoint — return the
       // curated static list for the subscription path.
       if (conn.provider === "claude_subscription") {
-        const { MODEL_LISTS } = await import("@marinara-engine/shared");
+        const { MODEL_LISTS } = await import("@jumpchoice/shared");
         const models = MODEL_LISTS.claude_subscription.map((m) => ({ id: m.id, name: m.name }));
         return { models };
       }
@@ -400,7 +400,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
         return { models: MODEL_LISTS.openai_chatgpt.map((m) => ({ id: m.id, name: m.name })) };
       }
 
-      const { PROVIDERS } = await import("@marinara-engine/shared");
+      const { PROVIDERS } = await import("@jumpchoice/shared");
       const provider = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
       let baseUrl = conn.baseUrl || provider?.defaultBaseUrl || "";
 
@@ -676,7 +676,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       return reply.status(400).send({ error: "Not an image generation connection" });
     }
 
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     const baseUrl = (conn.baseUrl || providerDef?.defaultBaseUrl || "").replace(/\/+$/, "");
 
@@ -819,7 +819,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       return reply.status(400).send({ error: "No model configured. Set a model first." });
     }
 
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     const baseUrl = (conn.baseUrl || providerDef?.defaultBaseUrl || "").replace(/\/+$/, "");
 

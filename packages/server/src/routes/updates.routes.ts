@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
 import { logger } from "../lib/logger.js";
-import { APP_VERSION } from "@marinara-engine/shared";
+import { APP_VERSION } from "@jumpchoice/shared";
 import { execFile } from "child_process";
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
@@ -256,10 +256,10 @@ async function runPinnedPnpm(root: string, args: string[], timeout: number) {
 }
 
 async function runPinnedBuild(root: string) {
-  await runPinnedPnpm(root, ["--filter", "@marinara-engine/shared", "build"], 120_000);
+  await runPinnedPnpm(root, ["--filter", "@jumpchoice/shared", "build"], 120_000);
   await runPinnedPnpm(
     root,
-    ["--filter", "@marinara-engine/server", "--filter", "@marinara-engine/client", "--parallel", "run", "build"],
+    ["--filter", "@jumpchoice/server", "--filter", "@jumpchoice/client", "--parallel", "run", "build"],
     300_000,
   );
 }
@@ -595,7 +595,7 @@ export async function updatesRoutes(app: FastifyInstance) {
       const pnpmVersion = getPinnedPnpmVersion(root);
       return reply.status(500).send({
         error: `Update failed: ${message}`,
-        hint: `You can try running the update manually: git fetch ${UPDATE_REMOTE} +refs/heads/${UPDATE_BRANCH}:refs/remotes/${UPDATE_REMOTE}/${UPDATE_BRANCH} && (git merge --ff-only ${UPDATE_REF} || git checkout --detach ${UPDATE_REF}) && pnpm install --frozen-lockfile && pnpm --filter @marinara-engine/shared build && pnpm --filter @marinara-engine/server --filter @marinara-engine/client --parallel run build. If pnpm is unavailable, run npm install -g pnpm@${pnpmVersion} first.`,
+        hint: `You can try running the update manually: git fetch ${UPDATE_REMOTE} +refs/heads/${UPDATE_BRANCH}:refs/remotes/${UPDATE_REMOTE}/${UPDATE_BRANCH} && (git merge --ff-only ${UPDATE_REF} || git checkout --detach ${UPDATE_REF}) && pnpm install --frozen-lockfile && pnpm --filter @jumpchoice/shared build && pnpm --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build. If pnpm is unavailable, run npm install -g pnpm@${pnpmVersion} first.`,
       });
     }
   });

@@ -7,7 +7,7 @@
 // ──────────────────────────────────────────────
 
 import { rollDice } from "./dice.service.js";
-import type { CombatItemEffect, CombatMechanic, CombatSkill } from "@marinara-engine/shared";
+import type { CombatItemEffect, CombatMechanic, CombatSkill } from "@jumpchoice/shared";
 import type { ElementAura, ReactionResult } from "./element-reactions.service.js";
 import { resolveElementApplication, applyReactionDamage } from "./element-reactions.service.js";
 

@@ -10,7 +10,7 @@ import {
   getDefaultBuiltInAgentSettings,
   type CreateAgentConfigInput,
   type AgentResult,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const BUILTIN_AGENT_ID_PREFIX = "builtin:";
 const BUILT_IN_AGENT_TYPES = new Set(BUILT_IN_AGENTS.map((agent) => agent.id));

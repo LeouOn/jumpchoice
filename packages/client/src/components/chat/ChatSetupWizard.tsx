@@ -33,7 +33,7 @@ import { api } from "../../lib/api-client";
 import { filterLanguageGenerationConnections } from "../../lib/connection-filters";
 import { getCharacterTitle, parseCharacterDisplayData } from "../../lib/character-display";
 import { ChoiceSelectionModal } from "../presets/ChoiceSelectionModal";
-import type { Chat, ChatMode, ChatPreset } from "@marinara-engine/shared";
+import type { Chat, ChatMode, ChatPreset } from "@jumpchoice/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   CHAT_PARAMETER_DEFAULTS,

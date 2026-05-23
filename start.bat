@@ -226,17 +226,17 @@ if errorlevel 1 echo  [WARN] Optional background remover install failed; built-i
 :: Build if needed
 if not exist "packages\shared\dist" (
     echo  [..] Building shared types...
-    call :run_pnpm --filter @marinara-engine/shared build
+    call :run_pnpm --filter @jumpchoice/shared build
     if errorlevel 1 echo  [ERROR] Failed to build shared types. & pause & exit /b 1
 )
 if not exist "packages\server\dist" (
     echo  [..] Building server...
-    call :run_pnpm --filter @marinara-engine/server build
+    call :run_pnpm --filter @jumpchoice/server build
     if errorlevel 1 echo  [ERROR] Failed to build the server. & pause & exit /b 1
 )
 if not exist "packages\client\dist" (
     echo  [..] Building client...
-    call :run_pnpm --filter @marinara-engine/client build
+    call :run_pnpm --filter @jumpchoice/client build
     if errorlevel 1 echo  [ERROR] Failed to build the client. & pause & exit /b 1
 )
 

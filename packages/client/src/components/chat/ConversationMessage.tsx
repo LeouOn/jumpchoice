@@ -19,7 +19,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
-import type { Message, MessageExtra } from "@marinara-engine/shared";
+import type { Message, MessageExtra } from "@jumpchoice/shared";
 import { useUIStore } from "../../stores/ui.store";
 import { useChatStore } from "../../stores/chat.store";
 import { cn, copyToClipboard, getAvatarCropStyle, parseAvatarCropJson } from "../../lib/utils";

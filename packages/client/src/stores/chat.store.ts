@@ -4,7 +4,7 @@
 import { create } from "zustand";
 import type { AvatarCropValue } from "../lib/utils";
 import { subscribeWithSelector } from "zustand/middleware";
-import type { Chat, ChatMode, Message } from "@marinara-engine/shared";
+import type { Chat, ChatMode, Message } from "@jumpchoice/shared";
 import { useAgentStore } from "./agent.store";
 import { useGameStateStore } from "./game-state.store";
 

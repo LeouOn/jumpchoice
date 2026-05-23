@@ -21,7 +21,7 @@ import {
   mergePromptPrefix,
   type ComfyUiDefaults,
   type ImageGenerationDefaultsProfile,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { safeFetch } from "../../utils/security.js";
 
 const DEFAULT_RUNPOD_POLL_INTERVAL_MS = 2_000;

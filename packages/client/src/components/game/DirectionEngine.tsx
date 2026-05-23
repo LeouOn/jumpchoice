@@ -6,7 +6,7 @@
 // over the game viewport.
 // ──────────────────────────────────────────────
 import { useEffect, useLayoutEffect, useRef, useState, useCallback, type CSSProperties } from "react";
-import type { DirectionCommand } from "@marinara-engine/shared";
+import type { DirectionCommand } from "@jumpchoice/shared";
 
 /** Cross-fading background layer — renders two stacked layers and transitions between them. */
 function getBackgroundBlurStyle(blurPx: number): Pick<CSSProperties, "filter" | "transform"> {

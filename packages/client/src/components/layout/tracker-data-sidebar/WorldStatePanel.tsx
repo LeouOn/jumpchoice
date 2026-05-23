@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Clock, MapPin } from "lucide-react";
-import type { GameState } from "@marinara-engine/shared";
+import type { GameState } from "@jumpchoice/shared";
 import type { GameStatePatchField } from "../../../hooks/use-game-state-patcher";
 import { cn } from "../../../lib/utils";
 import { WORLD_GRID_BASE_CLASS } from "./tracker-data-sidebar.helpers";

@@ -1,6 +1,6 @@
 {
-  "name": "Marinara Engine",
-  "short_name": "Marinara",
+  "name": "JumpChoice",
+  "short_name": "JumpChoice",
   "description": "AI Chat & Roleplay Frontend — Conversation, Roleplay, Visual Novel",
   "start_url": "/",
   "display": "standalone",

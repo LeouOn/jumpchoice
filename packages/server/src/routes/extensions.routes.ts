@@ -7,7 +7,7 @@
 // `CustomThemeInjector.tsx` — no server-side script-serving endpoint.
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { createExtensionSchema, updateExtensionSchema } from "@marinara-engine/shared";
+import { createExtensionSchema, updateExtensionSchema } from "@jumpchoice/shared";
 import { createExtensionsStorage } from "../services/storage/extensions.storage.js";
 
 const ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;

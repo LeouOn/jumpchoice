@@ -18,7 +18,7 @@ import type {
   UpdateLorebookEntryInput,
   CreateLorebookFolderInput,
   UpdateLorebookFolderInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { normalizeTimestampOverrides, type TimestampOverrides } from "../import/import-timestamps.js";
 
 function resolveTimestamps(overrides?: TimestampOverrides | null) {

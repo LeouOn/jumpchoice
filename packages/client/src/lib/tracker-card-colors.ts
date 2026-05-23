@@ -2,7 +2,7 @@ import type {
   TrackerCardColorConfig,
   TrackerCardColorMode,
   TrackerCardPortraitStageBackground,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export const DEFAULT_TRACKER_CARD_COLOR_MODE: TrackerCardColorMode = "chat";
 export const DEFAULT_TRACKER_CARD_PORTRAIT_STAGE_BACKGROUND: TrackerCardPortraitStageBackground = "ambient";

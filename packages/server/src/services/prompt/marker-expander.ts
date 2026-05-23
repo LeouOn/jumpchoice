@@ -3,7 +3,7 @@
 // sections into actual content at assembly time.
 // ──────────────────────────────────────────────
 import type { DB } from "../../db/connection.js";
-import { resolveCharacterScopedMacros } from "@marinara-engine/shared";
+import { resolveCharacterScopedMacros } from "@jumpchoice/shared";
 import type {
   CharacterMacroProfile,
   MarkerConfig,
@@ -12,7 +12,7 @@ import type {
   WrapFormat,
   RPGStatsConfig,
   LorebookEntryTimingState,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createAgentsStorage } from "../storage/agents.storage.js";
 import { processLorebooks, type LorebookFinalContentResolver, type LorebookScanResult } from "../lorebook/index.js";

@@ -5,7 +5,7 @@ import {
   resolveMacros,
   type APIProvider,
   type LorebookEntryTimingState,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { randomUUID } from "crypto";
 import { createChatsStorage } from "../../services/storage/chats.storage.js";
 import { createConnectionsStorage } from "../../services/storage/connections.storage.js";

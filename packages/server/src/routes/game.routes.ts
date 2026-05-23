@@ -100,7 +100,7 @@ import {
   scoreMusic,
   scoreAmbient,
   serializeResolvedSkillCheckTag,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { mergeCustomParameters } from "./generate/generate-route-utils.js";
 import { postToDiscordWebhook } from "../services/discord-webhook.js";
 import { isDebugAgentsEnabled } from "../config/runtime-config.js";
@@ -115,7 +115,7 @@ import type {
   SessionSummary,
   PartyArc,
   HudWidget,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getAssetManifest, GAME_ASSETS_DIR } from "../services/game/asset-manifest.service.js";
 import {
   GENERATED_GAME_BACKGROUND_EXTS,
@@ -1266,7 +1266,7 @@ async function resolveConnection(
 
   let baseUrl = conn.baseUrl;
   if (!baseUrl) {
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     baseUrl = providerDef?.defaultBaseUrl ?? "";
   }
@@ -6287,7 +6287,7 @@ export async function gameRoutes(app: FastifyInstance) {
         ),
         characterNames: input.context.characterNames ?? [],
       };
-      const parsed = postProcessSceneResult(rawParsed as import("@marinara-engine/shared").SceneAnalysis, ppCtx);
+      const parsed = postProcessSceneResult(rawParsed as import("@jumpchoice/shared").SceneAnalysis, ppCtx);
 
       // ── Dynamic music & ambient scoring ──
       // Replace LLM outputs with deterministic rule-based picks.

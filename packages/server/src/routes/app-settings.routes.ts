@@ -2,7 +2,7 @@
 // Routes: Synced App Settings (key/value)
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { appSettingsUpdateSchema } from "@marinara-engine/shared";
+import { appSettingsUpdateSchema } from "@jumpchoice/shared";
 import { createAppSettingsStorage } from "../services/storage/app-settings.storage.js";
 
 const ALLOWED_KEYS = new Set(["ui"]);

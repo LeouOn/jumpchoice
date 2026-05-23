@@ -10,7 +10,7 @@ import {
   type CharacterData,
   type MacroContext,
   type ResolveMacroOptions,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { getCharacterDescriptionWithExtensions } from "./character-description-extensions.js";

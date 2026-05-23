@@ -10,8 +10,8 @@ import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
-import { PROVIDERS } from "@marinara-engine/shared";
-import type { CharacterData } from "@marinara-engine/shared";
+import { PROVIDERS } from "@jumpchoice/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 import {
   generateCharacterSchedule,
   getCurrentStatus,

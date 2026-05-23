@@ -4,7 +4,7 @@
 // ──────────────────────────────────────────────
 import { useState, useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { motion, AnimatePresence, type TargetAndTransition } from "framer-motion";
-import type { SpritePlacement, SpriteSide } from "@marinara-engine/shared";
+import type { SpritePlacement, SpriteSide } from "@jumpchoice/shared";
 import { useCharacterSprites, type SpriteInfo } from "../../hooks/use-characters";
 import { useAgentStore } from "../../stores/agent.store";
 import {

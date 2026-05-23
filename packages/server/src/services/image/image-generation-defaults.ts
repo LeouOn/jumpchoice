@@ -4,7 +4,7 @@ import {
   inferImageSource,
   normalizeImageGenerationProfile,
   type ImageGenerationDefaultsProfile,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export interface ImageDefaultsConnection {
   provider?: string | null;

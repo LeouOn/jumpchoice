@@ -28,7 +28,7 @@ importers:
       '@dnd-kit/core':
         specifier: 6.3.1
         version: 6.3.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@marinara-engine/shared':
+      '@jumpchoice/shared':
         specifier: workspace:*
         version: link:../shared
       '@tanstack/react-query':
@@ -134,7 +134,7 @@ importers:
       '@libsql/client':
         specifier: ^0.15.15
         version: 0.15.15
-      '@marinara-engine/shared':
+      '@jumpchoice/shared':
         specifier: workspace:*
         version: link:../shared
       adm-zip:

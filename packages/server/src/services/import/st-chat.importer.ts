@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import type { DB } from "../../db/connection.js";
 import { createChatsStorage } from "../storage/chats.storage.js";
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 import {
   latestTrustedTimestamp,
   normalizeTimestampOverrides,

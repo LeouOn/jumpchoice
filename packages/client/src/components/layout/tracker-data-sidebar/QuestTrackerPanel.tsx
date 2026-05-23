@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { CheckCircle2, Circle, Plus, Target, X } from "lucide-react";
-import type { QuestProgress } from "@marinara-engine/shared";
+import type { QuestProgress } from "@jumpchoice/shared";
 import { cn } from "../../../lib/utils";
 import { TRACKER_BAR, TRACKER_TEXT_ROW } from "./tracker-data-sidebar.constants";
 import { visibleText } from "./tracker-data-sidebar.helpers";

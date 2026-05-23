@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import type { CharacterStat } from "@marinara-engine/shared";
+import type { CharacterStat } from "@jumpchoice/shared";
 import { cn } from "../../../lib/utils";
 import {
   TRACKER_BAR,

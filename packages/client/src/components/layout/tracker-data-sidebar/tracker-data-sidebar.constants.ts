@@ -1,4 +1,4 @@
-import { BUILT_IN_AGENTS } from "@marinara-engine/shared";
+import { BUILT_IN_AGENTS } from "@jumpchoice/shared";
 import type { TrackerDataPanelSection } from "../../../stores/ui.store";
 
 export type TrackerPanelSection = TrackerDataPanelSection;

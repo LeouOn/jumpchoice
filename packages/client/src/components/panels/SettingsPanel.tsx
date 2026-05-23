@@ -18,7 +18,7 @@ import { chatBackgroundUrlToMetadata } from "../../lib/backgrounds";
 import { forceRefreshSpa } from "@/lib/browser-runtime";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
-import { APP_VERSION, type Theme } from "@marinara-engine/shared";
+import { APP_VERSION, type Theme } from "@jumpchoice/shared";
 import {
   findDuplicateTheme,
   useCreateTheme,

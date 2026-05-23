@@ -22,7 +22,7 @@ import { seedDefaultGameAssets } from "./db/seed-game-assets.js";
 import { seedDefaultRegexScripts } from "./db/seed-regex.js";
 import { buildAssetManifest, ensureAssetDirs } from "./services/game/asset-manifest.service.js";
 import { recoverGalleryImages } from "./services/storage/gallery-recovery.js";
-import { APP_VERSION } from "@marinara-engine/shared";
+import { APP_VERSION } from "@jumpchoice/shared";
 import { existsSync } from "fs";
 import { basename, join, resolve, dirname } from "path";
 import { fileURLToPath } from "url";

@@ -2,7 +2,7 @@
 // Spotify Game Music — deterministic shortlist + playback
 // ──────────────────────────────────────────────
 import { createHash } from "node:crypto";
-import type { SceneSpotifyTrackCandidate, SceneSpotifyTrackSelection } from "@marinara-engine/shared";
+import type { SceneSpotifyTrackCandidate, SceneSpotifyTrackSelection } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import type { createAgentsStorage } from "../storage/agents.storage.js";
 import {

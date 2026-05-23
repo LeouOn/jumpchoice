@@ -56,7 +56,7 @@ import { animateTextHtml } from "./AnimatedText";
 import { ttsService } from "../../lib/tts-service";
 import { getOrCreateCachedTTSAudioBlob } from "../../lib/tts-audio-cache";
 import { resolveTTSVoiceForSpeaker, splitTTSChunks, ttsConfigMatchesSpeaker } from "../../lib/tts-dialogue";
-import type { PartyDialogueLine, Message, TTSConfig, GameNpc, SkillCheckResult } from "@marinara-engine/shared";
+import type { PartyDialogueLine, Message, TTSConfig, GameNpc, SkillCheckResult } from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../chat/chat-area.types";
 
 /** Build inline style for a color that may be a plain color or a CSS gradient. */

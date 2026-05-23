@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
 import { parsePartyDialogue } from "../lib/party-dialogue-parser";
 import { useUIStore } from "../stores/ui.store";
-import type { PartyDialogueLine } from "@marinara-engine/shared";
+import type { PartyDialogueLine } from "@jumpchoice/shared";
 
 interface PartyTurnInput {
   chatId: string;

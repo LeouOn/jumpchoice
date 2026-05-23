@@ -64,7 +64,7 @@ import { SpriteFrameEditor } from "../ui/SpriteFrameEditor";
 import { SpriteWandCleanupEditor } from "../ui/SpriteWandCleanupEditor";
 import { ExportFormatDialog, type ExportFormatChoice } from "../ui/ExportFormatDialog";
 import { Modal } from "../ui/Modal";
-import type { TrackerCardColorConfig } from "@marinara-engine/shared";
+import type { TrackerCardColorConfig } from "@jumpchoice/shared";
 
 // ── Tabs ──
 const TABS = [

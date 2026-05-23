@@ -2,7 +2,7 @@
 // Routes: Custom Tools
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { createCustomToolSchema, updateCustomToolSchema } from "@marinara-engine/shared";
+import { createCustomToolSchema, updateCustomToolSchema } from "@jumpchoice/shared";
 import { createCustomToolsStorage } from "../services/storage/custom-tools.storage.js";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 import { isCustomToolScriptEnabled } from "../config/runtime-config.js";

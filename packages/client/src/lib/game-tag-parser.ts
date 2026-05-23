@@ -8,7 +8,7 @@
 // Returns clean content + extracted commands.
 // ──────────────────────────────────────────────
 
-import type { DirectionCommand, DirectionEffect, SkillCheckResult, WidgetUpdate } from "@marinara-engine/shared";
+import type { DirectionCommand, DirectionEffect, SkillCheckResult, WidgetUpdate } from "@jumpchoice/shared";
 
 export interface CombatEncounterTag {
   enemies: Array<{

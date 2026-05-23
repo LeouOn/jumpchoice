@@ -7,7 +7,7 @@ import {
   updateAgentConfigSchema,
   BUILT_IN_AGENTS,
   getDefaultBuiltInAgentSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createAgentsStorage } from "../services/storage/agents.storage.js";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { z } from "zod";

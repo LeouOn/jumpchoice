@@ -2,14 +2,14 @@
 // Agent Executor — Single & Batched LLM execution
 // ──────────────────────────────────────────────
 import type { BaseLLMProvider, ChatMessage, LLMToolDefinition, LLMToolCall } from "../llm/base-provider.js";
-import type { AgentResult, AgentContext, AgentResultType } from "@marinara-engine/shared";
+import type { AgentResult, AgentContext, AgentResultType } from "@jumpchoice/shared";
 import {
   DEFAULT_AGENT_CONTEXT_SIZE,
   DEFAULT_AGENT_MAX_TOKENS,
   MAX_AGENT_MAX_TOKENS,
   MIN_AGENT_MAX_TOKENS,
   getDefaultAgentPrompt,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isDebugAgentsEnabled } from "../../config/runtime-config.js";
 import { logger } from "../../lib/logger.js";
 

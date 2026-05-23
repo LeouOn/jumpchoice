@@ -26,7 +26,7 @@ import {
   LOCAL_SIDECAR_CONNECTION_ID,
   getDefaultAgentPrompt,
   type ConnectionFolder,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { Modal } from "../ui/Modal";
 import {

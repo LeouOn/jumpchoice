@@ -1,4 +1,4 @@
-import type { CharacterData } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 
 type DescriptionExtension = {
   active?: unknown;

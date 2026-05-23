@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { lazy, Suspense, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { APP_VERSION } from "@marinara-engine/shared";
+import { APP_VERSION } from "@jumpchoice/shared";
 import { AppShell } from "./components/layout/AppShell";
 import { CustomThemeInjector } from "./components/layout/CustomThemeInjector";
 import { ModelDownloadModal } from "./components/modals/ModelDownloadModal";

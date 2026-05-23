@@ -16,7 +16,7 @@ import {
   DeviceOutputValueConstructor,
   OutputType,
 } from "buttplug";
-import type { HapticDevice, HapticCapability, HapticDeviceCommand, HapticStatus } from "@marinara-engine/shared";
+import type { HapticDevice, HapticCapability, HapticDeviceCommand, HapticStatus } from "@jumpchoice/shared";
 import { getIntifaceUrl } from "../../config/runtime-config.js";
 
 const POSITION_WITH_DURATION_OUTPUT =

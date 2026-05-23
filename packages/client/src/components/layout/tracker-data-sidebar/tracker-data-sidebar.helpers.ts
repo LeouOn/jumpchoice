@@ -5,7 +5,7 @@ import type {
   Persona,
   PresentCharacter,
   TrackerCardColorConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { SpriteInfo } from "../../../hooks/use-characters";
 import {
   DEFAULT_TRACKER_CARD_ACCENT,

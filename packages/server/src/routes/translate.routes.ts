@@ -5,7 +5,7 @@ import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
-import { PROVIDERS } from "@marinara-engine/shared";
+import { PROVIDERS } from "@jumpchoice/shared";
 import { isDeeplxLocalUrlsEnabled } from "../config/runtime-config.js";
 import { safeFetch, validateOutboundUrl } from "../utils/security.js";
 

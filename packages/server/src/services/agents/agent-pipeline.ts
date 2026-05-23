@@ -10,7 +10,7 @@
 // single LLM call to reduce total requests. Agents with different
 // connections are grouped separately and run in parallel.
 // ──────────────────────────────────────────────
-import type { AgentResult, AgentContext, AgentPhase } from "@marinara-engine/shared";
+import type { AgentResult, AgentContext, AgentPhase } from "@jumpchoice/shared";
 import type { BaseLLMProvider } from "../llm/base-provider.js";
 import { executeAgent, executeAgentBatch, type AgentExecConfig, type AgentToolContext } from "./agent-executor.js";
 import { logger } from "../../lib/logger.js";

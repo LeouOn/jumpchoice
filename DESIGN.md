@@ -221,7 +221,7 @@ Conversation mode can use familiar message bubbles, but roleplay and game mode s
 ### Don't:
 
 - **Don't** turn JumpChoice into a sterile SaaS dashboard with gray card grids and dry enterprise spacing.
-  - **Don't** make it a bland SillyTavern clone. Compatibility themes may exist, but JumpChoice's default should keep its own blush-violet visual novel identity.
+- **Don't** make it a bland SillyTavern clone. Compatibility themes may exist, but JumpChoice's default should keep its own blush-violet visual novel identity.
 - **Don't** make it feel like a generic Discord clone. Chat familiarity is useful, but roleplay and game mode need their own atmosphere.
 - **Don't** build developer-only control panels that assume technical confidence. Advanced settings still need clear labels, forgiving defaults, and helpful validation.
 - **Don't** use colored side-stripe borders, decorative gradient text, nested cards, or glassmorphism as the default layout answer.

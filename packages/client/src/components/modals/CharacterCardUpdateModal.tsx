@@ -12,7 +12,7 @@ import { Loader2, UserCog, Check, X, AlertCircle } from "lucide-react";
 import { Modal } from "../ui/Modal";
 import { useAgentStore } from "../../stores/agent.store";
 import { useCharacter, useUpdateCharacter } from "../../hooks/use-characters";
-import type { EditableCharacterCardField } from "@marinara-engine/shared";
+import type { EditableCharacterCardField } from "@jumpchoice/shared";
 
 function getCharacterCardFieldValue(data: Record<string, unknown>, field: EditableCharacterCardField): string | null {
   if (field === "backstory" || field === "appearance") {

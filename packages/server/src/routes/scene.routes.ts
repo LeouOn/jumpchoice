@@ -29,7 +29,7 @@ import type {
   ScenePlanRequest,
   ScenePlanResponse,
   SceneFullPlan,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const BG_DIR = join(DATA_DIR, "backgrounds");
 const ALLOWED_BG_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]);
@@ -65,7 +65,7 @@ async function resolveConnection(
 
   let baseUrl = conn.baseUrl;
   if (!baseUrl) {
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     baseUrl = providerDef?.defaultBaseUrl ?? "";
   }

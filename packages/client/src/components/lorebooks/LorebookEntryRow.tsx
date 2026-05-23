@@ -40,7 +40,7 @@ import type {
   LorebookFilterMode,
   LorebookFolder,
   LorebookMatchingSource,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   ExpandableTextarea,
   FieldGroup,

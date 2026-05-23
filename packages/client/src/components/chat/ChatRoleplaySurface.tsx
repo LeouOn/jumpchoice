@@ -16,7 +16,7 @@ import {
   type SceneForkMode,
   type SpritePlacement,
   type SpriteSide,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   FolderOpen,
   Image,

@@ -19,7 +19,7 @@
 // character's `data.character_book` so the two stores stay coherent.
 
 import type { DB } from "../../db/connection.js";
-import type { CharacterBook, CharacterBookEntry } from "@marinara-engine/shared";
+import type { CharacterBook, CharacterBookEntry } from "@jumpchoice/shared";
 import { createLorebooksStorage } from "../storage/lorebooks.storage.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { logger } from "../../lib/logger.js";

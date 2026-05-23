@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
-import type { ChatFolder } from "@marinara-engine/shared";
+import type { ChatFolder } from "@jumpchoice/shared";
 import { chatKeys } from "./use-chats";
 
 export const folderKeys = {

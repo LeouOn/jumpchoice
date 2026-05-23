@@ -2,7 +2,7 @@
 // Generic API client for communicating with the backend
 // ──────────────────────────────────────────────
 
-import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@marinara-engine/shared";
+import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@jumpchoice/shared";
 
 const BASE = "/api";
 const UNSAFE_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);

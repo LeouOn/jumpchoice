@@ -14,7 +14,7 @@
 //   Expression tag is optional — lines without it still parse.
 // ──────────────────────────────────────────────
 
-import type { PartyDialogueLine, PartyDialogueType } from "@marinara-engine/shared";
+import type { PartyDialogueLine, PartyDialogueType } from "@jumpchoice/shared";
 import { stripSurroundingDialogueQuotes } from "./dialogue-quotes";
 
 const VALID_TYPES = new Set<PartyDialogueType>(["main", "side", "extra", "action", "thought", "whisper"]);

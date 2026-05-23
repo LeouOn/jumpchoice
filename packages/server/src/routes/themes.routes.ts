@@ -2,7 +2,7 @@
 // Routes: Synced Custom Themes
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { createThemeSchema, setActiveThemeSchema, updateThemeSchema } from "@marinara-engine/shared";
+import { createThemeSchema, setActiveThemeSchema, updateThemeSchema } from "@jumpchoice/shared";
 import { createThemesStorage } from "../services/storage/themes.storage.js";
 
 export async function themesRoutes(app: FastifyInstance) {

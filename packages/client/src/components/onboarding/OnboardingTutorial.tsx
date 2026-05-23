@@ -8,7 +8,7 @@ import { useSidecarStore } from "../../stores/sidecar.store";
 import { useCreateChat } from "../../hooks/use-chats";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, ArrowRightLeft } from "lucide-react";
-import { PROFESSOR_MARI_ID, DEFAULT_CONNECTION_ID } from "@marinara-engine/shared";
+import { PROFESSOR_MARI_ID, DEFAULT_CONNECTION_ID } from "@jumpchoice/shared";
 import { api } from "../../lib/api-client";
 
 // ─── Step definitions ─────────────────────────

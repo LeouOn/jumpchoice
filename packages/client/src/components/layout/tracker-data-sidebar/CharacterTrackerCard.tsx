@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Eye, HeartPulse, ImagePlus, Maximize2, MessageCircle, Shirt, X } from "lucide-react";
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import type { TrackerPanelSide } from "../../../stores/ui.store";
 import { cn } from "../../../lib/utils";
 import { getCharacterAmbienceStyle, visibleText, type TrackerProfileColors } from "./tracker-data-sidebar.helpers";

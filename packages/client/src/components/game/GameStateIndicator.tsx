@@ -2,7 +2,7 @@
 // Game: State Indicator Bar
 // ──────────────────────────────────────────────
 import { Compass, MessageCircle, Swords, Moon } from "lucide-react";
-import type { GameActiveState } from "@marinara-engine/shared";
+import type { GameActiveState } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 
 const STATE_CONFIG: Record<GameActiveState, { icon: typeof Compass; label: string; color: string; bg: string }> = {

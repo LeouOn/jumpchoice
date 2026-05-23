@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // Regex Scripts — Prompt Application
 // ──────────────────────────────────────────────
-import { applyRegexReplacement } from "@marinara-engine/shared";
+import { applyRegexReplacement } from "@jumpchoice/shared";
 
 type RegexPlacement = "ai_output" | "user_input";
 

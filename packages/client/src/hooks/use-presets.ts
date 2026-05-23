@@ -10,7 +10,7 @@ import type {
   ChoiceBlock,
   GenerationParameters,
   ChatMLMessage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 // ── Query Keys ──
 

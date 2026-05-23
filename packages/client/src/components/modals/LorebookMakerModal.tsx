@@ -10,7 +10,7 @@ import { useLorebooks, useCreateLorebook, lorebookKeys } from "../../hooks/use-l
 import { useUIStore } from "../../stores/ui.store";
 import { Loader2, Wand2, CheckCircle, AlertCircle, ChevronDown, BookOpen, Plus } from "lucide-react";
 import { api } from "../../lib/api-client";
-import type { Lorebook } from "@marinara-engine/shared";
+import type { Lorebook } from "@jumpchoice/shared";
 import { ProfessorMariWorkingWindow } from "../ui/ProfessorMariWorkingWindow";
 
 interface Props {

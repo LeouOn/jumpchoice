@@ -10,7 +10,7 @@ import {
   type TTSSource,
   type TTSConfig,
   type TTSVoicesResponse,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createAppSettingsStorage } from "../services/storage/app-settings.storage.js";
 import { encryptApiKey, decryptApiKey } from "../utils/crypto.js";
 import { isTtsLocalUrlsEnabled } from "../config/runtime-config.js";

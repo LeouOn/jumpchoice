@@ -9,7 +9,7 @@
 // at most once across all of the user's Mari chats.
 import { memo, useMemo, useState, useEffect } from "react";
 import { AlertTriangle, X } from "lucide-react";
-import { PROFESSOR_MARI_ID } from "@marinara-engine/shared";
+import { PROFESSOR_MARI_ID } from "@jumpchoice/shared";
 import { useChatStore } from "../../stores/chat.store";
 import { useChat } from "../../hooks/use-chats";
 

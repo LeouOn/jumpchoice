@@ -23,7 +23,7 @@ import { ChevronDown, Folder, GripVertical, ToggleLeft, ToggleRight, Trash2 } fr
 import { cn } from "../../lib/utils";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { useUpdateLorebookFolder, useDeleteLorebookFolder } from "../../hooks/use-lorebooks";
-import type { LorebookFolder } from "@marinara-engine/shared";
+import type { LorebookFolder } from "@jumpchoice/shared";
 
 interface Props {
   folder: LorebookFolder;

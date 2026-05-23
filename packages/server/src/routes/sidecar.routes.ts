@@ -32,7 +32,7 @@ import {
   type GameActiveState,
   type SidecarDownloadProgress,
   type SidecarQuantization,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isSidecarRuntimeInstallEnabled } from "../config/runtime-config.js";
 import { isAdminAuthorized, requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 

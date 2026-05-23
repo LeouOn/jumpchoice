@@ -120,7 +120,7 @@ import type {
   ChatPresetSettings,
   ConversationNote,
   ExportEnvelope,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useAgentConfigs, useCreateAgent, useUpdateAgent, type AgentConfigRow } from "../../hooks/use-agents";
 import { useAgentStore } from "../../stores/agent.store";
 import {
@@ -138,8 +138,8 @@ import {
   AGENT_COST_HIGH_CALLS,
   AGENT_COST_HIGH_TOKENS,
   getDefaultBuiltInAgentSettings,
-} from "@marinara-engine/shared";
-import type { Chat, CharacterGroup, Lorebook } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { Chat, CharacterGroup, Lorebook } from "@jumpchoice/shared";
 import {
   isCustomToolSelectable,
   useCustomToolCapabilities,

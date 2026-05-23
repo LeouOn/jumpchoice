@@ -415,7 +415,7 @@ Users can create custom themes via the Settings > Themes panel. Theme definition
 
 ## Shared Package (`packages/shared`)
 
-The frontend imports types, schemas, and constants from `@marinara-engine/shared`.
+The frontend imports types, schemas, and constants from `@jumpchoice/shared`.
 
 ### Constants
 

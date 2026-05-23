@@ -194,7 +194,7 @@ export interface CustomTheme {
  * (`/api/extensions`) on first load — see `useLegacyExtensionMigration`.
  * New extensions go directly through the server-synced hooks in
  * `use-extensions.ts` and use the canonical `InstalledExtension` type
- * exported from `@marinara-engine/shared`.
+ * exported from `@jumpchoice/shared`.
  */
 export interface LegacyInstalledExtension {
   id: string;

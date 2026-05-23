@@ -34,7 +34,7 @@ import {
   ChevronRight,
   EyeOff,
 } from "lucide-react";
-import type { Message } from "@marinara-engine/shared";
+import type { Message } from "@jumpchoice/shared";
 import { memo, useState, useMemo, useRef, useEffect, useLayoutEffect, useCallback, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useQueryClient, type InfiniteData } from "@tanstack/react-query";

@@ -19,7 +19,7 @@ import type {
   CombatEnemy,
   CombatPlayerActions,
   EncounterLogEntry,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 // ──────────────────────────────────────────────
 // Helpers
@@ -45,7 +45,7 @@ async function resolveConnection(
 
   let baseUrl = conn.baseUrl;
   if (!baseUrl) {
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     baseUrl = providerDef?.defaultBaseUrl ?? "";
   }

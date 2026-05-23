@@ -10,8 +10,8 @@ import {
   createPersonaGroupSchema,
   updatePersonaGroupSchema,
   PROFESSOR_MARI_ID,
-} from "@marinara-engine/shared";
-import type { ExportEnvelope } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { ExportEnvelope } from "@jumpchoice/shared";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";
 import { createCharacterGalleryStorage } from "../services/storage/character-gallery.storage.js";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";

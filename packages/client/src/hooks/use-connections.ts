@@ -4,7 +4,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
 import { useUIStore } from "../stores/ui.store";
-import type { ConnectionTestResult } from "@marinara-engine/shared";
+import type { ConnectionTestResult } from "@jumpchoice/shared";
 
 export const connectionKeys = {
   all: ["connections"] as const,

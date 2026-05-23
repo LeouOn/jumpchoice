@@ -87,7 +87,7 @@ import { Modal } from "../ui/Modal";
 import { SpriteFrameEditor } from "../ui/SpriteFrameEditor";
 import { SpriteWandCleanupEditor } from "../ui/SpriteWandCleanupEditor";
 import { ExportFormatDialog, type ExportFormatChoice } from "../ui/ExportFormatDialog";
-import type { CharacterCardVersion, CharacterData, RPGStatsConfig } from "@marinara-engine/shared";
+import type { CharacterCardVersion, CharacterData, RPGStatsConfig } from "@jumpchoice/shared";
 import { parseTrackerCardColorConfig, serializeTrackerCardColorConfig } from "../../lib/tracker-card-colors";
 
 // ── Tabs ──

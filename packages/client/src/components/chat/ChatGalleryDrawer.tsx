@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { X } from "lucide-react";
 import { ChatGallery } from "./ChatGallery";
-import type { Chat } from "@marinara-engine/shared";
+import type { Chat } from "@jumpchoice/shared";
 
 interface ChatGalleryDrawerProps {
   chat: Chat;

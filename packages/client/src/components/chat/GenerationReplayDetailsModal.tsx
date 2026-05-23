@@ -1,4 +1,4 @@
-import { stripGenerationGuideInstruction, type MessageExtra } from "@marinara-engine/shared";
+import { stripGenerationGuideInstruction, type MessageExtra } from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal";
 
 type GenerationReplay = NonNullable<MessageExtra["generationReplay"]>;

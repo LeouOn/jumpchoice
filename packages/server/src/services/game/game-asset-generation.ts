@@ -16,7 +16,7 @@ import { generateImage, type ImageGenResult } from "../image/image-generation.js
 import { buildAssetManifest, GAME_ASSETS_DIR } from "./asset-manifest.service.js";
 import type { PromptOverridesStorage } from "../storage/prompt-overrides.storage.js";
 import { loadPrompt, GAME_NPC_PORTRAIT, GAME_BACKGROUND, GAME_SCENE_ILLUSTRATION } from "../prompt-overrides/index.js";
-import type { ImageGenerationDefaultsProfile } from "@marinara-engine/shared";
+import type { ImageGenerationDefaultsProfile } from "@jumpchoice/shared";
 import type { ImageGenerationSize } from "../image/image-generation-settings.js";
 
 const NPC_AVATAR_DIR = join(DATA_DIR, "avatars", "npc");

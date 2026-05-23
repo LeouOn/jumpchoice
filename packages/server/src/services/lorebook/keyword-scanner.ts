@@ -10,8 +10,8 @@ import type {
   LorebookFilterMode,
   LorebookMatchingSource,
   LorebookSchedule,
-} from "@marinara-engine/shared";
-import { testPrimaryKeys, testSecondaryKeys } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { testPrimaryKeys, testSecondaryKeys } from "@jumpchoice/shared";
 import { vmRegexExecutor } from "./regex-timeout.js";
 
 /** Compute cosine similarity between two vectors. Returns 0 for empty/mismatched vectors. */

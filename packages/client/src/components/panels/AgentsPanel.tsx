@@ -28,7 +28,7 @@ import {
   useReorderRegexScripts,
   type RegexScriptRow,
 } from "../../hooks/use-regex-scripts";
-import { BUILT_IN_AGENTS, type AgentCategory } from "@marinara-engine/shared";
+import { BUILT_IN_AGENTS, type AgentCategory } from "@jumpchoice/shared";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { cn } from "../../lib/utils";
 

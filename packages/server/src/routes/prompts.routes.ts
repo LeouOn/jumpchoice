@@ -12,8 +12,8 @@ import {
   createChoiceBlockSchema,
   updateChoiceBlockSchema,
   type LorebookEntryTimingState,
-} from "@marinara-engine/shared";
-import type { ExportEnvelope } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { ExportEnvelope } from "@jumpchoice/shared";
 import { createPromptsStorage } from "../services/storage/prompts.storage.js";
 import { assemblePrompt, type AssemblerInput } from "../services/prompt/index.js";
 import { resolveGameLorebookScopeExclusions } from "../services/lorebook/game-lorebook-scope.js";

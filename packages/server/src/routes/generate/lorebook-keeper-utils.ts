@@ -1,4 +1,4 @@
-import type { AgentContext } from "@marinara-engine/shared";
+import type { AgentContext } from "@jumpchoice/shared";
 import { createLorebooksStorage } from "../../services/storage/lorebooks.storage.js";
 
 export interface LorebookKeeperSettings {

@@ -13,7 +13,7 @@ import {
   type ChatPresetSettings,
   type CreateChatPresetInput,
   type UpdateChatPresetInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const CHAT_MODES: ChatMode[] = ["conversation", "roleplay", "visual_novel"];
 const EXCLUDED_METADATA_SET = new Set(CHAT_PRESET_EXCLUDED_METADATA_KEYS);

@@ -13,7 +13,7 @@ import { createLorebooksStorage } from "../services/storage/lorebooks.storage.js
 import { createPromptsStorage } from "../services/storage/prompts.storage.js";
 import { createAgentsStorage } from "../services/storage/agents.storage.js";
 import { createThemesStorage } from "../services/storage/themes.storage.js";
-import type { ExportEnvelope } from "@marinara-engine/shared";
+import type { ExportEnvelope } from "@jumpchoice/shared";
 import { getDataDir } from "../utils/data-dir.js";
 import { getDatabaseFilePath, getFileStorageDir } from "../config/runtime-config.js";
 import { normalizeTimestampOverrides } from "../services/import/import-timestamps.js";

@@ -8,7 +8,7 @@ import { isCustomToolScriptEnabled, isWebhookLocalUrlsEnabled } from "../../conf
 import { safeFetch } from "../../utils/security.js";
 import { logger } from "../../lib/logger.js";
 import { normalizeSpotifySearchQuery } from "../spotify/spotify.service.js";
-import { appendChatSummaryEntryToMetadata } from "@marinara-engine/shared";
+import { appendChatSummaryEntryToMetadata } from "@jumpchoice/shared";
 
 export interface ToolExecutionResult {
   toolCallId: string;

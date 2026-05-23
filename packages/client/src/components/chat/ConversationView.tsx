@@ -36,7 +36,7 @@ import { getAvatarCropStyle, type AvatarCropValue } from "../../lib/utils";
 import { characterKeys } from "../../hooks/use-characters";
 import { api } from "../../lib/api-client";
 import type { CharacterMap, MessageSelectionToggle, PersonaInfo } from "./chat-area.types";
-import type { Message } from "@marinara-engine/shared";
+import type { Message } from "@jumpchoice/shared";
 
 const ConversationAutonomousEffects = lazy(async () => {
   const module = await import("./ConversationAutonomousEffects");

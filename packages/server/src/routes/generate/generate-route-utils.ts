@@ -3,7 +3,7 @@ import {
   generationParametersSchema,
   type GameState,
   type GenerationParameters,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { wrapContent } from "../../services/prompt/format-engine.js";
 
 export type SimpleMessage = { role: "system" | "user" | "assistant"; content: string };
