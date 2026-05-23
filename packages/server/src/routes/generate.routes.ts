@@ -3081,9 +3081,9 @@ export async function generateRoutes(app: FastifyInstance) {
               const agentConn = await connections.getWithKey(effectiveConnectionId);
               if (agentConn) {
                 const agentBaseUrl = resolveBaseUrl(agentConn);
-                      if (agentBaseUrl) {
-                        agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
-                        agentModel = agentConn.model;
+                if (agentBaseUrl) {
+                  agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
+                  agentModel = agentConn.model;
                   agentMaxParallelJobs = Number(agentConn.maxParallelJobs) || 1;
                   agentProviderCache.set(effectiveConnectionId, {
                     provider: agentProvider,
@@ -3216,10 +3216,10 @@ export async function generateRoutes(app: FastifyInstance) {
                   } else {
                     const agentConn = await connections.getWithKey(effectiveConnectionId);
                     if (agentConn) {
-                      const agentBaseUrl = resolveBaseUrl(agentConn);
-                      if (agentBaseUrl) {
-                        agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
-                        agentModel = agentConn.model;
+                const agentBaseUrl = resolveBaseUrl(agentConn);
+                if (agentBaseUrl) {
+                  agentProvider = createSummaryProvider(agentConn, agentBaseUrl);
+                  agentModel = agentConn.model;
                         agentMaxParallelJobs = Number(agentConn.maxParallelJobs) || 1;
                         agentProviderCache.set(effectiveConnectionId, {
                           provider: agentProvider,
