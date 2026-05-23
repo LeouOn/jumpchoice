@@ -9,13 +9,9 @@ import {
   findKnownModel,
   nameToXmlTag,
   DEFAULT_AGENT_TOOLS,
-  DEFAULT_AGENT_MAX_TOKENS,
-  MAX_AGENT_MAX_TOKENS,
-  MIN_AGENT_MAX_TOKENS,
   resolveMacros,
   resolveDeferredCharacterMacros,
   hasDeferredCharacterMacros,
-  LIMITS,
   coerceGameStateTextValue,
   appendChatSummaryEntryToMetadata,
 } from "@jumpchoice/shared";
@@ -69,7 +65,6 @@ import { mergeAdjacentMessages } from "../services/prompt/merger.js";
 import { wrapContent } from "../services/prompt/format-engine.js";
 import {
   fitMessagesToContext,
-  type BaseLLMProvider,
   type LLMToolDefinition,
   type ChatMessage,
   type LLMUsage,
@@ -208,6 +203,33 @@ import {
   seedDefaultAgentConnectionIntoCache,
   type AgentProviderCache,
 } from "./generate/provider.routes.js";
+import {
+  resolveLorebookGenerationTriggers,
+  buildLorebookScanMessagesWithGenerationGuide,
+  resolveLorebookTokenBudget,
+  persistLorebookRuntimeState,
+  rememberKnowledgeRouterActivatedLorebookIds,
+  normalizeMaxContext,
+  minContextLimit,
+  packRecalledMemories,
+  normalizeChatTopP,
+  readChatCompletionsReasoningMetadata,
+  isStandaloneCharacterProfileBlock,
+  type LorebookScanMessage,
+} from "./generate/prompt.routes.js";
+import {
+  REVIEWABLE_WRITER_AGENT_TYPES,
+  type RuntimeAgentSectionType,
+  type RuntimeAgentSectionTokens,
+  toRuntimeAgentSectionType,
+  makeRuntimeAgentSectionTokens,
+  replaceRuntimeAgentSection,
+  splitRuntimeHandledAgentInjections,
+  clearUnusedRuntimeAgentSections,
+  formatAgentInjections,
+  normalizeAgentMaxTokens,
+  applyProviderMaxTokensOverride,
+} from "./generate/agents.routes.js";
 import {
   createJournal,
   addLocationEntry,
@@ -394,55 +416,6 @@ function formatConversationPromptTurn(content: string, role: string, personaName
   return role === "user" ? prefixConversationUserTurn(content, personaName) : content.trim();
 }
 
-function resolveLorebookGenerationTriggers(
-  input: {
-    impersonate?: boolean;
-    regenerateMessageId?: string | null;
-    userMessage?: string | null;
-    generationGuide?: string | null;
-    generationGuideSource?: "narrator" | "guide" | "game_start" | null;
-  },
-  chatMode: string,
-): string[] {
-  const triggers = new Set<string>();
-  triggers.add(chatMode === "game" ? "game" : chatMode);
-
-  if (input.impersonate) {
-    triggers.add("impersonate");
-  } else if (input.regenerateMessageId) {
-    triggers.add("swipe");
-    triggers.add("regenerate");
-  } else if (
-    input.generationGuide?.trim() &&
-    (input.generationGuideSource === "narrator" || input.generationGuideSource === "guide")
-  ) {
-    triggers.add("chat");
-  } else if (!input.userMessage?.trim()) {
-    triggers.add("continue");
-    triggers.add("autonomous");
-  } else {
-    triggers.add("chat");
-  }
-
-  return Array.from(triggers);
-}
-
-type LorebookScanMessage = { role: "user" | "assistant" | "system"; content: string };
-
-function buildLorebookScanMessagesWithGenerationGuide(
-  messages: LorebookScanMessage[],
-  input: {
-    generationGuide?: string | null;
-    generationGuideSource?: "narrator" | "guide" | "game_start" | null;
-  },
-): LorebookScanMessage[] {
-  const guide = input.generationGuide?.trim();
-  if (!guide || (input.generationGuideSource !== "narrator" && input.generationGuideSource !== "guide")) {
-    return messages;
-  }
-  return [...messages, { role: "user", content: guide }];
-}
-
 function normalizePartyLookupName(value: string): string {
   return value
     .toLowerCase()
@@ -487,48 +460,6 @@ async function updateJournal(db: any, chatId: string, transform: (journal: Journ
   }
 }
 
-function resolveLorebookTokenBudget(meta: Record<string, unknown>): number {
-  const raw = meta.lorebookTokenBudget;
-  if (typeof raw !== "number" || !Number.isFinite(raw) || raw < 0) {
-    return LIMITS.DEFAULT_LOREBOOK_TOKEN_BUDGET;
-  }
-  return Math.floor(raw);
-}
-
-async function persistLorebookRuntimeState(args: {
-  chats: ReturnType<typeof createChatsStorage>;
-  chatId: string;
-  fallbackMeta: Record<string, unknown>;
-  entryStateOverrides?: Record<string, { ephemeral?: number | null; enabled?: boolean }>;
-  entryTimingStates?: Record<string, LorebookEntryTimingState>;
-}): Promise<void> {
-  if (args.entryStateOverrides === undefined && args.entryTimingStates === undefined) return;
-  const freshChat = await args.chats.getById(args.chatId);
-  const freshMeta = freshChat ? (parseExtra(freshChat.metadata) as Record<string, unknown>) : args.fallbackMeta;
-  await args.chats.updateMetadata(args.chatId, {
-    ...freshMeta,
-    ...(args.entryStateOverrides !== undefined ? { entryStateOverrides: args.entryStateOverrides } : {}),
-    ...(args.entryTimingStates !== undefined ? { entryTimingStates: args.entryTimingStates } : {}),
-  });
-}
-
-function rememberKnowledgeRouterActivatedLorebookIds(
-  targetActivated: Set<string>,
-  targetExcludedFromKeywordScan: Set<string>,
-  result: {
-    activatedEntries: Array<{ id: string; matchedKeys: string[] }>;
-    budgetSkippedEntries: Array<{ id: string; matchedKeys: string[] }>;
-  },
-): void {
-  for (const entry of result.activatedEntries) {
-    if (!entry.matchedKeys.some((key) => !key.startsWith("[semantic:"))) continue;
-    targetActivated.add(entry.id);
-  }
-  for (const entry of result.budgetSkippedEntries) {
-    targetExcludedFromKeywordScan.add(entry.id);
-  }
-}
-
 /** Read a character's avatar from disk as base64, or return undefined if unavailable. */
 function readAvatarBase64(avatarPath: string | null | undefined): string | undefined {
   if (!avatarPath) return undefined;
@@ -559,295 +490,6 @@ function normalizeDmTargetName(value: string): string {
     .replace(/^il\s+/, "")
     .replace(/\s+/g, " ")
     .trim();
-}
-
-function normalizeMaxContext(value: unknown): number | undefined {
-  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return undefined;
-  return Math.floor(value);
-}
-
-function normalizeAgentMaxTokens(value: unknown, fallback = DEFAULT_AGENT_MAX_TOKENS): number {
-  const parsed = typeof value === "number" ? value : typeof value === "string" && value.trim() ? Number(value) : NaN;
-  if (!Number.isFinite(parsed)) return fallback;
-  return Math.max(MIN_AGENT_MAX_TOKENS, Math.min(MAX_AGENT_MAX_TOKENS, Math.trunc(parsed)));
-}
-
-function applyProviderMaxTokensOverride(provider: BaseLLMProvider, maxTokens: number): number {
-  return provider.maxTokensOverrideValue !== null ? Math.min(maxTokens, provider.maxTokensOverrideValue) : maxTokens;
-}
-
-function minContextLimit(...limits: Array<number | undefined>): number | undefined {
-  let resolved: number | undefined;
-  for (const limit of limits) {
-    if (limit === undefined) continue;
-    resolved = resolved === undefined ? limit : Math.min(resolved, limit);
-  }
-  return resolved;
-}
-
-const DEFAULT_MEMORY_RECALL_BUDGET_TOKENS = 1024;
-const MIN_MEMORY_RECALL_BUDGET_TOKENS = 384;
-const MAX_MEMORY_RECALL_BUDGET_TOKENS = 1536;
-const MAX_RECALLED_MEMORY_TOKENS = 384;
-const MIN_RECALLED_MEMORY_TOKENS = 96;
-const MEMORY_RECALL_CONTEXT_SHARE = 0.15;
-const RECALL_TRUNCATION_MARKER = "\n...[recalled memory truncated]...\n";
-
-function estimateTextTokens(content: string): number {
-  const trimmed = content.trim();
-  if (!trimmed) return 0;
-  return Math.max(1, Math.ceil(trimmed.length / 4));
-}
-
-function truncateRecalledMemory(content: string, tokenBudget: number): string {
-  const maxChars = Math.max(32, tokenBudget * 4);
-  if (content.length <= maxChars) return content;
-
-  const availableChars = maxChars - RECALL_TRUNCATION_MARKER.length;
-  if (availableChars <= 0) {
-    return content.slice(0, maxChars);
-  }
-
-  const headChars = Math.max(16, Math.ceil(availableChars * 0.7));
-  const tailChars = Math.max(16, availableChars - headChars);
-  return `${content.slice(0, headChars).trimEnd()}${RECALL_TRUNCATION_MARKER}${content.slice(-tailChars).trimStart()}`;
-}
-
-function packRecalledMemories(
-  recalled: Array<{ content: string }>,
-  maxContext?: number,
-): { lines: string[]; estimatedTokens: number; budgetTokens: number; trimmed: boolean } {
-  const targetBudget = maxContext
-    ? Math.floor(maxContext * MEMORY_RECALL_CONTEXT_SHARE)
-    : DEFAULT_MEMORY_RECALL_BUDGET_TOKENS;
-  const budgetTokens = Math.max(
-    MIN_MEMORY_RECALL_BUDGET_TOKENS,
-    Math.min(MAX_MEMORY_RECALL_BUDGET_TOKENS, targetBudget),
-  );
-
-  const lines: string[] = [];
-  let estimatedTokens = 0;
-  let trimmed = false;
-
-  for (const memory of recalled) {
-    const remainingTokens = budgetTokens - estimatedTokens;
-    if (remainingTokens < MIN_RECALLED_MEMORY_TOKENS) {
-      trimmed = true;
-      break;
-    }
-
-    const packed = truncateRecalledMemory(memory.content, Math.min(MAX_RECALLED_MEMORY_TOKENS, remainingTokens));
-    const packedTokens = estimateTextTokens(packed);
-    if (packedTokens <= 0 || packedTokens > remainingTokens) {
-      trimmed = true;
-      break;
-    }
-
-    lines.push(packed);
-    estimatedTokens += packedTokens;
-    if (packed !== memory.content) trimmed = true;
-  }
-
-  return { lines, estimatedTokens, budgetTokens, trimmed };
-}
-
-/**
- * Format agent injection results into a wrapped block for prompt injection.
- * Each agent gets its own XML/markdown section with its current display name
- * as the section label, falling back to the stable type for legacy caches.
- */
-function formatAgentInjections(injections: AgentInjection[], wrapFormat: string): string {
-  if (injections.length === 1) {
-    const { agentType, agentName, text } = injections[0]!;
-    const label = agentName?.trim() || agentType;
-    const tag = nameToXmlTag(label) || agentType.replace(/[^a-z0-9_-]/gi, "_");
-    if (wrapFormat === "markdown") return `## ${label}\n${text}`;
-    if (wrapFormat === "xml") return `<${tag}>\n${text}\n</${tag}>`;
-    return text;
-  }
-  // Multiple agents — wrap each individually
-  const parts: string[] = [];
-  for (const { agentType, agentName, text } of injections) {
-    const label = agentName?.trim() || agentType;
-    const tag = nameToXmlTag(label) || agentType.replace(/[^a-z0-9_-]/gi, "_");
-    if (wrapFormat === "markdown") {
-      parts.push(`## ${label}\n${text}`);
-    } else if (wrapFormat === "xml") {
-      parts.push(`<${tag}>\n${text}\n</${tag}>`);
-    } else {
-      parts.push(text);
-    }
-  }
-  return parts.join("\n\n");
-}
-
-const REVIEWABLE_WRITER_AGENT_TYPES = new Set(
-  BUILT_IN_AGENTS.filter(
-    (agent) =>
-      agent.category === "writer" &&
-      agent.phase === "pre_generation" &&
-      !["knowledge-retrieval", "knowledge-router"].includes(agent.id),
-  ).map((agent) => agent.id),
-);
-
-type RuntimeAgentSectionType = string;
-
-const RUNTIME_AGENT_SECTION_TOKEN_PREFIX = "__MARINARA_RUNTIME_AGENT_SECTION__";
-
-interface RuntimeAgentSectionTokens {
-  placeholder: string;
-  start: string;
-  end: string;
-}
-
-function toRuntimeAgentSectionType(
-  agentType: string,
-  eligibleAgentTypes: ReadonlySet<string>,
-): RuntimeAgentSectionType | null {
-  return eligibleAgentTypes.has(agentType) ? agentType : null;
-}
-
-function makeRuntimeAgentSectionTokens(agentType: RuntimeAgentSectionType, nonce: string): RuntimeAgentSectionTokens {
-  return {
-    placeholder: `${RUNTIME_AGENT_SECTION_TOKEN_PREFIX}${nonce}__${agentType}__VALUE__`,
-    start: `${RUNTIME_AGENT_SECTION_TOKEN_PREFIX}${nonce}__${agentType}__START__`,
-    end: `${RUNTIME_AGENT_SECTION_TOKEN_PREFIX}${nonce}__${agentType}__END__`,
-  };
-}
-
-function replaceRuntimeAgentSection(
-  messages: Array<{ content: string }>,
-  tokens: RuntimeAgentSectionTokens,
-  text: string,
-): boolean {
-  let replaced = false;
-  for (let i = 0; i < messages.length; i++) {
-    const message = messages[i]!;
-    if (!message.content.includes(tokens.placeholder)) continue;
-    messages[i] = {
-      ...message,
-      content: message.content
-        .split(tokens.start)
-        .join("")
-        .split(tokens.end)
-        .join("")
-        .split(tokens.placeholder)
-        .join(text),
-    };
-    replaced = true;
-  }
-  return replaced;
-}
-
-export function splitRuntimeHandledAgentInjectionsForTest(
-  messages: Array<{ content: string }>,
-  tokenMap: ReadonlyMap<RuntimeAgentSectionType, RuntimeAgentSectionTokens>,
-  injections: AgentInjection[],
-): { fallbackInjections: AgentInjection[]; handledTypes: Set<string> } {
-  const fallbackInjections: AgentInjection[] = [];
-  const handledTypes = new Set<string>();
-  for (const injection of injections) {
-    const tokens = tokenMap.get(injection.agentType);
-    const handledByPresetSection = tokens !== undefined && replaceRuntimeAgentSection(messages, tokens, injection.text);
-    if (handledByPresetSection) {
-      handledTypes.add(injection.agentType);
-    } else {
-      fallbackInjections.push(injection);
-    }
-  }
-  return { fallbackInjections, handledTypes };
-}
-
-const splitRuntimeHandledAgentInjections = splitRuntimeHandledAgentInjectionsForTest;
-
-export function clearUnusedRuntimeAgentSectionsForTest(
-  messages: Array<{ content: string }>,
-  tokenEntries: Iterable<[RuntimeAgentSectionType, RuntimeAgentSectionTokens]>,
-): void {
-  let changed = false;
-  for (const [, tokens] of tokenEntries) {
-    const sectionPattern = new RegExp(escapeRegExp(tokens.start) + "[\\s\\S]*?" + escapeRegExp(tokens.end), "g");
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const message = messages[i]!;
-      if (!message.content.includes(tokens.start)) continue;
-      const content = message.content.replace(sectionPattern, "").trim();
-      if (content) {
-        messages[i] = { ...message, content };
-      } else {
-        messages.splice(i, 1);
-      }
-      changed = true;
-    }
-  }
-  if (changed) {
-    pruneEmptyPromptWrappers(messages);
-  }
-}
-
-const clearUnusedRuntimeAgentSections = clearUnusedRuntimeAgentSectionsForTest;
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function pruneEmptyPromptWrappers(messages: Array<{ content: string }>): void {
-  for (let i = messages.length - 1; i >= 0; i--) {
-    const content = messages[i]!.content.trim();
-    if (isEmptyPromptWrapper(content)) {
-      messages.splice(i, 1);
-    } else if (content !== messages[i]!.content) {
-      messages[i] = { ...messages[i]!, content };
-    }
-  }
-}
-
-function isEmptyPromptWrapper(content: string): boolean {
-  if (!content) return true;
-  const xmlMatch = content.match(/^<([A-Za-z][\w.-]*)>\s*<\/\1>$/);
-  if (xmlMatch) return true;
-  return (
-    /^#{1,6}\s+\S.*$/m.test(content) &&
-    content
-      .split(/\r?\n/)
-      .slice(1)
-      .every((line) => !line.trim())
-  );
-}
-
-function normalizeChatTopP(value: unknown): number | undefined {
-  if (typeof value !== "number" || !Number.isFinite(value)) return undefined;
-  if (value <= 0) return 1;
-  return Math.min(value, 1);
-}
-
-function readChatCompletionsReasoningMetadata(value: unknown): Record<string, unknown> | undefined {
-  if (!value || typeof value !== "object") return undefined;
-  const source = value as Record<string, unknown>;
-  const metadata: Record<string, unknown> = {};
-  if (typeof source.reasoning_content === "string" && source.reasoning_content) {
-    metadata.reasoning_content = source.reasoning_content;
-  }
-  if (typeof source.reasoning === "string" && source.reasoning) {
-    metadata.reasoning = source.reasoning;
-  }
-  if (Array.isArray(source.reasoning_details) && source.reasoning_details.length) {
-    metadata.reasoning_details = source.reasoning_details;
-  }
-  return Object.keys(metadata).length ? metadata : undefined;
-}
-
-function isStandaloneCharacterProfileBlock(content: string, characterName: string): boolean {
-  const trimmed = content.trim();
-  if (!trimmed) return false;
-  const xmlTag = nameToXmlTag(characterName);
-  if (
-    (trimmed.startsWith(`<${xmlTag}>`) && trimmed.endsWith(`</${xmlTag}>`)) ||
-    (trimmed.startsWith(`<${characterName}>`) && trimmed.endsWith(`</${characterName}>`))
-  ) {
-    return true;
-  }
-  const escaped = characterName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`^#{1,6}\\s+${escaped}\\s*$`, "m").test(trimmed);
 }
 
 export async function generateRoutes(app: FastifyInstance) {
