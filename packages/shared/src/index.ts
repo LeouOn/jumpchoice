@@ -52,6 +52,7 @@ export * from "./constants/security.js";
 export * from "./constants/game-assets.js";
 export * from "./constants/narrative-principles.js";
 export * from "./constants/narrator-personas.js";
+export * from "./constants/chain-of-thought-modes.js";
 
 // Utils
 export * from "./utils/macro-engine.js";
