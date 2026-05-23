@@ -25,8 +25,6 @@ export * from "./types/game.js";
 export * from "./types/sidecar.js";
 export * from "./types/image-generation-defaults.js";
 export * from "./types/narrative.js";
-export * from "./types/narrative.js";
-export * from "./types/narrative.js";
 
 // Schemas
 export * from "./schemas/chat.schema.js";
@@ -52,8 +50,6 @@ export * from "./constants/impersonate.js";
 export * from "./constants/image-generation-defaults.js";
 export * from "./constants/security.js";
 export * from "./constants/game-assets.js";
-export * from "./constants/narrative-principles.js";
-export * from "./constants/narrative-principles.js";
 export * from "./constants/narrative-principles.js";
 
 // Utils
