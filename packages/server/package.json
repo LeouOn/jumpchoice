@@ -1,6 +1,6 @@
 {
-  "name": "@marinara-engine/server",
-  "version": "1.6.0",
+  "name": "@jumpchoice/server",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "main": "./dist/index.js",
@@ -20,7 +20,7 @@
     "@fastify/websocket": "^11.2.0",
     "@huggingface/transformers": "^3.8.1",
     "@libsql/client": "^0.15.15",
-    "@marinara-engine/shared": "workspace:*",
+    "@jumpchoice/shared": "workspace:*",
     "adm-zip": "^0.5.17",
     "buttplug": "4.0.1",
     "dotenv": "^16.6.1",

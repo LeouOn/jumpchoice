@@ -1,7 +1,7 @@
 {
-  "name": "@marinara-engine/client",
+  "name": "@jumpchoice/client",
   "private": true,
-  "version": "1.6.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
-    "@marinara-engine/shared": "workspace:*",
+    "@jumpchoice/shared": "workspace:*",
     "@tanstack/react-query": "^5.100.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
