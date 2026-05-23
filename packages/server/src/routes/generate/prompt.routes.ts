@@ -174,6 +174,30 @@ export function packRecalledMemories(
   return { lines, estimatedTokens, budgetTokens, trimmed };
 }
 
+export function pruneEmptyPromptWrappers(messages: Array<{ content: string }>): void {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const content = messages[i]!.content.trim();
+    if (isEmptyPromptWrapper(content)) {
+      messages.splice(i, 1);
+    } else if (content !== messages[i]!.content) {
+      messages[i] = { ...messages[i]!, content };
+    }
+  }
+}
+
+export function isEmptyPromptWrapper(content: string): boolean {
+  if (!content) return true;
+  const xmlMatch = content.match(/^<([A-Za-z][\w.-]*)>\s*<\/\1>$/);
+  if (xmlMatch) return true;
+  return (
+    /^#{1,6}\s+\S.*$/m.test(content) &&
+    content
+      .split(/\r?\n/)
+      .slice(1)
+      .every((line) => !line.trim())
+  );
+}
+
 export function normalizeChatTopP(value: unknown): number | undefined {
   if (typeof value !== "number" || !Number.isFinite(value)) return undefined;
   if (value <= 0) return 1;

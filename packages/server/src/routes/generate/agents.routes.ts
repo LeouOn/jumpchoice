@@ -1,6 +1,7 @@
 import { BUILT_IN_AGENTS, nameToXmlTag, DEFAULT_AGENT_MAX_TOKENS, MAX_AGENT_MAX_TOKENS, MIN_AGENT_MAX_TOKENS } from "@jumpchoice/shared";
 import type { AgentInjection } from "../../services/agents/agent-pipeline.js";
 import type { BaseLLMProvider } from "../../services/llm/base-provider.js";
+import { pruneEmptyPromptWrappers } from "./prompt.routes.js";
 
 export const REVIEWABLE_WRITER_AGENT_TYPES = new Set(
   BUILT_IN_AGENTS.filter(
@@ -62,30 +63,6 @@ export function replaceRuntimeAgentSection(
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function isEmptyPromptWrapper(content: string): boolean {
-  if (!content) return true;
-  const xmlMatch = content.match(/^<([A-Za-z][\w.-]*)>\s*<\/\1>$/);
-  if (xmlMatch) return true;
-  return (
-    /^#{1,6}\s+\S.*$/m.test(content) &&
-    content
-      .split(/\r?\n/)
-      .slice(1)
-      .every((line) => !line.trim())
-  );
-}
-
-function pruneEmptyPromptWrappers(messages: Array<{ content: string }>): void {
-  for (let i = messages.length - 1; i >= 0; i--) {
-    const content = messages[i]!.content.trim();
-    if (isEmptyPromptWrapper(content)) {
-      messages.splice(i, 1);
-    } else if (content !== messages[i]!.content) {
-      messages[i] = { ...messages[i]!, content };
-    }
-  }
 }
 
 export function splitRuntimeHandledAgentInjections(
