@@ -1,12 +1,14 @@
 import type { NarrativePrinciples, NarratorPersona, ChainOfThoughtMode } from '@jumpchoice/shared';
 import { DEFAULT_NARRATIVE_PRINCIPLES } from '@jumpchoice/shared';
 import type { PersonaManager } from './persona-manager.service.js';
+import type { COTManager } from './cot-manager.service.js';
 
 export class NarrativeEngine {
   private principles: NarrativePrinciples;
   private persona: NarratorPersona | null = null;
   private personaManager: PersonaManager | null = null;
   private cotMode: ChainOfThoughtMode | null = null;
+  private cotManager: COTManager | null = null;
 
   constructor(principles?: Partial<NarrativePrinciples>) {
     this.principles = {
@@ -49,15 +51,28 @@ export class NarrativeEngine {
     return this.cotMode;
   }
 
+  setCOTManager(manager: COTManager): void {
+    this.cotManager = manager;
+  }
+
+  getCOTManager(): COTManager | null {
+    return this.cotManager;
+  }
+
   buildSystemPrompt(): string {
     let prompt = this.principles.description;
 
-    const activePersona = this.personaManager?.getActivePersona() ?? this.persona;
-    if (activePersona) {
-      prompt += `\n\nNARRATOR PERSONA:\n${activePersona.prompt}`;
+    const managerPersonaPrompt = this.personaManager?.buildPersonaPrompt();
+    if (managerPersonaPrompt) {
+      prompt += `\n\n${managerPersonaPrompt}`;
+    } else if (this.persona) {
+      prompt += `\n\nNARRATOR PERSONA:\n${this.persona.prompt}`;
     }
 
-    if (this.cotMode) {
+    const managerCOTPrompt = this.cotManager?.buildCOTPrompt();
+    if (managerCOTPrompt) {
+      prompt += `\n\n${managerCOTPrompt}`;
+    } else if (this.cotMode) {
       prompt += `\n\nCHAIN OF THOUGHT:\n${this.buildCOTPrompt()}`;
     }
 

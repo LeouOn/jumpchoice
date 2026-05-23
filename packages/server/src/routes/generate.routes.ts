@@ -257,6 +257,7 @@ import {
 import { getMoraleTier, formatMoraleContext } from "../services/game/morale.service.js";
 import type { GameMap, GameNpc, LorebookEntry } from "@jumpchoice/shared";
 import { sidecarModelService } from "../services/sidecar/sidecar-model.service.js";
+import { NarrativeContext } from "../services/narrative/narrative-context.service.js";
 
 function bumpCharacterVersion(value: unknown): string {
   const raw = typeof value === "string" ? value.trim() : "";
@@ -2316,6 +2317,10 @@ export async function generateRoutes(app: FastifyInstance) {
           }
 
           conversationSystemPrompt = resolvePromptMacros(conversationSystemPrompt);
+
+          const narrativeContext = new NarrativeContext();
+          const narrativePrompt = narrativeContext.buildSystemPrompt();
+          conversationSystemPrompt = `${narrativePrompt}\n\n${conversationSystemPrompt}`;
 
           finalMessages = [
             { role: "system" as const, content: conversationSystemPrompt },
@@ -6652,6 +6657,19 @@ export async function generateRoutes(app: FastifyInstance) {
             return !otherNames.some((name) => isStandaloneCharacterProfileBlock(message.content, name));
           });
         };
+
+        const narrativeContext = new NarrativeContext();
+        const narrativePrompt = narrativeContext.buildSystemPrompt();
+        const firstSystemIdx = finalMessages.findIndex((m) => m.role === "system");
+        if (firstSystemIdx >= 0) {
+          finalMessages[firstSystemIdx] = {
+            ...finalMessages[firstSystemIdx]!,
+            content: `${narrativePrompt}\n\n${finalMessages[firstSystemIdx]!.content}`,
+          };
+        } else {
+          finalMessages.unshift({ role: "system" as const, content: narrativePrompt });
+        }
+
         const buildCharacterInstruction = (charId: string, charName: string) => {
           if (groupResponseOrder !== "manual") return `Respond ONLY as ${charName}.`;
           const latestOtherSender = latestVisibleSenderOtherThan(charId);
