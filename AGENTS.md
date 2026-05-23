@@ -67,3 +67,36 @@ Android-specific rule:
 
 - **Read `packages/client/.instructions.md` before editing any client code.** It is the authoritative reference for architecture, patterns, conventions, and common-mistake avoidance.
 - Validate with `pnpm check` (TypeScript + ESLint). Run `pnpm test` to execute the automated test suite (Vitest across all packages).
+
+## Narrative Engine
+
+JumpChoice includes a narrative engine that shapes AI responses. Key points:
+
+- **NarrativeContext** is created per-request in generate.routes.ts
+- Configuration is loaded from `packages/server/narrative-config.json`
+- System prompt includes principles + persona + CoT
+- Tests are in `packages/server/tests/narrative-*.test.ts`
+
+When modifying generation logic, ensure narrative context is preserved.
+
+## Narrative Engine
+
+JumpChoice includes a narrative engine that shapes AI responses. Key points:
+
+- **NarrativeContext** is created per-request in generate.routes.ts
+- Configuration is loaded from `packages/server/narrative-config.json`
+- System prompt includes principles + persona + CoT
+- Tests are in `packages/server/tests/narrative-*.test.ts`
+
+When modifying generation logic, ensure narrative context is preserved.
+
+## Narrative Engine
+
+JumpChoice includes a narrative engine that shapes AI responses. Key points:
+
+- **NarrativeContext** is created per-request in generate.routes.ts
+- Configuration is loaded from `packages/server/narrative-config.json`
+- System prompt includes principles + persona + CoT
+- Tests are in `packages/server/tests/narrative-*.test.ts`
+
+When modifying generation logic, ensure narrative context is preserved.
