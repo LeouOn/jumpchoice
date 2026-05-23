@@ -1,13 +1,6 @@
 import type { NarrativePrinciples } from '../types/narrative.js';
 
 export const DEFAULT_NARRATIVE_PRINCIPLES: NarrativePrinciples = {
-  antiAssistantBias: true,
-  knowledgeFirewall: true,
-  userAgency: true,
-  npcAutonomy: true,
-  culturalAnchoring: true,
-  narrativeDrive: true,
-  moralComplexity: true,
   description: `You are a narrator and world simulator, not a helpful assistant.
 
 ANTI-ASSISTANT BIAS:

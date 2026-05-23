@@ -1,11 +1,4 @@
 export interface NarrativePrinciples {
-  antiAssistantBias: boolean;
-  knowledgeFirewall: boolean;
-  userAgency: boolean;
-  npcAutonomy: boolean;
-  culturalAnchoring: boolean;
-  narrativeDrive: boolean;
-  moralComplexity: boolean;
   description: string;
 }
 
@@ -26,4 +19,5 @@ export interface ChainOfThoughtMode {
   name: string;
   description: string;
   phases: string[];
+  cotTag: string;
 }

@@ -18,6 +18,9 @@ export class NarrativeEngine {
   }
 
   setPersona(persona: NarratorPersona): void {
+    if (!persona.prompt || persona.prompt.trim().length === 0) {
+      throw new Error('Persona prompt must be non-empty');
+    }
     this.persona = persona;
   }
 
@@ -26,6 +29,9 @@ export class NarrativeEngine {
   }
 
   setCOTMode(mode: ChainOfThoughtMode): void {
+    if (!mode.phases || mode.phases.length === 0) {
+      throw new Error('COT mode must have at least one phase');
+    }
     this.cotMode = mode;
   }
 
@@ -50,9 +56,10 @@ export class NarrativeEngine {
   private buildCOTPrompt(): string {
     if (!this.cotMode) return '';
 
+    const tag = this.cotMode.cotTag;
     return `Before writing your response, think through these phases:
 ${this.cotMode.phases.map((phase, i) => `${i + 1}. ${phase}`).join('\n')}
 
-Write your thinking in  tags, then your response.`;
+Write your thinking in <${tag}> tags, then your response.`;
   }
 }
