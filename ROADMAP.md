@@ -54,11 +54,11 @@ Forked from Marinara Engine v1.6.0 (May 2026). Inherited:
 **Goal:** Implement 3-tier memory system with auto-summarization and context compression.
 
 - [x] Design memory module API and database schema
-- [ ] Implement Tier 2: Auto-summarization of old messages (LLM-based)
-- [ ] Build prompt interceptor to strip archived messages
-- [ ] Write tests for memory pipeline
-- [ ] Benchmark token savings vs. baseline
-- [ ] Update documentation for memory system
+- [x] Implement Tier 2: Auto-summarization of old messages (LLM-based)
+- [x] Build prompt interceptor to strip archived messages
+- [x] Write tests for memory pipeline
+- [x] Benchmark token savings vs. baseline
+- [x] Update documentation for memory system
 
 **Deliverable:** Working 3-tier memory system with measurable token savings on long conversations.
 
