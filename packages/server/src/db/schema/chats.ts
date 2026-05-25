@@ -119,3 +119,18 @@ export const memoryChunks = sqliteTable("memory_chunks", {
   lastMessageAt: text("last_message_at").notNull(),
   createdAt: text("created_at").notNull(),
 });
+
+export const memorySummaries = sqliteTable("memory_summaries", {
+  id: text("id").primaryKey(),
+  chatId: text("chat_id")
+    .notNull()
+    .references(() => chats.id, { onDelete: "cascade" }),
+  summary: text("summary").notNull(),
+  messageCount: integer("message_count").notNull(),
+  firstMessageId: text("first_message_id").notNull(),
+  lastMessageId: text("last_message_id").notNull(),
+  firstMessageAt: text("first_message_at").notNull(),
+  lastMessageAt: text("last_message_at").notNull(),
+  tokenEstimate: integer("token_estimate").notNull(),
+  createdAt: text("created_at").notNull(),
+});

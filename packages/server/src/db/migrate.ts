@@ -417,6 +417,18 @@ const CREATE_TABLES: string[] = [
     last_message_at TEXT NOT NULL,
     created_at TEXT NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS memory_summaries (
+    id TEXT PRIMARY KEY NOT NULL,
+    chat_id TEXT NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
+    summary TEXT NOT NULL,
+    message_count INTEGER NOT NULL,
+    first_message_id TEXT NOT NULL,
+    last_message_id TEXT NOT NULL,
+    first_message_at TEXT NOT NULL,
+    last_message_at TEXT NOT NULL,
+    token_estimate INTEGER NOT NULL,
+    created_at TEXT NOT NULL
+  )`,
   `CREATE TABLE IF NOT EXISTS chat_folders (
     id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
@@ -861,6 +873,9 @@ export async function runMigrations(db: DB) {
   );
   await db.run(
     sql.raw(`CREATE INDEX IF NOT EXISTS idx_memory_chunks_chat ON memory_chunks(chat_id, last_message_at DESC)`),
+  );
+  await db.run(
+    sql.raw(`CREATE INDEX IF NOT EXISTS idx_memory_summaries_chat ON memory_summaries(chat_id, last_message_at DESC)`),
   );
   await db.run(
     sql.raw(
