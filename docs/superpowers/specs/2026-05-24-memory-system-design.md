@@ -2,7 +2,9 @@
 
 **Date:** 2026-05-24
 **Status:** Draft
-**Scope:** Phase 2 - Memory & Intelligence (MVP)
+**Scope:** Phase 2A - Memory System (MVP)
+
+**Note:** This covers the memory system only. NPC Bank, World State Tracker, and AI Slop Detector are deferred to Phase 2B with separate specs.
 
 ## Overview
 
@@ -20,7 +22,7 @@ This is a minimal enhancement to the existing memory system. The current system 
 | Trigger strategy | Sliding window | Summarize oldest batch as conversation grows |
 | Prompt injection | Replace & append + vector retrieval | Strip archived messages, append summaries and relevant chunks |
 | Original messages | Never deleted | Source of truth preserved in DB |
-| Tracking mechanism | Watermark in chat metadata | `lastSummarizedMessageId` prevents re-processing |
+| Tracking mechanism | Watermark in chat metadata | `lastSummarizedAt` timestamp prevents re-processing |
 
 ## 3-Tier Architecture
 
@@ -77,12 +79,12 @@ Two new keys added to the existing metadata JSON:
 
 ```json
 {
-  "lastSummarizedMessageId": "msg_abc123",
+  "lastSummarizedAt": "2026-05-24T12:00:00.000Z",
   "memoryTier2Enabled": true
 }
 ```
 
-- `lastSummarizedMessageId`: Watermark tracking which messages have been summarized. Messages with `id <= lastSummarizedMessageId` are archived (Tier 2/3). Messages with `id > lastSummarizedMessageId` are working memory (Tier 1). Null or absent means no summarization has occurred.
+- `lastSummarizedAt`: ISO timestamp watermark. Messages with `createdAt <= lastSummarizedAt` are archived (Tier 2/3). Messages with `createdAt > lastSummarizedAt` are working memory (Tier 1). Null or absent means no summarization has occurred. This follows the same timestamp-based tracking pattern used by the existing `chunkAndEmbedMessages` (which uses `gt(messages.createdAt, after)` to find un-chunked messages).
 - `memoryTier2Enabled`: Toggle for the entire Tier 2 system. Default: true. Allows disabling per-chat without losing the watermark.
 
 No new configuration table needed. The existing `metadata` JSON field on `chats` already stores settings like `enableMemoryRecall`, `embeddingConnectionId`, etc.
@@ -121,7 +123,7 @@ async function summarizeOldestBatch(input: SummarizerInput): Promise<SummarizerR
 ```
 
 **Behavior:**
-1. Count tokens in all Tier 1 messages (messages after watermark, or all messages if no watermark)
+1. Count tokens in all Tier 1 messages (messages after watermark timestamp, or all messages if no watermark)
 2. If total tokens <= 16K, return null (nothing to summarize)
 3. If total messages < 10, return null (too few for a useful summary)
 4. Select oldest batch: 10-15 messages from the start of Tier 1 (up to 5K tokens of source material)
@@ -129,7 +131,7 @@ async function summarizeOldestBatch(input: SummarizerInput): Promise<SummarizerR
 6. Call LLM with summarization prompt
 7. Store result in `memory_summaries` table
 8. Chunk and embed the summarized messages via existing `chunkAndEmbedMessages` (ensures Tier 3 coverage)
-9. Update `lastSummarizedMessageId` in chat metadata to the last message in the batch
+9. Update `lastSummarizedAt` in chat metadata to the `createdAt` timestamp of the last message in the batch
 10. Return the summary result
 
 **Summarization prompt:**
@@ -190,9 +192,9 @@ async function filterAndAssembleMemoryContext(input: InterceptorInput): Promise<
 ```
 
 **Behavior:**
-1. Read `lastSummarizedMessageId` from metadata
-2. If no watermark, all messages are working messages, return immediately
-3. Split messages: `id <= watermark` = archived, `id > watermark` = working
+1. Read `lastSummarizedAt` from metadata
+2. If no watermark timestamp, all messages are working messages, return immediately
+3. Split messages: `createdAt <= watermark` = archived, `createdAt > watermark` = working
 4. Load summaries from `memory_summaries` for this chat, ordered chronologically
 5. Build `memoryBlock` string with summaries and token budgeting
 6. Return working messages + memory block + stats
@@ -276,8 +278,8 @@ USER SENDS MESSAGE
        |
        v
 [2] MemoryInterceptor.filterAndAssembleMemoryContext()
-       |-- Read lastSummarizedMessageId from chat.metadata
-       |-- Split: archived (id <= watermark) vs working (id > watermark)
+       |-- Read lastSummarizedAt timestamp from chat.metadata
+       |-- Split: archived (createdAt <= watermark) vs working (createdAt > watermark)
        |-- Load memory_summaries for this chat (chronological)
        |-- Build <past_context> XML block with token budgeting
        |-- Return: { workingMessages, memoryBlock, stats }
@@ -310,9 +312,9 @@ USER SENDS MESSAGE
        |-- If Tier 1 tokens > 16K:
        |     MemorySummarizer.summarizeOldestBatch()
        |       |-- Take oldest 10-15 messages from Tier 1
-       |       |-- Call LLM to summarize
+       |       |-- Call LLM to summarize (provider/model captured from generation scope)
        |       |-- Store summary in memory_summaries
-       |       |-- Update watermark in chat.metadata
+       |       |-- Update lastSummarizedAt timestamp in chat.metadata
        |-- chunkAndEmbedMessages() (existing)
        |-- Both wrapped in .catch()
 ```
@@ -335,10 +337,16 @@ The key concern is ensuring the right context reaches the LLM at each step.
 - The summary is stored in the database, not passed to the current generation
 
 **Watermark propagation:**
-- `lastSummarizedMessageId` is updated after successful summarization
-- The next generation reads this watermark from chat metadata
-- Messages at or before the watermark are excluded from Tier 1
+- `lastSummarizedAt` timestamp is updated after successful summarization
+- The next generation reads this timestamp from chat metadata
+- Messages with `createdAt` at or before the timestamp are excluded from Tier 1
 - Their content is available only through Tier 2 summaries and Tier 3 vector search
+- Using timestamps (not random nanoid strings) ensures correct chronological ordering
+
+**Context threading for summarization:**
+- The generation handler has `provider` and `model` in scope (already resolved for the generation LLM call)
+- These are captured in a closure and passed to the fire-and-forget `summarizeOldestBatch` call
+- No additional DB lookups or provider resolution needed
 
 ## Error Handling
 
@@ -346,7 +354,7 @@ The key concern is ensuring the right context reaches the LLM at each step.
 |----------|----------|
 | LLM summarization fails | Log error via `logger.error`, skip summarization, try again next generation |
 | No embedding model available | Tier 3 disabled, Tier 2 summaries still work independently |
-| Watermark points to deleted message | Treat as no watermark, include all messages in Tier 1 |
+| Watermark timestamp is invalid or in the future | Treat as no watermark, include all messages in Tier 1 |
 | Vector search returns nothing | Tier 3 empty, Tier 1 + Tier 2 still provide full context |
 | Summary exceeds 512 tokens | Truncate with head/tail preservation + "...[truncated]..." |
 | Chat has < 10 messages | Skip summarization even if > 16K tokens (too few for useful summary) |
@@ -371,7 +379,8 @@ The key concern is ensuring the right context reaches the LLM at each step.
 | MemoryInterceptor unit tests | 8 | Message filtering, summary loading, token budgeting, memory block format |
 | Integration tests | 6 | End-to-end flow: generation with memory, token counting, context assembly |
 | Edge case tests | 5 | Empty chats, no watermark, corrupted metadata, LLM failures, tier degradation |
-| **Total** | **27** | |
+| Benchmark test | 1 | Token savings measurement: simulate 200-message chat, compare with/without memory |
+| **Total** | **28** | |
 
 ## Scope Exclusions
 

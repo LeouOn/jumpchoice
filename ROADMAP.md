@@ -49,24 +49,33 @@ Forked from Marinara Engine v1.6.0 (May 2026). Inherited:
 
 **Deliverable:** Clean, renamed codebase with manageable file sizes, basic test coverage, and foundational narrative engine.
 
-### Phase 2: Memory & Intelligence (Weeks 4-6)
+### Phase 2A: Memory System (Weeks 4-5)
 
-**Goal:** Implement 3-tier memory system, context compression, and NPC tracking.
+**Goal:** Implement 3-tier memory system with auto-summarization and context compression.
 
-- [ ] Design memory module API and database schema
-- [ ] Implement Tier 2: Auto-summarization of old messages
-- [ ] Implement Tier 3: Vector DB integration (LanceDB)
+- [x] Design memory module API and database schema
+- [ ] Implement Tier 2: Auto-summarization of old messages (LLM-based)
 - [ ] Build prompt interceptor to strip archived messages
-- [ ] Add regex cleaner for noise removal
-- [ ] Create memory configuration UI
 - [ ] Write tests for memory pipeline
-- [ ] Benchmark token savings vs. Marinara baseline
+- [ ] Benchmark token savings vs. baseline
+- [ ] Update documentation for memory system
+
+**Deliverable:** Working 3-tier memory system with measurable token savings on long conversations.
+
+### Phase 2B: NPC Tracking & Intelligence (Weeks 5-6)
+
+**Goal:** Add NPC tracking, world state management, and AI slop detection.
+
 - [ ] **Implement NPC Bank system** (auto-extraction, dossier generation, dynamic injection)
 - [ ] **Add NPC Inner Chatter** (hidden thoughts block, collapsed by default)
 - [ ] **Implement World State Tracker** (collapsible HTML block with date/weather/PC state/NPC agendas)
 - [ ] **Add Dynamic Ban List / AI Slop Detector** (analyze chat, identify crutch phrases, auto-ban)
+- [ ] Add regex cleaner for noise removal
+- [ ] Write tests for NPC and world state features
 
-**Deliverable:** Working 3-tier memory system with measurable token savings, plus NPC tracking and world state management.
+**Deliverable:** NPC tracking, world state management, and slop detection working alongside memory system.
+
+**Note:** Tier 3 vector search already exists (SQLite + JSON embeddings with cosine similarity). LanceDB migration deferred until scale demands it. Memory configuration UI deferred to future phase.
 
 ### Phase 3: Vision & Document Parsing (Weeks 7-9)
 
