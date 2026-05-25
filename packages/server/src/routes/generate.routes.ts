@@ -129,6 +129,9 @@ import { eq } from "drizzle-orm";
 import { PROFESSOR_MARI_ID } from "@jumpchoice/shared";
 import { chunkAndEmbedMessages, embedMemoryRecallTexts, recallMemories } from "../services/memory-recall.js";
 import { resolveMemoryRecallEmbeddingSource } from "../services/memory-recall-embedding.js";
+import { filterAndAssembleMemoryContext } from "../services/memory/memory-interceptor.js";
+import { summarizeOldestBatch } from "../services/memory/memory-summarizer.js";
+import { saveSummary, loadSummariesForChat, updateWatermark } from "../services/memory/memory-db.js";
 import { warmLorebookEntryEmbeddings } from "../services/lorebook/embeddings.js";
 import { postToDiscordWebhook } from "../services/discord-webhook.js";
 import {
@@ -3700,6 +3703,41 @@ export async function generateRoutes(app: FastifyInstance) {
           const firstUserIdx = finalMessages.findIndex((m) => m.role === "user" || m.role === "assistant");
           const insertAt = firstUserIdx >= 0 ? firstUserIdx : finalMessages.length;
           finalMessages.splice(insertAt, 0, { role: "system", content: convoAwarenessBlock });
+        }
+
+        // ── Memory Tier 2: Filter archived messages and inject summaries ──
+        if (chatMeta.memoryTier2Enabled !== false) {
+          try {
+            const tier2Result = await filterAndAssembleMemoryContext({
+              messages: mappedMessages.map((m: any) => ({
+                id: m.id ?? "",
+                role: m.role,
+                content: typeof m.content === "string" ? m.content : "",
+                createdAt: m.createdAt ?? "",
+              })),
+              metadata: chatMeta,
+              loadSummaries: async () => loadSummariesForChat(app.db, input.chatId),
+              chatId: input.chatId,
+              maxContextTokens: effectiveMaxContext ?? connectionMaxContext,
+            });
+
+            if (tier2Result.memoryBlock) {
+              const firstUserIdx = finalMessages.findIndex((m: any) => m.role === "user" || m.role === "assistant");
+              const insertAt = firstUserIdx >= 0 ? firstUserIdx : finalMessages.length;
+              finalMessages.splice(insertAt, 0, {
+                role: "system" as const,
+                content: tier2Result.memoryBlock,
+              });
+              logger.debug(
+                "[memory-tier2] Injected %d summaries, %d working/%d archived messages",
+                tier2Result.stats.summaryCount,
+                tier2Result.stats.workingCount,
+                tier2Result.stats.archivedCount,
+              );
+            }
+          } catch (err) {
+            logger.error(err, "[memory-tier2] Interceptor failed, skipping");
+          }
         }
 
         // ── Memory recall: semantic retrieval of relevant past conversation fragments ──
@@ -9556,6 +9594,39 @@ export async function generateRoutes(app: FastifyInstance) {
           for (const ci of charInfo) {
             charNameMap[ci.id] = ci.name;
           }
+
+          // ── Background: summarize oldest messages if above threshold (Tier 2) ──
+          summarizeOldestBatch({
+            messages: allChatMessages,
+            nameMap: { userName: personaName, characterNames: charNameMap },
+            provider: {
+              chatComplete: async (msgs, opts) => {
+                const res = await provider.chatComplete(msgs, opts);
+                return { content: res.content ?? "" };
+              },
+            },
+            model: conn.model,
+          }).then(async (result) => {
+            if (!result) return;
+            await saveSummary({
+              db: app.db,
+              chatId: input.chatId,
+              summary: result.summary,
+              messageCount: result.messageCount,
+              firstMessageId: result.firstMessageId,
+              lastMessageId: result.lastMessageId,
+              firstMessageAt: result.firstMessageAt,
+              lastMessageAt: result.lastMessageAt,
+              tokenEstimate: result.tokenEstimate,
+            });
+            const freshChat = await chats.getById(input.chatId);
+            if (freshChat) {
+              const freshMeta = parseExtra(freshChat.metadata) as Record<string, unknown>;
+              const updated = updateWatermark(freshMeta, result.lastMessageAt);
+              await chats.updateMetadata(input.chatId, updated);
+            }
+          }).catch((err) => logger.error(err, "[memory-tier2] Background summarization failed"));
+
           chunkAndEmbedMessages(
             app.db,
             input.chatId,
