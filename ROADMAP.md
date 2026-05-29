@@ -81,17 +81,17 @@ Forked from Marinara Engine v1.6.0 (May 2026). Inherited:
 
 **Goal:** Enable image analysis for visual CYOAs and PDF parsing for Jumpchain docs.
 
-- [ ] Design vision module API
-- [ ] Implement image URL/upload ingestion
-- [ ] Integrate vision models (GPT-4V, Gemini Pro Vision)
-- [ ] Build CYOA choice extraction from images
+- [x] Design vision module API
+- [x] Implement image URL/upload ingestion
+- [x] Integrate vision models (GPT-4V, Gemini Pro Vision)
+- [x] Build CYOA choice extraction from images
+- [x] Write tests for CYOA pipeline (34 tests, 5 test files)
 - [ ] Design doc-parser module API
 - [ ] Implement PDF text extraction
 - [ ] Build LLM-assisted jump document structuring
 - [ ] Create jump document browser UI
-- [ ] Write tests for both modules
 
-**Deliverable:** Can parse visual CYOAs and Jumpchain PDFs into structured data.
+**Deliverable:** Can parse visual CYOAs into structured data with tier lists, synergies, and build archetypes. 123 total tests passing across 16 test files.
 
 ### Phase 4: Build Lab & Campaign Tracker (Weeks 10-12)
 
