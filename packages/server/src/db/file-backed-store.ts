@@ -188,6 +188,9 @@ export const FILE_BACKED_TABLES = [
   "app_settings",
   "chat_presets",
   "prompt_overrides",
+  "cyoa_documents",
+  "cyoa_images",
+  "cyoa_choices",
   "installed_extensions",
 ] as const;
 
@@ -217,6 +220,8 @@ const CASCADES: Array<{ parent: FileBackedTable; child: FileBackedTable; parentK
   { parent: "prompt_presets", child: "choice_blocks", parentKey: "id", childKey: "presetId" },
   { parent: "agent_configs", child: "agent_runs", parentKey: "id", childKey: "agentConfigId" },
   { parent: "agent_configs", child: "agent_memory", parentKey: "id", childKey: "agentConfigId" },
+  { parent: "cyoa_documents", child: "cyoa_images", parentKey: "id", childKey: "documentId" },
+  { parent: "cyoa_documents", child: "cyoa_choices", parentKey: "id", childKey: "documentId" },
 ];
 
 const tableMetasByObject = new WeakMap<object, TableMeta>();

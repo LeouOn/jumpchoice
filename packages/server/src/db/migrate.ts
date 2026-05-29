@@ -489,6 +489,49 @@ const CREATE_TABLES: string[] = [
     enabled INTEGER NOT NULL DEFAULT 1 CHECK (enabled IN (0, 1)),
     updated_at TEXT NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS cyoa_documents (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL DEFAULT '',
+    description TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'pending_upload',
+    point_budget INTEGER,
+    metadata TEXT NOT NULL DEFAULT '{}',
+    extractions TEXT NOT NULL DEFAULT '[]',
+    reviewed_extractions TEXT NOT NULL DEFAULT '[]',
+    merged_document TEXT NOT NULL DEFAULT '{}',
+    analysis TEXT NOT NULL DEFAULT '{}',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS cyoa_images (
+    id TEXT PRIMARY KEY NOT NULL,
+    document_id TEXT NOT NULL REFERENCES cyoa_documents(id) ON DELETE CASCADE,
+    file_path TEXT NOT NULL,
+    original_name TEXT NOT NULL DEFAULT '',
+    mime_type TEXT NOT NULL DEFAULT 'image/png',
+    byte_size INTEGER NOT NULL DEFAULT 0,
+    page_number INTEGER,
+    extraction_method TEXT,
+    extraction_result TEXT,
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS cyoa_choices (
+    id TEXT PRIMARY KEY NOT NULL,
+    document_id TEXT NOT NULL REFERENCES cyoa_documents(id) ON DELETE CASCADE,
+    category TEXT NOT NULL DEFAULT 'uncategorized',
+    name TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    point_cost INTEGER NOT NULL DEFAULT 0,
+    prerequisites TEXT NOT NULL DEFAULT '[]',
+    tags TEXT NOT NULL DEFAULT '[]',
+    tier TEXT,
+    cost_efficiency INTEGER,
+    synergy_ids TEXT NOT NULL DEFAULT '[]',
+    analysis_text TEXT NOT NULL DEFAULT '',
+    source_image_ids TEXT NOT NULL DEFAULT '[]',
+    metadata TEXT NOT NULL DEFAULT '{}',
+    created_at TEXT NOT NULL
+  )`,
 ];
 
 // ── Column migrations (ALTER TABLE for schema evolution) ──
@@ -884,4 +927,6 @@ export async function runMigrations(db: DB) {
   );
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_custom_themes_active ON custom_themes(is_active)`));
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_chat_presets_mode_active ON chat_presets(mode, is_active)`));
+  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_images_document ON cyoa_images(document_id)`));
+  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_choices_document ON cyoa_choices(document_id)`));
 }

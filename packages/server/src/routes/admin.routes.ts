@@ -75,6 +75,9 @@ export async function adminRoutes(app: FastifyInstance) {
       await runDelete("ooc_influences", () => db.delete(schema.oocInfluences).run());
       await runDelete("memory_chunks", () => db.delete(schema.memoryChunks).run());
       await runDelete("memory_summaries", () => db.delete(schema.memorySummaries).run());
+      await runDelete("cyoa_choices", () => db.delete(schema.cyoaChoices).run());
+      await runDelete("cyoa_images", () => db.delete(schema.cyoaImages).run());
+      await runDelete("cyoa_documents", () => db.delete(schema.cyoaDocuments).run());
       await runDelete("messages", () => db.delete(schema.messages).run());
       await runDelete("agent_runs", () => db.delete(schema.agentRuns).run());
       await runDelete("agent_memory", () => db.delete(schema.agentMemory).run());
