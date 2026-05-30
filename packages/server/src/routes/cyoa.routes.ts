@@ -169,13 +169,13 @@ export async function cyoaRoutes(app: FastifyInstance) {
           model: conn.model,
         });
         extractions.push(extraction);
-        await app.db.update(cyoaImages).set({ extractionMethod: "vision", extractionResult: JSON.stringify(extraction) }).where(eq(cyoaImages.id, img.id)).run();
+        await app.db.update(cyoaImages).set({ extractionMethod: extraction.extractionMethod, extractionResult: JSON.stringify(extraction) }).where(eq(cyoaImages.id, img.id)).run();
       } catch (err) {
         logger.error(err, "[cyoa] Extraction failed for image %s", img.id);
         extractions.push({
           imageId: img.id,
           pageNumber: img.pageNumber,
-          extractionMethod: "vision" as const,
+          extractionMethod: "unknown" as const,
           title: null,
           description: null,
           pointBudget: null,

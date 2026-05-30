@@ -417,6 +417,56 @@ describe("CYOA Routes", () => {
       expect(res.statusCode).toBe(404);
       await app.close();
     });
+
+    it("stores extractionMethod from extractor result, not hardcoded", async () => {
+      const { extractFromImage } = await import("../src/services/cyoa/cyoa-extractor.js");
+      (extractFromImage as any).mockResolvedValueOnce({
+        imageId: "img1",
+        pageNumber: 1,
+        extractionMethod: "ocr",
+        title: "OCR Test",
+        description: null,
+        pointBudget: null,
+        categories: [],
+        choices: [],
+        warnings: [],
+      });
+      app = await buildApp();
+      mockDB._docs.push({
+        id: "doc1",
+        name: "Test",
+        description: "",
+        status: "pending_extraction",
+        pointBudget: null,
+        metadata: "{}",
+        extractions: "[]",
+        reviewedExtractions: "[]",
+        mergedDocument: "{}",
+        analysis: "{}",
+        createdAt: "2026-01-01",
+        updatedAt: "2026-01-01",
+      });
+      mockDB._images.push({
+        id: "img1",
+        documentId: "doc1",
+        filePath: "doc1/img.png",
+        originalName: "img.png",
+        mimeType: "image/png",
+        byteSize: 1024,
+        pageNumber: 1,
+        extractionMethod: null,
+        extractionResult: null,
+        createdAt: "2026-01-01",
+      });
+      const res = await app.inject({
+        method: "POST",
+        url: "/api/cyoa/extract",
+        payload: { documentId: "doc1", connectionId: "conn1" },
+      });
+      expect(res.statusCode).toBe(200);
+      expect(mockDB._images[0].extractionMethod).toBe("ocr");
+      await app.close();
+    });
   });
 
   describe("POST /api/cyoa/merge", () => {
