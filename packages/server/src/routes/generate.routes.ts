@@ -261,6 +261,7 @@ import { getMoraleTier, formatMoraleContext } from "../services/game/morale.serv
 import type { GameMap, GameNpc, LorebookEntry } from "@jumpchoice/shared";
 import { sidecarModelService } from "../services/sidecar/sidecar-model.service.js";
 import { NarrativeContext } from "../services/narrative/narrative-context.service.js";
+import { resolveRequest } from "../services/generation/request-resolver.js";
 import {
   bumpCharacterVersion,
   hasConversationSchedules,
@@ -318,115 +319,27 @@ export async function generateRoutes(app: FastifyInstance) {
    * Streams AI generation via Server-Sent Events.
    */
   app.post("/", async (req, reply) => {
-    const input = validateGenerateRequest(req.body);
-    const requestDebug = input.debugMode === true;
-    const debugLog = (message: string, ...args: any[]) => {
-      logDebugOverride(requestDebug, message, ...args);
-    };
-
-    // Resolve the chat
-    const chat = await chats.getById(input.chatId);
-    if (!chat) {
-      return reply.status(404).send({ error: "Chat not found" });
-    }
-    const requestChatMode = (chat.mode as string) ?? "roleplay";
-    let conversationGenerationStartedAt: number | null = null;
-    let conversationAssistantSaved = false;
     const activeGenerations = (app as any).activeGenerations as Map<
       string,
       { abortController: AbortController; backendUrl: string | null }
     >;
-    if (activeGenerations?.has(input.chatId)) {
-      return reply.status(409).send({ error: "A generation is already in progress for this chat" });
-    }
-    // Register immediately after the concurrency check. The rest of setup
-    // awaits DB/connection work, so delaying this left a small double-submit
-    // window where two requests for the same chat could both pass the guard.
-    const abortController = new AbortController();
-    if (activeGenerations) {
-      activeGenerations.set(input.chatId, { abortController, backendUrl: null });
-    }
-    const releaseActiveGeneration = () => {
-      if (activeGenerations?.get(input.chatId)?.abortController === abortController) {
-        activeGenerations.delete(input.chatId);
-      }
-    };
 
-    const earlyMeta = parseExtra(chat.metadata) as Record<string, unknown>;
-
-    if (input.regenerateMessageId) {
-      const regenCandidate = await chats.getMessage(input.regenerateMessageId);
-      if (regenCandidate?.chatId === input.chatId) {
-        const replay = normalizeGenerationReplay(parseExtra(regenCandidate.extra).generationReplay);
-        applyGenerationReplayToRegenerateInput(input, replay);
-        if (!input.forCharacterId && earlyMeta.groupResponseOrder === "manual" && regenCandidate.characterId) {
-          input.forCharacterId = regenCandidate.characterId;
-        }
-      }
-    }
-
-    // ── Discord webhook URL (parsed once, used for mirroring below) ──
-    const discordWebhookUrl = typeof earlyMeta.discordWebhookUrl === "string" ? earlyMeta.discordWebhookUrl : "";
-    let pendingUserDiscordMsg = "";
-
-    // Save user message — skip for impersonate (no real user message to save)
-    if (!input.impersonate && (input.userMessage || input.attachments?.length)) {
-      // ── Commit game state: lock in the game state the user was seeing ──
-      // Find the last assistant message's active swipe and commit its game state.
-      // This ensures swipes/regens always use the state from the user's accepted turn.
-      const preMessages = await chats.listMessages(input.chatId);
-      for (let i = preMessages.length - 1; i >= 0; i--) {
-        if (preMessages[i]!.role === "assistant") {
-          const lastAsstMsg = preMessages[i]!;
-          const gs = await gameStateStore.getByMessage(lastAsstMsg.id, lastAsstMsg.activeSwipeIndex);
-          if (gs) await gameStateStore.commit(gs.id);
-          break;
-        }
-      }
-
-      const userMsg = await chats.createMessage({
-        chatId: input.chatId,
-        role: "user",
-        characterId: null,
-        content: input.userMessage ?? "",
-      });
-      if (requestChatMode === "conversation") {
-        recordUserActivity(input.chatId);
-      }
-
-      // Store attachments in message extra if present
-      if (input.attachments?.length && userMsg?.id) {
-        await chats.updateMessageExtra(userMsg.id, { attachments: input.attachments });
-      }
-
-      // Snapshot persona info for per-message persona tracking
-      if (userMsg?.id) {
-        const snapshotPersonas = await chars.listPersonas();
-        const snapshotPersona =
-          (chat.personaId ? snapshotPersonas.find((p: any) => p.id === chat.personaId) : null) ??
-          snapshotPersonas.find((p: any) => p.isActive === "true");
-        if (snapshotPersona) {
-          await chats.updateMessageExtra(userMsg.id, {
-            personaSnapshot: {
-              personaId: snapshotPersona.id,
-              name: snapshotPersona.name,
-              description: snapshotPersona.description ?? "",
-              personality: snapshotPersona.personality ?? "",
-              scenario: snapshotPersona.scenario ?? "",
-              backstory: snapshotPersona.backstory ?? "",
-              appearance: snapshotPersona.appearance ?? "",
-              avatarUrl: snapshotPersona.avatarPath || null,
-              nameColor: snapshotPersona.nameColor || null,
-              dialogueColor: snapshotPersona.dialogueColor || null,
-              boxColor: snapshotPersona.boxColor || null,
-            },
-          });
-        }
-      }
-
-      // Mirror user message to Discord (deferred — personaName resolved later)
-      pendingUserDiscordMsg = discordWebhookUrl && input.userMessage ? input.userMessage : "";
-    }
+    const setupResult = await resolveRequest(app.db, req, reply, activeGenerations);
+    if (!setupResult.ok) return reply.status(setupResult.status).send({ error: setupResult.error });
+    const {
+      input,
+      chat,
+      requestChatMode,
+      abortController,
+      releaseActiveGeneration,
+      earlyMeta,
+      discordWebhookUrl,
+      pendingUserDiscordMsg,
+      requestDebug,
+      debugLog,
+    } = setupResult.value;
+    let conversationGenerationStartedAt = setupResult.value.conversationGenerationStartedAt;
+    let conversationAssistantSaved = setupResult.value.conversationAssistantSaved;
 
     // Resolve connection
     const impersonateConnectionOverride =
