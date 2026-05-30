@@ -261,240 +261,37 @@ import { getMoraleTier, formatMoraleContext } from "../services/game/morale.serv
 import type { GameMap, GameNpc, LorebookEntry } from "@jumpchoice/shared";
 import { sidecarModelService } from "../services/sidecar/sidecar-model.service.js";
 import { NarrativeContext } from "../services/narrative/narrative-context.service.js";
-
-function bumpCharacterVersion(value: unknown): string {
-  const raw = typeof value === "string" ? value.trim() : "";
-  if (!raw) return "1.1";
-  const match = raw.match(/^(.*?)(\d+)(\D*)$/);
-  if (!match) return `${raw}.1`;
-  const prefix = match[1] ?? "";
-  const numberPart = match[2] ?? "0";
-  const suffix = match[3] ?? "";
-  const next = String(Number(numberPart) + 1).padStart(numberPart.length, "0");
-  return `${prefix}${next}${suffix}`;
-}
-
-function hasConversationSchedules(value: unknown): value is Record<string, any> {
-  return !!value && typeof value === "object" && Object.keys(value as Record<string, unknown>).length > 0;
-}
-
-function parsePromptPresetChoices(value: unknown): Record<string, string | string[]> | null {
-  try {
-    const parsed = typeof value === "string" ? JSON.parse(value) : value;
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
-    return parsed as Record<string, string | string[]>;
-  } catch {
-    return null;
-  }
-}
-
-function areConversationSchedulesEnabled(meta: Record<string, any>): boolean {
-  if (typeof meta.conversationSchedulesEnabled === "boolean") return meta.conversationSchedulesEnabled;
-  return hasConversationSchedules(meta.characterSchedules);
-}
-
-function getEnabledConversationSchedules(meta: Record<string, any>): Record<string, any> {
-  return areConversationSchedulesEnabled(meta) && hasConversationSchedules(meta.characterSchedules)
-    ? meta.characterSchedules
-    : {};
-}
-
-function getChatHapticIntifaceUrl(meta: Record<string, unknown>): string | undefined {
-  const url = meta.hapticIntifaceUrl;
-  if (typeof url !== "string") return undefined;
-  return url.trim() || undefined;
-}
-
-function normalizeHapticAgentAction(action: unknown): HapticDeviceCommand["action"] | null {
-  if (typeof action !== "string") return null;
-  const key = action
-    .trim()
-    .toLowerCase()
-    .replace(/[\s_-]+/g, "");
-  if (key === "positionwithduration" || key === "hwpositionwithduration" || key === "linear") return "position";
-  if (key === "vibrate") return "vibrate";
-  if (key === "rotate") return "rotate";
-  if (key === "oscillate") return "oscillate";
-  if (key === "constrict") return "constrict";
-  if (key === "inflate") return "inflate";
-  if (key === "position") return "position";
-  if (key === "stop") return "stop";
-  return null;
-}
-
-function normalizeHapticAgentNumber(value: unknown): number | undefined {
-  const numeric = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
-  return Number.isFinite(numeric) ? numeric : undefined;
-}
-
-function normalizeHapticAgentDeviceIndex(value: unknown): HapticDeviceCommand["deviceIndex"] {
-  if (value === "all" || value === undefined || value === null) return "all";
-  const numeric = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
-  return Number.isInteger(numeric) && numeric >= 0 ? numeric : "all";
-}
-
-function normalizeHapticAgentCommand(command: Record<string, unknown>): HapticDeviceCommand | null {
-  const action = normalizeHapticAgentAction(command.action);
-  if (!action) return null;
-
-  return {
-    deviceIndex: normalizeHapticAgentDeviceIndex(command.deviceIndex),
-    action,
-    intensity: normalizeHapticAgentNumber(command.intensity),
-    duration: normalizeHapticAgentNumber(command.duration),
-  };
-}
-
-export function normalizeHapticAgentCommands(data: Record<string, unknown>): Array<Record<string, unknown>> {
-  if (Array.isArray(data.commands)) {
-    return data.commands.filter(
-      (entry): entry is Record<string, unknown> => Boolean(entry) && typeof entry === "object",
-    );
-  }
-
-  if (normalizeHapticAgentAction(data.action)) {
-    return [data];
-  }
-
-  return [];
-}
-
-const COMPLETE_OUTPUT_END_RE = /[.!?…。！？]["'”’)\]}»›]*$/;
-const COMPLETE_SENTENCE_RE = /[.!?…。！？](?:["'”’)\]}»›]+)?(?=\s|$)/g;
-
-function trimIncompleteModelEnding(content: string): string {
-  const trailingWhitespace = content.match(/\s*$/)?.[0] ?? "";
-  const body = content.trimEnd();
-  if (!body || COMPLETE_OUTPUT_END_RE.test(body)) return content;
-
-  let lastCompleteEnd = -1;
-  for (const match of body.matchAll(COMPLETE_SENTENCE_RE)) {
-    lastCompleteEnd = (match.index ?? 0) + match[0].length;
-  }
-  if (lastCompleteEnd <= 0) return content;
-
-  const tail = body.slice(lastCompleteEnd).trim();
-  if (!tail) return content;
-
-  const tailWithoutCommands = tail
-    .replace(/\[[^\]]+\]/g, "")
-    .replace(/<\/?[a-z][^>]*>/gi, "")
-    .trim();
-  if (!tailWithoutCommands) return content;
-
-  return body.slice(0, lastCompleteEnd).trimEnd() + trailingWhitespace;
-}
-
-function getHiddenCompletionTokens(usage: LLMUsage | undefined): number | undefined {
-  if (!usage) return undefined;
-  const hiddenParts = [
-    usage.completionReasoningTokens,
-    usage.completionAudioTokens,
-    usage.rejectedPredictionTokens,
-  ].filter((value): value is number => typeof value === "number");
-  if (hiddenParts.length === 0) return undefined;
-  return hiddenParts.reduce((sum, value) => sum + value, 0);
-}
-
-function getVisibleCompletionTokens(usage: LLMUsage | undefined): number | undefined {
-  if (!usage || typeof usage.completionTokens !== "number") return undefined;
-  return Math.max(0, usage.completionTokens - (getHiddenCompletionTokens(usage) ?? 0));
-}
-
-function sanitizeConnectedGameTranscript(content: string): string {
-  return stripGmCommandTags(content)
-    .replace(/^\[(?:To the party|To the GM)\]\s*/i, "")
-    .trim();
-}
-
-function prefixConversationUserTurn(content: string, personaName: string): string {
-  const speaker = personaName.trim() || "User";
-  const trimmed = content.trim();
-  const escapedSpeaker = speaker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  if (new RegExp(`^${escapedSpeaker}\\s*:`, "i").test(trimmed)) return trimmed;
-  if (speaker === "User" && /^user\s*:/i.test(trimmed)) return trimmed;
-  return trimmed ? `${speaker}: ${trimmed}` : `${speaker}:`;
-}
-
-function formatConversationPromptTurn(content: string, role: string, personaName: string): string {
-  return role === "user" ? prefixConversationUserTurn(content, personaName) : content.trim();
-}
-
-function normalizePartyLookupName(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
-
-function buildPartyNpcId(name: string): string {
-  const slug = normalizePartyLookupName(name).replace(/\s+/g, "-");
-  const encodedSlug = encodeURIComponent(name.trim().toLowerCase())
-    .replace(/%/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-  return `npc:${slug || encodedSlug || "unknown"}`;
-}
-
-function isPartyNpcId(id: string): boolean {
-  return id.startsWith("npc:");
-}
+import {
+  bumpCharacterVersion,
+  hasConversationSchedules,
+  parsePromptPresetChoices,
+  areConversationSchedulesEnabled,
+  getEnabledConversationSchedules,
+  getChatHapticIntifaceUrl,
+  normalizeHapticAgentAction,
+  normalizeHapticAgentNumber,
+  normalizeHapticAgentDeviceIndex,
+  normalizeHapticAgentCommand,
+  normalizeHapticAgentCommands,
+  trimIncompleteModelEnding,
+  getHiddenCompletionTokens,
+  getVisibleCompletionTokens,
+  sanitizeConnectedGameTranscript,
+  prefixConversationUserTurn,
+  formatConversationPromptTurn,
+  normalizePartyLookupName,
+  buildPartyNpcId,
+  isPartyNpcId,
+  updateJournal,
+  readAvatarBase64,
+  readBestCharacterReferenceBase64,
+  normalizeDmTargetName,
+} from "../services/generation/helpers.js";
 import { isInferenceAvailable as isSidecarInferenceAvailable } from "../services/sidecar/sidecar-inference.service.js";
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from "fs";
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from "fs";
 import { join } from "path";
 
-/**
- * Atomically update the game journal in chat metadata.
- * Takes a transform function that receives the current journal
- * and returns the updated journal (or null to skip).
- */
-async function updateJournal(db: any, chatId: string, transform: (journal: Journal) => Journal | null): Promise<void> {
-  try {
-    const chatsStore = createChatsStorage(db);
-    const chat = await chatsStore.getById(chatId);
-    if (!chat) return;
-    const meta = parseExtra(chat.metadata) as Record<string, unknown>;
-    const journal = (meta.gameJournal as Journal) ?? createJournal();
-    const updated = transform(journal);
-    if (updated) {
-      await chatsStore.updateMetadata(chatId, { ...meta, gameJournal: updated });
-    }
-  } catch {
-    // Non-critical — don't break generation
-  }
-}
-
-/** Read a character's avatar from disk as base64, or return undefined if unavailable. */
-function readAvatarBase64(avatarPath: string | null | undefined): string | undefined {
-  if (!avatarPath) return undefined;
-  // avatarPath is like /api/avatars/file/<filename> — extract just the filename
-  const filename = avatarPath.split("?")[0]?.split("/").pop();
-  if (!filename || filename.includes("..") || filename.includes("/") || filename.includes("\\")) return undefined;
-  const diskPath = join(DATA_DIR, "avatars", filename);
-  try {
-    if (!existsSync(diskPath)) return undefined;
-    return readFileSync(diskPath).toString("base64");
-  } catch {
-    return undefined;
-  }
-}
-
-function readBestCharacterReferenceBase64(
-  characterId: string | null | undefined,
-  avatarPath: string | null | undefined,
-): string | undefined {
-  return readPreferredFullBodySpriteBase64(characterId)?.base64 ?? readAvatarBase64(avatarPath);
-}
-
-function normalizeDmTargetName(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/^il\s+/, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+export { normalizeHapticAgentCommands };
 
 export async function generateRoutes(app: FastifyInstance) {
   const isDebug = logger.isLevelEnabled("debug");
