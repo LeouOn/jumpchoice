@@ -2,6 +2,7 @@ import { readFileSync } from "fs";
 import { extname } from "path";
 import { logger } from "../../lib/logger.js";
 import { ocrImage } from "./ocr-service.js";
+import { parseJSONFromLLM } from "./json-utils.js";
 import type { CYOAExtraction, CYOARawChoice } from "./cyoa-types.js";
 
 export interface ExtractorProvider {
@@ -101,21 +102,7 @@ function imageToDataUrl(filePath: string): string | null {
   }
 }
 
-export function parseExtractionJSON(raw: string): Record<string, any> | null {
-  const trimmed = raw.trim();
-  try {
-    return JSON.parse(trimmed);
-  } catch {}
-
-  const codeBlockMatch = trimmed.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
-  if (codeBlockMatch) {
-    try {
-      return JSON.parse(codeBlockMatch[1]!);
-    } catch {}
-  }
-
-  return null;
-}
+export const parseExtractionJSON = parseJSONFromLLM;
 
 function buildExtraction(
   parsed: Record<string, any>,
@@ -189,7 +176,7 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
       );
 
       if (result.content?.trim()) {
-        const parsed = parseExtractionJSON(result.content);
+        const parsed = parseJSONFromLLM(result.content);
         if (parsed) {
           logger.debug("[cyoa-extractor] Vision extraction succeeded for %s", imageId);
           return buildExtraction(parsed, imageId, pageNumber, "vision");
@@ -225,7 +212,7 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
       ]);
     }
 
-    const parsed = parseExtractionJSON(result.content);
+    const parsed = parseJSONFromLLM(result.content);
     if (!parsed) {
       return emptyExtraction(imageId, pageNumber, "ocr", [
         "OCR succeeded but LLM response was not valid JSON",

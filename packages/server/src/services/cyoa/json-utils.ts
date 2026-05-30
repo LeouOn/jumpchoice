@@ -1,0 +1,15 @@
+export function parseJSONFromLLM(raw: string): Record<string, any> | null {
+  const trimmed = raw.trim();
+  try {
+    return JSON.parse(trimmed);
+  } catch {}
+
+  const codeBlockMatch = trimmed.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+  if (codeBlockMatch) {
+    try {
+      return JSON.parse(codeBlockMatch[1]!);
+    } catch {}
+  }
+
+  return null;
+}

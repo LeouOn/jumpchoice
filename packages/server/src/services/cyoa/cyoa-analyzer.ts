@@ -1,4 +1,5 @@
 import { logger } from "../../lib/logger.js";
+import { parseJSONFromLLM } from "./json-utils.js";
 import type {
   CYOADocument,
   CYOAAnalysis,
@@ -68,21 +69,7 @@ Rules:
 - Return ONLY the JSON object`;
 }
 
-export function parseAnalysisJSON(raw: string): Record<string, any> | null {
-  const trimmed = raw.trim();
-  try {
-    return JSON.parse(trimmed);
-  } catch {}
-
-  const codeBlockMatch = trimmed.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
-  if (codeBlockMatch) {
-    try {
-      return JSON.parse(codeBlockMatch[1]!);
-    } catch {}
-  }
-
-  return null;
-}
+export const parseAnalysisJSON = parseJSONFromLLM;
 
 function buildFallbackAnalysis(doc: CYOADocument): CYOAAnalysis {
   return {
@@ -114,7 +101,7 @@ export async function analyzeDocument(input: AnalyzeInput): Promise<CYOAAnalysis
       return buildFallbackAnalysis(document);
     }
 
-    const parsed = parseAnalysisJSON(result.content);
+    const parsed = parseJSONFromLLM(result.content);
     if (!parsed) {
       logger.warn("[cyoa-analyzer] LLM returned unparseable response");
       return buildFallbackAnalysis(document);

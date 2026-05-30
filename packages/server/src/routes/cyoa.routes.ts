@@ -54,6 +54,12 @@ export async function cyoaRoutes(app: FastifyInstance) {
     await pipeline(data.file, createWriteStream(filePath));
     const byteSize = statSync(filePath).size;
 
+    const MAX_FILE_SIZE = 20 * 1024 * 1024;
+    if (byteSize > MAX_FILE_SIZE) {
+      unlinkSync(filePath);
+      return reply.status(400).send({ error: "File too large (max 20MB)" });
+    }
+
     const imgId = newId();
     await app.db.insert(cyoaImages).values({
       id: imgId,
@@ -66,6 +72,69 @@ export async function cyoaRoutes(app: FastifyInstance) {
     }).run();
 
     return { id: docId, name, description, status: "pending_extraction", images: [{ id: imgId, filePath: docId + "/" + filename, originalName: data.filename }] };
+  });
+
+  // POST /:id/add-image — add image to existing document
+  app.post<{ Params: { id: string } }>("/:id/add-image", async (req, reply) => {
+    const { id } = req.params;
+    const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, id));
+    const doc = docs[0];
+    if (!doc) return reply.status(404).send({ error: "Document not found" });
+    if (doc.status !== "pending_extraction") return reply.status(400).send({ error: "Can only add images to documents in pending_extraction status" });
+
+    const data = await req.file();
+    if (!data) return reply.status(400).send({ error: "No file uploaded" });
+
+    const ext = extname(data.filename).toLowerCase();
+    if (!ALLOWED_EXTS.has(ext)) return reply.status(400).send({ error: "Unsupported file type: " + ext });
+
+    const MAX_FILE_SIZE = 20 * 1024 * 1024;
+    const dir = join(CYOA_DIR, id);
+    mkdirSync(dir, { recursive: true });
+    const filename = newId() + ext;
+    const filePath = join(dir, filename);
+    await pipeline(data.file, createWriteStream(filePath));
+    const byteSize = statSync(filePath).size;
+
+    if (byteSize > MAX_FILE_SIZE) {
+      unlinkSync(filePath);
+      return reply.status(400).send({ error: "File too large (max 20MB)" });
+    }
+
+    const imgId = newId();
+    const timestamp = now();
+    const images = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, id));
+    const pageNumber = images.length + 1;
+
+    await app.db.insert(cyoaImages).values({
+      id: imgId,
+      documentId: id,
+      filePath: id + "/" + filename,
+      originalName: data.filename,
+      mimeType: toMime(ext),
+      byteSize,
+      pageNumber,
+      createdAt: timestamp,
+    }).run();
+
+    await app.db.update(cyoaDocuments).set({ updatedAt: timestamp }).where(eq(cyoaDocuments.id, id)).run();
+
+    return { id: imgId, filePath: id + "/" + filename, originalName: data.filename, pageNumber };
+  });
+
+  // GET /file/:docId/:filename — serve image files
+  app.get<{ Params: { docId: string; filename: string } }>("/file/:docId/:filename", async (req, reply) => {
+    const { docId, filename } = req.params;
+    if (filename.includes("..") || filename.includes("/") || docId.includes("..") || docId.includes("/")) {
+      return reply.status(400).send({ error: "Invalid path" });
+    }
+
+    const filePath = join(CYOA_DIR, docId, filename);
+    if (!existsSync(filePath)) {
+      return reply.status(404).send({ error: "Not found" });
+    }
+
+    return reply.sendFile(filename, join(CYOA_DIR, docId));
   });
 
   // POST /extract — run extraction on all images for a document
@@ -99,7 +168,6 @@ export async function cyoaRoutes(app: FastifyInstance) {
           provider: provider as any,
           model: conn.model,
         });
-        extraction.extractionMethod = "vision";
         extractions.push(extraction);
         await app.db.update(cyoaImages).set({ extractionMethod: "vision", extractionResult: JSON.stringify(extraction) }).where(eq(cyoaImages.id, img.id)).run();
       } catch (err) {
@@ -241,7 +309,13 @@ export async function cyoaRoutes(app: FastifyInstance) {
 
   // GET / — list all documents
   app.get("/", async () => {
-    return app.db.select().from(cyoaDocuments).orderBy(desc(cyoaDocuments.createdAt));
+    const docs = await app.db.select().from(cyoaDocuments).orderBy(desc(cyoaDocuments.createdAt));
+    const results = [];
+    for (const doc of docs) {
+      const choices = await app.db.select({ id: cyoaChoices.id }).from(cyoaChoices).where(eq(cyoaChoices.documentId, doc.id));
+      results.push({ ...doc, choiceCount: choices.length });
+    }
+    return results;
   });
 
   // GET /:id — get single document with images and choices

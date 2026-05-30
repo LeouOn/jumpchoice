@@ -927,6 +927,9 @@ export async function runMigrations(db: DB) {
   );
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_custom_themes_active ON custom_themes(is_active)`));
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_chat_presets_mode_active ON chat_presets(mode, is_active)`));
-  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_images_document ON cyoa_images(document_id)`));
+  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_images_document ON cyoa_images(document_id, page_number)`));
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_choices_document ON cyoa_choices(document_id)`));
+  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_documents_status ON cyoa_documents(status)`));
+  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_choices_category ON cyoa_choices(document_id, category)`));
+  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_choices_tier ON cyoa_choices(document_id, tier)`));
 }
