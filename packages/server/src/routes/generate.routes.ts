@@ -262,6 +262,7 @@ import type { GameMap, GameNpc, LorebookEntry } from "@jumpchoice/shared";
 import { sidecarModelService } from "../services/sidecar/sidecar-model.service.js";
 import { NarrativeContext } from "../services/narrative/narrative-context.service.js";
 import { resolveRequest } from "../services/generation/request-resolver.js";
+import { resolveConnection } from "../services/generation/connection-resolver.js";
 import {
   bumpCharacterVersion,
   hasConversationSchedules,
@@ -342,66 +343,10 @@ export async function generateRoutes(app: FastifyInstance) {
     let conversationAssistantSaved = setupResult.value.conversationAssistantSaved;
 
     // Resolve connection
-    const impersonateConnectionOverride =
-      input.impersonate && input.impersonateConnectionId ? input.impersonateConnectionId : null;
-    const fallbackConnectionId = input.connectionId || chat.connectionId;
-    let connId = impersonateConnectionOverride || fallbackConnectionId;
-
-    // ── Random connection: pick one from the random pool ──
-    if (connId === "random") {
-      const pool = await connections.listRandomPool();
-      if (!pool.length) {
-        releaseActiveGeneration();
-        return reply.status(400).send({ error: "No connections are marked for the random pool" });
-      }
-      const picked = pool[Math.floor(Math.random() * pool.length)];
-      connId = picked.id;
-    }
-
-    if (!connId) {
-      releaseActiveGeneration();
-      return reply.status(400).send({ error: "No API connection configured for this chat" });
-    }
-    let conn = await connections.getWithKey(connId);
-    if (!conn && impersonateConnectionOverride && connId === impersonateConnectionOverride && fallbackConnectionId) {
-      logger.warn(
-        "[generate] Impersonate connection override %s was not found; falling back to chat/request connection",
-        impersonateConnectionOverride,
-      );
-      connId = fallbackConnectionId;
-      if (connId === "random") {
-        const pool = await connections.listRandomPool();
-        if (!pool.length) {
-          releaseActiveGeneration();
-          return reply.status(400).send({ error: "No connections are marked for the random pool" });
-        }
-        const picked = pool[Math.floor(Math.random() * pool.length)];
-        connId = picked.id;
-      }
-      conn = connId ? await connections.getWithKey(connId) : null;
-    }
-    if (!conn) {
-      releaseActiveGeneration();
-      return reply.status(400).send({ error: "API connection not found" });
-    }
-
-    // Resolve base URL — fall back to provider default if empty
-    const baseUrl = resolveBaseUrl(conn);
-    if (!baseUrl) {
-      releaseActiveGeneration();
-      return reply.status(400).send({ error: "No base URL configured for this connection" });
-    }
-    let chatMeta = parseExtra(chat.metadata) as Record<string, unknown>;
-    let memoryRecallEmbeddingSource: Awaited<ReturnType<typeof resolveMemoryRecallEmbeddingSource>> | null = null;
-    try {
-      memoryRecallEmbeddingSource = await resolveMemoryRecallEmbeddingSource(app.db, {
-        chatMetadata: chatMeta,
-        activeConnection: conn,
-        activeBaseUrl: baseUrl,
-      });
-    } catch (err) {
-      logger.warn(err, "[memory-recall] Embedding source resolution failed; using default embedding path");
-    }
+    const connResult = await resolveConnection(app.db, input, chat, releaseActiveGeneration);
+    if (!connResult.ok) return reply.status(connResult.status).send({ error: connResult.error });
+    const { connId, conn, baseUrl, memoryRecallEmbeddingSource } = connResult.value;
+    let chatMeta = connResult.value.chatMeta;
 
     if (activeGenerations) {
       activeGenerations.set(input.chatId, { abortController, backendUrl: baseUrl });
