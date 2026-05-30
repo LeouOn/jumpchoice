@@ -26,7 +26,7 @@ Forked from Marinara Engine v1.6.0 (May 2026). Inherited:
 - `GameSurface.tsx` (8,947 lines) - needs splitting
 - `game.routes.ts` (7,378 lines) - needs splitting
 - `ChatSettingsDrawer.tsx` (7,106 lines) - needs splitting
-- Zero automated tests
+- Zero automated tests (now 143 tests across 17 files)
 
 ## Phases
 
@@ -40,8 +40,8 @@ Forked from Marinara Engine v1.6.0 (May 2026). Inherited:
 - [ ] Split `GameSurface.tsx` into smaller components
 - [ ] Split `game.routes.ts` into domain-specific route files
 - [ ] Split `ChatSettingsDrawer.tsx` into focused setting panels
-- [ ] Add basic test infrastructure (vitest)
-- [ ] Write tests for core generation pipeline
+- [x] Add basic test infrastructure (vitest)
+- [x] Write tests for core generation pipeline
 - [ ] Update documentation for JumpChoice context
 - [ ] **Implement core narrative principles** (anti-assistant bias, knowledge firewall, user agency, NPC autonomy)
 - [ ] **Add narrator persona system** (Vex-style with 3-4 default voices)
@@ -85,13 +85,14 @@ Forked from Marinara Engine v1.6.0 (May 2026). Inherited:
 - [x] Implement image URL/upload ingestion
 - [x] Integrate vision models (GPT-4V, Gemini Pro Vision)
 - [x] Build CYOA choice extraction from images
-- [x] Write tests for CYOA pipeline (34 tests, 5 test files)
+- [x] Write tests for CYOA pipeline (51 tests, 6 test files)
+- [x] Add route-level HTTP tests (18 tests via Fastify inject)
 - [ ] Design doc-parser module API
 - [ ] Implement PDF text extraction
 - [ ] Build LLM-assisted jump document structuring
 - [ ] Create jump document browser UI
 
-**Deliverable:** Can parse visual CYOAs into structured data with tier lists, synergies, and build archetypes. 123 total tests passing across 16 test files.
+**Deliverable:** Can parse visual CYOAs into structured data with tier lists, synergies, and build archetypes. 143 total tests passing across 17 test files.
 
 ### Phase 4: Build Lab & Campaign Tracker (Weeks 10-12)
 
