@@ -144,7 +144,7 @@ Pure function that merges multiple extractions:
 
 Sends merged document to LLM for strategic analysis:
 - Tier list (S through F) for every choice
-- Cost efficiency scores (0-100)
+- Cost efficiency scores (0-100, where 100 = best value for points)
 - Top synergy pairs between choices
 - Build archetypes (recommended combinations within budget)
 

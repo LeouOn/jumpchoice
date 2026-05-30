@@ -134,6 +134,51 @@ describe("CYOAExtractor", () => {
     expect(result.warnings.length).toBeGreaterThan(0);
   });
 
+  it("should retry once with stricter prompt on invalid JSON then succeed", async () => {
+    const provider = {
+      chatComplete: vi.fn()
+        .mockResolvedValueOnce({ content: "not json" })
+        .mockResolvedValueOnce({ content: JSON.stringify(VALID_EXTRACTION) }),
+    };
+    const result = await extractFromImage({
+      imageId: "img_retry",
+      imagePath: "test.png",
+      pageNumber: 1,
+      provider,
+      model: "test-model",
+    });
+
+    expect(provider.chatComplete).toHaveBeenCalledTimes(2);
+    expect(result.extractionMethod).toBe("vision");
+    expect(result.choices).toHaveLength(2);
+    expect(result.title).toBe("Test CYOA");
+  });
+
+  it("should fall back to OCR after failed vision retry", async () => {
+    const provider = {
+      chatComplete: vi.fn()
+        .mockResolvedValueOnce({ content: "not json" })
+        .mockResolvedValueOnce({ content: "still not json" }),
+    };
+    const { ocrImage } = await import("../src/services/cyoa/ocr-service.js");
+    const mockOcr = vi.mocked(ocrImage);
+    mockOcr.mockResolvedValueOnce("OCR text for structuring");
+    const ocrExtraction = { ...VALID_EXTRACTION, title: "OCR Result" };
+    provider.chatComplete.mockResolvedValueOnce({ content: JSON.stringify(ocrExtraction) });
+
+    const result = await extractFromImage({
+      imageId: "img_retry_fail",
+      imagePath: "test.png",
+      pageNumber: 1,
+      provider,
+      model: "test-model",
+    });
+
+    expect(provider.chatComplete).toHaveBeenCalledTimes(3);
+    expect(result.extractionMethod).toBe("ocr");
+    expect(result.title).toBe("OCR Result");
+  });
+
   it("should add warnings for low-confidence choices", async () => {
     const extraction = {
       ...VALID_EXTRACTION,

@@ -45,6 +45,11 @@ Rules:
 - Use "uncategorized" as default category if no category is clear
 - Return ONLY the JSON object, no other text`;
 
+const RETRY_PROMPT = `Your previous response was not valid JSON. You MUST respond with ONLY a raw JSON object. No markdown, no code fences, no explanation. Just the JSON object starting with { and ending with }.
+
+Extract CYOA data with this structure:
+{"title":"...","description":"...","pointBudget":N,"categories":[...],"choices":[{"name":"...","description":"...","category":"...","pointCost":N,"prerequisites":[...],"tags":[...],"confidence":0.0-1.0}]}`;
+
 const OCR_PROMPT_TEMPLATE = `You are a CYOA (Choose Your Own Adventure) data structurer. The following text was OCR'd from a CYOA image. Extract all structured data.
 
 Text:
@@ -181,6 +186,23 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
           logger.debug("[cyoa-extractor] Vision extraction succeeded for %s", imageId);
           return buildExtraction(parsed, imageId, pageNumber, "vision");
         }
+
+        logger.warn("[cyoa-extractor] Retrying vision extraction with stricter prompt for %s", imageId);
+        const retry = await provider.chatComplete(
+          [
+            { role: "system", content: RETRY_PROMPT },
+            { role: "user", content: "Extract CYOA data from this image.", images: [dataUrl] },
+          ],
+          { model },
+        );
+
+        if (retry.content?.trim()) {
+          const retryParsed = parseJSONFromLLM(retry.content);
+          if (retryParsed) {
+            logger.debug("[cyoa-extractor] Vision retry succeeded for %s", imageId);
+            return buildExtraction(retryParsed, imageId, pageNumber, "vision");
+          }
+        }
       }
       logger.warn("[cyoa-extractor] Vision extraction returned unparseable response for %s", imageId);
     } catch (err) {
@@ -214,6 +236,26 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
 
     const parsed = parseJSONFromLLM(result.content);
     if (!parsed) {
+      logger.warn("[cyoa-extractor] Retrying OCR structuring with stricter prompt for %s", imageId);
+      try {
+        const retry = await provider.chatComplete(
+          [
+            { role: "system", content: RETRY_PROMPT },
+            { role: "user", content: ocrPrompt },
+          ],
+          { model },
+        );
+        if (retry.content?.trim()) {
+          const retryParsed = parseJSONFromLLM(retry.content);
+          if (retryParsed) {
+            logger.debug("[cyoa-extractor] OCR retry succeeded for %s", imageId);
+            return buildExtraction(retryParsed, imageId, pageNumber, "ocr");
+          }
+        }
+      } catch (retryErr) {
+        logger.error(retryErr, "[cyoa-extractor] OCR retry failed for %s", imageId);
+      }
+
       return emptyExtraction(imageId, pageNumber, "ocr", [
         "OCR succeeded but LLM response was not valid JSON",
       ]);
