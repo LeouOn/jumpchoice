@@ -263,6 +263,7 @@ import { sidecarModelService } from "../services/sidecar/sidecar-model.service.j
 import { NarrativeContext } from "../services/narrative/narrative-context.service.js";
 import { resolveRequest } from "../services/generation/request-resolver.js";
 import { resolveConnection } from "../services/generation/connection-resolver.js";
+import { resolveMessagesAndPersona } from "../services/generation/message-resolver.js";
 import {
   bumpCharacterVersion,
   hasConversationSchedules,
@@ -396,213 +397,43 @@ export async function generateRoutes(app: FastifyInstance) {
     };
 
     try {
-      // Get chat messages
-      const allChatMessages = await chats.listMessages(input.chatId);
-      const chatMode = requestChatMode;
-      const lorebookGenerationTriggers = resolveLorebookGenerationTriggers(input, chatMode);
-      const supportsHiddenFromAI =
-        chatMode === "conversation" || chatMode === "roleplay" || chatMode === "visual_novel";
-      const preferLatestVisibleGameState = shouldPreferLatestVisibleGameState(input);
-
-      // ── Conversation-start filter: find the latest "isConversationStart" marker ──
-      let startIdx = 0;
-      for (let i = allChatMessages.length - 1; i >= 0; i--) {
-        const extra = parseExtra(allChatMessages[i]!.extra);
-        if (extra.isConversationStart) {
-          startIdx = i;
-          break;
-        }
-      }
-      const scopedMessages = startIdx > 0 ? allChatMessages.slice(startIdx) : allChatMessages;
-      let chatMessages = supportsHiddenFromAI
-        ? scopedMessages.filter((message: any) => !isMessageHiddenFromAI(message))
-        : scopedMessages;
-      let lorebookKeeperMessages = chatMessages;
-      let regenMsg;
-
-      // ── Regeneration as swipe: exclude the target message from context ──
-      if (input.regenerateMessageId) {
-        regenMsg = scopedMessages.find((m: any) => m.id === input.regenerateMessageId);
-        if (!regenMsg) {
-          sendSseEvent(reply, { type: "error", data: "Regenerated message not found" });
-          return;
-        }
-        chatMessages = chatMessages.filter((m: any) => m.id !== input.regenerateMessageId);
-        lorebookKeeperMessages = lorebookKeeperMessages.filter((m: any) => m.id !== input.regenerateMessageId);
-      }
-      const visibleGameStateAnchor = input.regenerateMessageId
-        ? resolveRegenerationGameStateAnchor(scopedMessages, input.regenerateMessageId)
-        : resolveVisibleGameStateAnchor(allChatMessages);
-      const gameStateGenerationOptions = {
-        preferLatestVisible: preferLatestVisibleGameState,
-        visibleAnchor: visibleGameStateAnchor,
-        excludeMessageId: input.regenerateMessageId ?? null,
-        fallbackMessageIds: resolveRegenerationGameStateFallbackMessageIds(scopedMessages, input.regenerateMessageId),
-      };
-      const selectedGameStateSnapshotPromise = gameStateStore.getForGeneration(
-        input.chatId,
-        gameStateGenerationOptions,
+      const msgResult = await resolveMessagesAndPersona(
+        { chats, chars, presets, gameStateStore },
+        input, chat, conn, chatMeta, requestChatMode, discordWebhookUrl, pendingUserDiscordMsg,
       );
+      if (!msgResult.ok) {
+        sendSseEvent(reply, { type: "error", data: msgResult.error });
+        return;
+      }
+      const {
+        allChatMessages,
+        lorebookKeeperMessages,
+        regenMsg,
+        mappedMessages,
+        characterIds,
+        personaId,
+        personaName,
+        personaDescription,
+        personaFields,
+        presetId,
+        resolvedPreset,
+        presetSource,
+        chatChoices,
+        selectedGameStateSnapshotPromise,
+        lorebookGenerationTriggers,
+        selectedPresetDiffersFromChat,
+        isGoogleProvider,
+        persona,
+        scopedMessages,
+        contextMessageLimit,
+        lorebookKeeperSettings,
+      } = msgResult.value;
+      const chatMode = requestChatMode;
+      let chatMessages = msgResult.value.chatMessages;
       const selectedGameStateForPrompt = async (): Promise<Record<string, unknown> | null> => {
         const row = await selectedGameStateSnapshotPromise;
         return row ? (parseGameStateRow(row as Record<string, unknown>) as unknown as Record<string, unknown>) : null;
       };
-
-      // ── Context message limit (from chat metadata, off by default) ──
-      const lorebookKeeperSettings = getLorebookKeeperSettings(chatMeta);
-      const contextMessageLimit = chatMeta.contextMessageLimit as number | null;
-      if (contextMessageLimit && contextMessageLimit > 0 && chatMessages.length > contextMessageLimit) {
-        chatMessages = chatMessages.slice(-contextMessageLimit);
-      }
-
-      const isGoogleProvider = conn.provider === "google" || conn.provider === "google_vertex";
-
-      const mappedMessages = chatMessages.map((m: any) => {
-        const extra = parseExtra(m.extra);
-        const attachments = extra.attachments as PromptAttachment[] | undefined;
-        const images = extractImageAttachmentDataUrls(attachments);
-        const providerMetadata: Record<string, unknown> = {};
-        // For Google connections, carry stored Gemini parts (thought signatures) on assistant messages
-        if (isGoogleProvider && m.role === "assistant" && extra.geminiParts) {
-          providerMetadata.geminiParts = extra.geminiParts;
-        }
-        const chatCompletionsReasoning =
-          m.role === "assistant" ? readChatCompletionsReasoningMetadata(extra.chatCompletionsReasoning) : undefined;
-        if (chatCompletionsReasoning) {
-          Object.assign(providerMetadata, chatCompletionsReasoning);
-        }
-
-        // Annotate assistant messages that have user-uploaded image attachments
-        // so the model is aware it sent a photo in prior turns.
-        // Skip illustration/selfie attachments (type "image") — those are generated
-        // by agents and should be invisible to the main model.
-        let content = appendReadableAttachmentsToContent(m.content as string, attachments);
-        const userUploadedImages = attachments?.filter((a) => a.type?.startsWith("image/"));
-        if (m.role === "assistant" && userUploadedImages?.length) {
-          const photoName = userUploadedImages[0]?.filename ?? userUploadedImages[0]?.name;
-          content += `\n[Sent a photo${photoName ? `: ${photoName}` : ""}]`;
-        }
-
-        return {
-          role: m.role === "narrator" ? ("system" as const) : (m.role as "user" | "assistant" | "system"),
-          content,
-          ...(images?.length ? { images } : {}),
-          ...(Object.keys(providerMetadata).length ? { providerMetadata } : {}),
-        };
-      });
-
-      // Attach current request's images to the last user message (they're already saved in extra,
-      // but the message was just created and may be the last in mappedMessages)
-      if (input.attachments?.length && !input.impersonate) {
-        const imageAttachments = extractImageAttachmentDataUrls(input.attachments);
-        if (imageAttachments.length) {
-          // Find the last user message and attach images
-          for (let i = mappedMessages.length - 1; i >= 0; i--) {
-            if (mappedMessages[i]!.role === "user") {
-              mappedMessages[i] = { ...mappedMessages[i]!, images: imageAttachments };
-              break;
-            }
-          }
-        }
-      }
-
-      // Always collapse 3+ consecutive blank lines into a double newline —
-      // these waste tokens and produce messy logs regardless of user regex settings.
-      // Matches pure newlines AND lines that contain only whitespace.
-      for (const msg of mappedMessages) {
-        msg.content = msg.content.replace(/\n([ \t]*\n){2,}/g, "\n\n");
-      }
-
-      const characterIds: string[] = JSON.parse(chat.characterIds as string);
-
-      // Resolve persona — prefer per-chat personaId, fall back to globally active persona
-      // (Game mode skips the fallback — persona must be explicitly selected in the setup wizard)
-      let personaId: string | null = null;
-      let personaName = "User";
-      let personaDescription = "";
-      let personaFields: { personality?: string; scenario?: string; backstory?: string; appearance?: string } = {};
-      const allPersonas = await chars.listPersonas();
-      // ── Game mode: apply segment edit overlays to message content ──
-      // Users can edit individual narration/dialogue segments in the VN UI.
-      // Edits are stored as chat-metadata overlays; apply them so the model
-      // sees the corrected text in its conversation history.
-      if (chatMode === "game") {
-        applyAllSegmentEdits(mappedMessages, chatMeta as Record<string, unknown>, chatMessages);
-      }
-
-      const persona =
-        (chat.personaId ? allPersonas.find((p: any) => p.id === chat.personaId) : null) ??
-        (chatMode !== "game" ? allPersonas.find((p: any) => p.isActive === "true") : null);
-      if (persona) {
-        personaId = persona.id as string;
-        personaName = persona.name;
-        personaDescription = persona.description;
-
-        // Append active alt description extensions
-        if (persona.altDescriptions) {
-          try {
-            const altDescs = JSON.parse(persona.altDescriptions as string) as Array<{
-              active: boolean;
-              content: string;
-            }>;
-            for (const ext of altDescs) {
-              if (ext.active && ext.content) {
-                personaDescription += "\n" + ext.content;
-              }
-            }
-          } catch {
-            /* ignore malformed JSON */
-          }
-        }
-
-        personaFields = {
-          personality: persona.personality ?? "",
-          scenario: persona.scenario ?? "",
-          backstory: persona.backstory ?? "",
-          appearance: persona.appearance ?? "",
-        };
-      }
-
-      // Mirror user message to Discord now that personaName is resolved
-      if (pendingUserDiscordMsg) {
-        postToDiscordWebhook(discordWebhookUrl, { content: pendingUserDiscordMsg, username: personaName });
-      }
-
-      // ── Assembler path: use the highest-priority prompt preset for this generation ──
-      const chatPromptPresetId = (chat.promptPresetId as string | null) ?? null;
-      const presetCandidates = buildGenerationPromptPresetCandidates({
-        chatMode,
-        chatPromptPresetId,
-        connectionPromptPresetId: conn.promptPresetId,
-        impersonate: input.impersonate,
-        impersonatePromptPresetId: input.impersonatePresetId,
-      });
-      let presetId: string | undefined;
-      let resolvedPreset: Awaited<ReturnType<typeof presets.getById>> | null = null;
-      let presetSource: PromptPresetCandidateSource | null = null;
-      for (const candidate of presetCandidates) {
-        const candidatePreset = await presets.getById(candidate.id);
-        if (candidatePreset) {
-          presetId = candidate.id;
-          resolvedPreset = candidatePreset;
-          presetSource = candidate.source;
-          break;
-        }
-        if (candidate.source !== "chat") {
-          logger.warn(
-            "[generate] %s prompt preset override %s was not found; falling back to the next preset candidate",
-            candidate.source,
-            candidate.id,
-          );
-        }
-      }
-      const selectedPresetDiffersFromChat = !!resolvedPreset && !!presetId && presetId !== chatPromptPresetId;
-      const overrideDefaultChoices =
-        selectedPresetDiffersFromChat && presetSource !== "chat"
-          ? (parsePromptPresetChoices((resolvedPreset as { defaultChoices?: unknown }).defaultChoices) ?? {})
-          : null;
-      const chatChoices: Record<string, string | string[]> =
-        overrideDefaultChoices ?? ((chatMeta.presetChoices ?? {}) as Record<string, string | string[]>);
 
       // ── Professor Mari fetch follow-up loop ──
       // After Mari executes a [fetch:], the fetched data is persisted to
