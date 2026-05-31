@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useUIStore } from "@/stores/ui.store";
 import { useCyoaDocument } from "@/hooks/use-cyoa";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -6,6 +7,7 @@ import { ExtractStep } from "./steps/ExtractStep";
 import { ReviewStep } from "./steps/ReviewStep";
 import { MergeStep } from "./steps/MergeStep";
 import { AnalyzeStep } from "./steps/AnalyzeStep";
+import { BuildPlannerModal } from "./BuildPlannerModal";
 
 const STEPS = [
   { id: "upload", label: "Upload", statusRequired: "pending_extraction" },
@@ -29,6 +31,7 @@ export function CyoaEditor() {
   const documentId = useUIStore((s) => s.cyoaDetailId);
   const closeDetail = useUIStore((s) => s.closeCyoa);
   const { data: document, isLoading } = useCyoaDocument(documentId);
+  const [showBuildPlanner, setShowBuildPlanner] = useState(false);
 
   const status = document?.status ?? "pending_extraction";
   const activeStep = STATUS_STEP_MAP[status] ?? "upload";
@@ -50,6 +53,14 @@ export function CyoaEditor() {
           <span className="rounded bg-[var(--muted)] px-2 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)]">
             {status}
           </span>
+        )}
+        {(document?.status === "merged" || document?.status === "analyzed") && (
+          <button
+            onClick={() => setShowBuildPlanner(true)}
+            className="ml-auto rounded-md bg-[var(--primary)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Build Planner
+          </button>
         )}
       </div>
 
@@ -102,6 +113,13 @@ export function CyoaEditor() {
           <AnalyzeStep document={document} documentId={documentId!} />
         )}
       </div>
+      {showBuildPlanner && document && (
+        <BuildPlannerModal
+          document={document}
+          choices={document.choices}
+          onClose={() => setShowBuildPlanner(false)}
+        />
+      )}
     </div>
   );
 }

@@ -532,6 +532,16 @@ const CREATE_TABLES: string[] = [
     metadata TEXT NOT NULL DEFAULT '{}',
     created_at TEXT NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS cyoa_builds (
+    id TEXT PRIMARY KEY NOT NULL,
+    document_id TEXT NOT NULL REFERENCES cyoa_documents(id) ON DELETE CASCADE,
+    name TEXT NOT NULL DEFAULT '',
+    description TEXT NOT NULL DEFAULT '',
+    selected_choice_ids TEXT NOT NULL DEFAULT '[]',
+    notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )`,
 ];
 
 // ── Column migrations (ALTER TABLE for schema evolution) ──
@@ -932,4 +942,5 @@ export async function runMigrations(db: DB) {
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_documents_status ON cyoa_documents(status)`));
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_choices_category ON cyoa_choices(document_id, category)`));
   await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_choices_tier ON cyoa_choices(document_id, tier)`));
+  await db.run(sql.raw(`CREATE INDEX IF NOT EXISTS idx_cyoa_builds_document ON cyoa_builds(document_id)`));
 }

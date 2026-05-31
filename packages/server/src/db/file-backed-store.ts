@@ -191,6 +191,7 @@ export const FILE_BACKED_TABLES = [
   "cyoa_documents",
   "cyoa_images",
   "cyoa_choices",
+  "cyoa_builds",
   "installed_extensions",
 ] as const;
 
@@ -222,6 +223,7 @@ const CASCADES: Array<{ parent: FileBackedTable; child: FileBackedTable; parentK
   { parent: "agent_configs", child: "agent_memory", parentKey: "id", childKey: "agentConfigId" },
   { parent: "cyoa_documents", child: "cyoa_images", parentKey: "id", childKey: "documentId" },
   { parent: "cyoa_documents", child: "cyoa_choices", parentKey: "id", childKey: "documentId" },
+  { parent: "cyoa_documents", child: "cyoa_builds", parentKey: "id", childKey: "documentId" },
 ];
 
 const tableMetasByObject = new WeakMap<object, TableMeta>();
