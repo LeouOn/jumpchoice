@@ -13,7 +13,8 @@ type Panel =
   | "agents"
   | "personas"
   | "settings"
-  | "bot-browser";
+  | "bot-browser"
+  | "cyoa";
 type FontSize = 12 | 14 | 16 | 17 | 19 | 22;
 export type VisualTheme = "default" | "sillytavern";
 export type HudPosition = "top" | "left" | "right";
@@ -242,6 +243,8 @@ interface UIState {
   personaDetailId: string | null;
   /** When set, the main area shows the full-page regex script editor */
   regexDetailId: string | null;
+  /** When set, the main area shows the full-page CYOA document editor */
+  cyoaDetailId: string | null;
   /** When true, the main area shows the browser */
   botBrowserOpen: boolean;
   /** When true, the main area shows the game assets browser */
@@ -471,6 +474,8 @@ interface UIState {
   closePersonaDetail: () => void;
   openRegexDetail: (id: string) => void;
   closeRegexDetail: () => void;
+  openCyoa: (id: string) => void;
+  closeCyoa: () => void;
   openCharacterLibrary: () => void;
   closeCharacterLibrary: () => void;
   openBotBrowser: () => void;
@@ -715,6 +720,7 @@ export const useUIStore = create<UIState>()(
       toolDetailId: null,
       personaDetailId: null,
       regexDetailId: null,
+      cyoaDetailId: null,
       botBrowserOpen: false,
       gameAssetsBrowserOpen: false,
       characterLibraryOpen: false,
@@ -884,6 +890,7 @@ export const useUIStore = create<UIState>()(
           agentDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeCharacterDetail: () => set({ characterDetailId: null, editorDirty: false }),
@@ -897,6 +904,7 @@ export const useUIStore = create<UIState>()(
           agentDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeLorebookDetail: () => set({ lorebookDetailId: null, editorDirty: false }),
@@ -910,6 +918,7 @@ export const useUIStore = create<UIState>()(
           agentDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closePresetDetail: () => set({ presetDetailId: null, editorDirty: false }),
@@ -923,6 +932,7 @@ export const useUIStore = create<UIState>()(
           agentDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeConnectionDetail: () => set({ connectionDetailId: null, editorDirty: false }),
@@ -937,6 +947,7 @@ export const useUIStore = create<UIState>()(
           toolDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeAgentDetail: () => set({ agentDetailId: null, editorDirty: false }),
@@ -951,6 +962,7 @@ export const useUIStore = create<UIState>()(
           connectionDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeToolDetail: () => set({ toolDetailId: null, editorDirty: false }),
@@ -965,6 +977,7 @@ export const useUIStore = create<UIState>()(
           agentDetailId: null,
           toolDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closePersonaDetail: () => set({ personaDetailId: null, editorDirty: false }),
@@ -979,9 +992,24 @@ export const useUIStore = create<UIState>()(
           connectionDetailId: null,
           agentDetailId: null,
           toolDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeRegexDetail: () => set({ regexDetailId: null, editorDirty: false }),
+      openCyoa: (id) =>
+        set({
+          cyoaDetailId: id,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          agentDetailId: null,
+          toolDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
+        }),
+      closeCyoa: () => set({ cyoaDetailId: null, editorDirty: false }),
       openCharacterLibrary: () =>
         set({
           characterLibraryOpen: true,
@@ -993,6 +1021,7 @@ export const useUIStore = create<UIState>()(
           toolDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           botBrowserOpen: false,
           editorDirty: false,
           rightPanelOpen: false,
@@ -1011,6 +1040,7 @@ export const useUIStore = create<UIState>()(
           connectionDetailId: null,
           agentDetailId: null,
           toolDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeBotBrowser: () => set({ botBrowserOpen: false }),
@@ -1027,6 +1057,7 @@ export const useUIStore = create<UIState>()(
           connectionDetailId: null,
           agentDetailId: null,
           toolDetailId: null,
+          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeGameAssetsBrowser: () => set({ gameAssetsBrowserOpen: false }),
@@ -1042,6 +1073,7 @@ export const useUIStore = create<UIState>()(
           s.toolDetailId ||
           s.personaDetailId ||
           s.regexDetailId ||
+          s.cyoaDetailId ||
           s.characterLibraryOpen ||
           s.botBrowserOpen ||
           s.gameAssetsBrowserOpen
@@ -1057,6 +1089,7 @@ export const useUIStore = create<UIState>()(
           toolDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
+          cyoaDetailId: null,
           characterLibraryOpen: false,
           botBrowserOpen: false,
           gameAssetsBrowserOpen: false,

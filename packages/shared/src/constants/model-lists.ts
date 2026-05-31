@@ -334,9 +334,10 @@ export const GROQ_MODELS: KnownModel[] = [
 
 // DeepSeek (from #model_deepseek_select)
 export const DEEPSEEK_MODELS: KnownModel[] = [
-  { id: "deepseek-chat", name: "deepseek-chat", context: 131072, maxOutput: 8192 },
-  { id: "deepseek-coder", name: "deepseek-coder", context: 131072, maxOutput: 8192 },
-  { id: "deepseek-reasoner", name: "deepseek-reasoner", context: 131072, maxOutput: 8192 },
+  { id: "deepseek-v4-pro", name: "DeepSeek V4 Pro", context: 1000000, maxOutput: 384000 },
+  { id: "deepseek-v4-flash", name: "DeepSeek V4 Flash", context: 1000000, maxOutput: 384000 },
+  { id: "deepseek-chat", name: "DeepSeek Chat (legacy)", context: 131072, maxOutput: 8192 },
+  { id: "deepseek-reasoner", name: "DeepSeek Reasoner (legacy)", context: 131072, maxOutput: 8192 },
 ];
 
 // Perplexity (from #model_perplexity_select)
@@ -367,22 +368,34 @@ export const MOONSHOT_MODELS: KnownModel[] = [
 
 // Z.AI / GLM (from #model_zai_select)
 export const ZAI_MODELS: KnownModel[] = [
-  { id: "glm-5", name: "glm-5", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.7", name: "glm-4.7", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.7-flash", name: "glm-4.7-flash", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.7-flashx", name: "glm-4.7-flashx", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.6", name: "glm-4.6", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.6v", name: "glm-4.6v", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.6v-flash", name: "glm-4.6v-flash", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.6v-flashx", name: "glm-4.6v-flashx", context: 200000, maxOutput: 8192 },
-  { id: "glm-4.5v", name: "glm-4.5v", context: 128000, maxOutput: 4096 },
-  { id: "glm-4.5", name: "glm-4.5", context: 128000, maxOutput: 4096 },
-  { id: "glm-4.5-air", name: "glm-4.5-air", context: 128000, maxOutput: 4096 },
-  { id: "glm-4.5-x", name: "glm-4.5-x", context: 128000, maxOutput: 4096 },
-  { id: "glm-4.5-airx", name: "glm-4.5-airx", context: 128000, maxOutput: 4096 },
-  { id: "glm-4.5-flash", name: "glm-4.5-flash", context: 128000, maxOutput: 4096 },
-  { id: "glm-4-32b-0414-128k", name: "glm-4-32b-0414-128k", context: 128000, maxOutput: 4096 },
-  { id: "autoglm-phone-multilingual", name: "autoglm-phone-multilingual", context: 128000, maxOutput: 4096 },
+  { id: "glm-5.1", name: "GLM-5.1", context: 200000, maxOutput: 131072 },
+  { id: "glm-5-turbo", name: "GLM-5 Turbo", context: 200000, maxOutput: 8192 },
+  { id: "glm-5", name: "GLM-5", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.7", name: "GLM-4.7", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.7-flash", name: "GLM-4.7 Flash", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.7-flashx", name: "GLM-4.7 FlashX", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.6", name: "GLM-4.6", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.6v", name: "GLM-4.6V", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.6v-flash", name: "GLM-4.6V Flash", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.6v-flashx", name: "GLM-4.6V FlashX", context: 200000, maxOutput: 8192 },
+  { id: "glm-4.5", name: "GLM-4.5", context: 128000, maxOutput: 4096 },
+  { id: "glm-4.5-air", name: "GLM-4.5 Air", context: 128000, maxOutput: 4096 },
+  { id: "glm-4.5-x", name: "GLM-4.5 X", context: 128000, maxOutput: 4096 },
+  { id: "glm-4.5-airx", name: "GLM-4.5 AirX", context: 128000, maxOutput: 4096 },
+  { id: "glm-4.5-flash", name: "GLM-4.5 Flash", context: 128000, maxOutput: 4096 },
+  { id: "glm-4-32b-0414-128k", name: "GLM-4 32B (128K)", context: 128000, maxOutput: 4096 },
+  { id: "autoglm-phone-multilingual", name: "AutoGLM Phone", context: 128000, maxOutput: 4096 },
+];
+
+// MiniMax (from #model_minimax_select)
+export const MINIMAX_MODELS: KnownModel[] = [
+  { id: "MiniMax-M2.7", name: "MiniMax M2.7", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.7-highspeed", name: "MiniMax M2.7 Highspeed", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.5", name: "MiniMax M2.5", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.5-highspeed", name: "MiniMax M2.5 Highspeed", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.1", name: "MiniMax M2.1", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.1-highspeed", name: "MiniMax M2.1 Highspeed", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2", name: "MiniMax M2", context: 204800, maxOutput: 8192 },
 ];
 
 // AI21 (from #model_ai21_select)
@@ -625,6 +638,9 @@ export const MODEL_LISTS: Record<APIProvider, KnownModel[]> = {
   openrouter: OPENROUTER_MODELS,
   nanogpt: [], // NanoGPT aggregator — models fetched dynamically via API
   xai: XAI_MODELS,
+  deepseek: DEEPSEEK_MODELS,
+  zhipu: ZAI_MODELS,
+  minimax: MINIMAX_MODELS,
   // Seed OAI-compatible endpoints with the OpenAI catalog; remote /models still merge on top.
   custom: OPENAI_MODELS,
   image_generation: IMAGE_GEN_MODELS,

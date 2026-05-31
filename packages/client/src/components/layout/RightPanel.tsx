@@ -2,7 +2,7 @@
 // Layout: Right Panel (polished with panel transitions)
 // ──────────────────────────────────────────────
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
-import { X, Users, BookOpen, FileText, Link, Sparkles, Settings, User, Bot } from "lucide-react";
+import { X, Users, BookOpen, FileText, Link, Sparkles, Settings, User, Bot, ImageIcon } from "lucide-react";
 import { useUIStore } from "../../stores/ui.store";
 
 const CharactersPanel = lazy(() =>
@@ -25,6 +25,7 @@ const SettingsPanel = lazy(() =>
 const BotBrowserPanel = lazy(() =>
   import("../panels/BotBrowserPanel").then((module) => ({ default: module.BotBrowserPanel })),
 );
+const CyoaPanel = lazy(() => import("../panels/CyoaPanel").then((module) => ({ default: module.CyoaPanel })));
 
 const PANEL_CONFIG: Record<string, { title: string; icon: ReactNode; gradient: string }> = {
   "bot-browser": { title: "Browser", icon: <Bot size="0.875rem" />, gradient: "from-cyan-400 to-blue-500" },
@@ -33,6 +34,7 @@ const PANEL_CONFIG: Record<string, { title: string; icon: ReactNode; gradient: s
   presets: { title: "Presets", icon: <FileText size="0.875rem" />, gradient: "from-purple-400 to-violet-500" },
   connections: { title: "Connections", icon: <Link size="0.875rem" />, gradient: "from-sky-400 to-blue-500" },
   agents: { title: "Agents", icon: <Sparkles size="0.875rem" />, gradient: "from-pink-300 to-purple-400" },
+  cyoa: { title: "CYOA", icon: <ImageIcon size="0.875rem" />, gradient: "from-orange-400 to-red-500" },
   personas: { title: "Personas", icon: <User size="0.875rem" />, gradient: "from-emerald-400 to-teal-500" },
   settings: { title: "Settings", icon: <Settings size="0.875rem" />, gradient: "from-gray-400 to-gray-500" },
 };
@@ -44,6 +46,7 @@ const PANELS: Record<string, LazyExoticComponent<ComponentType>> = {
   presets: PresetsPanel,
   connections: ConnectionsPanel,
   agents: AgentsPanel,
+  cyoa: CyoaPanel,
   personas: PersonasPanel,
   settings: SettingsPanel,
 };

@@ -63,7 +63,10 @@ type OpenAIProviderKind =
   | "cohere"
   | "custom"
   | "openai-chatgpt"
-  | "local-sidecar";
+  | "local-sidecar"
+  | "deepseek"
+  | "zhipu"
+  | "minimax";
 
 /**
  * Handles OpenAI, OpenRouter, Mistral, Cohere, and any OpenAI-compatible endpoint.

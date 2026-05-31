@@ -15,6 +15,9 @@ export type APIProvider =
   | "openrouter"
   | "nanogpt"
   | "xai"
+  | "deepseek"
+  | "zhipu"
+  | "minimax"
   | "custom"
   | "image_generation";
 

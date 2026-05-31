@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // Layout: Top Bar (polished, with hover glow)
 // ──────────────────────────────────────────────
-import { PanelLeft, Home, Settings, Link, BookOpen, Users, Sparkles, FileText, User, Bot } from "lucide-react";
+import { PanelLeft, Home, Settings, Link, BookOpen, Users, Sparkles, FileText, User, Bot, ImageIcon } from "lucide-react";
 import { useUIStore } from "../../stores/ui.store";
 import { useChatStore } from "../../stores/chat.store";
 import { useAgentStore } from "../../stores/agent.store";
@@ -14,6 +14,7 @@ const RIGHT_PANEL_BUTTONS = [
   { panel: "connections" as const, icon: Link, label: "Connections", color: "from-sky-400 to-blue-500" },
   { panel: "agents" as const, icon: Sparkles, label: "Agents", color: "from-pink-300 to-purple-400" },
   { panel: "personas" as const, icon: User, label: "Personas", color: "from-emerald-400 to-teal-500" },
+  { panel: "cyoa" as const, icon: ImageIcon, label: "CYOA", color: "from-orange-400 to-red-500" },
 ] as const;
 
 export function TopBar() {

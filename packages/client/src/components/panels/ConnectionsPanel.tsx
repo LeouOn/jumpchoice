@@ -62,6 +62,9 @@ const PROVIDER_COLORS: Record<string, { from: string; to: string; ring: string; 
   cohere: { from: "from-rose-400", to: "to-pink-500", ring: "ring-rose-400/40", badge: "bg-rose-400" },
   openrouter: { from: "from-sky-400", to: "to-cyan-500", ring: "ring-sky-400/40", badge: "bg-sky-400" },
   xai: { from: "from-neutral-300", to: "to-zinc-600", ring: "ring-zinc-300/40", badge: "bg-zinc-300" },
+  deepseek: { from: "from-blue-500", to: "to-indigo-600", ring: "ring-blue-500/40", badge: "bg-blue-500" },
+  zhipu: { from: "from-teal-400", to: "to-emerald-500", ring: "ring-teal-400/40", badge: "bg-teal-400" },
+  minimax: { from: "from-amber-400", to: "to-orange-500", ring: "ring-amber-400/40", badge: "bg-amber-400" },
   custom: { from: "from-gray-400", to: "to-slate-500", ring: "ring-gray-400/40", badge: "bg-gray-400" },
   image_generation: {
     from: "from-fuchsia-400",

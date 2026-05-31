@@ -20,6 +20,7 @@ import {
   parsePromptPresetChoices,
   getHiddenCompletionTokens,
   getVisibleCompletionTokens,
+  resolveGenerationParameters,
 } from "../src/services/generation/helpers.js";
 
 describe("generation helpers", () => {
@@ -216,6 +217,146 @@ describe("generation helpers", () => {
     });
     it("getVisibleCompletionTokens returns undefined for no usage", () => {
       expect(getVisibleCompletionTokens(undefined)).toBeUndefined();
+    });
+  });
+
+  describe("resolveGenerationParameters", () => {
+    const defaults = {
+      temperature: 1,
+      maxTokens: 4096,
+      topP: 1 as number | undefined,
+      topK: 0,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
+      showThoughts: true,
+      reasoningEffort: null as "low" | "medium" | "high" | "maximum" | null,
+      verbosity: null as "low" | "medium" | "high" | null,
+      assistantPrefill: "",
+      customParameters: {} as Record<string, unknown>,
+      effectiveMaxContext: 8192 as number | undefined,
+    };
+
+    it("returns defaults unchanged for a basic connection", () => {
+      const result = resolveGenerationParameters(defaults, {
+        conn: { model: "gpt-4o", provider: "openai", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "roleplay",
+        isSceneChat: false,
+        knownModelContext: 128000,
+      });
+      expect(result.temperature).toBe(1);
+      expect(result.maxTokens).toBe(4096);
+      expect(result.resolvedEffort).toBeNull();
+      expect(result.enableThinking).toBe(false);
+    });
+
+    it("applies connection default parameters", () => {
+      const result = resolveGenerationParameters(defaults, {
+        conn: { model: "gpt-4o", provider: "openai", defaultParameters: { temperature: 0.7, maxTokens: 2048 } },
+        chatMeta: {},
+        chatMode: "roleplay",
+        isSceneChat: false,
+        knownModelContext: 128000,
+      });
+      expect(result.temperature).toBe(0.7);
+      expect(result.maxTokens).toBe(2048);
+    });
+
+    it("applies chat parameter overrides on top of connection defaults", () => {
+      const result = resolveGenerationParameters(defaults, {
+        conn: { model: "gpt-4o", provider: "openai", defaultParameters: { temperature: 0.7 } },
+        chatMeta: { chatParameters: { temperature: 0.5 } },
+        chatMode: "roleplay",
+        isSceneChat: false,
+        knownModelContext: 128000,
+      });
+      expect(result.temperature).toBe(0.5);
+    });
+
+    it("forces game mode defaults for non-Gemma models", () => {
+      const result = resolveGenerationParameters({ ...defaults, maxTokens: 100 }, {
+        conn: { model: "gpt-4o", provider: "openai", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "game",
+        isSceneChat: false,
+        knownModelContext: 128000,
+      });
+      expect(result.maxTokens).toBe(16384);
+      expect(result.reasoningEffort).toBe("maximum");
+      expect(result.resolvedEffort).toBe("high");
+      expect(result.enableThinking).toBe(true);
+    });
+
+    it("preserves generous maxTokens for local Gemma in game mode", () => {
+      const result = resolveGenerationParameters(defaults, {
+        conn: { model: "gemma-2-9b", provider: "ollama", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "game",
+        isSceneChat: false,
+        knownModelContext: 8192,
+      });
+      expect(result.maxTokens).toBeGreaterThanOrEqual(16384);
+    });
+
+    it("resolves maximum reasoning effort to xhigh for GPT-5.5", () => {
+      const result = resolveGenerationParameters({ ...defaults, reasoningEffort: "maximum" }, {
+        conn: { model: "gpt-5.5-turbo", provider: "openai", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "roleplay",
+        isSceneChat: false,
+        knownModelContext: 200000,
+      });
+      expect(result.resolvedEffort).toBe("xhigh");
+    });
+
+    it("strips sampling params for Claude Opus 4.7+", () => {
+      const result = resolveGenerationParameters({ ...defaults, topP: 0.9, frequencyPenalty: 0.5, presencePenalty: 0.3 }, {
+        conn: { model: "claude-opus-4-7-20250514", provider: "anthropic", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "roleplay",
+        isSceneChat: false,
+        knownModelContext: 200000,
+      });
+      expect(result.topP).toBeUndefined();
+      expect(result.frequencyPenalty).toBe(0);
+      expect(result.presencePenalty).toBe(0);
+    });
+
+    it("strips sampling params for Claude 4.5/4.6 models", () => {
+      const result = resolveGenerationParameters({ ...defaults, topP: 0.9, topK: 10 }, {
+        conn: { model: "claude-sonnet-4-5-20250514", provider: "anthropic", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "roleplay",
+        isSceneChat: false,
+        knownModelContext: 200000,
+      });
+      expect(result.topP).toBeUndefined();
+      expect(result.topK).toBe(0);
+    });
+
+    it("nullifies reasoning effort for xAI auto-reasoning models", () => {
+      const result = resolveGenerationParameters({ ...defaults, reasoningEffort: "maximum" }, {
+        conn: { model: "grok-4.3-mini", provider: "xai", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "roleplay",
+        isSceneChat: false,
+        knownModelContext: 128000,
+      });
+      expect(result.resolvedEffort).toBeNull();
+      expect(result.enableThinking).toBe(false);
+    });
+
+    it("applies scene chat defaults", () => {
+      const result = resolveGenerationParameters(defaults, {
+        conn: { model: "gpt-4o", provider: "openai", defaultParameters: null },
+        chatMeta: {},
+        chatMode: "roleplay",
+        isSceneChat: true,
+        knownModelContext: 128000,
+      });
+      expect(result.maxTokens).toBe(8192);
+      expect(result.reasoningEffort).toBe("maximum");
+      expect(result.verbosity).toBe("high");
     });
   });
 });

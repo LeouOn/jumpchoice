@@ -90,6 +90,9 @@ const API_KEY_LINKS: Partial<Record<APIProvider, { label: string; url: string }>
   openrouter: { label: "Get your OpenRouter API key", url: "https://openrouter.ai/keys" },
   nanogpt: { label: "Get your NanoGPT API key", url: "https://nano-gpt.com/api" },
   xai: { label: "Get your xAI API key", url: "https://console.x.ai" },
+  deepseek: { label: "Get your DeepSeek API key", url: "https://platform.deepseek.com/api_keys" },
+  zhipu: { label: "Get your Zhipu API key", url: "https://open.bigmodel.cn/usercenter/apikeys" },
+  minimax: { label: "Get your MiniMax API key", url: "https://platform.minimaxi.com/user-center/basic-info" },
 };
 
 const DEFAULT_CACHING_AT_DEPTH = 5;

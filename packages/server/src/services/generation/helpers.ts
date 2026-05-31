@@ -6,7 +6,12 @@ import { join } from "path";
 import { logger } from "../../lib/logger.js";
 import { DATA_DIR } from "../../utils/data-dir.js";
 import { createChatsStorage } from "../storage/chats.storage.js";
-import { parseExtra } from "../../routes/generate/generate-route-utils.js";
+import {
+  parseExtra,
+  parseStoredGenerationParameters,
+  mergeCustomParameters,
+} from "../../routes/generate/generate-route-utils.js";
+import { normalizeChatTopP, normalizeMaxContext, minContextLimit } from "../../routes/generate/prompt.routes.js";
 import { createJournal } from "../game/journal.service.js";
 import { stripGmCommandTags } from "../game/segment-edits.js";
 import { readPreferredFullBodySpriteBase64 } from "../game/sprite.service.js";
@@ -233,4 +238,162 @@ export function normalizeDmTargetName(value: string): string {
     .replace(/^il\s+/, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+export interface GenerationParameters {
+  temperature: number;
+  maxTokens: number;
+  topP: number | undefined;
+  topK: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+  showThoughts: boolean;
+  reasoningEffort: "low" | "medium" | "high" | "maximum" | null;
+  verbosity: "low" | "medium" | "high" | null;
+  assistantPrefill: string;
+  customParameters: Record<string, unknown>;
+  effectiveMaxContext: number | undefined;
+}
+
+export interface ResolvedGenerationParameters extends GenerationParameters {
+  resolvedEffort: "low" | "medium" | "high" | "xhigh" | null;
+  enableThinking: boolean;
+}
+
+export function resolveGenerationParameters(
+  current: GenerationParameters,
+  options: {
+    conn: any;
+    chatMeta: Record<string, unknown>;
+    chatMode: string;
+    isSceneChat: boolean;
+    knownModelContext: number | undefined;
+  },
+): ResolvedGenerationParameters {
+  const { conn, chatMeta, chatMode, isSceneChat, knownModelContext } = options;
+
+  let {
+    temperature,
+    maxTokens,
+    topP,
+    topK,
+    frequencyPenalty,
+    presencePenalty,
+    showThoughts,
+    reasoningEffort,
+    verbosity,
+    assistantPrefill,
+    customParameters,
+    effectiveMaxContext,
+  } = current;
+
+  const connectionParams = parseStoredGenerationParameters(conn.defaultParameters);
+  const chatParams = parseStoredGenerationParameters(chatMeta.chatParameters);
+
+  const applyParameterOverrides = (params: typeof connectionParams) => {
+    if (!params) return;
+    if (typeof params.temperature === "number") temperature = params.temperature;
+    if (typeof params.maxTokens === "number") maxTokens = params.maxTokens;
+    topP = normalizeChatTopP(params.topP) ?? topP;
+    if (typeof params.topK === "number") topK = params.topK;
+    if (typeof params.frequencyPenalty === "number") frequencyPenalty = params.frequencyPenalty;
+    if (typeof params.presencePenalty === "number") presencePenalty = params.presencePenalty;
+    if (typeof params.showThoughts === "boolean") showThoughts = params.showThoughts;
+    if (params.reasoningEffort !== undefined) reasoningEffort = params.reasoningEffort;
+    if (params.verbosity !== undefined) verbosity = params.verbosity;
+    if (typeof params.assistantPrefill === "string") assistantPrefill = params.assistantPrefill;
+    customParameters = mergeCustomParameters(customParameters, params.customParameters);
+
+    const paramsMaxContext = params.useMaxContext ? knownModelContext : normalizeMaxContext(params.maxContext);
+    effectiveMaxContext = minContextLimit(effectiveMaxContext, paramsMaxContext);
+  };
+
+  if (isSceneChat) {
+    maxTokens = 8192;
+    reasoningEffort = "maximum";
+    verbosity = "high";
+  }
+
+  const isLocalGemma = (conn.model ?? "").toLowerCase().includes("gemma");
+  if (chatMode === "game" && !isLocalGemma) {
+    temperature = 1;
+    maxTokens = 16384;
+    topP = 1;
+    topK = 0;
+    frequencyPenalty = 0;
+    presencePenalty = 0;
+    reasoningEffort = "maximum";
+    verbosity = null;
+  } else if (chatMode === "game") {
+    if (typeof chatParams?.maxTokens !== "number") {
+      maxTokens = Math.max(maxTokens, 16384);
+    }
+  }
+
+  applyParameterOverrides(connectionParams);
+  applyParameterOverrides(chatParams);
+
+  let resolvedEffort: "low" | "medium" | "high" | "xhigh" | null =
+    reasoningEffort !== "maximum" ? reasoningEffort : null;
+  if (reasoningEffort === "maximum") {
+    const modelLower = (conn.model ?? "").toLowerCase();
+    const supportsXhigh =
+      modelLower.startsWith("gpt-5.5") ||
+      modelLower.startsWith("gpt-5.4") ||
+      modelLower === "grok-4.20-multi-agent" ||
+      /claude-opus-4-(?:[7-9]|\d{2,})/.test(modelLower);
+    resolvedEffort = supportsXhigh ? "xhigh" : "high";
+  }
+
+  const modelLower = (conn.model ?? "").toLowerCase();
+  const providerLower = (conn.provider ?? "").toLowerCase();
+  const isXaiAutoReasoningModel =
+    (providerLower === "xai" && (modelLower.startsWith("grok-4.3") || modelLower.startsWith("grok-4-1-fast"))) ||
+    (providerLower === "openrouter" && modelLower.startsWith("x-ai/grok-"));
+  if (isXaiAutoReasoningModel) {
+    resolvedEffort = null;
+  }
+
+  if (resolvedEffort && !showThoughts) {
+    showThoughts = true;
+  }
+
+  const enableThinking = !!resolvedEffort;
+
+  const modelLc = (conn.model ?? "").toLowerCase();
+
+  const isClaudeNoSampling = /claude-opus-4-(?:[7-9]|\d{2,})/.test(modelLc);
+  if (isClaudeNoSampling) {
+    topP = undefined;
+    topK = 0;
+    frequencyPenalty = 0;
+    presencePenalty = 0;
+  }
+
+  const isClaudeTemperatureOnly =
+    !isClaudeNoSampling &&
+    (/claude-(opus|sonnet)-4-[56]/.test(modelLc) || /claude-(opus|sonnet)-4\.[56]/.test(modelLc));
+  if (isClaudeTemperatureOnly) {
+    topP = undefined;
+    topK = 0;
+    frequencyPenalty = 0;
+    presencePenalty = 0;
+  }
+
+  return {
+    temperature,
+    maxTokens,
+    topP,
+    topK,
+    frequencyPenalty,
+    presencePenalty,
+    showThoughts,
+    reasoningEffort,
+    verbosity,
+    assistantPrefill,
+    customParameters,
+    effectiveMaxContext,
+    resolvedEffort,
+    enableThinking,
+  };
 }
