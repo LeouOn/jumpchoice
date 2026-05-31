@@ -9,6 +9,7 @@ import {
 import { X, Plus, Trash2, Loader2 } from "lucide-react";
 import { ChoiceCatalog } from "./ChoiceCatalog";
 import { BuildSummary } from "./BuildSummary";
+import { StartCampaignModal } from "./StartCampaignModal";
 
 interface BuildPlannerModalProps {
   document: CyoaDocument;
@@ -24,6 +25,7 @@ export function BuildPlannerModal({ document, choices, onClose }: BuildPlannerMo
 
   const [activeBuildId, setActiveBuildId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [showStartCampaign, setShowStartCampaign] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const activeBuild = builds?.find((b) => b.id === activeBuildId) ?? builds?.[0] ?? null;
@@ -112,6 +114,14 @@ export function BuildPlannerModal({ document, choices, onClose }: BuildPlannerMo
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             )}
+            {activeBuild && (
+              <button
+                onClick={() => setShowStartCampaign(true)}
+                className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-medium text-white"
+              >
+                Start Campaign
+              </button>
+            )}
           </div>
 
           <button
@@ -148,6 +158,13 @@ export function BuildPlannerModal({ document, choices, onClose }: BuildPlannerMo
           </div>
         </div>
       </div>
+      {showStartCampaign && activeBuild && document && (
+        <StartCampaignModal
+          build={activeBuild}
+          document={document}
+          onClose={() => setShowStartCampaign(false)}
+        />
+      )}
     </div>
   );
 }

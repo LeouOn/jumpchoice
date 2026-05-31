@@ -17,9 +17,9 @@ interface ChoiceAnalysis {
 }
 
 interface SynergyPair {
-  choices: string[];
-  synergy: string;
-  combinedValue: number;
+  choiceIds: string[];
+  description: string;
+  combinedValue: "high" | "medium" | "low";
 }
 
 interface BuildArchetype {
@@ -254,13 +254,13 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
                   key={i}
                   className="rounded-md border border-[var(--border)] bg-[var(--card)] p-3"
                 >
-                  <p className="text-sm text-[var(--foreground)]">{syn.synergy}</p>
+                  <p className="text-sm text-[var(--foreground)]">{syn.description}</p>
                   <div className="mt-1 flex items-center gap-2">
                     <span className="text-[10px] text-[var(--muted-foreground)]">
                       Value: {syn.combinedValue}
                     </span>
                     <span className="text-[10px] text-[var(--muted-foreground)]">
-                      {syn.choices.map((id) => choiceMap.get(id)?.name ?? id).join(" + ")}
+                      {syn.choiceIds.map((id) => choiceMap.get(id)?.name ?? id).join(" + ")}
                     </span>
                   </div>
                 </div>

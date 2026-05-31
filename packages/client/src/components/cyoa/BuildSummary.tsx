@@ -5,9 +5,9 @@ import { useUpdateCyoaBuild } from "@/hooks/use-cyoa-builds";
 import { Trash2, AlertTriangle, Zap } from "lucide-react";
 
 interface SynergyPair {
-  choices: string[];
-  synergy: string;
-  combinedValue: number;
+  choiceIds: string[];
+  description: string;
+  combinedValue: "high" | "medium" | "low";
 }
 
 interface BuildSummaryProps {
@@ -31,7 +31,7 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
   const rawAnalysis = document.analysis as { topSynergies?: SynergyPair[] } | null;
   const synergies = rawAnalysis?.topSynergies ?? [];
   const activeSynergies = synergies.filter((syn) =>
-    syn.choices.every((id) => build.selectedChoiceIds.includes(id)),
+    syn.choiceIds.every((id) => build.selectedChoiceIds.includes(id)),
   );
 
   const handleNotesChange = useCallback(
@@ -115,7 +115,7 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
           </h3>
           {activeSynergies.map((syn, i) => (
             <div key={i} className="rounded-md border border-emerald-500/30 bg-emerald-500/5 px-3 py-2">
-              <p className="text-xs text-[var(--foreground)]">{syn.synergy}</p>
+              <p className="text-xs text-[var(--foreground)]">{syn.description}</p>
               <span className="text-[10px] text-emerald-400">Value: {syn.combinedValue}</span>
             </div>
           ))}

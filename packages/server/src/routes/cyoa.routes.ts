@@ -12,7 +12,7 @@ import { resolveBaseUrl } from "./generate/generate-route-utils.js";
 import { extractFromImage } from "../services/cyoa/cyoa-extractor.js";
 import { mergeExtractions } from "../services/cyoa/cyoa-merger.js";
 import { analyzeDocument } from "../services/cyoa/cyoa-analyzer.js";
-import { cyoaDocuments, cyoaImages, cyoaChoices } from "../db/schema/index.js";
+import { cyoaDocuments, cyoaImages, cyoaChoices, cyoaBuilds } from "../db/schema/index.js";
 import { logger } from "../lib/logger.js";
 
 const CYOA_DIR = join(DATA_DIR, "cyoa");
@@ -337,6 +337,36 @@ export async function cyoaRoutes(app: FastifyInstance) {
       images,
       choices,
     };
+  });
+
+  // POST /prompts — build narrator prompts from a document + build
+  app.post("/prompts", async (req, reply) => {
+    const { documentId, buildId } = req.body as { documentId?: string; buildId?: string };
+    if (!documentId || !buildId) return reply.status(400).send({ error: "documentId and buildId required" });
+
+    const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, documentId));
+    const doc = docs[0];
+    if (!doc) return reply.status(404).send({ error: "Document not found" });
+
+    const builds = await app.db.select().from(cyoaBuilds).where(eq(cyoaBuilds.id, buildId));
+    const build = builds[0];
+    if (!build || build.documentId !== documentId) return reply.status(404).send({ error: "Build not found" });
+
+    const choices = await app.db.select().from(cyoaChoices).where(eq(cyoaChoices.documentId, documentId));
+    const selectedChoiceIds = (() => {
+      try { const p = JSON.parse(build.selectedChoiceIds); return Array.isArray(p) ? p : []; } catch { return []; }
+    })();
+
+    let analysis = null;
+    try { analysis = JSON.parse(doc.analysis); } catch {}
+
+    const { buildNarratorPrompts } = await import("../services/cyoa/cyoa-narrator.js");
+    const prompts = buildNarratorPrompts(
+      { name: build.name, description: build.description, selectedChoiceIds, notes: build.notes },
+      { name: doc.name, description: doc.description, pointBudget: doc.pointBudget, choices, analysis },
+    );
+
+    return reply.send(prompts);
   });
 
   // DELETE /:id — delete document + files

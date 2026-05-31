@@ -72,4 +72,14 @@ export function useDeleteCyoaBuild(docId: string) {
   });
 }
 
+export function useCyoaNarratorPrompts() {
+  return useMutation({
+    mutationFn: ({ documentId, buildId }: { documentId: string; buildId: string }) =>
+      api.post<{ narrator: string; director: string; world: string; characters: string }>("/cyoa/prompts", {
+        documentId,
+        buildId,
+      }),
+  });
+}
+
 export type { CyoaBuild };
