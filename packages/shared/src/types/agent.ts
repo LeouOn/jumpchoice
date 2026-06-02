@@ -180,6 +180,9 @@ export const BUILT_IN_AGENT_IDS = {
   CUSTOM_TRACKER: "custom-tracker",
   HAPTIC: "haptic",
   CYOA: "cyoa",
+  CYOA_WORLD: "cyoa-world",
+  CYOA_DIRECTOR: "cyoa-director",
+  CYOA_ADVERSARY: "cyoa-adversary",
   SECRET_PLOT_DRIVER: "secret-plot-driver",
 } as const;
 
