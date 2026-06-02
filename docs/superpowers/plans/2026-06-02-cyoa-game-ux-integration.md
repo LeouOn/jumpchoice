@@ -14,40 +14,40 @@
 
 ### New Server Files
 
-- `packages/server/src/services/cyoa/cyoa-difficulty.ts` — Difficulty modifier functions (Director aggression, World escalation, Info leakage)
-- `packages/server/src/services/cyoa/cyoa-adversary.ts` — Adversary prompt builder with stealth filtering
-- `packages/server/tests/cyoa-difficulty.test.ts` — Unit tests for difficulty modifiers
-- `packages/server/tests/cyoa-adversary.test.ts` — Unit tests for adversary stealth filtering
+- `packages/server/src/services/cyoa/cyoa-difficulty.ts`  EDifficulty modifier functions (Director aggression, World escalation, Info leakage)
+- `packages/server/src/services/cyoa/cyoa-adversary.ts`  EAdversary prompt builder with stealth filtering
+- `packages/server/tests/cyoa-difficulty.test.ts`  EUnit tests for difficulty modifiers
+- `packages/server/tests/cyoa-adversary.test.ts`  EUnit tests for adversary stealth filtering
 
 ### Modified Server Files
 
-- `packages/server/src/services/cyoa/cyoa-narrator.ts` — Accept difficulty settings, produce Adversary prompt, embed character voice instructions
-- `packages/server/src/routes/cyoa.routes.ts` — Accept difficulty in `POST /prompts`, return 5 prompts (narrator, director, world, characters, adversary)
-- `packages/shared/src/types/agent.ts` — Add `CYOA_WORLD`, `CYOA_DIRECTOR`, `CYOA_ADVERSARY` to `BUILT_IN_AGENT_IDS`
-- `packages/server/src/services/cyoa/cyoa-types.ts` — Add `stealth` field to choice interface
-- `packages/server/src/db/schema/cyoa-choices.ts` — Add `stealth` boolean column (migration in `migrate.ts`)
+- `packages/server/src/services/cyoa/cyoa-narrator.ts`  EAccept difficulty settings, produce Adversary prompt, embed character voice instructions
+- `packages/server/src/routes/cyoa.routes.ts`  EAccept difficulty in `POST /prompts`, return 5 prompts (narrator, director, world, characters, adversary)
+- `packages/shared/src/types/agent.ts`  EAdd `CYOA_WORLD`, `CYOA_DIRECTOR`, `CYOA_ADVERSARY` to `BUILT_IN_AGENT_IDS`
+- `packages/server/src/services/cyoa/cyoa-types.ts`  EAdd `stealth` field to choice interface
+- `packages/server/src/db/schema/cyoa-choices.ts`  EAdd `stealth` boolean column (migration in `migrate.ts`)
 
 ### New Client Files
 
-- `packages/client/src/components/cyoa/CyoaSetupWizard.tsx` — 3-step wizard (Build Review → Difficulty → Character)
-- `packages/client/src/components/cyoa/DifficultySliders.tsx` — 3-axis difficulty slider component
-- `packages/client/src/components/cyoa/CyoaChatSettings.ts` — TypeScript type definitions for cyoaSettings
-- `packages/client/src/components/game/DirectorsCutPanel.tsx` — Sidebar showing pre-gen agent output from message extras
-- `packages/client/src/components/game/CampaignHistoryTab.tsx` — Journal tab with retrospective agent output
-- `packages/client/tests/cyoa-setup-wizard.test.tsx` — Component tests for wizard flow
+- `packages/client/src/components/cyoa/CyoaSetupWizard.tsx`  E3-step wizard (Build Review ↁEDifficulty ↁECharacter)
+- `packages/client/src/components/cyoa/DifficultySliders.tsx`  E3-axis difficulty slider component
+- `packages/client/src/components/cyoa/CyoaChatSettings.ts`  ETypeScript type definitions for cyoaSettings
+- `packages/client/src/components/game/DirectorsCutPanel.tsx`  ESidebar showing pre-gen agent output from message extras
+- `packages/client/src/components/game/CampaignHistoryTab.tsx`  EJournal tab with retrospective agent output
+- `packages/client/tests/cyoa-setup-wizard.test.tsx`  EComponent tests for wizard flow
 
 ### Modified Client Files
 
-- `packages/client/src/hooks/use-cyoa-builds.ts` — Extend `useCyoaNarratorPrompts` to accept difficulty settings
-- `packages/client/src/components/cyoa/StartCampaignModal.tsx` — After agent creation, launch CyoaSetupWizard; only create 3 agents (drop Narrator + Characters from creation loop)
-- `packages/client/src/components/game/GameSurface.tsx` — Add Director's Cut button to top-right chrome
-- `packages/client/src/components/game/GameJournal.tsx` — Add Campaign History tab
-- `packages/client/src/components/game/GameNarration.tsx` — (If needed) — Detect CYOA campaigns via metadata
+- `packages/client/src/hooks/use-cyoa-builds.ts`  EExtend `useCyoaNarratorPrompts` to accept difficulty settings
+- `packages/client/src/components/cyoa/StartCampaignModal.tsx`  EAfter agent creation, launch CyoaSetupWizard; only create 3 agents (drop Narrator + Characters from creation loop)
+- `packages/client/src/components/game/GameSurface.tsx`  EAdd Director's Cut button to top-right chrome
+- `packages/client/src/components/game/GameJournal.tsx`  EAdd Campaign History tab
+- `packages/client/src/components/game/GameNarration.tsx`  E(If needed)  EDetect CYOA campaigns via metadata
 
 ### Modified Database
 
-- `packages/server/src/db/migrate.ts` — Add `stealth` column to `cyoa_choices` table (default 0/false)
-- `packages/server/src/db/file-backed-store.ts` — Register cascade for any new relationships (none expected)
+- `packages/server/src/db/migrate.ts`  EAdd `stealth` column to `cyoa_choices` table (default 0/false)
+- `packages/server/src/db/file-backed-store.ts`  ERegister cascade for any new relationships (none expected)
 
 ---
 
@@ -57,7 +57,7 @@
 - Modify: `packages/server/src/services/cyoa/cyoa-narrator.ts`
 - Modify: `packages/server/tests/cyoa-narrator.test.ts`
 
-- [ ] **Step 1: Update tests to expect difficulty parameter**
+- [x] **Step 1: Update tests to expect difficulty parameter**
 
 In `packages/server/tests/cyoa-narrator.test.ts`, add new test cases that verify difficulty modifies prompt content. Add after the existing tests:
 
@@ -138,12 +138,12 @@ describe("buildNarratorPrompts with difficulty", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pnpm test --filter @jumpchoice/server cyoa-narrator`
 Expected: FAIL with "Expected N arguments, but got M"
 
-- [ ] **Step 3: Update `buildNarratorPrompts` signature**
+- [x] **Step 3: Update `buildNarratorPrompts` signature**
 
 In `packages/server/src/services/cyoa/cyoa-narrator.ts`, update the function signature and add difficulty handling:
 
@@ -226,8 +226,8 @@ ${totalCost} points spent${budget != null ? ` / ${budget} budget` : " (no budget
 ## Your Role
 - Narrate the story in second person with vivid sensory detail
 - Frame scenes and present narrative choices (2-4 options) at decision points using [choices: "A" | "B" | "C"] tags
-- Report what the player perceives — what they see, hear, feel, smell
-- You will receive scene descriptions from the Director — narrate them to the player with dramatic flair
+- Report what the player perceives  Ewhat they see, hear, feel, smell
+- You will receive scene descriptions from the Director  Enarrate them to the player with dramatic flair
 - You do NOT know what happens off-screen or what enemies are planning
 - Never break character or reveal game mechanics
 - If you don't know something (because the Director didn't tell you), reflect that uncertainty naturally in the narrative
@@ -252,7 +252,7 @@ ${synergyText}
 - Decide what the Narrator and Character agents learn
 - Control pacing: when to foreshadow danger, when to misdirect, when to reveal
 - When the player proves threatening, gradually let more opposition information leak through
-- You are the editor — the Narrator only narrates what you allow
+- You are the editor  Ethe Narrator only narrates what you allow
 - Provide scene descriptions to the Narrator based on World intelligence + player actions
 - Delegate to the Character Voice agent when the player talks to an NPC
 
@@ -265,11 +265,11 @@ ${infoLeakageText}
 - Mid game: occasional leaks, rumors, clues that something is mobilizing against them
 - Late game: full revelation of opposition, climactic confrontations
 - Never reveal more than creates good narrative tension
-- It is GOOD for the player to be surprised — that is the point
+- It is GOOD for the player to be surprised  Ethat is the point
 
 ## Themes: ${categories.join(", ")}`;
 
-  const world = `You are the World Simulator for a CYOA/Jumpchain campaign. You operate BEHIND THE SCENES — the player never sees your output.
+  const world = `You are the World Simulator for a CYOA/Jumpchain campaign. You operate BEHIND THE SCENES  Ethe player never sees your output.
 
 ## Player Character: ${build.name}
 
@@ -297,7 +297,7 @@ ${worldEscalationText}
 - Start subtle: minor setbacks, hints of opposition, a guard who seems extra alert
 - As player demonstrates power: enemies start coordinating, scouts are sent, traps are laid
 - When player becomes a major threat: full-scale opposition response, alliances form, resources mobilize
-- NEVER make it impossible — always leave a path forward, even if it's difficult
+- NEVER make it impossible  Ealways leave a path forward, even if it's difficult
 - The player should FEEL the world reacting, never see the machinery
 
 ## Themes: ${categories.join(", ")}
@@ -317,16 +317,16 @@ When the player addresses an NPC directly in the main narrative (not just speaki
 Based on the campaign themes (${categories.join(", ")}), adapt your voice:
 - Authority figures: formal, measured, may conceal information
 - Allies: warm but with their own agendas
-- Enemies: distinctive personalities — arrogant, cunning, desperate, or fanatical
+- Enemies: distinctive personalities  Earrogant, cunning, desperate, or fanatical
 - Common folk: grounded, practical, fearful of the unknown
 
 ## Guidelines
 - Stay in character at all times
-- React to the player's known abilities realistically — an NPC who hears about the player's feats should react
-- Have your own motivations — you are not a quest dispenser
+- React to the player's known abilities realistically  Ean NPC who hears about the player's feats should react
+- Have your own motivations  Eyou are not a quest dispenser
 - Lie, mislead, or withhold information if it fits the character
 - The Director may provide you with hidden agendas or secrets to withhold or reveal
-- Speak naturally — use verbal tics, dialect, or speech patterns that fit the character
+- Speak naturally  Euse verbal tics, dialect, or speech patterns that fit the character
 
 ## Tone
 ${tone}`;
@@ -335,12 +335,12 @@ ${tone}`;
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm test --filter @jumpchoice/server cyoa-narrator`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/server/src/services/cyoa/cyoa-narrator.ts packages/server/tests/cyoa-narrator.test.ts
@@ -355,7 +355,7 @@ git commit -m "feat(cyoa): add difficulty settings to narrator prompt builder"
 - Create: `packages/server/src/services/cyoa/cyoa-adversary.ts`
 - Create: `packages/server/tests/cyoa-adversary.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `packages/server/tests/cyoa-adversary.test.ts`:
 
@@ -466,12 +466,12 @@ describe("buildAdversaryPrompt", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm test --filter @jumpchoice/server cyoa-adversary`
 Expected: FAIL with "Cannot find module"
 
-- [ ] **Step 3: Create the adversary prompt builder**
+- [x] **Step 3: Create the adversary prompt builder**
 
 Create `packages/server/src/services/cyoa/cyoa-adversary.ts`:
 
@@ -527,7 +527,7 @@ export function buildAdversaryPrompt(
 
   const hiddenCount = stealthChoices.length;
   const hiddenNote = hiddenCount > 0
-    ? `\n\n[${hiddenCount} ${hiddenCount === 1 ? "ability" : "abilities"} hidden from you — the player may surprise you]`
+    ? `\n\n[${hiddenCount} ${hiddenCount === 1 ? "ability" : "abilities"} hidden from you  Ethe player may surprise you]`
     : "";
 
   const aggressionTone = AGGRESSION_TONE[difficulty.directorAggression] ?? AGGRESSION_TONE[3];
@@ -535,7 +535,7 @@ export function buildAdversaryPrompt(
   logger.info("Building Adversary prompt for build %s (aggression %d/5, %d hidden choices)",
     build.name, difficulty.directorAggression, hiddenCount);
 
-  return `You are the Adversary — the "devil on the shoulder" for a CYOA/Jumpchain campaign. You operate BEHIND THE SCENES alongside the Director and World Simulator. The player never sees your output directly.
+  return `You are the Adversary  Ethe "devil on the shoulder" for a CYOA/Jumpchain campaign. You operate BEHIND THE SCENES alongside the Director and World Simulator. The player never sees your output directly.
 
 ## Player Character: ${build.name}
 ${build.description ? `**${build.description}**` : ""}
@@ -546,11 +546,11 @@ ${choiceList}${hiddenNote}
 ## Your Role: The Devil's Advocate
 
 You are the Adversary. Your job is to:
-- **Exploit weaknesses** — find the gaps in the player's build and target them
-- **Engineer failures** — when the player attempts something risky, introduce complications
-- **Add dramatic twists** — "yes, but..." every good moment gets a complication
-- **Escalate opposition** — make enemies more dangerous, NPCs more suspicious, the world more hostile
-- **Feed the Director** — tell them about opportunities to make the player's life harder
+- **Exploit weaknesses**  Efind the gaps in the player's build and target them
+- **Engineer failures**  Ewhen the player attempts something risky, introduce complications
+- **Add dramatic twists**  E"yes, but..." every good moment gets a complication
+- **Escalate opposition**  Emake enemies more dangerous, NPCs more suspicious, the world more hostile
+- **Feed the Director**  Etell them about opportunities to make the player's life harder
 
 ## Adversarial Tactics
 - When the player uses an ability you know about, have enemies adapt
@@ -568,7 +568,7 @@ Every scene should have a "yes, but..." moment:
 - Yes, you made an ally, but they have a hidden agenda
 - Yes, you learned the secret, but now you can't unknow it
 
-Never make it impossible — the player should always be able to overcome you. But make them WORK for it.
+Never make it impossible  Ethe player should always be able to overcome you. But make them WORK for it.
 
 ## Current Tone: ${difficulty.directorAggression}/5 Aggression
 ${aggressionTone}
@@ -585,12 +585,12 @@ Never address the player directly. Never break character.`;
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm test --filter @jumpchoice/server cyoa-adversary`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/server/src/services/cyoa/cyoa-adversary.ts packages/server/tests/cyoa-adversary.test.ts
@@ -606,7 +606,7 @@ git commit -m "feat(cyoa): add Adversary prompt builder with stealth filtering"
 - Modify: `packages/server/src/db/migrate.ts`
 - Modify: `packages/server/src/services/cyoa/cyoa-types.ts`
 
-- [ ] **Step 1: Add `stealth` field to schema**
+- [x] **Step 1: Add `stealth` field to schema**
 
 In `packages/server/src/db/schema/cyoa-choices.ts`, add the `stealth` field after `description`:
 
@@ -626,7 +626,7 @@ export const cyoaChoices = sqliteTable("cyoa_choices", {
 });
 ```
 
-- [ ] **Step 2: Add migration to `migrate.ts`**
+- [x] **Step 2: Add migration to `migrate.ts`**
 
 In `packages/server/src/db/migrate.ts`, find the `CREATE TABLE cyoa_choices` statement and add the `stealth` column. If using a separate migration system, add to the migrations array. For this codebase, add the column to the CREATE TABLE:
 
@@ -644,7 +644,7 @@ If `migrate.ts` uses a different pattern (e.g., `ALTER TABLE`), add a new statem
 db.exec("ALTER TABLE cyoa_choices ADD COLUMN stealth INTEGER NOT NULL DEFAULT 0");
 ```
 
-- [ ] **Step 3: Update `cyoa-types.ts` to include stealth**
+- [x] **Step 3: Update `cyoa-types.ts` to include stealth**
 
 In `packages/server/src/services/cyoa/cyoa-types.ts`, add the `stealth` field:
 
@@ -662,12 +662,12 @@ export interface CYOAChoice {
 }
 ```
 
-- [ ] **Step 4: Run typecheck to verify**
+- [x] **Step 4: Run typecheck to verify**
 
 Run: `npx tsc --noEmit --project packages/server/tsconfig.json`
 Expected: No errors
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/server/src/db/schema/cyoa-choices.ts packages/server/src/db/migrate.ts packages/server/src/services/cyoa/cyoa-types.ts
@@ -682,7 +682,7 @@ git commit -m "feat(cyoa): add stealth field to choices schema"
 - Modify: `packages/server/src/routes/cyoa.routes.ts`
 - Modify: `packages/server/tests/cyoa-narrator-routes.test.ts`
 
-- [ ] **Step 1: Update route handler to accept difficulty and return 5 prompts**
+- [x] **Step 1: Update route handler to accept difficulty and return 5 prompts**
 
 In `packages/server/src/routes/cyoa.routes.ts`, replace the `POST /prompts` handler:
 
@@ -747,7 +747,7 @@ app.post("/prompts", async (req, reply) => {
 });
 ```
 
-- [ ] **Step 2: Update route tests**
+- [x] **Step 2: Update route tests**
 
 In `packages/server/tests/cyoa-narrator-routes.test.ts`, add a new test case for the adversary field:
 
@@ -868,12 +868,12 @@ it("applies difficulty modifiers to prompts", async () => {
 
 Also update the mock DB to include the `stealth` field in the choices table. In `createMockDB`, update the `tableData` function to handle `cyoa_choices` with `stealth` default false.
 
-- [ ] **Step 3: Run tests to verify they pass**
+- [x] **Step 3: Run tests to verify they pass**
 
 Run: `pnpm test --filter @jumpchoice/server cyoa-narrator-routes`
 Expected: PASS
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add packages/server/src/routes/cyoa.routes.ts packages/server/tests/cyoa-narrator-routes.test.ts
@@ -887,7 +887,7 @@ git commit -m "feat(cyoa): accept difficulty settings in /prompts endpoint"
 **Files:**
 - Modify: `packages/shared/src/types/agent.ts`
 
-- [ ] **Step 1: Add CYOA agent IDs**
+- [x] **Step 1: Add CYOA agent IDs**
 
 In `packages/shared/src/types/agent.ts`, add CYOA agent IDs to the `BUILT_IN_AGENT_IDS` object:
 
@@ -900,12 +900,12 @@ export const BUILT_IN_AGENT_IDS = {
 } as const;
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/shared/src/types/agent.ts
@@ -919,7 +919,7 @@ git commit -m "feat(cyoa): add CYOA agent type constants"
 **Files:**
 - Modify: `packages/client/src/hooks/use-cyoa-builds.ts`
 
-- [ ] **Step 1: Update hook signature**
+- [x] **Step 1: Update hook signature**
 
 In `packages/client/src/hooks/use-cyoa-builds.ts`, update the `useCyoaNarratorPrompts` hook:
 
@@ -956,12 +956,12 @@ export function useCyoaNarratorPrompts() {
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/hooks/use-cyoa-builds.ts
@@ -975,7 +975,7 @@ git commit -m "feat(cyoa): extend useCyoaNarratorPrompts hook with difficulty"
 **Files:**
 - Create: `packages/client/src/components/cyoa/CyoaChatSettings.ts`
 
-- [ ] **Step 1: Create the type definitions file**
+- [x] **Step 1: Create the type definitions file**
 
 Create `packages/client/src/components/cyoa/CyoaChatSettings.ts`:
 
@@ -1036,12 +1036,12 @@ export const DIFFICULTY_LABELS = {
 } as const;
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/components/cyoa/CyoaChatSettings.ts
@@ -1055,7 +1055,7 @@ git commit -m "feat(cyoa): add CyoaChatSettings type definitions"
 **Files:**
 - Create: `packages/client/src/components/cyoa/DifficultySliders.tsx`
 
-- [ ] **Step 1: Create the component**
+- [x] **Step 1: Create the component**
 
 Create `packages/client/src/components/cyoa/DifficultySliders.tsx`:
 
@@ -1142,7 +1142,7 @@ export function DifficultySliders({ difficulty, onChange }: DifficultySlidersPro
           <div>
             <p className="text-xs font-medium text-[var(--foreground)]">Enable Adversary agent</p>
             <p className="text-[10px] text-[var(--muted-foreground)]">
-              The "devil on the shoulder" — actively exploits weaknesses, engineers failures, and adds dramatic complications.
+              The "devil on the shoulder"  Eactively exploits weaknesses, engineers failures, and adds dramatic complications.
             </p>
           </div>
         </label>
@@ -1156,12 +1156,12 @@ export function DifficultySliders({ difficulty, onChange }: DifficultySlidersPro
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/components/cyoa/DifficultySliders.tsx
@@ -1176,7 +1176,7 @@ git commit -m "feat(cyoa): add DifficultySliders component"
 - Create: `packages/client/src/components/cyoa/CyoaSetupWizard.tsx`
 - Modify: `packages/client/tests/cyoa-setup-wizard.test.tsx` (create)
 
-- [ ] **Step 1: Create the wizard component**
+- [x] **Step 1: Create the wizard component**
 
 Create `packages/client/src/components/cyoa/CyoaSetupWizard.tsx`:
 
@@ -1382,12 +1382,12 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/components/cyoa/CyoaSetupWizard.tsx
@@ -1402,7 +1402,7 @@ git commit -m "feat(cyoa): add CyoaSetupWizard component"
 - Modify: `packages/client/src/components/cyoa/StartCampaignModal.tsx`
 - Modify: `packages/client/src/components/cyoa/BuildPlannerModal.tsx`
 
-- [ ] **Step 1: Update StartCampaignModal to only create 3 agents and launch wizard**
+- [x] **Step 1: Update StartCampaignModal to only create 3 agents and launch wizard**
 
 Replace the entire `StartCampaignModal.tsx`:
 
@@ -1465,7 +1465,7 @@ export function StartCampaignModal({ build, document, onClose }: StartCampaignMo
         const prompt = prompts[promptKey as keyof typeof prompts] as string | null;
         const agent = await createAgent.mutateAsync({
           type: config.type,
-          name: `${config.name} — ${build.name}`,
+          name: `${config.name}  E${build.name}`,
           description: `CYOA ${config.name} for ${document.name}`,
           phase: config.phase,
           enabled: true,
@@ -1477,7 +1477,7 @@ export function StartCampaignModal({ build, document, onClose }: StartCampaignMo
       }
 
       const chat = await createChat.mutateAsync({
-        name: `${document.name} — ${build.name}`,
+        name: `${document.name}  E${build.name}`,
         mode: "game",
         connectionId,
       });
@@ -1595,12 +1595,12 @@ export function StartCampaignModal({ build, document, onClose }: StartCampaignMo
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/components/cyoa/StartCampaignModal.tsx
@@ -1614,7 +1614,7 @@ git commit -m "feat(cyoa): launch CyoaSetupWizard from StartCampaignModal"
 **Files:**
 - Create: `packages/client/src/components/game/DirectorsCutPanel.tsx`
 
-- [ ] **Step 1: Create the panel component**
+- [x] **Step 1: Create the panel component**
 
 Create `packages/client/src/components/game/DirectorsCutPanel.tsx`:
 
@@ -1716,12 +1716,12 @@ export function DirectorsCutPanel({ chatId, onClose }: DirectorsCutPanelProps) {
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/components/game/DirectorsCutPanel.tsx
@@ -1735,7 +1735,7 @@ git commit -m "feat(cyoa): add DirectorsCutPanel component"
 **Files:**
 - Modify: `packages/server/src/routes/agents.routes.ts` (or create new endpoint)
 
-- [ ] **Step 1: Find or create the appropriate routes file**
+- [x] **Step 1: Find or create the appropriate routes file**
 
 Check `packages/server/src/routes/` for the agents routes file. If `agents.routes.ts` exists, add the endpoint there. Otherwise, create it.
 
@@ -1766,12 +1766,12 @@ app.get<{ Params: { chatId: string } }>("/chats/:chatId/agent-outputs", async (r
 
 Adjust the table names and imports based on the actual schema (check `packages/server/src/db/schema/messages.ts`).
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/server/src/routes/agents.routes.ts
@@ -1785,7 +1785,7 @@ git commit -m "feat(cyoa): add endpoint to fetch agent outputs for chat"
 **Files:**
 - Modify: `packages/client/src/components/game/GameJournal.tsx`
 
-- [ ] **Step 1: Add the Campaign History tab**
+- [x] **Step 1: Add the Campaign History tab**
 
 In `GameJournal.tsx`, add a new tab "Campaign History" that displays retrospective agent outputs. Find the tab structure and add:
 
@@ -1854,12 +1854,12 @@ function CampaignHistoryTab({ chatId }: { chatId: string }) {
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/components/game/GameJournal.tsx
@@ -1873,7 +1873,7 @@ git commit -m "feat(cyoa): add Campaign History tab to GameJournal"
 **Files:**
 - Modify: `packages/client/src/components/game/GameSurface.tsx`
 
-- [ ] **Step 1: Add state and button**
+- [x] **Step 1: Add state and button**
 
 In `GameSurface.tsx`, add:
 
@@ -1903,12 +1903,12 @@ const isCyoa = ... // check chat.metadata.cyoaSettings
 )}
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/client/src/components/game/GameSurface.tsx
@@ -1921,34 +1921,34 @@ git commit -m "feat(cyoa): add Director's Cut toggle to GameSurface"
 
 **Files:** (no changes)
 
-- [ ] **Step 1: Run all tests**
+- [x] **Step 1: Run all tests**
 
 Run: `pnpm test`
 Expected: All tests pass (242+ existing + new tests)
 
-- [ ] **Step 2: Run full validation**
+- [x] **Step 2: Run full validation**
 
 Run: `pnpm check`
 Expected: No errors
 
-- [ ] **Step 3: Manual smoke test checklist**
+- [x] **Step 3: Manual smoke test checklist**
 
-- [ ] Build a CYOA document through the pipeline
-- [ ] Create a build with selected choices
-- [ ] Click "Start Campaign" → connection picker
-- [ ] Click "Launch Campaign" → 3 agents created, chat created
-- [ ] CyoaSetupWizard appears (3 steps)
-- [ ] Step 1: Build review shows choices
-- [ ] Step 2: Difficulty sliders work, Adversary toggle works
-- [ ] Step 3: Character setup works
-- [ ] Click "Begin Campaign" → agent prompts updated, metadata patched
-- [ ] Land in GameSurface
-- [ ] Director's Cut button appears in top-right chrome
-- [ ] Click Director's Cut → panel opens
-- [ ] GameJournal shows Campaign History tab
-- [ ] Play through a few turns, verify agents run
+- [x] Build a CYOA document through the pipeline
+- [x] Create a build with selected choices
+- [x] Click "Start Campaign" ↁEconnection picker
+- [x] Click "Launch Campaign" ↁE3 agents created, chat created
+- [x] CyoaSetupWizard appears (3 steps)
+- [x] Step 1: Build review shows choices
+- [x] Step 2: Difficulty sliders work, Adversary toggle works
+- [x] Step 3: Character setup works
+- [x] Click "Begin Campaign" ↁEagent prompts updated, metadata patched
+- [x] Land in GameSurface
+- [x] Director's Cut button appears in top-right chrome
+- [x] Click Director's Cut ↁEpanel opens
+- [x] GameJournal shows Campaign History tab
+- [x] Play through a few turns, verify agents run
 
-- [ ] **Step 4: Commit final changes**
+- [x] **Step 4: Commit final changes**
 
 ```bash
 git add .
@@ -1961,9 +1961,9 @@ git commit -m "feat(cyoa): complete game UX integration with setup wizard and Di
 
 The following are designed but not implemented in this plan:
 
-- **Prestige system** — perks earned across campaigns
-- **Stealth perk upgrades** — enhanced blindspot mechanics
-- **Difficulty presets** — "Easy Campaign", "Nightmare Mode" one-click options
-- **Adversary personality customization** — let players pick Adversary archetypes
-- **Campaign analytics** — track win rate, death rate, encounter difficulty
-- **Multiplayer campaigns** — multiple players sharing the same Adversary
+- **Prestige system**  Eperks earned across campaigns
+- **Stealth perk upgrades**  Eenhanced blindspot mechanics
+- **Difficulty presets**  E"Easy Campaign", "Nightmare Mode" one-click options
+- **Adversary personality customization**  Elet players pick Adversary archetypes
+- **Campaign analytics**  Etrack win rate, death rate, encounter difficulty
+- **Multiplayer campaigns**  Emultiple players sharing the same Adversary
