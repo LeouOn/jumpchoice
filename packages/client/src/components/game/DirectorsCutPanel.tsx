@@ -22,7 +22,7 @@ export function DirectorsCutPanel({ chatId, onClose }: DirectorsCutPanelProps) {
     let cancelled = false;
     (async () => {
       try {
-        const data = await api.get<{ outputs: AgentOutput[] }>(`/api/chats/${chatId}/agent-outputs`);
+        const data = await api.get<{ outputs: AgentOutput[] }>(`/api/cyoa/chats/${chatId}/agent-outputs`);
         if (!cancelled) {
           setOutputs(data.outputs);
           setLoading(false);
