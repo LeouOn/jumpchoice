@@ -6,13 +6,13 @@
 // all assembled from committed snapshots, no LLM.
 // ──────────────────────────────────────────────
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { X, MapPin, Swords, ScrollText, Package, Users, PenLine, BookOpen, Trash2, Loader2, Wand2 } from "lucide-react";
+import { X, MapPin, Swords, ScrollText, Package, Users, PenLine, BookOpen, Trash2, Loader2, Wand2, History } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { api } from "../../lib/api-client";
 import { applyInlineMarkdown, renderMarkdownBlocks } from "../../lib/markdown";
 import { AnimatedText } from "./AnimatedText";
 
-import type { GameNpc } from "@jumpchoice/shared";
+import type { Chat, GameNpc } from "@jumpchoice/shared";
 
 interface JournalEntry {
   timestamp: string;
@@ -47,6 +47,7 @@ interface Journal {
 
 interface GameJournalProps {
   chatId: string;
+  chat?: Chat;
   npcs?: GameNpc[];
   onClose: () => void;
   onNpcPortraitClick?: (npcName: string) => void;
@@ -56,7 +57,7 @@ interface GameJournalProps {
   onNpcRemove?: (npcName: string) => Promise<void> | void;
 }
 
-type TabId = "all" | "npcs" | "locations" | "inventory" | "library" | "notes";
+type TabId = "all" | "npcs" | "locations" | "inventory" | "library" | "notes" | "campaign";
 
 const TABS: Array<{ id: TabId; label: string; icon: typeof ScrollText }> = [
   { id: "all", label: "Timeline", icon: ScrollText },
@@ -65,6 +66,7 @@ const TABS: Array<{ id: TabId; label: string; icon: typeof ScrollText }> = [
   { id: "inventory", label: "Items", icon: Package },
   { id: "library", label: "Library", icon: BookOpen },
   { id: "notes", label: "Notes", icon: PenLine },
+  { id: "campaign", label: "Campaign History", icon: History },
 ];
 
 const TYPE_ICONS: Record<string, typeof ScrollText> = {
@@ -164,6 +166,7 @@ function dedupeAdjacentInventoryEntries<
 
 export function GameJournal({
   chatId,
+  chat,
   npcs,
   onClose,
   onNpcPortraitClick,
@@ -172,6 +175,8 @@ export function GameJournal({
   generatingNpcPortraitNames,
   onNpcRemove,
 }: GameJournalProps) {
+  const isCyoa =
+    (chat?.metadata?.cyoaSettings as { isCyoa?: boolean } | undefined)?.isCyoa === true;
   const [journal, setJournal] = useState<Journal | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [playerNotes, setPlayerNotes] = useState("");
@@ -279,7 +284,7 @@ export function GameJournal({
       {/* Tabs — horizontally scrollable on mobile */}
       <div className="overflow-x-auto border-b border-white/10 px-4 py-2 scrollbar-hide [-webkit-overflow-scrolling:touch]">
         <div className="flex gap-1 w-max min-w-full">
-          {TABS.map((tab) => {
+          {TABS.filter((tab) => tab.id !== "campaign" || isCyoa).map((tab) => {
             const Icon = tab.icon;
             return (
               <button
@@ -319,6 +324,7 @@ export function GameJournal({
         {activeTab === "inventory" && <InventoryView items={journal.inventoryLog} />}
         {activeTab === "library" && <LibraryView entries={visibleEntries.filter((e) => e.type === "note")} />}
         {activeTab === "notes" && <NotesView notes={playerNotes} onChange={handleNotesChange} saved={notesSaved} />}
+        {activeTab === "campaign" && isCyoa && <CampaignHistoryTab chatId={chatId} />}
       </div>
     </div>
   );
@@ -632,6 +638,67 @@ function NotesView({ notes, onChange, saved }: { notes: string; onChange: (text:
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+interface CyoaAgentOutput {
+  id: string;
+  agentType: string;
+  text: string;
+  createdAt: string;
+}
+
+function CampaignHistoryTab({ chatId }: { chatId: string }) {
+  const [outputs, setOutputs] = useState<CyoaAgentOutput[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await api.get<{ outputs: CyoaAgentOutput[] }>(`/api/cyoa/chats/${chatId}/agent-outputs`);
+        if (!cancelled) {
+          setOutputs(data.outputs);
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [chatId]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-6 text-white/40">
+        <Loader2 className="h-5 w-5 animate-spin" />
+      </div>
+    );
+  }
+
+  if (outputs.length === 0) {
+    return <p className="text-xs text-white/40">No campaign history yet.</p>;
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="text-[0.625rem] text-white/40">
+        Retrospective view: here's what the World, Director, and Adversary were doing during your campaign.
+      </p>
+      {outputs.map((output) => (
+        <div key={output.id} className="rounded-md border border-white/10 bg-white/5 p-3">
+          <div className="mb-1 flex items-center gap-2">
+            <span className="text-[0.625rem] font-medium text-[var(--primary)]">{output.agentType}</span>
+            <span className="text-[0.625rem] text-white/40">
+              {new Date(output.createdAt).toLocaleString()}
+            </span>
+          </div>
+          <p className="whitespace-pre-wrap text-xs text-white/80">{output.text}</p>
+        </div>
+      ))}
     </div>
   );
 }

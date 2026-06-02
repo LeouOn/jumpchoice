@@ -8701,6 +8701,7 @@ export function GameSurface({
               {journalOpen && (
                 <GameJournal
                   chatId={activeChatId}
+                  chat={chat}
                   npcs={npcs}
                   onClose={() => setJournalOpen(false)}
                   onNpcPortraitClick={handleNpcPortraitClick}
