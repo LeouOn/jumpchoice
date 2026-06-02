@@ -40,6 +40,7 @@ export const cyoaChoices = sqliteTable("cyoa_choices", {
   category: text("category").notNull().default("uncategorized"),
   name: text("name").notNull(),
   description: text("description").notNull().default(""),
+  stealth: integer("stealth", { mode: "boolean" }).notNull().default(false),
   pointCost: integer("point_cost").notNull().default(0),
   prerequisites: text("prerequisites").notNull().default("[]"),
   tags: text("tags").notNull().default("[]"),
