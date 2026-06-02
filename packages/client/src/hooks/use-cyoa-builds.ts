@@ -72,12 +72,33 @@ export function useDeleteCyoaBuild(docId: string) {
   });
 }
 
+export interface CyoaDifficulty {
+  directorAggression: number;      // 1-5
+  worldEscalation: number;         // 1-5
+  informationLeakage: number;      // 1-5
+  adversaryEnabled: boolean;
+  stealthDisabled: boolean;
+}
+
+export interface CyoaNarratorPrompts {
+  narrator: string;
+  director: string;
+  world: string;
+  characters: string;
+  adversary: string | null;
+}
+
 export function useCyoaNarratorPrompts() {
   return useMutation({
-    mutationFn: ({ documentId, buildId }: { documentId: string; buildId: string }) =>
-      api.post<{ narrator: string; director: string; world: string; characters: string }>("/cyoa/prompts", {
+    mutationFn: ({ documentId, buildId, difficulty }: {
+      documentId: string;
+      buildId: string;
+      difficulty?: Partial<CyoaDifficulty>;
+    }) =>
+      api.post<CyoaNarratorPrompts>("/cyoa/prompts", {
         documentId,
         buildId,
+        difficulty,
       }),
   });
 }
