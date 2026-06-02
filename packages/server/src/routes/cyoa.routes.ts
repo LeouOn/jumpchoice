@@ -341,7 +341,18 @@ export async function cyoaRoutes(app: FastifyInstance) {
 
   // POST /prompts — build narrator prompts from a document + build
   app.post("/prompts", async (req, reply) => {
-    const { documentId, buildId } = req.body as { documentId?: string; buildId?: string };
+    const { documentId, buildId, difficulty } = req.body as {
+      documentId?: string;
+      buildId?: string;
+      difficulty?: {
+        directorAggression?: number;
+        worldEscalation?: number;
+        informationLeakage?: number;
+        adversaryEnabled?: boolean;
+        stealthDisabled?: boolean;
+      };
+    };
+
     if (!documentId || !buildId) return reply.status(400).send({ error: "documentId and buildId required" });
 
     const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, documentId));
@@ -360,13 +371,32 @@ export async function cyoaRoutes(app: FastifyInstance) {
     let analysis = null;
     try { analysis = JSON.parse(doc.analysis); } catch {}
 
+    const difficultySettings = {
+      directorAggression: difficulty?.directorAggression ?? 3,
+      worldEscalation: difficulty?.worldEscalation ?? 3,
+      informationLeakage: difficulty?.informationLeakage ?? 3,
+      adversaryEnabled: difficulty?.adversaryEnabled ?? true,
+      stealthDisabled: difficulty?.stealthDisabled ?? false,
+    };
+
     const { buildNarratorPrompts } = await import("../services/cyoa/cyoa-narrator.js");
     const prompts = buildNarratorPrompts(
       { name: build.name, description: build.description, selectedChoiceIds, notes: build.notes },
       { name: doc.name, description: doc.description, pointBudget: doc.pointBudget, choices, analysis },
+      difficultySettings,
     );
 
-    return reply.send(prompts);
+    let adversary: string | null = null;
+    if (difficultySettings.adversaryEnabled) {
+      const { buildAdversaryPrompt } = await import("../services/cyoa/cyoa-adversary.js");
+      adversary = buildAdversaryPrompt(
+        { name: build.name, description: build.description, selectedChoiceIds },
+        { name: doc.name, choices },
+        difficultySettings,
+      );
+    }
+
+    return reply.send({ ...prompts, adversary });
   });
 
   // DELETE /:id — delete document + files

@@ -394,4 +394,120 @@ describe("POST /api/cyoa/prompts", () => {
     expect(body.narrator).toContain("No active synergies detected");
     await app.close();
   });
+
+  it("returns adversary prompt when difficulty.adversaryEnabled is true", async () => {
+    app = await buildApp();
+    mockDB._docs.push({
+      id: "doc1",
+      name: "Test",
+      status: "analyzed",
+      analysis: "{}",
+      mergedDocument: "{}",
+    });
+    mockDB._builds.push({
+      id: "build1",
+      documentId: "doc1",
+      name: "Build",
+      selectedChoiceIds: '["c1"]',
+    });
+    mockDB._choices.push({
+      id: "c1",
+      documentId: "doc1",
+      name: "Fireball",
+      category: "magic",
+      pointCost: 5,
+      stealth: false,
+    });
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/cyoa/prompts",
+      payload: {
+        documentId: "doc1",
+        buildId: "build1",
+        difficulty: { adversaryEnabled: true },
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.adversary).toBeTruthy();
+    expect(body.adversary).toContain("Adversary");
+    await app.close();
+  });
+
+  it("returns adversary: null when difficulty.adversaryEnabled is false", async () => {
+    app = await buildApp();
+    mockDB._docs.push({
+      id: "doc1",
+      name: "Test",
+      status: "analyzed",
+      analysis: "{}",
+      mergedDocument: "{}",
+    });
+    mockDB._builds.push({
+      id: "build1",
+      documentId: "doc1",
+      name: "Build",
+      selectedChoiceIds: '["c1"]',
+    });
+    mockDB._choices.push({
+      id: "c1",
+      documentId: "doc1",
+      name: "Fireball",
+      category: "magic",
+      pointCost: 5,
+      stealth: false,
+    });
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/cyoa/prompts",
+      payload: {
+        documentId: "doc1",
+        buildId: "build1",
+        difficulty: { adversaryEnabled: false },
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().adversary).toBeNull();
+    await app.close();
+  });
+
+  it("applies difficulty modifiers to prompts", async () => {
+    app = await buildApp();
+    mockDB._docs.push({
+      id: "doc1",
+      name: "Test",
+      status: "analyzed",
+      analysis: "{}",
+      mergedDocument: "{}",
+    });
+    mockDB._builds.push({
+      id: "build1",
+      documentId: "doc1",
+      name: "Build",
+      selectedChoiceIds: '["c1"]',
+    });
+    mockDB._choices.push({
+      id: "c1",
+      documentId: "doc1",
+      name: "Fireball",
+      category: "magic",
+      pointCost: 5,
+      stealth: false,
+    });
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/cyoa/prompts",
+      payload: {
+        documentId: "doc1",
+        buildId: "build1",
+        difficulty: { directorAggression: 5, worldEscalation: 5, informationLeakage: 5 },
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.director).toContain("Actively deceive");
+    expect(body.world).toContain("React immediately");
+    expect(body.director).toContain("Pass almost nothing");
+    await app.close();
+  });
 });
