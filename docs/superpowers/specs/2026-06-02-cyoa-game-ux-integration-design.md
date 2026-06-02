@@ -6,42 +6,62 @@
 
 ## Overview
 
-Integrate the 4-agent CYOA narrator system into JumpChoice's existing game-mode UX. Players launch campaigns from the Build Planner, configure difficulty and character settings through a CYOA Setup Wizard, and play through the existing GameSurface with the narrator agents working invisibly behind the scenes.
+Integrate the CYOA narrator system into JumpChoice's existing game-mode UX. Players launch campaigns from the Build Planner, configure difficulty and character settings through a CYOA Setup Wizard, and play through the existing GameSurface with CYOA agents working invisibly behind the scenes.
 
 ## Design Decisions
 
 - **Reuse GameSurface** — no new game surface. The existing RPG experience (sprites, HUD, choice cards, journal) serves CYOA campaigns.
-- **All agents as separate entities** — Narrator, Director, World, Characters, and optional Adversary each run as distinct agents in the generation pipeline.
-- **Pre-generation injection** — Director + World + Adversary run as `pre_generation` agents. Their outputs are injected into the Narrator's context as intelligence briefs. The Narrator runs as the main visible GM.
+- **Narrator = main generation, not an agent** — the main LLM call IS the Narrator. The CYOA-aware system prompt (from `buildNarratorPrompts()`) replaces the default GM prompt built by `game-prompt-builder.ts`. No separate Narrator agent.
+- **3-4 pre-gen agents** — `cyoa-world`, `cyoa-director`, and optional `cyoa-adversary` run as `pre_generation` agents via the existing `pre-gen-runner.ts` pipeline. Their outputs inject into the main prompt as an Intelligence Brief. No pipeline changes needed.
+- **Character Voices = prompt injection** — the Narrator prompt includes instructions to speak in NPC voices when the player addresses NPCs. No separate agent needed for this.
+- **`cyoa-` prefix avoids naming collision** — the existing pipeline already has a `director` agent (Narrative Director) and `secret-plot-driver` agent. CYOA agents use `cyoa-director`, `cyoa-world`, `cyoa-adversary` to avoid collision.
+- **Pre-gen output is invisible by default** — no `hiddenFromUser` flag needed. Pre-gen agent output is injected into the prompt, not displayed. Only the main generation (Narrator) is visible.
 - **GameChoiceCards** — the Narrator emits `[choices: A|B|C]` tags, rendered by the existing GameChoiceCards widget.
-- **Hidden by default** — Director/World/Adversary outputs are `hiddenFromUser: true`. Director's Cut panel and Journal retrospective reveal them opt-in.
-- **Adversary is optional** — the 5th agent combines hostile escalation (Adversary) with dramatic complication (Trickster). Toggleable at setup.
+- **Adversary is optional** — the 4th pre-gen agent combines hostile escalation (Adversary) with dramatic complication (Trickster). Toggleable at setup.
 
 ## Agent Architecture
 
-### Always Active (4 agents)
+### How CYOA Agents Fit the Existing Pipeline
 
-| Agent | Phase | Visible | Role |
+The game-mode generation pipeline already has 3 phases:
+
+```
+pre_generation (existing agents):          CYOA additions:
+  secret-plot-driver ──┐                    cyoa-world ──────────┐
+  director (narrative)─┤ inject             cyoa-director ───────┤ inject
+  knowledge-retrieval ─┤ into prompt        cyoa-adversary ──────┘ into prompt
+  ...                   ┘                                         
+                                                           
+main generation (= Narrator):                              
+  game-prompt-builder.ts builds GM prompt  →  CYOA: uses buildNarratorPrompts() instead
+  streams to GameSurface                  →  same, with [choices] tags
+                                                           
+post_processing (existing agents):          
+  world-state, expression, combat, etc.    →  unchanged
+```
+
+No changes to `pre-gen-runner.ts`, `agent-pipeline.ts`, or the post-processing pipeline.
+
+### Pre-Gen Agents (3-4, all hidden)
+
+| Agent Type | Phase | Existing Collision | Role |
 |---|---|---|---|
-| Narrator | `parallel` (main GM) | Yes — GameSurface narration | Tells the story in second person, emits `[choices]` tags, describes scenes. Player's only window into the world. |
-| Director | `pre_generation` | No (hidden) | Receives intelligence from World + Adversary. Decides what the Narrator learns. Controls pacing, foreshadowing, reveals. |
-| World Simulator | `pre_generation` | No (hidden) | Tracks off-screen NPCs, factions, events. Escalates opposition based on player's growing power. |
-| Character Voices | `parallel` (sub-agent) | No (fed to Narrator) | Speaks as NPCs. Director delegates when the player interacts with NPCs. Output rendered through Narrator's speaker-tag system. |
-
-### Optional (5th agent)
-
-| Agent | Phase | Visible | Role |
-|---|---|---|---|
-| Adversary | `pre_generation` | No (hidden) | "Devil on the shoulder." Exploits weaknesses, engineers failures, adds dramatic complications. Combines hostile escalation with "yes, but..." twists. Director listens to this agent. |
+| `cyoa-world` | `pre_generation` | None (new) | Tracks off-screen NPCs, factions, events. Escalates opposition. Produces intelligence brief for Director. |
+| `cyoa-director` | `pre_generation` | Avoids existing `director` | Receives intelligence from World + Adversary. Filters it based on difficulty settings. Produces Intelligence Brief for the Narrator prompt. |
+| `cyoa-adversary` | `pre_generation` (optional) | None (new) | "Devil on the shoulder." Exploits weaknesses, engineers failures, adds dramatic complications. Director listens to this agent. |
+| `cyoa-voices` | **Not an agent** — prompt injection | — | Character voice instructions embedded in the Narrator's system prompt. The LLM speaks in NPC voices when the player addresses them, using the existing speaker-tag system. |
 
 ### Per-Turn Flow
 
 1. Player sends message
-2. World Simulator + Director + (Adversary if enabled) run as pre-gen agents concurrently
-3. Their outputs are injected into the Narrator's context as an "Intelligence Brief"
-4. Narrator streams visible narration to GameSurface (with `[choices]` tags for decision points)
-5. Character Voices provides NPC dialogue as needed (fed through Narrator's speaker-tag system)
-6. Pre-gen outputs stored as hidden messages for Journal retrospective
+2. `pre-gen-runner.ts` runs all pre-gen agents (existing + CYOA) in parallel:
+   - `cyoa-world` produces off-screen intelligence
+   - `cyoa-adversary` (if enabled) produces hostile analysis and counter-strategies
+   - `cyoa-director` filters intelligence based on difficulty, produces Narrator-ready Intelligence Brief
+3. Pre-gen outputs injected into the main prompt via `formatAgentInjections()` + `injectAtDepth()` (existing mechanism)
+4. Main generation runs with CYOA-aware system prompt + Intelligence Brief → streams narration to GameSurface
+5. Narration includes `[choices]` tags rendered by GameChoiceCards, and NPC dialogue rendered through speaker tags
+6. Pre-gen outputs stored in message extras for Journal retrospective
 
 ### Stealth/Blindspot Mechanic
 
@@ -114,7 +134,7 @@ interface CyoaChatSettings {
 
 ### Default: All Hidden
 
-Director, World, and Adversary outputs have `hiddenFromUser: true`. The player sees only the Narrator's output. This provides real challenge — the player doesn't know what's coming.
+Pre-gen agent outputs are invisible by design — they inject into the prompt via `formatAgentInjections()`, they don't produce visible messages. The player sees only the main generation (Narrator output). This provides real challenge — the player doesn't know what's coming.
 
 ### Director's Cut Panel (Real-Time, Opt-In)
 
@@ -209,8 +229,9 @@ StartCampaignModal (existing)
   └─ Click "Launch Campaign"
       │
       ▼  fetch prompts via POST /cyoa/prompts
-      │  create 4-5 agents with base prompts
+      │  create 3-4 pre-gen agents (cyoa-world, cyoa-director, cyoa-adversary)
       │  create chat with mode: "game"
+      │  attach agents via activeAgentIds + enableAgents
       │
       ▼
 CYOA Setup Wizard (NEW)
@@ -224,12 +245,16 @@ CYOA Setup Wizard (NEW)
       │
       ▼
 GameSurface (existing)
-  ├─ GameSetupWizard handles initial world setup (existing)
-  ├─ Narrator streams narration
+  ├─ game-prompt-builder.ts detects CYOA campaign
+  │    └─ uses buildNarratorPrompts() as system prompt (not default GM prompt)
+  ├─ pre-gen-runner.ts runs existing + CYOA agents in parallel
+  │    └─ CYOA agents inject Intelligence Brief into main prompt
+  ├─ Main generation (= Narrator) streams narration
+  │    └─ Includes [choices] tags + NPC speaker tags
   ├─ GameChoiceCards present decision points
-  ├─ Director's Cut toggle (new button)
-  ├─ Journal Campaign History tab (new)
-  └─ Thought bubbles (existing system)
+  ├─ Director's Cut toggle (new button, reads message extras)
+  ├─ Journal Campaign History tab (new, reads message extras)
+  └─ Thought bubbles (existing system, automatic)
 ```
 
 **Key:** The CYOA Setup Wizard runs BEFORE the existing GameSetupWizard. The CYOA wizard sets up campaign-specific metadata (difficulty, character, agents). When the player enters GameSurface, the existing setup wizard handles world-building (scene setting, genre, tone) using the CYOA build data as context.
@@ -240,7 +265,7 @@ GameSurface (existing)
 
 1. **CyoaSetupWizard** — 3-step modal component (Build Review → Difficulty → Character)
 2. **DifficultySliders** — reusable slider component for the 3 difficulty axes
-3. **DirectorsCutPanel** — GameSurface sidebar showing real-time pre-gen agent output
+3. **DirectorsCutPanel** — GameSurface sidebar showing pre-gen agent output from message extras
 4. **CampaignHistoryTab** — new Journal tab showing retrospective agent outputs
 
 ### Modified Components
@@ -248,13 +273,14 @@ GameSurface (existing)
 5. **StartCampaignModal** — after agent creation, launch CyoaSetupWizard instead of navigating directly to chat
 6. **GameSurface** — add Director's Cut button to top-right chrome
 7. **GameJournal** — add Campaign History tab
-8. **game-prompt-builder.ts** — detect CYOA campaigns and inject Intelligence Brief from pre-gen agents
+8. **game-prompt-builder.ts** — detect CYOA campaigns (`chat.metadata.cyoaSettings.isCyoa`) and use `buildNarratorPrompts()` output as the system prompt instead of the default GM prompt
 
 ### Extended Server Modules
 
-9. **cyoa-narrator.ts** — extend `buildNarratorPrompts()` to accept difficulty settings and produce Adversary prompt with stealth filtering
+9. **cyoa-narrator.ts** — extend `buildNarratorPrompts()` to accept difficulty settings and produce Adversary prompt with stealth filtering; character voice instructions embedded in narrator prompt
 10. **POST /cyoa/prompts** endpoint — accept difficulty settings and optional adversary flag
-11. **Agent prompt patching** — new endpoint or extension to update agent prompts after difficulty selection
+11. **Agent prompt patching** — update agent configs with difficulty-modified prompts after setup wizard
+12. **`BUILT_IN_AGENT_IDS`** — add `cyoa-director`, `cyoa-world`, `cyoa-adversary` to the built-in agent registry (or create them dynamically from CYOA build data)
 
 ### New Data
 
