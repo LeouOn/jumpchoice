@@ -12,7 +12,7 @@ import { resolveBaseUrl } from "./generate/generate-route-utils.js";
 import { extractFromImage } from "../services/cyoa/cyoa-extractor.js";
 import { mergeExtractions } from "../services/cyoa/cyoa-merger.js";
 import { analyzeDocument } from "../services/cyoa/cyoa-analyzer.js";
-import { cyoaDocuments, cyoaImages, cyoaChoices, cyoaBuilds } from "../db/schema/index.js";
+import { cyoaDocuments, cyoaImages, cyoaChoices, cyoaBuilds, messages } from "../db/schema/index.js";
 import { logger } from "../lib/logger.js";
 
 const CYOA_DIR = join(DATA_DIR, "cyoa");
@@ -417,4 +417,30 @@ export async function cyoaRoutes(app: FastifyInstance) {
 
     return { success: true };
   });
+
+  // GET /chats/:chatId/agent-outputs — fetch CYOA agent outputs for a chat
+  app.get<{ Params: { chatId: string } }>("/chats/:chatId/agent-outputs", async (req, reply) => {
+    const { chatId } = req.params;
+
+    const allMessages = await app.db
+      .select()
+      .from(messages)
+      .where(eq(messages.chatId, chatId))
+      .orderBy(messages.createdAt);
+
+    const cyoaOutputs = allMessages
+      .map((m) => {
+        const extra = (() => {
+          try { return JSON.parse(m.extra || "{}"); } catch { return {}; }
+        })();
+        if (typeof extra.agentType === "string" && extra.agentType.startsWith("cyoa-") && typeof extra.agentOutput === "string") {
+          return { id: m.id, agentType: extra.agentType, text: extra.agentOutput, createdAt: m.createdAt };
+        }
+        return null;
+      })
+      .filter((o): o is { id: string; agentType: string; text: string; createdAt: string } => o !== null);
+
+    return reply.send({ outputs: cyoaOutputs });
+  });
 }
+
