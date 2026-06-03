@@ -156,36 +156,36 @@ export async function cyoaRoutes(app: FastifyInstance) {
 
     const fallbackProviders: FallbackProvider[] = [];
 
-    const allConns = await connections.list();
-    const zhipuConn = (allConns as any[]).find(
-      (c: any) => c.provider === "zhipu" && c.apiKey,
-    );
-    if (zhipuConn && conn.provider !== "zhipu") {
-      const zhipuBaseUrl = resolveBaseUrl(zhipuConn as any);
-      if (zhipuBaseUrl) {
-        const visionModel = zhipuConn.model?.includes("v") ? zhipuConn.model : "glm-4v-flash";
-        fallbackProviders.push({
-          provider: createLLMProvider("zhipu", zhipuBaseUrl, zhipuConn.apiKey, zhipuConn.maxContext, zhipuConn.openrouterProvider, zhipuConn.maxTokensOverride) as any,
-          model: visionModel,
-          label: "zhipu-glm-vision",
-        });
+    const allConns = (await connections.list()) as any[];
+    const zhipuRow = allConns.find((c: any) => c.provider === "zhipu");
+    if (zhipuRow && conn.provider !== "zhipu") {
+      const zhipuConn = await connections.getWithKey(zhipuRow.id);
+      if (zhipuConn) {
+        const zhipuBaseUrl = resolveBaseUrl(zhipuConn as any);
+        if (zhipuBaseUrl) {
+          const visionModel = zhipuConn.model?.includes("v") ? zhipuConn.model : "glm-4v-flash";
+          fallbackProviders.push({
+            provider: createLLMProvider("zhipu", zhipuBaseUrl, zhipuConn.apiKey, zhipuConn.maxContext, zhipuConn.openrouterProvider, zhipuConn.maxTokensOverride) as any,
+            model: visionModel,
+            label: "zhipu-glm-vision",
+          });
+        }
       }
     }
 
-    const openrouterConn = (allConns as any[]).find(
-      (c: any) => c.provider === "openrouter" && c.apiKey,
-    );
-    if (openrouterConn && conn.provider !== "openrouter") {
-      const orBaseUrl = resolveBaseUrl(openrouterConn as any);
-      if (orBaseUrl) {
-        fallbackProviders.push({
-          provider: createLLMProvider("openrouter", orBaseUrl, openrouterConn.apiKey, openrouterConn.maxContext, openrouterConn.openrouterProvider, openrouterConn.maxTokensOverride) as any,
-          model: "google/gemini-3.5-flash",
-          label: "openrouter-gemini-3.5-flash",
-        });
+    const openrouterRow = allConns.find((c: any) => c.provider === "openrouter");
+    if (openrouterRow && conn.provider !== "openrouter") {
+      const openrouterConn = await connections.getWithKey(openrouterRow.id);
+      if (openrouterConn) {
+        const orBaseUrl = resolveBaseUrl(openrouterConn as any);
+        if (orBaseUrl) {
+          fallbackProviders.push({
+            provider: createLLMProvider("openrouter", orBaseUrl, openrouterConn.apiKey, openrouterConn.maxContext, openrouterConn.openrouterProvider, openrouterConn.maxTokensOverride) as any,
+            model: "google/gemini-3.5-flash",
+            label: "openrouter-gemini-3.5-flash",
+          });
+        }
       }
-    } else if (!openrouterConn) {
-      // no openrouter connection yet — no fallback from openrouter
     }
 
     logger.info("[cyoa] Extraction chain: primary=%s/%s, fallbacks=[%s]",
