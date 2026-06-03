@@ -1406,23 +1406,57 @@ function openRouterAspectRatio(width?: number, height?: number): string | null {
   )[0];
 }
 
-function openRouterModalities(model?: string): string[] {
+function openRouterModalities(model?: string): string[] | null {
   const lower = model?.trim().toLowerCase() ?? "";
-  if (lower.startsWith("black-forest-labs/") || lower.startsWith("sourceful/") || lower.startsWith("recraft/")) {
+
+  // Models that reject the `modalities` field (404) — omit it entirely.
+  if (
+    lower.startsWith("microsoft/") ||
+    lower.startsWith("x-ai/") ||
+    lower === "" ||
+    lower === "auto"
+  ) {
+    return null;
+  }
+
+  // Dedicated image models — only output image.
+  if (
+    lower.startsWith("black-forest-labs/") ||
+    lower.startsWith("sourceful/") ||
+    lower.startsWith("recraft/")
+  ) {
     return ["image"];
   }
+
+  // Multimodal models — allow both image output and text.
   return ["image", "text"];
 }
 
+interface OpenRouterRequestShape {
+  model: string;
+  messages: Array<{ role: "user"; content: string | Array<Record<string, unknown>> }>;
+  stream: false;
+  modalities?: string[];
+  image_config?: { aspect_ratio: string };
+}
+
 async function generateOpenRouter(baseUrl: string, apiKey: string, request: ImageGenRequest): Promise<ImageGenResult> {
-  const body: Record<string, unknown> = {
-    model: request.model || "google/gemini-2.5-flash-image",
+  const model = request.model || "google/gemini-2.5-flash-image";
+  const body: OpenRouterRequestShape = {
+    model,
     messages: [{ role: "user", content: buildChatImageMessageContent(request) }],
-    modalities: openRouterModalities(request.model),
     stream: false,
   };
-  const aspectRatio = openRouterAspectRatio(request.width, request.height);
-  if (aspectRatio) body.image_config = { aspect_ratio: aspectRatio };
+
+  // Only add `modalities` if the model accepts it. Some models (mai-image-2.5, x-ai/grok-*) reject it with 404.
+  const modalities = openRouterModalities(model);
+  if (modalities) body.modalities = modalities;
+
+  // Only add `image_config.aspect_ratio` if the model supports it. Some ignore it; others reject.
+  if (openRouterSupportsImageConfig(model)) {
+    const aspectRatio = openRouterAspectRatio(request.width, request.height);
+    if (aspectRatio) body.image_config = { aspect_ratio: aspectRatio };
+  }
 
   const resp = await imageFetch(
     chatCompletionsUrl(baseUrl),
@@ -1455,6 +1489,20 @@ async function generateOpenRouter(baseUrl: string, apiKey: string, request: Imag
   }
 
   return downloadImageUrl(imageUrl, request.allowLocalUrls);
+}
+
+/**
+ * Some OpenRouter models (e.g. microsoft/mai-image-2.5, x-ai/grok-*) ignore or reject
+ * the `image_config` field. Only emit it for known-compatible models.
+ */
+function openRouterSupportsImageConfig(model: string): boolean {
+  const lower = model.toLowerCase();
+  if (lower.startsWith("microsoft/")) return false;
+  if (lower.startsWith("x-ai/")) return false;
+  if (lower.startsWith("google/")) return true;
+  if (lower.startsWith("openai/")) return true;
+  if (lower.startsWith("black-forest-labs/")) return true;
+  return false;
 }
 
 /**

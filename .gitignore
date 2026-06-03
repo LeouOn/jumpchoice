@@ -35,6 +35,12 @@ Thumbs.db
 data/
 packages/server/data/
 
+# Generated images (AI sprites, portraits, scene illustrations, CYOA image generation)
+# Saved to packages/server/data/gallery/ and packages/server/data/cyoa/ at runtime
+*.generated.png
+*.generated.jpg
+*.generated.webp
+
 # Logs
 *.log
 
