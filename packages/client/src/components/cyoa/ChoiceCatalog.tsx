@@ -101,7 +101,7 @@ export function ChoiceCatalog({ choices, selectedIds, onToggle }: ChoiceCatalogP
                     <span className="text-[10px] text-[var(--muted-foreground)]">{choice.category}</span>
                   )}
                 </div>
-                {choice.prerequisites.length > 0 && (
+                {Array.isArray(choice.prerequisites) && choice.prerequisites.length > 0 && (
                   <p className="mt-0.5 text-[10px] text-[var(--muted-foreground)] italic">
                     Requires: {choice.prerequisites.join(", ")}
                   </p>

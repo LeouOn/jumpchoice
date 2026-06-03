@@ -23,6 +23,18 @@ function toMime(ext: string): string {
   return map[ext] ?? "application/octet-stream";
 }
 
+function safeJsonParse<T = unknown>(value: unknown, fallback: T): T {
+  if (value == null) return fallback;
+  if (typeof value !== "string") return value as T;
+  if (value === "") return fallback;
+  try {
+    return JSON.parse(value) as T;
+  } catch (err) {
+    logger.warn("[cyoa] Failed to parse JSON field, using fallback: %s", (err as Error).message);
+    return fallback;
+  }
+}
+
 export async function cyoaRoutes(app: FastifyInstance) {
   // POST /upload — single file, creates new document + image
   app.post("/upload", async (req, reply) => {
@@ -364,15 +376,30 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const doc = docs[0];
     if (!doc) return reply.status(404).send({ error: "Not found" });
 
-    const images = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, id));
-    const choices = await app.db.select().from(cyoaChoices).where(eq(cyoaChoices.documentId, id));
+    const rawImages = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, id));
+    const rawChoices = await app.db.select().from(cyoaChoices).where(eq(cyoaChoices.documentId, id));
+
+    const images = rawImages.map((img: any) => ({
+      ...img,
+      filename: img.filePath?.split("/").pop() ?? "",
+      sizeBytes: img.byteSize ?? null,
+      extractions: img.extractionResult ? safeJsonParse(img.extractionResult, null) : null,
+    }));
+
+    const choices = rawChoices.map((c: any) => ({
+      ...c,
+      prerequisites: safeJsonParse(c.prerequisites, []),
+      tags: safeJsonParse(c.tags, []),
+      synergyIds: safeJsonParse(c.synergyIds, []),
+      sourceImageIds: safeJsonParse(c.sourceImageIds, []),
+    }));
 
     return {
       ...doc,
-      extractions: JSON.parse(doc.extractions || "[]"),
-      reviewedExtractions: JSON.parse(doc.reviewedExtractions || "[]"),
-      mergedDocument: JSON.parse(doc.mergedDocument || "{}"),
-      analysis: JSON.parse(doc.analysis || "{}"),
+      extractions: safeJsonParse(doc.extractions, []),
+      reviewedExtractions: safeJsonParse(doc.reviewedExtractions, []),
+      mergedDocument: safeJsonParse(doc.mergedDocument, {}),
+      analysis: safeJsonParse(doc.analysis, {}),
       images,
       choices,
     };

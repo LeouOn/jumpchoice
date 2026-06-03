@@ -22,6 +22,7 @@ import { useIdleDetection } from "../../hooks/use-idle-detection";
 import { usePageActivity } from "../../hooks/use-page-activity";
 import { cn } from "../../lib/utils";
 import { parseChatMetadata } from "../../lib/chat-display";
+import { ErrorBoundary } from "../../lib/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   lazy,
@@ -869,7 +870,13 @@ export function AppShell() {
               } as CSSProperties
             }
           >
-            <Suspense fallback={<MainPaneFallback />}>{detailView ?? <ChatArea />}</Suspense>
+            <ErrorBoundary
+              fallbackTitle="Editor failed to load"
+              fallbackMessage="The CYOA editor encountered an error. You can close it and try again."
+              onReset={() => useUIStore.getState().closeCyoa()}
+            >
+              <Suspense fallback={<MainPaneFallback />}>{detailView ?? <ChatArea />}</Suspense>
+            </ErrorBoundary>
           </div>
         </div>
         {/* Floating avatar notification bubbles (right edge) */}

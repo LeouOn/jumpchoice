@@ -5,6 +5,7 @@ import type { CyoaDocument } from "@/hooks/use-cyoa";
 import { useCyoaNarratorPrompts, type CyoaDifficulty } from "@/hooks/use-cyoa-builds";
 import { useUpdateAgent } from "@/hooks/use-agents";
 import { useUpdateChatMetadata } from "@/hooks/use-chats";
+import { usePersonas } from "@/hooks/use-characters";
 import { DifficultySliders } from "./DifficultySliders";
 import { DEFAULT_CYOA_DIFFICULTY, type CyoaChatSettings } from "./CyoaChatSettings";
 
@@ -31,6 +32,7 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
   const fetchPrompts = useCyoaNarratorPrompts();
   const updateAgent = useUpdateAgent();
   const updateChatMetadata = useUpdateChatMetadata();
+  const { data: personas } = usePersonas();
 
   const handleBegin = async () => {
     setSubmitting(true);
@@ -157,6 +159,11 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
                   className="mt-1 w-full rounded-md border border-[var(--border)] bg-[var(--input)] px-3 py-2 text-sm text-[var(--foreground)]"
                 >
                   <option value="">None</option>
+                  {(personas ?? []).map((p: any) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name ?? p.id}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
