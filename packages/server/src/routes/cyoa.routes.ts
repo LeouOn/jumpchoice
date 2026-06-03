@@ -9,7 +9,7 @@ import { DATA_DIR } from "../utils/data-dir.js";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { resolveBaseUrl } from "./generate/generate-route-utils.js";
-import { extractFromImage } from "../services/cyoa/cyoa-extractor.js";
+import { extractFromImage, type FallbackProvider } from "../services/cyoa/cyoa-extractor.js";
 import { mergeExtractions } from "../services/cyoa/cyoa-merger.js";
 import { analyzeDocument } from "../services/cyoa/cyoa-analyzer.js";
 import { cyoaDocuments, cyoaImages, cyoaChoices, cyoaBuilds, messages } from "../db/schema/index.js";
@@ -154,6 +154,44 @@ export async function cyoaRoutes(app: FastifyInstance) {
     if (!baseUrl) return reply.status(400).send({ error: "Invalid connection configuration" });
     const provider = createLLMProvider(conn.provider, baseUrl, conn.apiKey, conn.maxContext, conn.openrouterProvider, conn.maxTokensOverride);
 
+    const fallbackProviders: FallbackProvider[] = [];
+
+    const allConns = await connections.list();
+    const zhipuConn = (allConns as any[]).find(
+      (c: any) => c.provider === "zhipu" && c.apiKey,
+    );
+    if (zhipuConn && conn.provider !== "zhipu") {
+      const zhipuBaseUrl = resolveBaseUrl(zhipuConn as any);
+      if (zhipuBaseUrl) {
+        const visionModel = zhipuConn.model?.includes("v") ? zhipuConn.model : "glm-4v-flash";
+        fallbackProviders.push({
+          provider: createLLMProvider("zhipu", zhipuBaseUrl, zhipuConn.apiKey, zhipuConn.maxContext, zhipuConn.openrouterProvider, zhipuConn.maxTokensOverride) as any,
+          model: visionModel,
+          label: "zhipu-glm-vision",
+        });
+      }
+    }
+
+    const openrouterConn = (allConns as any[]).find(
+      (c: any) => c.provider === "openrouter" && c.apiKey,
+    );
+    if (openrouterConn && conn.provider !== "openrouter") {
+      const orBaseUrl = resolveBaseUrl(openrouterConn as any);
+      if (orBaseUrl) {
+        fallbackProviders.push({
+          provider: createLLMProvider("openrouter", orBaseUrl, openrouterConn.apiKey, openrouterConn.maxContext, openrouterConn.openrouterProvider, openrouterConn.maxTokensOverride) as any,
+          model: "google/gemini-3.5-flash",
+          label: "openrouter-gemini-3.5-flash",
+        });
+      }
+    } else if (!openrouterConn) {
+      // no openrouter connection yet — no fallback from openrouter
+    }
+
+    logger.info("[cyoa] Extraction chain: primary=%s/%s, fallbacks=[%s]",
+      conn.provider, conn.model,
+      fallbackProviders.map((f) => `${f.label}/${f.model}`).join(", "));
+
     const images = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, documentId));
     if (images.length === 0) return reply.status(400).send({ error: "No images found for document" });
 
@@ -167,6 +205,7 @@ export async function cyoaRoutes(app: FastifyInstance) {
           pageNumber: img.pageNumber,
           provider: provider as any,
           model: conn.model,
+          fallbackProviders,
         });
         extractions.push(extraction);
         await app.db.update(cyoaImages).set({ extractionMethod: extraction.extractionMethod, extractionResult: JSON.stringify(extraction) }).where(eq(cyoaImages.id, img.id)).run();

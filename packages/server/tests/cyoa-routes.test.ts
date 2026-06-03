@@ -19,6 +19,7 @@ vi.mock("../src/services/storage/connections.storage.js", () => ({
       openrouterProvider: null,
       maxTokensOverride: null,
     }),
+    list: vi.fn().mockResolvedValue([]),
   })),
 }));
 
