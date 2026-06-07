@@ -459,6 +459,7 @@ export const BUILT_IN_AGENTS: BuiltInAgentMeta[] = [
 
 export const BUILT_IN_AGENT_RUN_INTERVAL_DEFAULTS: Readonly<Record<string, number>> = {
   director: 5,
+  illustrator: 5,
   "lorebook-keeper": 8,
   "card-evolution-auditor": 8,
   "chat-summary": 5,
@@ -482,6 +483,10 @@ export function getDefaultBuiltInAgentSettings(agentType: string): Record<string
   const runInterval = BUILT_IN_AGENT_RUN_INTERVAL_DEFAULTS[agentType];
   if (runInterval !== undefined) {
     settings.runInterval = runInterval;
+  }
+
+  if (agentType === "knowledge-retrieval" || agentType === "knowledge-router") {
+    settings.useChatActiveLorebooks = true;
   }
 
   return settings;

@@ -29,6 +29,12 @@ import { useAgentConfigs, useCustomAgentRuns, type AgentConfigRow } from "../../
 import { useChat } from "../../hooks/use-chats";
 import { discardPendingGameStatePatch, useGameStatePatcher } from "../../hooks/use-game-state-patcher";
 import { useUIStore } from "../../stores/ui.store";
+import {
+  getTemperatureColor,
+  getTemperatureGaugeDisplay,
+  getTemperatureKeywordHint,
+  parseTemperatureValue,
+} from "../../features/tracker-panel/lib/world-state-display";
 import type {
   GameState,
   PresentCharacter,
@@ -38,7 +44,7 @@ import type {
   CustomTrackerField,
   Message,
 } from "@jumpchoice/shared";
-import type { HudPosition } from "../../stores/ui.store";
+import type { HudPosition, TrackerTemperatureUnit } from "../../stores/ui.store";
 
 const ACTIONS_DROPDOWN_WIDTH_PX = 288;
 
@@ -142,6 +148,7 @@ export function RoleplayHUD({
   const trackerPanelEnabled = useUIStore((s) => s.trackerPanelEnabled);
   const trackerPanelOpen = useUIStore((s) => s.trackerPanelOpen);
   const trackerPanelHideHudWidgets = useUIStore((s) => s.trackerPanelHideHudWidgets);
+  const trackerTemperatureUnit = useUIStore((s) => s.trackerTemperatureUnit);
   const toggleTrackerPanel = useUIStore((s) => s.toggleTrackerPanel);
 
   const isTrackerBusy = isAgentProcessing || isStreaming || gameStateRefreshing;
@@ -269,6 +276,7 @@ export function RoleplayHUD({
               time={time ?? ""}
               weather={weather ?? ""}
               temperature={temperature ?? ""}
+              trackerTemperatureUnit={trackerTemperatureUnit}
               onSaveLocation={(v) => patchField("location", v)}
               onSaveDate={(v) => patchField("date", v)}
               onSaveTime={(v) => patchField("time", v)}
@@ -315,7 +323,7 @@ export function RoleplayHUD({
               className={cn(
                 MOBILE_HUD_BTN,
                 "justify-center text-[0.5625rem] font-medium",
-                isTrackerBusy ? "text-purple-600 dark:text-purple-300" : "text-[var(--muted-foreground)]",
+                isTrackerBusy ? "text-foreground/75" : "text-foreground/45 hover:text-foreground/70",
               )}
             >
               <RefreshCw size="0.875rem" className={cn("shrink-0 h-4 w-4", isTrackerBusy && "animate-spin")} />
@@ -334,6 +342,7 @@ export function RoleplayHUD({
               time={time ?? ""}
               weather={weather ?? ""}
               temperature={temperature ?? ""}
+              trackerTemperatureUnit={trackerTemperatureUnit}
               onSaveLocation={(v) => patchField("location", v)}
               onSaveDate={(v) => patchField("date", v)}
               onSaveTime={(v) => patchField("time", v)}
@@ -404,7 +413,10 @@ export function RoleplayHUD({
                 onRetriggerTrackers();
               }}
               disabled={isTrackerBusy}
-              className={cn(WIDGET, isTrackerBusy ? "text-purple-300" : "text-[var(--muted-foreground)]")}
+              className={cn(
+                WIDGET,
+                isTrackerBusy ? "text-foreground/75" : "text-foreground/45 hover:text-foreground/70",
+              )}
               title={isTrackerBusy ? "Trackers running…" : "Run Trackers"}
             >
               <RefreshCw size="0.875rem" className={cn(isTrackerBusy && "animate-spin")} />
@@ -441,7 +453,7 @@ function TrackerPanelToggleButton({ onToggle }: { onToggle: () => void }) {
     <button
       data-tracker-panel-toggle="roleplay-hud"
       onClick={onToggle}
-      className={cn(WIDGET, "text-pink-200/75 hover:border-[var(--primary)]/40 hover:text-[var(--primary)]")}
+      className={cn(WIDGET, "text-foreground/50 hover:border-foreground/20 hover:text-foreground/75")}
       title="Show Tracker Panel"
       aria-label="Show Tracker Panel"
     >
@@ -503,15 +515,38 @@ function ActionsGroup({
   const showEcho = enabledAgentTypes.has("echo-chamber");
   const { data: customAgentRuns = [], isLoading: customAgentRunsLoading } = useCustomAgentRuns(chatId, agentsOpen);
 
+  const computeActionsPosition = useCallback(() => {
+    if (!btnRef.current) return null;
+    const rect = btnRef.current.getBoundingClientRect();
+    const dropdownWidth = dropdownRef.current?.offsetWidth ?? ACTIONS_DROPDOWN_WIDTH_PX;
+    const dropdownHeight = dropdownRef.current?.offsetHeight ?? Math.min(320, window.innerHeight - 16);
+    const belowTop = rect.bottom + 4;
+    const aboveTop = rect.top - dropdownHeight - 4;
+    const preferredTop = belowTop + dropdownHeight > window.innerHeight - 8 ? aboveTop : belowTop;
+    const top = Math.max(8, Math.min(preferredTop, window.innerHeight - dropdownHeight - 8));
+    const left = Math.max(8, Math.min(rect.left, window.innerWidth - dropdownWidth - 8));
+    return { top, left };
+  }, []);
+
   // Position with fixed layout to avoid overflow clipping
   useLayoutEffect(() => {
-    if (!agentsOpen || !btnRef.current) return;
-    const rect = btnRef.current.getBoundingClientRect();
-    const maxH = 320;
-    const top = rect.bottom + 4 + maxH > window.innerHeight ? rect.top - maxH - 4 : rect.bottom + 4;
-    const left = Math.min(rect.left, window.innerWidth - ACTIONS_DROPDOWN_WIDTH_PX - 8);
-    setPos({ top, left });
-  }, [agentsOpen]);
+    if (!agentsOpen) return;
+    setPos(computeActionsPosition());
+  }, [agentsOpen, computeActionsPosition]);
+
+  useEffect(() => {
+    if (!agentsOpen) return;
+    const update = () => setPos(computeActionsPosition());
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    const observer = new ResizeObserver(update);
+    if (dropdownRef.current) observer.observe(dropdownRef.current);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+      observer.disconnect();
+    };
+  }, [agentsOpen, computeActionsPosition]);
 
   // Close on outside click or Escape
   useEffect(() => {
@@ -543,7 +578,7 @@ function ActionsGroup({
     createPortal(
       <div
         ref={dropdownRef}
-        className="fixed w-72 max-w-[calc(100vw-1rem)] max-h-80 overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--popover)] backdrop-blur-xl shadow-xl z-[9999] animate-message-in dark:border-foreground/10 dark:bg-black/80"
+        className="fixed min-h-24 w-72 min-w-64 max-w-[calc(100vw-1rem)] max-h-[calc(100vh-1rem)] resize overflow-auto rounded-xl border border-[var(--border)] bg-[var(--popover)] backdrop-blur-xl shadow-xl z-[9999] animate-message-in dark:border-foreground/10 dark:bg-black/80"
         style={{ top: pos.top, left: pos.left }}
       >
         <Suspense fallback={<DeferredActionsFallback isAgentProcessing={isAgentProcessing} />}>
@@ -583,7 +618,7 @@ function ActionsGroup({
         ref={btnRef}
         onClick={() => setAgentsOpen(!agentsOpen)}
         className={cn(
-          "flex items-center gap-1.5 md:gap-1 rounded-lg border border-[var(--border)] bg-[var(--card)]/80 backdrop-blur-md px-2 py-1.5 md:px-2 md:py-2 md:h-10 transition-all hover:bg-[var(--card)] dark:border-foreground/10 dark:bg-black/40 dark:hover:bg-black/60 cursor-pointer select-none",
+          "group flex items-center gap-1.5 md:gap-1 rounded-lg border border-[var(--border)] bg-[var(--card)]/80 backdrop-blur-md px-2 py-1.5 md:px-2 md:py-2 md:h-10 transition-all hover:bg-[var(--card)] dark:border-foreground/10 dark:bg-black/40 dark:hover:bg-black/60 cursor-pointer select-none",
           agentsOpen && "bg-[var(--card)] border-[var(--border)] dark:bg-black/60 dark:border-foreground/20",
         )}
         title="Agents & Actions"
@@ -591,18 +626,29 @@ function ActionsGroup({
         <Sparkles
           size="0.875rem"
           strokeWidth={2.5}
-          className={cn("text-purple-400/70 shrink-0", isAgentProcessing && "animate-pulse")}
+          className={cn(
+            "shrink-0 transition-colors group-hover:text-foreground/75",
+            agentsOpen || isAgentProcessing ? "text-foreground/75" : "text-foreground/55",
+            isAgentProcessing && "animate-pulse",
+          )}
         />
         {showEcho && (
           <MessageCircle
             size="0.8125rem"
             strokeWidth={2.5}
-            className={cn(echoChamberOpen ? "text-purple-400" : "text-purple-400/50", "shrink-0")}
+            className={cn(
+              "shrink-0 transition-colors group-hover:text-foreground/70",
+              echoChamberOpen ? "text-foreground/75" : "text-foreground/45",
+            )}
           />
         )}
-        <Trash2 size="0.8125rem" strokeWidth={2.5} className="text-purple-400/50 shrink-0" />
+        <Trash2
+          size="0.8125rem"
+          strokeWidth={2.5}
+          className="shrink-0 text-foreground/45 transition-colors group-hover:text-foreground/70"
+        />
         {badgeCount > 0 && (
-          <span className="hidden md:flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-purple-500/80 px-1 text-[0.5rem] font-bold text-foreground">
+          <span className="hidden md:flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-foreground/15 px-1 text-[0.5rem] font-bold text-foreground/80 ring-1 ring-foreground/10">
             {badgeCount}
           </span>
         )}
@@ -783,7 +829,10 @@ function WidgetPopover({
         }
       }
     }
-    return { top, left };
+    return {
+      top: Math.max(8, Math.min(top, window.innerHeight - popoverHeight - 8)),
+      left: Math.max(8, Math.min(left, window.innerWidth - popoverWidth - 8)),
+    };
   }, [anchorRef, placement]);
 
   // Position the popover relative to the anchor element
@@ -798,9 +847,12 @@ function WidgetPopover({
     const update = () => setPos(computePosition());
     window.addEventListener("scroll", update, true);
     window.addEventListener("resize", update);
+    const observer = new ResizeObserver(update);
+    if (ref.current) observer.observe(ref.current);
     return () => {
       window.removeEventListener("scroll", update, true);
       window.removeEventListener("resize", update);
+      observer.disconnect();
     };
   }, [open, computePosition]);
 
@@ -823,8 +875,9 @@ function WidgetPopover({
       ref={ref}
       style={pos ? { position: "fixed", top: pos.top, left: pos.left } : { position: "fixed", top: -9999, left: -9999 }}
       className={cn(
-        "z-[9999] max-w-[calc(100vw-1rem)] animate-message-in rounded-xl border border-[var(--border)] bg-[var(--popover)] backdrop-blur-xl shadow-xl dark:border-foreground/10 dark:bg-black/80",
+        "z-[9999] min-h-24 min-w-60 max-w-[calc(100vw-1rem)] animate-message-in resize overflow-auto rounded-xl border border-[var(--border)] bg-[var(--popover)] backdrop-blur-xl shadow-xl dark:border-foreground/10 dark:bg-black/80",
         className,
+        "!max-h-[calc(100vh-1rem)]",
       )}
     >
       {children}
@@ -858,7 +911,7 @@ function CharactersWidget({
       <button
         ref={buttonRef}
         onClick={() => setOpen(!open)}
-        className={cn(WIDGET, "text-purple-500 dark:text-purple-300")}
+        className={cn(WIDGET, "text-foreground/60 hover:text-foreground/75")}
         title="Present Characters"
       >
         {characters.length > 0 ? (
@@ -875,7 +928,10 @@ function CharactersWidget({
             )}
           </div>
         ) : (
-          <Users size="0.875rem" className="text-purple-400/50 max-md:h-3.5 max-md:w-3.5" />
+          <Users
+            size="0.875rem"
+            className="text-foreground/45 transition-colors group-hover:text-foreground/70 max-md:h-3.5 max-md:w-3.5"
+          />
         )}
       </button>
 
@@ -1217,6 +1273,7 @@ function CombinedWorldWidget({
   time,
   weather,
   temperature,
+  trackerTemperatureUnit,
   onSaveLocation,
   onSaveDate,
   onSaveTime,
@@ -1231,6 +1288,7 @@ function CombinedWorldWidget({
   time: string;
   weather: string;
   temperature: string;
+  trackerTemperatureUnit: TrackerTemperatureUnit;
   onSaveLocation: (v: string) => void;
   onSaveDate: (v: string) => void;
   onSaveTime: (v: string) => void;
@@ -1244,18 +1302,10 @@ function CombinedWorldWidget({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const weatherEmoji = weather ? getWeatherEmoji(weather) : "🌤️";
   const pinColor = getLocationPinColor(location);
-  const tempNumeric = temperature ? parseTemperature(temperature) : null;
+  const temperatureDisplay = getTemperatureGaugeDisplay(temperature, trackerTemperatureUnit);
+  const tempNumeric = temperature ? parseTemperatureValue(temperature) : null;
   const temp = tempNumeric ?? (temperature ? getTemperatureKeywordHint(temperature) : null);
-  const tempColor =
-    temp !== null
-      ? temp < 0
-        ? "text-blue-400"
-        : temp < 15
-          ? "text-sky-400"
-          : temp < 30
-            ? "text-amber-400"
-            : "text-red-400"
-      : "text-rose-400/50";
+  const tempColor = getTemperatureColor(temperature);
 
   // Dynamic calendar: show day number
   const dateParts = date ? parseDateLabel(date) : { day: null, month: null };
@@ -1266,10 +1316,9 @@ function CombinedWorldWidget({
   const hourAngle = hour >= 0 ? (hour % 12) * 30 + minute * 0.5 : 0;
   const minuteAngle = minute * 6;
 
-  // Thermometer fill fraction (clamp -20..50°C → 0..1)
-  const tempFill = temp !== null ? Math.max(0, Math.min(1, (temp + 20) / 70)) : 0.3;
-  const tempFillColor =
-    temp !== null ? (temp < 0 ? "#60a5fa" : temp < 15 ? "#38bdf8" : temp < 30 ? "#fbbf24" : "#f87171") : "#fb7185";
+  const tempFill =
+    temperatureDisplay.percent == null ? 0.3 : Math.max(0, Math.min(1, temperatureDisplay.percent / 100));
+  const tempFillColor = temperatureDisplay.color;
 
   return (
     <div className="relative">
@@ -1415,7 +1464,7 @@ function CombinedWorldWidget({
         </svg>
         {tempNumeric !== null && (
           <span className={cn("text-[0.5rem] md:text-[0.5625rem] font-bold leading-none shrink-0", tempColor)}>
-            {tempNumeric}°
+            {temperatureDisplay.label}
           </span>
         )}
       </button>
@@ -1518,26 +1567,6 @@ function getWeatherEmoji(weather: string): string {
   if (w.includes("hot") || w.includes("swelter")) return "🥵";
   if (w.includes("cold") || w.includes("freez")) return "🥶";
   return "🌤️";
-}
-
-function parseTemperature(temp: string): number | null {
-  const m = temp.match(/-?\d+(\.\d+)?/);
-  if (!m) return null;
-  const num = parseFloat(m[0]!);
-  if (/°?\s*f/i.test(temp)) return Math.round((num - 32) * (5 / 9));
-  return Math.round(num);
-}
-
-/** Map descriptive temperature words to a numeric-equivalent hint (°C). */
-function getTemperatureKeywordHint(text: string): number | null {
-  const t = text.toLowerCase();
-  if (/\b(freez|frigid|arctic|glacial|sub-?zero|blizzard)/.test(t)) return -10;
-  if (/\b(cold|chill|frost|wintry|icy|bitter|nipp)/.test(t)) return 2;
-  if (/\b(cool|brisk|crisp|refresh)/.test(t)) return 12;
-  if (/\b(mild|pleasant|comfort|temperate|fair)/.test(t)) return 20;
-  if (/\b(warm|balmy|toasty|muggy|humid|stuffy|sultry)/.test(t)) return 28;
-  if (/\b(hot|swelter|blaz|scorch|burn|heat|boil|sear|bak)/.test(t)) return 38;
-  return null;
 }
 
 /** Categorise location text into a colour for the map-pin icon. */

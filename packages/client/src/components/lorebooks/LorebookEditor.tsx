@@ -116,6 +116,19 @@ function writeCollapsedFolderIds(lorebookId: string, ids: Set<string>) {
   }
 }
 
+function appendNewTags(existingTags: string[], rawInput: string) {
+  const seen = new Set(existingTags);
+  const additions: string[] = [];
+
+  for (const tag of rawInput.split(",").map((part) => part.trim())) {
+    if (!tag || seen.has(tag)) continue;
+    seen.add(tag);
+    additions.push(tag);
+  }
+
+  return additions.length > 0 ? [...existingTags, ...additions] : existingTags;
+}
+
 // ── Types ──
 type LinkedResourceItem = {
   id: string;
@@ -426,6 +439,7 @@ export function LorebookEditor() {
   const [formTokenBudget, setFormTokenBudget] = useState(2048);
   const [formRecursive, setFormRecursive] = useState(false);
   const [formMaxRecursionDepth, setFormMaxRecursionDepth] = useState(3);
+  const [formExcludeFromVectorization, setFormExcludeFromVectorization] = useState(false);
   const [formCharacterIds, setFormCharacterIds] = useState<string[]>([]);
   const [formPersonaIds, setFormPersonaIds] = useState<string[]>([]);
   const [formTags, setFormTags] = useState<string[]>([]);
@@ -498,6 +512,7 @@ export function LorebookEditor() {
     setFormTokenBudget(lorebook.tokenBudget);
     setFormRecursive(lorebook.recursiveScanning);
     setFormMaxRecursionDepth(lorebook.maxRecursionDepth ?? 3);
+    setFormExcludeFromVectorization(lorebook.excludeFromVectorization ?? false);
     const characterSource =
       Array.isArray(lorebook.characterIds) && lorebook.characterIds.length > 0
         ? lorebook.characterIds
@@ -631,6 +646,15 @@ export function LorebookEditor() {
 
   // ── Handlers ──
   const markLorebookDirty = useCallback(() => setLorebookDirty(true), []);
+
+  const handleAddTags = useCallback(() => {
+    const nextTags = appendNewTags(formTags, newTag);
+    if (nextTags === formTags) return;
+    setFormTags(nextTags);
+    markLorebookDirty();
+    setNewTag("");
+  }, [formTags, markLorebookDirty, newTag]);
+
   const exitEntrySelectionMode = useCallback(() => {
     setEntrySelectionMode(false);
     setSelectedEntryIds(new Set());
@@ -927,6 +951,7 @@ export function LorebookEditor() {
         tokenBudget: formTokenBudget,
         recursiveScanning: formRecursive,
         maxRecursionDepth: formMaxRecursionDepth,
+        excludeFromVectorization: formExcludeFromVectorization,
         characterIds: formIsGlobal ? [] : formCharacterIds,
         personaIds: formIsGlobal ? [] : formPersonaIds,
         tags: formTags,
@@ -946,6 +971,7 @@ export function LorebookEditor() {
     formTokenBudget,
     formRecursive,
     formMaxRecursionDepth,
+    formExcludeFromVectorization,
     formCharacterIds,
     formPersonaIds,
     formTags,
@@ -1200,28 +1226,16 @@ export function LorebookEditor() {
                       value={newTag}
                       onChange={(e) => setNewTag(e.target.value)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" && newTag.trim()) {
+                        if (e.key === "Enter") {
                           e.preventDefault();
-                          const t = newTag.trim();
-                          if (!formTags.includes(t)) {
-                            setFormTags([...formTags, t]);
-                            markLorebookDirty();
-                          }
-                          setNewTag("");
+                          handleAddTags();
                         }
                       }}
                       placeholder="Add tag…"
                       className="flex-1 rounded-xl bg-[var(--secondary)] px-3 py-2 text-xs ring-1 ring-[var(--border)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
                     />
                     <button
-                      onClick={() => {
-                        const t = newTag.trim();
-                        if (t && !formTags.includes(t)) {
-                          setFormTags([...formTags, t]);
-                          markLorebookDirty();
-                        }
-                        setNewTag("");
-                      }}
+                      onClick={handleAddTags}
                       className="rounded-xl bg-[var(--secondary)] px-3 py-2 text-xs font-medium ring-1 ring-[var(--border)] transition-colors hover:bg-[var(--accent)]"
                     >
                       <Plus size="0.75rem" />
@@ -1407,7 +1421,7 @@ export function LorebookEditor() {
                 </div>
 
                 {/* Scan settings */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <div>
                     <label className="mb-1.5 flex items-center gap-1 text-xs font-medium">
                       Scan Depth{" "}
@@ -1476,10 +1490,34 @@ export function LorebookEditor() {
                       </div>
                     )}
                   </div>
+                  <div className="flex items-end">
+                    <div className="flex w-full items-center justify-between rounded-xl bg-[var(--secondary)] px-3 py-2.5 ring-1 ring-[var(--border)]">
+                      <span className="mr-2 inline-flex items-center gap-1 text-xs">
+                        No Vector
+                        <HelpTooltip text="Skip semantic embeddings for every entry in this lorebook. Keyword matching still works." />
+                      </span>
+                      <button
+                        onClick={() => {
+                          setFormExcludeFromVectorization(!formExcludeFromVectorization);
+                          markLorebookDirty();
+                        }}
+                      >
+                        {formExcludeFromVectorization ? (
+                          <ToggleRight size="1.375rem" className="text-amber-400" />
+                        ) : (
+                          <ToggleLeft size="1.375rem" className="text-[var(--muted-foreground)]" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Vectorize (Embeddings) */}
-                <VectorizeSection lorebookId={lorebookId!} entries={entries} />
+                <VectorizeSection
+                  lorebookId={lorebookId!}
+                  entries={entries}
+                  excludeFromVectorization={formExcludeFromVectorization}
+                />
               </div>
             )}
 
@@ -2016,7 +2054,15 @@ export function LorebookEditor() {
 }
 
 /** Vectorize lorebook entries for semantic matching. */
-function VectorizeSection({ lorebookId, entries }: { lorebookId: string; entries: LorebookEntry[] }) {
+function VectorizeSection({
+  lorebookId,
+  entries,
+  excludeFromVectorization,
+}: {
+  lorebookId: string;
+  entries: LorebookEntry[];
+  excludeFromVectorization: boolean;
+}) {
   const queryClient = useQueryClient();
   const { data: rawConnections } = useConnections();
   const sidecarModelDownloaded = useSidecarStore((s) => s.modelDownloaded);
@@ -2046,8 +2092,12 @@ function VectorizeSection({ lorebookId, entries }: { lorebookId: string; entries
   const [selectedConnectionId, setSelectedConnectionId] = useState<string>("");
   const [vectorizing, setVectorizing] = useState(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
-  const excludedCount = entries.filter((entry) => entry.excludeFromVectorization).length;
-  const vectorizableEntries = entries.filter((entry) => !entry.excludeFromVectorization);
+  const excludedCount = excludeFromVectorization
+    ? entries.length
+    : entries.filter((entry) => entry.excludeFromVectorization).length;
+  const vectorizableEntries = excludeFromVectorization
+    ? []
+    : entries.filter((entry) => !entry.excludeFromVectorization);
   const vectorizableEntryCount = vectorizableEntries.length;
   const vectorizedCount = vectorizableEntries.filter(
     (entry) => Array.isArray(entry.embedding) && entry.embedding.length > 0,
@@ -2060,13 +2110,6 @@ function VectorizeSection({ lorebookId, entries }: { lorebookId: string; entries
       void fetchSidecarStatus();
     }
   }, [fetchSidecarStatus]);
-
-  // Auto-select first embedding connection
-  useEffect(() => {
-    if (!selectedConnectionId && embeddingConnections.length > 0) {
-      setSelectedConnectionId(embeddingConnections[0].id);
-    }
-  }, [embeddingConnections, selectedConnectionId]);
 
   const handleVectorize = async () => {
     if (!selectedConnectionId) return;
@@ -2114,9 +2157,14 @@ function VectorizeSection({ lorebookId, entries }: { lorebookId: string; entries
           {vectorizedCount}/{vectorizableEntryCount} entries vectorized
         </span>
         {missingCount > 0 && <span>{missingCount} still need embeddings.</span>}
-        {excludedCount > 0 && <span>{excludedCount} excluded.</span>}
+        {excludeFromVectorization ? <span>This lorebook excludes every entry.</span> : null}
+        {!excludeFromVectorization && excludedCount > 0 && <span>{excludedCount} excluded.</span>}
       </div>
-      {embeddingConnections.length === 0 ? (
+      {excludeFromVectorization ? (
+        <p className="text-[0.625rem] text-[var(--muted-foreground)]">
+          Semantic search is disabled by the lorebook-level No Vector toggle.
+        </p>
+      ) : embeddingConnections.length === 0 ? (
         <p className="text-[0.625rem] text-[var(--muted-foreground)]">
           No connections with an embedding model configured. Set an Embedding Model on a connection first.
         </p>
@@ -2128,6 +2176,7 @@ function VectorizeSection({ lorebookId, entries }: { lorebookId: string; entries
               onChange={(e) => setSelectedConnectionId(e.target.value)}
               className="flex-1 rounded-lg bg-[var(--secondary)] px-2.5 py-1.5 text-xs ring-1 ring-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
             >
+              <option value="">No semantic search</option>
               {embeddingConnections.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} ({c.embeddingModel})
@@ -2136,17 +2185,24 @@ function VectorizeSection({ lorebookId, entries }: { lorebookId: string; entries
             </select>
             <button
               onClick={handleVectorize}
-              disabled={vectorizing || vectorizableEntryCount === 0}
+              disabled={vectorizing || vectorizableEntryCount === 0 || !selectedConnectionId}
               className="flex items-center gap-1.5 rounded-xl bg-violet-500/15 px-3 py-1.5 text-xs font-medium text-violet-400 ring-1 ring-violet-500/30 transition-all hover:bg-violet-500/25 active:scale-[0.98] disabled:opacity-50"
             >
               {vectorizing ? <Loader2 size="0.75rem" className="animate-spin" /> : <Sparkles size="0.75rem" />}
               {vectorizing
                 ? "Vectorizing..."
-                : allVectorized
-                  ? `Re-vectorize ${vectorizableEntryCount} entries`
-                  : `Vectorize ${missingCount} missing`}
+                : !selectedConnectionId
+                  ? "Select connection"
+                  : allVectorized
+                    ? `Re-vectorize ${vectorizableEntryCount} entries`
+                    : `Vectorize ${missingCount} missing`}
             </button>
           </div>
+          {!selectedConnectionId && (
+            <p className="text-[0.625rem] text-[var(--muted-foreground)]">
+              Semantic search is off until you choose an embedding connection and vectorize entries.
+            </p>
+          )}
           {result && (
             <p
               className={cn(

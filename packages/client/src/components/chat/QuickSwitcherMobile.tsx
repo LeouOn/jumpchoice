@@ -35,6 +35,8 @@ interface ParsedGroup {
   members: Persona[];
 }
 
+const UNGROUPED_PERSONA_GROUP_ID = "__ungrouped-personas__";
+
 export function QuickSwitcherMobile() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<"connections" | "personas">("connections");
@@ -67,7 +69,7 @@ export function QuickSwitcherMobile() {
     return map;
   }, [sortedPersonas]);
 
-  const { groups, ungrouped } = useMemo(() => {
+  const { groups } = useMemo(() => {
     const groupRows = (rawPersonaGroups ?? []) as PersonaGroupRow[];
     const allGroupedIds = new Set<string>();
     const parsedGroups: ParsedGroup[] = [];
@@ -94,7 +96,15 @@ export function QuickSwitcherMobile() {
 
     parsedGroups.sort((a, b) => a.name.localeCompare(b.name));
     const ungroupedList = sortedPersonas.filter((p) => !allGroupedIds.has(p.id));
-    return { groups: parsedGroups, ungrouped: ungroupedList };
+    if (ungroupedList.length > 0) {
+      parsedGroups.push({
+        id: UNGROUPED_PERSONA_GROUP_ID,
+        name: "Ungrouped",
+        memberIds: ungroupedList.map((p) => p.id),
+        members: ungroupedList,
+      });
+    }
+    return { groups: parsedGroups };
   }, [rawPersonaGroups, personaMap, sortedPersonas]);
 
   const toggleGroup = useCallback((groupId: string) => {
@@ -232,8 +242,10 @@ export function QuickSwitcherMobile() {
         onClick={() => setOpen((v) => !v)}
         title="Quick Switcher"
         className={cn(
-          "flex h-8 w-8 items-center justify-center rounded-xl transition-all",
-          open ? "text-foreground bg-foreground/10" : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground",
+          "flex h-11 w-11 items-center justify-center rounded-xl transition-all",
+          open
+            ? "bg-foreground/10 text-foreground/75"
+            : "text-foreground/40 hover:bg-foreground/10 hover:text-foreground/70",
         )}
       >
         <ChevronUp size="1rem" className={cn("transition-transform", open && "rotate-180")} />
@@ -407,7 +419,6 @@ export function QuickSwitcherMobile() {
                     </div>
                   );
                 })}
-                {ungrouped.map((persona) => renderPersonaRow(persona, false))}
                 {sortedPersonas.length === 0 && (
                   <div className="px-3 py-4 text-center text-[0.6875rem] italic text-[var(--muted-foreground)]">
                     No personas found.

@@ -18,7 +18,9 @@ import {
   type SpriteSide,
 } from "@jumpchoice/shared";
 import {
+  BookOpen,
   FolderOpen,
+  FileText,
   Image,
   Loader2,
   MoreHorizontal,
@@ -30,12 +32,16 @@ import {
   ChevronUp,
   ArrowRightLeft,
   FlipHorizontal2,
+  User,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { getConnectedChatDisplayName } from "../../lib/chat-display";
+import { playNotificationPing } from "../../lib/notification-sound";
 import { useUIStore } from "../../stores/ui.store";
 import { useChatStore } from "../../stores/chat.store";
 import { useGameStateStore } from "../../stores/game-state.store";
+import { useLorebooks } from "../../hooks/use-lorebooks";
+import { usePresets } from "../../hooks/use-presets";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { CyoaChoices } from "./CyoaChoices";
@@ -46,6 +52,7 @@ import { ActiveWorldInfoButton } from "./ActiveWorldInfoButton";
 import type { SpriteDisplayMode } from "./sprite-display-modes";
 import type {
   CharacterMap,
+  ExpressionAvatarResolver,
   MessageSelectionToggle,
   MessageWithSwipes,
   PeekPromptData,
@@ -95,6 +102,7 @@ const TRACKER_FOREGROUND_AVOIDANCE_CLASS =
   "md:pl-[var(--tracker-chat-avoid-left)] md:pr-[var(--tracker-chat-avoid-right)] md:transition-[padding] md:duration-200 md:ease-[cubic-bezier(0.16,1,0.3,1)]";
 const PANEL_CONTAINER =
   "relative max-h-[calc(100dvh-4rem)] w-full max-w-sm overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 shadow-2xl shadow-black/40 animate-message-in";
+const roleplayNotificationSeenKeys = new Set<string>();
 
 function WeatherEffectsConnected() {
   const gs = useGameStateStore((s) => s.current);
@@ -200,6 +208,7 @@ function StreamingIndicator({
   personaInfo,
   chatMode,
   groupChatMode,
+  expressionAvatarResolver,
 }: {
   activeChatId: string;
   chatCharIds: string[];
@@ -207,6 +216,7 @@ function StreamingIndicator({
   personaInfo?: PersonaInfo;
   chatMode: string;
   groupChatMode?: string;
+  expressionAvatarResolver?: ExpressionAvatarResolver;
 }) {
   const streamBuffer = useChatStore((s) => s.streamBuffer);
   const thinkingBuffer = useChatStore((s) => s.thinkingBuffer);
@@ -237,6 +247,7 @@ function StreamingIndicator({
         chatMode={chatMode}
         groupChatMode={groupChatMode}
         chatCharacterIds={chatCharIds}
+        expressionAvatarResolver={expressionAvatarResolver}
       />
     </div>
   );
@@ -352,6 +363,143 @@ function ToolbarMenu({ children }: { children: ReactNode }) {
           )}
       </div>
     </>
+  );
+}
+
+function readStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string" && item.length > 0)
+    : [];
+}
+
+function ActiveContextLinksButton({
+  chat,
+  chatMeta,
+  chatCharIds,
+  characterMap,
+}: {
+  chat: ChatData | null | undefined;
+  chatMeta: Record<string, any>;
+  chatCharIds: string[];
+  characterMap: CharacterMap;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const compact = useUIStore((s) => s.centerCompact);
+  const { data: lorebooks } = useLorebooks();
+  const { data: presets } = usePresets();
+
+  useEffect(() => {
+    if (!open) return;
+    const handle = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open]);
+
+  if (!chat) return null;
+
+  const inactiveCharacterIds = readStringArray(chatMeta.inactiveCharacterIds);
+  const characterIds = chatCharIds.filter((id) => !inactiveCharacterIds.includes(id));
+  const activeLorebookIds = readStringArray(chatMeta.activeLorebookIds);
+  const promptPresetId = typeof chat.promptPresetId === "string" ? chat.promptPresetId : null;
+  const hasLinks = characterIds.length > 0 || activeLorebookIds.length > 0 || !!promptPresetId;
+
+  if (!hasLinks) return null;
+
+  const lorebookNameById = new Map((lorebooks ?? []).map((book) => [book.id, book.name]));
+  const presetName = promptPresetId ? presets?.find((preset) => preset.id === promptPresetId)?.name : null;
+
+  const openCharacter = (id: string) => {
+    useUIStore.getState().openCharacterDetail(id);
+    setOpen(false);
+  };
+  const openLorebook = (id: string) => {
+    useUIStore.getState().openLorebookDetail(id);
+    setOpen(false);
+  };
+  const openPreset = (id: string) => {
+    useUIStore.getState().openPresetDetail(id);
+    setOpen(false);
+  };
+
+  const itemClassName =
+    "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs text-foreground/80 transition-colors hover:bg-foreground/10 hover:text-foreground";
+  const iconClassName = "shrink-0 text-foreground/55";
+
+  return (
+    <div className="relative" ref={ref} onClick={(event) => event.stopPropagation()}>
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        className={cn(
+          "flex items-center justify-center rounded-full border backdrop-blur-md transition-all",
+          compact ? "p-1" : "p-1.5",
+          open
+            ? "bg-foreground/15 border-foreground/20 text-foreground/90"
+            : "bg-foreground/5 border-foreground/10 text-foreground/60 hover:bg-foreground/10 hover:text-foreground",
+        )}
+        title="Active Context"
+        aria-label="Active Context"
+        aria-haspopup="menu"
+        aria-expanded={open}
+      >
+        <BookOpen size="0.875rem" />
+      </button>
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-[var(--border)] bg-[var(--card)] p-2 shadow-2xl shadow-black/40 animate-message-in"
+        >
+          <div className="px-2 pb-1 text-[0.625rem] font-semibold uppercase text-foreground/45">Active Context</div>
+          <div className="space-y-1">
+            {characterIds.map((id, index) => (
+              <button
+                key={id}
+                type="button"
+                role="menuitem"
+                className={itemClassName}
+                onClick={() => openCharacter(id)}
+              >
+                <User size="0.8125rem" className={iconClassName} />
+                <span className="min-w-0 flex-1 truncate">
+                  {characterMap.get(id)?.name ?? `Character ${index + 1}`}
+                </span>
+                <span className="shrink-0 text-[0.625rem] text-foreground/45">Card</span>
+              </button>
+            ))}
+            {activeLorebookIds.map((id, index) => (
+              <button key={id} type="button" role="menuitem" className={itemClassName} onClick={() => openLorebook(id)}>
+                <BookOpen size="0.8125rem" className={iconClassName} />
+                <span className="min-w-0 flex-1 truncate">{lorebookNameById.get(id) ?? `Lorebook ${index + 1}`}</span>
+                <span className="shrink-0 text-[0.625rem] text-foreground/45">Lorebook</span>
+              </button>
+            ))}
+            {promptPresetId && (
+              <button
+                type="button"
+                role="menuitem"
+                className={itemClassName}
+                onClick={() => openPreset(promptPresetId)}
+              >
+                <FileText size="0.8125rem" className={iconClassName} />
+                <span className="min-w-0 flex-1 truncate">{presetName ?? "Prompt preset"}</span>
+                <span className="shrink-0 text-[0.625rem] text-foreground/45">Preset</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -527,6 +675,8 @@ type RoleplaySurfaceProps = {
   spriteCharacterIds: string[];
   spriteDisplayModes: SpriteDisplayMode[];
   spriteExpressions: Record<string, string>;
+  expressionAvatarsEnabled: boolean;
+  expressionAvatarResolver?: ExpressionAvatarResolver;
   spritePlacements: Record<string, SpritePlacement>;
   spriteScale: number;
   spriteOpacity: number;
@@ -626,6 +776,8 @@ export function ChatRoleplaySurface({
   spriteCharacterIds,
   spriteDisplayModes,
   spriteExpressions,
+  expressionAvatarsEnabled,
+  expressionAvatarResolver,
   spritePlacements,
   spriteScale,
   spriteOpacity,
@@ -713,8 +865,59 @@ export function ChatRoleplaySurface({
   const sidebarOpen = useUIStore((s) => s.sidebarOpen);
   const rightPanelOpen = useUIStore((s) => s.rightPanelOpen);
   const chatBackgroundBlur = useUIStore((s) => s.chatBackgroundBlur);
+  const initialLoadSettledRef = useRef(false);
+  const prevMessageKeysRef = useRef<Set<string>>(new Set());
+  const seenMessageKeysRef = useRef(roleplayNotificationSeenKeys);
   const hideEchoChamberOnMobile =
     sidebarOpen || rightPanelOpen || settingsOpen || filesOpen || galleryOpen || wizardOpen;
+  const overlaySpriteDisplayModes = expressionAvatarsEnabled
+    ? spriteDisplayModes.filter((mode) => mode !== "expressions")
+    : spriteDisplayModes;
+  const showSpriteOverlay =
+    expressionAgentEnabled && spriteCharacterIds.length > 0 && overlaySpriteDisplayModes.length > 0;
+
+  useEffect(() => {
+    initialLoadSettledRef.current = false;
+    prevMessageKeysRef.current = new Set();
+  }, [activeChatId]);
+
+  useEffect(() => {
+    if (!messages) return;
+    const currentKeys = new Set(messages.map((message) => `${activeChatId}:${message.id}`));
+
+    if (!initialLoadSettledRef.current) {
+      if (currentKeys.size > 0) {
+        prevMessageKeysRef.current = currentKeys;
+        for (const key of currentKeys) seenMessageKeysRef.current.add(key);
+        initialLoadSettledRef.current = true;
+      }
+      return;
+    }
+
+    const prevKeys = prevMessageKeysRef.current;
+    const seenKeys = seenMessageKeysRef.current;
+    const now = Date.now();
+    const FRESHNESS_MS = 15_000;
+    let hasNewAssistantMessage = false;
+
+    for (const message of messages) {
+      const key = `${activeChatId}:${message.id}`;
+      if (prevKeys.has(key) || seenKeys.has(key)) continue;
+
+      const createdAt = new Date(message.createdAt).getTime();
+      const isFresh = Number.isFinite(createdAt) && now - createdAt < FRESHNESS_MS;
+      if (isFresh && message.role === "assistant") {
+        hasNewAssistantMessage = true;
+      }
+    }
+
+    for (const key of currentKeys) seenKeys.add(key);
+    prevMessageKeysRef.current = currentKeys;
+
+    if (hasNewAssistantMessage && useUIStore.getState().rpNotificationSound) {
+      playNotificationPing();
+    }
+  }, [activeChatId, messages]);
 
   return (
     <div data-component="ChatArea.Roleplay" className="flex flex-1 overflow-hidden">
@@ -723,13 +926,13 @@ export function ChatRoleplaySurface({
         <div className="rpg-overlay absolute inset-0" />
         <div className="rpg-vignette pointer-events-none absolute inset-0" />
         {weatherEffects && <WeatherEffectsConnected />}
-        {expressionAgentEnabled && spriteCharacterIds.length > 0 && (
+        {showSpriteOverlay && (
           <Suspense fallback={null}>
             <SpriteOverlay
               characterIds={spriteCharacterIds}
               messages={msgPayload}
               side={spritePosition}
-              spriteDisplayModes={spriteDisplayModes}
+              spriteDisplayModes={overlaySpriteDisplayModes}
               spriteExpressions={spriteExpressions}
               spritePlacements={spritePlacements}
               editing={spriteArrangeMode}
@@ -798,6 +1001,12 @@ export function ChatRoleplaySurface({
                       }
                       totalMessageCount={totalMessageCount}
                     />
+                    <ActiveContextLinksButton
+                      chat={chat}
+                      chatMeta={chatMeta}
+                      chatCharIds={chatCharIds}
+                      characterMap={characterMap}
+                    />
                     <ActiveWorldInfoButton chatId={chat?.id ?? null} />
                     <AuthorNotesButton chatId={chat?.id ?? null} chatMeta={chatMeta} />
                     <RpToolbarButton
@@ -805,14 +1014,14 @@ export function ChatRoleplaySurface({
                       title="Manage Chat Files"
                       onClick={onOpenFiles}
                     />
-                    {expressionAgentEnabled && spriteCharacterIds.length > 0 && (
+                    {showSpriteOverlay && (
                       <RpToolbarButton
                         icon={<Move size="0.875rem" />}
                         title={spriteArrangeMode ? "Finish arranging sprites" : "Arrange sprites"}
                         onClick={onToggleSpriteArrange}
                       />
                     )}
-                    {expressionAgentEnabled && spriteCharacterIds.length > 0 && (
+                    {showSpriteOverlay && (
                       <RpToolbarButton
                         icon={<FlipHorizontal2 size="0.875rem" />}
                         title={
@@ -897,6 +1106,12 @@ export function ChatRoleplaySurface({
                           }
                           totalMessageCount={totalMessageCount}
                         />
+                        <ActiveContextLinksButton
+                          chat={chat}
+                          chatMeta={chatMeta}
+                          chatCharIds={chatCharIds}
+                          characterMap={characterMap}
+                        />
                         <ActiveWorldInfoButton chatId={chat?.id ?? null} />
                         <AuthorNotesButton chatId={chat?.id ?? null} chatMeta={chatMeta} />
                         <RpToolbarButton
@@ -904,14 +1119,14 @@ export function ChatRoleplaySurface({
                           title="Manage Chat Files"
                           onClick={onOpenFiles}
                         />
-                        {expressionAgentEnabled && spriteCharacterIds.length > 0 && (
+                        {showSpriteOverlay && (
                           <RpToolbarButton
                             icon={<Move size="0.875rem" />}
                             title={spriteArrangeMode ? "Finish arranging sprites" : "Arrange sprites"}
                             onClick={onToggleSpriteArrange}
                           />
                         )}
-                        {expressionAgentEnabled && spriteCharacterIds.length > 0 && (
+                        {showSpriteOverlay && (
                           <RpToolbarButton
                             icon={<FlipHorizontal2 size="0.875rem" />}
                             title={
@@ -965,6 +1180,12 @@ export function ChatRoleplaySurface({
                             : null
                         }
                         totalMessageCount={totalMessageCount}
+                      />
+                      <ActiveContextLinksButton
+                        chat={chat}
+                        chatMeta={chatMeta}
+                        chatCharIds={chatCharIds}
+                        characterMap={characterMap}
                       />
                       <ActiveWorldInfoButton chatId={chat?.id ?? null} />
                       <AuthorNotesButton chatId={chat?.id ?? null} chatMeta={chatMeta} />
@@ -1066,6 +1287,7 @@ export function ChatRoleplaySurface({
                           isGrouped={isGrouped(i)}
                           groupChatMode={groupChatMode}
                           chatCharacterIds={chatCharIds}
+                          expressionAvatarResolver={expressionAvatarResolver}
                           multiSelectMode={multiSelectMode}
                           isSelected={selectedMessageIds.has(msg.id)}
                           onToggleSelect={onToggleSelectMessage}
@@ -1094,6 +1316,7 @@ export function ChatRoleplaySurface({
                           isGrouped={isGrouped(i)}
                           groupChatMode={groupChatMode}
                           chatCharacterIds={chatCharIds}
+                          expressionAvatarResolver={expressionAvatarResolver}
                           multiSelectMode={multiSelectMode}
                           isSelected={selectedMessageIds.has(msg.id)}
                           onToggleSelect={onToggleSelectMessage}
@@ -1113,6 +1336,7 @@ export function ChatRoleplaySurface({
                     personaInfo={personaInfo}
                     chatMode={chatMode}
                     groupChatMode={groupChatMode}
+                    expressionAvatarResolver={expressionAvatarResolver}
                   />
                 )}
 

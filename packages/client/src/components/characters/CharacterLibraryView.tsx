@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowUpDown,
   Download,
+  Hash,
   MessageCircle,
   Pencil,
   Plus,
@@ -14,11 +15,15 @@ import {
 import { useCharacters } from "../../hooks/use-characters";
 import { useStartChatFromCharacter } from "../../hooks/use-start-chat-from-character";
 import { getCharacterTitle } from "../../lib/character-display";
+import { estimateCharacterCardTokens, formatEstimatedTokens } from "../../lib/character-token-count";
 import { cn, getAvatarCropStyle, type AvatarCropValue } from "../../lib/utils";
 import { useUIStore } from "../../stores/ui.store";
 import type { CharacterData } from "@jumpchoice/shared";
 
 type SortOption = "name-asc" | "name-desc" | "newest" | "oldest" | "favorites";
+
+const CHARACTER_LIBRARY_SORT_SESSION_KEY = "marinara:character-library-sort";
+const SORT_OPTIONS = ["name-asc", "name-desc", "newest", "oldest", "favorites"] as const satisfies SortOption[];
 
 type CharacterRow = {
   id: string;
@@ -109,6 +114,27 @@ function getCharacterSections(char: ParsedCharacterRow) {
   ].filter((section) => section.content);
 }
 
+function isSortOption(value: string | null): value is SortOption {
+  return SORT_OPTIONS.includes(value as SortOption);
+}
+
+function readSessionSort(): SortOption {
+  try {
+    const storedSort = window.sessionStorage.getItem(CHARACTER_LIBRARY_SORT_SESSION_KEY);
+    return isSortOption(storedSort) ? storedSort : "name-asc";
+  } catch {
+    return "name-asc";
+  }
+}
+
+function writeSessionSort(sort: SortOption) {
+  try {
+    window.sessionStorage.setItem(CHARACTER_LIBRARY_SORT_SESSION_KEY, sort);
+  } catch {
+    // Session storage can be unavailable in privacy modes; the control still works for the mounted view.
+  }
+}
+
 function CharacterLibraryDetailCard({
   character,
   onEdit,
@@ -122,6 +148,7 @@ function CharacterLibraryDetailCard({
   const characterMeta = getCharacterMeta(character);
   const creatorNotes = getText(character.parsed.creator_notes);
   const sections = getCharacterSections(character);
+  const tokenEstimate = estimateCharacterCardTokens(character.parsed);
 
   return (
     <div className="space-y-4">
@@ -155,11 +182,20 @@ function CharacterLibraryDetailCard({
                   </p>
                 )}
               </div>
-              {character.parsed.extensions?.fav && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-[0.6875rem] font-medium text-amber-300">
-                  <Star size="0.75rem" className="fill-current" /> Favorite
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                <span
+                  className="inline-flex items-center gap-1 rounded-full bg-[var(--secondary)] px-2.5 py-1 text-[0.6875rem] font-medium text-[var(--muted-foreground)] ring-1 ring-[var(--border)]"
+                  title="Estimated from character card text fields; actual tokenizer counts vary by model."
+                >
+                  <Hash size="0.75rem" />
+                  {formatEstimatedTokens(tokenEstimate)}
                 </span>
-              )}
+                {character.parsed.extensions?.fav && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-[0.6875rem] font-medium text-amber-300">
+                    <Star size="0.75rem" className="fill-current" /> Favorite
+                  </span>
+                )}
+              </div>
             </div>
 
             {creatorNotes && (
@@ -228,7 +264,7 @@ export function CharacterLibraryView() {
   const { data: characters, isLoading } = useCharacters();
 
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SortOption>("name-asc");
+  const [sort, setSort] = useState<SortOption>(readSessionSort);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(null);
 
@@ -300,6 +336,12 @@ export function CharacterLibraryView() {
     () => sortedCharacters.find((char) => char.id === selectedCharacterId) ?? null,
     [selectedCharacterId, sortedCharacters],
   );
+
+  const handleSortChange = (value: string) => {
+    if (!isSortOption(value)) return;
+    setSort(value);
+    writeSessionSort(value);
+  };
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(244,114,182,0.14),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(56,189,248,0.14),_transparent_26%),var(--background)] lg:overflow-hidden">
@@ -383,7 +425,7 @@ export function CharacterLibraryView() {
             <div className="relative min-w-0 flex-1 sm:w-auto sm:flex-none">
               <select
                 value={sort}
-                onChange={(event) => setSort(event.target.value as SortOption)}
+                onChange={(event) => handleSortChange(event.target.value)}
                 className="w-full appearance-none rounded-2xl border border-[var(--border)]/60 bg-[var(--secondary)]/80 py-2 pl-3 pr-8 text-[0.8125rem] outline-none transition-colors focus:border-[var(--primary)]/40 focus:ring-1 focus:ring-[var(--primary)]/20 md:py-2.5 md:pl-3.5 md:pr-9 md:text-sm"
               >
                 <option value="name-asc">Name A-Z</option>
@@ -432,6 +474,7 @@ export function CharacterLibraryView() {
                 const charTitle = getCharacterTitle({ name: charName, comment: char.comment });
                 const cardSummary = truncateText(getCharacterSummary(char), 180);
                 const cardMeta = getCharacterMeta(char);
+                const tokenEstimate = estimateCharacterCardTokens(char.parsed);
                 const isFavorite = !!char.parsed.extensions?.fav;
                 const tags = getCharacterTags(char);
                 const isActive = selectedCharacterId === char.id;
@@ -494,6 +537,13 @@ export function CharacterLibraryView() {
                         </p>
 
                         <div className="mt-auto flex flex-wrap gap-1 sm:gap-1.5">
+                          <span
+                            className="inline-flex items-center gap-1 rounded-full bg-[var(--secondary)] px-1.5 py-0.5 text-[0.5625rem] font-medium text-[var(--muted-foreground)] ring-1 ring-[var(--border)] sm:px-2 sm:py-1 sm:text-[0.625rem]"
+                            title="Estimated from character card text fields; actual tokenizer counts vary by model."
+                          >
+                            <Hash size="0.5625rem" />
+                            {formatEstimatedTokens(tokenEstimate)}
+                          </span>
                           {tags.slice(0, 2).map((tag) => (
                             <span
                               key={tag}

@@ -1,8 +1,9 @@
-// ──────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 // Zustand Store: UI Slice
-// ──────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { normalizeQuoteFormat, type QuoteFormat } from "@jumpchoice/shared";
 
 type Panel =
   | "chat"
@@ -15,16 +16,22 @@ type Panel =
   | "settings"
   | "bot-browser"
   | "cyoa";
+export type ChatModeShortcut = "conversation" | "roleplay" | "game";
 type FontSize = 12 | 14 | 16 | 17 | 19 | 22;
 export type VisualTheme = "default" | "sillytavern";
 export type HudPosition = "top" | "left" | "right";
 export type TrackerPanelSide = "left" | "right";
+export type TrackerThoughtBubbleDisplay = "inline" | "floating";
+export const TRACKER_TEMPERATURE_UNITS = ["celsius", "fahrenheit"] as const;
+export type TrackerTemperatureUnit = (typeof TRACKER_TEMPERATURE_UNITS)[number];
+export const TRACKER_PANEL_SIZE_PROFILES = ["compact", "standard", "expanded"] as const;
+export type TrackerPanelSizeProfile = (typeof TRACKER_PANEL_SIZE_PROFILES)[number];
 export type TrackerDataPanelSection = "world" | "persona" | "characters" | "quests" | "custom";
 export type TrackerPanelCollapsedSections = Partial<Record<TrackerDataPanelSection, boolean>>;
 export type TrackerPanelSectionOrder = TrackerDataPanelSection[];
 export type EchoChamberSide = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 export type UserStatus = "active" | "idle" | "dnd";
-export type RoleplayAvatarStyle = "circles" | "rectangles" | "panel";
+export type RoleplayAvatarStyle = "none" | "circles" | "rectangles" | "panel";
 export type GameDialogueDisplayMode = "classic" | "stacked";
 export type SummaryPopoverSourceMode = "last" | "range";
 export interface FloatingWidgetPosition {
@@ -59,9 +66,14 @@ export const SIDEBAR_WIDTH_MIN = 240;
 export const SIDEBAR_WIDTH_MAX = 480;
 export const RIGHT_PANEL_WIDTH_MIN = 280;
 export const RIGHT_PANEL_WIDTH_MAX = 520;
-export const TRACKER_PANEL_WIDTH_DEFAULT = 288;
-export const TRACKER_PANEL_WIDTH_MIN = 220;
-export const TRACKER_PANEL_WIDTH_MAX = 440;
+export const TRACKER_PANEL_SIZE_PROFILE_WIDTHS: Record<TrackerPanelSizeProfile, number> = {
+  compact: 280,
+  standard: 340,
+  expanded: 420,
+};
+export const TRACKER_PANEL_WIDTH_DEFAULT = TRACKER_PANEL_SIZE_PROFILE_WIDTHS.standard;
+export const TRACKER_PANEL_WIDTH_MIN = TRACKER_PANEL_SIZE_PROFILE_WIDTHS.compact;
+export const TRACKER_PANEL_WIDTH_MAX = TRACKER_PANEL_SIZE_PROFILE_WIDTHS.expanded;
 const IMAGE_DIMENSION_MIN = 64;
 const IMAGE_DIMENSION_MAX = 4096;
 const GAME_SETUP_LEARNED_LIMIT = 60;
@@ -108,6 +120,25 @@ function clampTrackerPanelWidth(value: unknown) {
   return Math.max(TRACKER_PANEL_WIDTH_MIN, Math.min(TRACKER_PANEL_WIDTH_MAX, width));
 }
 
+export function getTrackerPanelWidthForProfile(profile: TrackerPanelSizeProfile) {
+  return TRACKER_PANEL_SIZE_PROFILE_WIDTHS[profile] ?? TRACKER_PANEL_SIZE_PROFILE_WIDTHS.standard;
+}
+
+export function normalizeTrackerPanelSizeProfile(value: unknown, legacyWidth?: unknown): TrackerPanelSizeProfile {
+  if (TRACKER_PANEL_SIZE_PROFILES.includes(value as TrackerPanelSizeProfile)) {
+    return value as TrackerPanelSizeProfile;
+  }
+
+  const width =
+    typeof legacyWidth === "number" && Number.isFinite(legacyWidth) ? clampTrackerPanelWidth(legacyWidth) : null;
+  if (width !== null) {
+    if (width <= 300) return "compact";
+    if (width >= 380) return "expanded";
+  }
+
+  return "standard";
+}
+
 function normalizeTrackerPanelCollapsedSections(value: unknown): TrackerPanelCollapsedSections {
   const raw = typeof value === "object" && value !== null ? (value as Record<string, unknown>) : {};
   const collapsed: TrackerPanelCollapsedSections = {};
@@ -151,6 +182,16 @@ function normalizeSummaryPopoverSettings(value: unknown): SummaryPopoverSettings
   };
 }
 
+export function normalizeTrackerThoughtBubbleDisplay(value: unknown): TrackerThoughtBubbleDisplay {
+  return value === "inline" || value === "floating" ? value : "inline";
+}
+
+export function normalizeTrackerTemperatureUnit(value: unknown): TrackerTemperatureUnit {
+  return TRACKER_TEMPERATURE_UNITS.includes(value as TrackerTemperatureUnit)
+    ? (value as TrackerTemperatureUnit)
+    : "celsius";
+}
+
 function normalizeLearnedGameSetupOption(value: unknown) {
   if (typeof value !== "string") return "";
   return value.replace(/\s+/g, " ").trim().slice(0, 160);
@@ -192,7 +233,7 @@ export interface CustomTheme {
 /**
  * Pre-migration shape of a browser-local extension. Only used to read
  * existing localStorage state and replay it against the server
- * (`/api/extensions`) on first load — see `useLegacyExtensionMigration`.
+ * (`/api/extensions`) on first load ΓÇö see `useLegacyExtensionMigration`.
  * New extensions go directly through the server-synced hooks in
  * `use-extensions.ts` and use the canonical `InstalledExtension` type
  * exported from `@jumpchoice/shared`.
@@ -218,7 +259,11 @@ interface UIState {
   trackerPanelSide: TrackerPanelSide;
   trackerPanelHideHudWidgets: boolean;
   trackerPanelUseExpressionSprites: boolean;
+  trackerPanelThoughtBubbleDisplay: TrackerThoughtBubbleDisplay;
+  trackerPanelDockedThoughtsAlwaysVisible: boolean;
+  trackerPanelSizeProfile: TrackerPanelSizeProfile;
   trackerPanelWidth: number;
+  trackerTemperatureUnit: TrackerTemperatureUnit;
   trackerPanelCollapsedSections: TrackerPanelCollapsedSections;
   trackerPanelSectionOrder: TrackerPanelSectionOrder;
   settingsTab: string;
@@ -253,8 +298,10 @@ interface UIState {
   characterLibraryOpen: boolean;
   /** True when any open detail editor has unsaved changes */
   editorDirty: boolean;
+  /** Mobile-only return target for detail editors opened from a right panel */
+  detailReturnRightPanel: Panel | null;
 
-  // ── Settings (persisted) ──
+  // ΓöÇΓöÇ Settings (persisted) ΓöÇΓöÇ
   fontSize: FontSize;
   language: AppLanguage;
   /** Font size for chat messages (px) */
@@ -304,6 +351,8 @@ interface UIState {
   messagesPerPage: number;
   /** Bold quoted dialogue in chat messages; color highlighting can still remain when this is off */
   boldDialogue: boolean;
+  /** Preferred quote style applied to AI output and user input. */
+  quoteFormat: QuoteFormat;
   /** When true, model responses are trimmed back to the last complete sentence before saving. */
   trimIncompleteModelOutput: boolean;
   /** When true, chat inputs show a microphone button for browser speech-to-text dictation. */
@@ -325,14 +374,14 @@ interface UIState {
   /** Persisted controls shown in the Chat Summary popover settings window. */
   summaryPopoverSettings: SummaryPopoverSettings;
 
-  // ── Text Appearance ──
+  // ΓöÇΓöÇ Text Appearance ΓöÇΓöÇ
   /** Color for narrator text in RP mode (empty = default amber) */
   narrationFontColor: string;
-  /** Opacity for narrator text (0–100) */
+  /** Opacity for narrator text (0ΓÇô100) */
   narrationOpacity: number;
   /** Color for chat message text (empty = theme default) */
   chatFontColor: string;
-  /** Opacity for roleplay message backgrounds (0–100) */
+  /** Opacity for roleplay message backgrounds (0ΓÇô100) */
   chatFontOpacity: number;
   /** Layout style for roleplay message avatars */
   roleplayAvatarStyle: RoleplayAvatarStyle;
@@ -349,24 +398,24 @@ interface UIState {
   /** Text outline/stroke color */
   textStrokeColor: string;
 
-  // ── Visual Theme ──
+  // ΓöÇΓöÇ Visual Theme ΓöÇΓöÇ
   visualTheme: VisualTheme;
 
-  // ── Conversation Gradient (per color-scheme) ──
+  // ΓöÇΓöÇ Conversation Gradient (per color-scheme) ΓöÇΓöÇ
   convoGradient: {
     dark: { from: string; to: string };
     light: { from: string; to: string };
   };
 
-  // ── Sound ──
+  // ΓöÇΓöÇ Sound ΓöÇΓöÇ
   convoNotificationSound: boolean;
   rpNotificationSound: boolean;
 
-  // ── Custom Conversation Prompt ──
+  // ΓöÇΓöÇ Custom Conversation Prompt ΓöÇΓöÇ
   /** User's custom default system prompt for new conversations (null = built-in default). */
   customConversationPrompt: string | null;
 
-  // ── Schedule Generation Preferences ──
+  // ΓöÇΓöÇ Schedule Generation Preferences ΓöÇΓöÇ
   /** Free-form user guidance injected into the conversation-mode schedule generation prompt (empty = unset). */
   scheduleGenerationPreferences: string;
   /** Custom Game setup chips learned from previous games. Synced so they follow the user. */
@@ -374,42 +423,42 @@ interface UIState {
   /** Last submitted free-text Game setup fields. Synced so new games can start from the previous setup. */
   rememberedGameSetupText: GameSetupRememberedText;
 
-  // ── Input ──
+  // ΓöÇΓöÇ Input ΓöÇΓöÇ
   enterToSendRP: boolean;
   enterToSendConvo: boolean;
   enterToSendGame: boolean;
 
-  // ── Roleplay Effects ──
+  // ΓöÇΓöÇ Roleplay Effects ΓöÇΓöÇ
   weatherEffects: boolean;
 
-  // ── HUD Layout ──
+  // ΓöÇΓöÇ HUD Layout ΓöÇΓöÇ
   hudPosition: HudPosition;
 
-  // ── Legacy Custom Themes & Extensions ──
+  // ΓöÇΓöÇ Legacy Custom Themes & Extensions ΓöÇΓöÇ
   /** Legacy active custom theme id (null = built-in default). Migration only. */
   activeCustomTheme: string | null;
   /** Legacy browser-local custom themes. Migration only. */
   customThemes: CustomTheme[];
   /** True once legacy browser-local themes have been migrated to the server. */
   hasMigratedCustomThemesToServer: boolean;
-  /** Legacy browser-local extensions. Migration only — see useLegacyExtensionMigration. */
+  /** Legacy browser-local extensions. Migration only ΓÇö see useLegacyExtensionMigration. */
   installedExtensions: LegacyInstalledExtension[];
   /** True once legacy browser-local extensions have been migrated to the server. */
   hasMigratedExtensionsToServer: boolean;
 
-  // ── Onboarding ──
+  // ΓöÇΓöÇ Onboarding ΓöÇΓöÇ
   hasCompletedOnboarding: boolean;
   /** True once the user has permanently disabled the in-game tutorial (? icon still re-opens). */
   gameTutorialDisabled: boolean;
 
-  // ── Dismissals ──
+  // ΓöÇΓöÇ Dismissals ΓöÇΓöÇ
   linkApiBannerDismissed: boolean;
 
-  // ── EchoChamber ──
+  // ΓöÇΓöÇ EchoChamber ΓöÇΓöÇ
   echoChamberOpen: boolean;
   echoChamberSide: EchoChamberSide;
 
-  // ── User Status ──
+  // ΓöÇΓöÇ User Status ΓöÇΓöÇ
   /** The user's manually chosen status. Persisted. */
   userStatusManual: UserStatus;
   /** Effective status: matches manual, but auto-flips to "idle" on inactivity */
@@ -417,7 +466,7 @@ interface UIState {
   /** Optional short activity shown with the user's status in Conversation mode. */
   userActivity: string;
 
-  // ── Impersonate Settings ──
+  // ΓöÇΓöÇ Impersonate Settings ΓöÇΓöÇ
   /** Custom prompt template for /impersonate (empty = use server default). Persisted. */
   impersonatePromptTemplate: string;
   /** Show a quick /impersonate button in the chat input toolbar. Persisted. */
@@ -433,6 +482,8 @@ interface UIState {
 
   /** Transient: true when center content area is too narrow (overflow detected) */
   centerCompact: boolean;
+  /** Transient request for the chat sidebar to focus a fixed mode shortcut. */
+  chatModeShortcutRequest: { mode: ChatModeShortcut; token: number } | null;
 
   // Actions
   toggleSidebar: () => void;
@@ -445,7 +496,11 @@ interface UIState {
   setTrackerPanelSide: (side: TrackerPanelSide) => void;
   setTrackerPanelHideHudWidgets: (hidden: boolean) => void;
   setTrackerPanelUseExpressionSprites: (enabled: boolean) => void;
+  setTrackerPanelThoughtBubbleDisplay: (display: TrackerThoughtBubbleDisplay) => void;
+  setTrackerPanelDockedThoughtsAlwaysVisible: (visible: boolean) => void;
+  setTrackerPanelSizeProfile: (profile: TrackerPanelSizeProfile) => void;
   setTrackerPanelWidth: (width: number) => void;
+  setTrackerTemperatureUnit: (unit: TrackerTemperatureUnit) => void;
   setTrackerPanelSectionOrder: (order: TrackerPanelSectionOrder) => void;
   setTrackerPanelSectionCollapsed: (section: TrackerDataPanelSection, collapsed: boolean) => void;
   toggleTrackerPanelSectionCollapsed: (section: TrackerDataPanelSection) => void;
@@ -460,6 +515,8 @@ interface UIState {
   setChatBackgroundBlur: (v: number) => void;
   openCharacterDetail: (id: string) => void;
   closeCharacterDetail: () => void;
+  openCyoa: (id: string) => void;
+  closeCyoa: () => void;
   openLorebookDetail: (id: string) => void;
   closeLorebookDetail: () => void;
   openPresetDetail: (id: string) => void;
@@ -474,8 +531,6 @@ interface UIState {
   closePersonaDetail: () => void;
   openRegexDetail: (id: string) => void;
   closeRegexDetail: () => void;
-  openCyoa: (id: string) => void;
-  closeCyoa: () => void;
   openCharacterLibrary: () => void;
   closeCharacterLibrary: () => void;
   openBotBrowser: () => void;
@@ -521,6 +576,7 @@ interface UIState {
   setConfirmBeforeDelete: (v: boolean) => void;
   setMessagesPerPage: (n: number) => void;
   setBoldDialogue: (v: boolean) => void;
+  setQuoteFormat: (v: QuoteFormat) => void;
   setTrimIncompleteModelOutput: (v: boolean) => void;
   setSpeechToTextEnabled: (v: boolean) => void;
   setChibiProfessorMariEnabled: (v: boolean) => void;
@@ -543,6 +599,7 @@ interface UIState {
   setTextStrokeWidth: (v: number) => void;
   setTextStrokeColor: (v: string) => void;
   setCenterCompact: (v: boolean) => void;
+  requestChatModeShortcut: (mode: ChatModeShortcut) => void;
   setVisualTheme: (v: VisualTheme) => void;
   setConvoGradientField: (scheme: "dark" | "light", field: "from" | "to", value: string) => void;
   setConvoNotificationSound: (v: boolean) => void;
@@ -588,11 +645,26 @@ interface UIState {
   setUserActivity: (activity: string) => void;
 }
 
+function getMobileDetailReturnState(state: UIState) {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  return {
+    detailReturnRightPanel: isMobile && state.rightPanelOpen ? state.rightPanel : null,
+    ...(isMobile && { rightPanelOpen: false }),
+  };
+}
+
+function restoreMobileDetailReturnPanel(panel: Panel | null) {
+  return {
+    detailReturnRightPanel: null,
+    ...(panel && { rightPanelOpen: true, rightPanel: panel }),
+  };
+}
+
 /**
  * Returns the subset of UI state that is synced to the server so it persists
- * across devices and browsers. Excludes legacy migration flags, auto-computed
- * fields (userStatus), and items tracked via their own server resources
- * (custom themes, extensions).
+ * across devices and browsers. Excludes device-local sizing preferences,
+ * legacy migration flags, auto-computed fields (userStatus), and items tracked
+ * via their own server resources (custom themes, extensions).
  */
 export function pickSyncedSettings(state: UIState) {
   return {
@@ -603,15 +675,16 @@ export function pickSyncedSettings(state: UIState) {
     trackerPanelSide: state.trackerPanelSide,
     trackerPanelHideHudWidgets: state.trackerPanelHideHudWidgets,
     trackerPanelUseExpressionSprites: state.trackerPanelUseExpressionSprites,
-    trackerPanelWidth: state.trackerPanelWidth,
+    trackerPanelThoughtBubbleDisplay: state.trackerPanelThoughtBubbleDisplay,
+    trackerPanelDockedThoughtsAlwaysVisible: state.trackerPanelDockedThoughtsAlwaysVisible,
+    trackerPanelSizeProfile: state.trackerPanelSizeProfile,
+    trackerTemperatureUnit: state.trackerTemperatureUnit,
     trackerPanelCollapsedSections: state.trackerPanelCollapsedSections,
     trackerPanelSectionOrder: state.trackerPanelSectionOrder,
     theme: state.theme,
     chatBackground: state.chatBackground,
     chatBackgroundBlur: state.chatBackgroundBlur,
-    fontSize: state.fontSize,
     language: state.language,
-    chatFontSize: state.chatFontSize,
     fontFamily: state.fontFamily,
     enableStreaming: state.enableStreaming,
     streamingSpeed: state.streamingSpeed,
@@ -641,6 +714,7 @@ export function pickSyncedSettings(state: UIState) {
     confirmBeforeDelete: state.confirmBeforeDelete,
     messagesPerPage: state.messagesPerPage,
     boldDialogue: state.boldDialogue,
+    quoteFormat: state.quoteFormat,
     trimIncompleteModelOutput: state.trimIncompleteModelOutput,
     speechToTextEnabled: state.speechToTextEnabled,
     chibiProfessorMariEnabled: state.chibiProfessorMariEnabled,
@@ -704,7 +778,11 @@ export const useUIStore = create<UIState>()(
       trackerPanelSide: "right" as TrackerPanelSide,
       trackerPanelHideHudWidgets: false,
       trackerPanelUseExpressionSprites: false,
+      trackerPanelThoughtBubbleDisplay: "inline" as TrackerThoughtBubbleDisplay,
+      trackerPanelDockedThoughtsAlwaysVisible: false,
+      trackerPanelSizeProfile: "standard" as TrackerPanelSizeProfile,
       trackerPanelWidth: TRACKER_PANEL_WIDTH_DEFAULT,
+      trackerTemperatureUnit: "celsius" as TrackerTemperatureUnit,
       trackerPanelCollapsedSections: {},
       trackerPanelSectionOrder: [...TRACKER_DATA_PANEL_SECTIONS],
       settingsTab: "general",
@@ -720,11 +798,11 @@ export const useUIStore = create<UIState>()(
       toolDetailId: null,
       personaDetailId: null,
       regexDetailId: null,
-      cyoaDetailId: null,
       botBrowserOpen: false,
       gameAssetsBrowserOpen: false,
       characterLibraryOpen: false,
       editorDirty: false,
+      detailReturnRightPanel: null,
 
       // Settings defaults
       fontSize: 17 as FontSize,
@@ -760,6 +838,7 @@ export const useUIStore = create<UIState>()(
       confirmBeforeDelete: true,
       messagesPerPage: 20,
       boldDialogue: true,
+      quoteFormat: "straight" as QuoteFormat,
       trimIncompleteModelOutput: false,
       speechToTextEnabled: false,
       chibiProfessorMariEnabled: true,
@@ -811,11 +890,13 @@ export const useUIStore = create<UIState>()(
       userStatus: "active" as UserStatus,
       userActivity: "",
       centerCompact: false,
+      chatModeShortcutRequest: null,
 
       // Impersonate settings defaults
       impersonatePromptTemplate: "",
       impersonateShowQuickButton: false,
       impersonateCyoaChoices: false,
+      cyoaDetailId: null,
       impersonatePresetId: null,
       impersonateConnectionId: null,
       impersonateBlockAgents: false,
@@ -842,7 +923,14 @@ export const useUIStore = create<UIState>()(
       setTrackerPanelSide: (side) => set({ trackerPanelSide: side }),
       setTrackerPanelHideHudWidgets: (hidden) => set({ trackerPanelHideHudWidgets: hidden }),
       setTrackerPanelUseExpressionSprites: (enabled) => set({ trackerPanelUseExpressionSprites: enabled }),
+      setTrackerPanelThoughtBubbleDisplay: (display) =>
+        set({ trackerPanelThoughtBubbleDisplay: normalizeTrackerThoughtBubbleDisplay(display) }),
+      setTrackerPanelDockedThoughtsAlwaysVisible: (visible) =>
+        set({ trackerPanelDockedThoughtsAlwaysVisible: visible }),
+      setTrackerPanelSizeProfile: (profile) =>
+        set({ trackerPanelSizeProfile: normalizeTrackerPanelSizeProfile(profile) }),
       setTrackerPanelWidth: (width) => set({ trackerPanelWidth: clampTrackerPanelWidth(width) }),
+      setTrackerTemperatureUnit: (unit) => set({ trackerTemperatureUnit: normalizeTrackerTemperatureUnit(unit) }),
       setTrackerPanelSectionOrder: (order) =>
         set({ trackerPanelSectionOrder: normalizeTrackerPanelSectionOrder(order) }),
       setTrackerPanelSectionCollapsed: (section, collapsed) =>
@@ -882,7 +970,7 @@ export const useUIStore = create<UIState>()(
       setChatBackground: (url) => set({ chatBackground: url }),
       setChatBackgroundBlur: (v) => set({ chatBackgroundBlur: Math.max(0, Math.min(24, Math.round(v))) }),
       openCharacterDetail: (id) =>
-        set({
+        set((s) => ({
           characterDetailId: id,
           lorebookDetailId: null,
           presetDetailId: null,
@@ -890,112 +978,10 @@ export const useUIStore = create<UIState>()(
           agentDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closeCharacterDetail: () => set({ characterDetailId: null, editorDirty: false }),
-      openLorebookDetail: (id) =>
-        set({
-          lorebookDetailId: id,
-          characterLibraryOpen: false,
-          characterDetailId: null,
-          presetDetailId: null,
-          connectionDetailId: null,
-          agentDetailId: null,
-          personaDetailId: null,
-          regexDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closeLorebookDetail: () => set({ lorebookDetailId: null, editorDirty: false }),
-      openPresetDetail: (id) =>
-        set({
-          presetDetailId: id,
-          characterLibraryOpen: false,
-          characterDetailId: null,
-          lorebookDetailId: null,
-          connectionDetailId: null,
-          agentDetailId: null,
-          personaDetailId: null,
-          regexDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closePresetDetail: () => set({ presetDetailId: null, editorDirty: false }),
-      openConnectionDetail: (id) =>
-        set({
-          connectionDetailId: id,
-          characterLibraryOpen: false,
-          characterDetailId: null,
-          lorebookDetailId: null,
-          presetDetailId: null,
-          agentDetailId: null,
-          personaDetailId: null,
-          regexDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closeConnectionDetail: () => set({ connectionDetailId: null, editorDirty: false }),
-      openAgentDetail: (agentType) =>
-        set({
-          agentDetailId: agentType,
-          characterLibraryOpen: false,
-          characterDetailId: null,
-          lorebookDetailId: null,
-          presetDetailId: null,
-          connectionDetailId: null,
-          toolDetailId: null,
-          personaDetailId: null,
-          regexDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closeAgentDetail: () => set({ agentDetailId: null, editorDirty: false }),
-      openToolDetail: (id) =>
-        set({
-          toolDetailId: id,
-          agentDetailId: null,
-          characterLibraryOpen: false,
-          characterDetailId: null,
-          lorebookDetailId: null,
-          presetDetailId: null,
-          connectionDetailId: null,
-          personaDetailId: null,
-          regexDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closeToolDetail: () => set({ toolDetailId: null, editorDirty: false }),
-      openPersonaDetail: (id) =>
-        set({
-          personaDetailId: id,
-          characterLibraryOpen: false,
-          characterDetailId: null,
-          lorebookDetailId: null,
-          presetDetailId: null,
-          connectionDetailId: null,
-          agentDetailId: null,
-          toolDetailId: null,
-          regexDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closePersonaDetail: () => set({ personaDetailId: null, editorDirty: false }),
-      openRegexDetail: (id) =>
-        set({
-          regexDetailId: id,
-          personaDetailId: null,
-          characterLibraryOpen: false,
-          characterDetailId: null,
-          lorebookDetailId: null,
-          presetDetailId: null,
-          connectionDetailId: null,
-          agentDetailId: null,
-          toolDetailId: null,
-          cyoaDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
-        }),
-      closeRegexDetail: () => set({ regexDetailId: null, editorDirty: false }),
+          ...getMobileDetailReturnState(s),
+        })),
+      closeCharacterDetail: () =>
+        set({ characterDetailId: null, editorDirty: false }),
       openCyoa: (id) =>
         set({
           cyoaDetailId: id,
@@ -1007,9 +993,139 @@ export const useUIStore = create<UIState>()(
           toolDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
-          ...(window.innerWidth < 768 && { rightPanelOpen: false }),
+          ...(typeof window !== "undefined" && window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeCyoa: () => set({ cyoaDetailId: null, editorDirty: false }),
+      openLorebookDetail: (id) =>
+        set((s) => ({
+          lorebookDetailId: id,
+          characterLibraryOpen: false,
+          characterDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          agentDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          ...getMobileDetailReturnState(s),
+        })),
+      closeLorebookDetail: () =>
+        set((s) => ({
+          lorebookDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
+      openPresetDetail: (id) =>
+        set((s) => ({
+          presetDetailId: id,
+          characterLibraryOpen: false,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          connectionDetailId: null,
+          agentDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          ...getMobileDetailReturnState(s),
+        })),
+      closePresetDetail: () =>
+        set((s) => ({
+          presetDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
+      openConnectionDetail: (id) =>
+        set((s) => ({
+          connectionDetailId: id,
+          characterLibraryOpen: false,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          agentDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          ...getMobileDetailReturnState(s),
+        })),
+      closeConnectionDetail: () =>
+        set((s) => ({
+          connectionDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
+      openAgentDetail: (agentType) =>
+        set((s) => ({
+          agentDetailId: agentType,
+          characterLibraryOpen: false,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          toolDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          ...getMobileDetailReturnState(s),
+        })),
+      closeAgentDetail: () =>
+        set((s) => ({
+          agentDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
+      openToolDetail: (id) =>
+        set((s) => ({
+          toolDetailId: id,
+          agentDetailId: null,
+          characterLibraryOpen: false,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          ...getMobileDetailReturnState(s),
+        })),
+      closeToolDetail: () =>
+        set((s) => ({
+          toolDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
+      openPersonaDetail: (id) =>
+        set((s) => ({
+          personaDetailId: id,
+          characterLibraryOpen: false,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          agentDetailId: null,
+          toolDetailId: null,
+          regexDetailId: null,
+          ...getMobileDetailReturnState(s),
+        })),
+      closePersonaDetail: () =>
+        set((s) => ({
+          personaDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
+      openRegexDetail: (id) =>
+        set((s) => ({
+          regexDetailId: id,
+          personaDetailId: null,
+          characterLibraryOpen: false,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          agentDetailId: null,
+          toolDetailId: null,
+          ...getMobileDetailReturnState(s),
+        })),
+      closeRegexDetail: () =>
+        set((s) => ({
+          regexDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
       openCharacterLibrary: () =>
         set({
           characterLibraryOpen: true,
@@ -1021,9 +1137,9 @@ export const useUIStore = create<UIState>()(
           toolDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
-          cyoaDetailId: null,
           botBrowserOpen: false,
           editorDirty: false,
+          detailReturnRightPanel: null,
           rightPanelOpen: false,
         }),
       closeCharacterLibrary: () => set({ characterLibraryOpen: false }),
@@ -1032,6 +1148,7 @@ export const useUIStore = create<UIState>()(
           botBrowserOpen: true,
           gameAssetsBrowserOpen: false,
           characterLibraryOpen: false,
+          detailReturnRightPanel: null,
           regexDetailId: null,
           personaDetailId: null,
           characterDetailId: null,
@@ -1040,7 +1157,6 @@ export const useUIStore = create<UIState>()(
           connectionDetailId: null,
           agentDetailId: null,
           toolDetailId: null,
-          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeBotBrowser: () => set({ botBrowserOpen: false }),
@@ -1049,6 +1165,7 @@ export const useUIStore = create<UIState>()(
           gameAssetsBrowserOpen: true,
           botBrowserOpen: false,
           characterLibraryOpen: false,
+          detailReturnRightPanel: null,
           regexDetailId: null,
           personaDetailId: null,
           characterDetailId: null,
@@ -1057,7 +1174,6 @@ export const useUIStore = create<UIState>()(
           connectionDetailId: null,
           agentDetailId: null,
           toolDetailId: null,
-          cyoaDetailId: null,
           ...(window.innerWidth < 768 && { rightPanelOpen: false }),
         }),
       closeGameAssetsBrowser: () => set({ gameAssetsBrowserOpen: false }),
@@ -1073,7 +1189,6 @@ export const useUIStore = create<UIState>()(
           s.toolDetailId ||
           s.personaDetailId ||
           s.regexDetailId ||
-          s.cyoaDetailId ||
           s.characterLibraryOpen ||
           s.botBrowserOpen ||
           s.gameAssetsBrowserOpen
@@ -1089,13 +1204,35 @@ export const useUIStore = create<UIState>()(
           toolDetailId: null,
           personaDetailId: null,
           regexDetailId: null,
-          cyoaDetailId: null,
           characterLibraryOpen: false,
           botBrowserOpen: false,
           gameAssetsBrowserOpen: false,
           editorDirty: false,
+          detailReturnRightPanel: null,
         }),
       setEditorDirty: (dirty) => set({ editorDirty: dirty }),
+      requestChatModeShortcut: (mode) =>
+        set((state) => ({
+          sidebarOpen: true,
+          rightPanelOpen: window.innerWidth < 768 ? false : state.rightPanelOpen,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          agentDetailId: null,
+          toolDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          characterLibraryOpen: false,
+          botBrowserOpen: false,
+          gameAssetsBrowserOpen: false,
+          editorDirty: false,
+          detailReturnRightPanel: null,
+          chatModeShortcutRequest: {
+            mode,
+            token: (state.chatModeShortcutRequest?.token ?? 0) + 1,
+          },
+        })),
 
       // Settings actions
       setFontSize: (size) => set({ fontSize: size }),
@@ -1140,6 +1277,7 @@ export const useUIStore = create<UIState>()(
       setConfirmBeforeDelete: (v) => set({ confirmBeforeDelete: v }),
       setMessagesPerPage: (n) => set({ messagesPerPage: n }),
       setBoldDialogue: (v) => set({ boldDialogue: v }),
+      setQuoteFormat: (v) => set({ quoteFormat: normalizeQuoteFormat(v) }),
       setTrimIncompleteModelOutput: (v) => set({ trimIncompleteModelOutput: v }),
       setSpeechToTextEnabled: (v) => set({ speechToTextEnabled: v }),
       setChibiProfessorMariEnabled: (v) => set({ chibiProfessorMariEnabled: v }),
@@ -1262,7 +1400,7 @@ export const useUIStore = create<UIState>()(
     }),
     {
       name: "marinara-engine-ui",
-      version: 32,
+      version: 37,
       // Debounce localStorage writes to avoid sync I/O on every state change
       storage: createJSONStorage(() => {
         let timer: ReturnType<typeof setTimeout> | null = null;
@@ -1304,14 +1442,14 @@ export const useUIStore = create<UIState>()(
         if (version === 0 && persisted.fontSize === 14) {
           persisted.fontSize = 17;
         }
-        // v1 → v2: replace streamingFps (30|60) with streamingSpeed (1–100)
+        // v1 ΓåÆ v2: replace streamingFps (30|60) with streamingSpeed (1ΓÇô100)
         if (version <= 1) {
           delete persisted.streamingFps;
           if (persisted.streamingSpeed === undefined) {
             persisted.streamingSpeed = 50;
           }
         }
-        // v2 → v3: split enterToSend into per-mode toggles
+        // v2 ΓåÆ v3: split enterToSend into per-mode toggles
         if (version <= 2) {
           const old = persisted.enterToSend;
           delete persisted.enterToSend;
@@ -1323,19 +1461,19 @@ export const useUIStore = create<UIState>()(
             persisted.enterToSendConvo = true;
           }
         }
-        // v3 → v4: add conversation notification sound default
+        // v3 ΓåÆ v4: add conversation notification sound default
         if (version <= 3) {
           if (persisted.convoNotificationSound === undefined) {
             persisted.convoNotificationSound = true;
           }
         }
-        // v4 → v5: add RP notification sound default
+        // v4 ΓåÆ v5: add RP notification sound default
         if (version <= 4) {
           if (persisted.rpNotificationSound === undefined) {
             persisted.rpNotificationSound = true;
           }
         }
-        // v5 → v6: add text appearance settings
+        // v5 ΓåÆ v6: add text appearance settings
         if (version <= 5) {
           if (persisted.narrationFontColor === undefined) persisted.narrationFontColor = "";
           if (persisted.narrationOpacity === undefined) persisted.narrationOpacity = 80;
@@ -1344,31 +1482,31 @@ export const useUIStore = create<UIState>()(
           if (persisted.textStrokeWidth === undefined) persisted.textStrokeWidth = 0.5;
           if (persisted.textStrokeColor === undefined) persisted.textStrokeColor = "#000000";
         }
-        // v6 → v7: add legacy theme migration completion flag
+        // v6 ΓåÆ v7: add legacy theme migration completion flag
         if (version <= 6) {
           if (persisted.hasMigratedCustomThemesToServer === undefined) {
             persisted.hasMigratedCustomThemesToServer = false;
           }
         }
-        // v7 → v8: persist right panel width
+        // v7 ΓåÆ v8: persist right panel width
         if (version <= 7) {
           if (persisted.rightPanelWidth === undefined) {
             persisted.rightPanelWidth = 320;
           }
         }
-        // v8 → v9: add roleplay avatar layout setting
+        // v8 ΓåÆ v9: add roleplay avatar layout setting
         if (version <= 8) {
           if (persisted.roleplayAvatarStyle === undefined) {
             persisted.roleplayAvatarStyle = "circles";
           }
         }
-        // v9 → v10: add Game mode avatar/sprite scale.
+        // v9 ΓåÆ v10: add Game mode avatar/sprite scale.
         if (version <= 9) {
           if (persisted.gameAvatarScale === undefined) {
             persisted.gameAvatarScale = 1;
           }
         }
-        // v10 → v11: convert flat convoGradientFrom/To into per-scheme nested object.
+        // v10 ΓåÆ v11: convert flat convoGradientFrom/To into per-scheme nested object.
         if (version <= 10) {
           if ("convoGradientFrom" in persisted || "convoGradientTo" in persisted) {
             const oldFrom = persisted.convoGradientFrom ?? "#0a0a0e";
@@ -1541,6 +1679,44 @@ export const useUIStore = create<UIState>()(
         if (version <= 31 && persisted.chatBackgroundBlur === undefined) {
           persisted.chatBackgroundBlur = 0;
         }
+        // v32 -> v33: make tracker character thought placement an explicit user preference.
+        if (version <= 32) {
+          persisted.trackerPanelThoughtBubbleDisplay = normalizeTrackerThoughtBubbleDisplay(
+            persisted.trackerPanelThoughtBubbleDisplay,
+          );
+        }
+        persisted.trackerPanelThoughtBubbleDisplay = normalizeTrackerThoughtBubbleDisplay(
+          persisted.trackerPanelThoughtBubbleDisplay,
+        );
+        // v33 -> v34: replace arbitrary tracker desktop widths with curated size profiles.
+        if (version <= 33) {
+          persisted.trackerPanelSizeProfile = normalizeTrackerPanelSizeProfile(
+            persisted.trackerPanelSizeProfile,
+            persisted.trackerPanelWidth,
+          );
+        }
+        persisted.trackerPanelSizeProfile = normalizeTrackerPanelSizeProfile(
+          persisted.trackerPanelSizeProfile,
+          persisted.trackerPanelWidth,
+        );
+        // v34 -> v35: tracker-only temperature display unit.
+        if (version <= 34) {
+          persisted.trackerTemperatureUnit = normalizeTrackerTemperatureUnit(persisted.trackerTemperatureUnit);
+        }
+        persisted.trackerTemperatureUnit = normalizeTrackerTemperatureUnit(persisted.trackerTemperatureUnit);
+        // v35 -> v36: optional always-visible docked tracker thoughts.
+        if (version <= 35 && persisted.trackerPanelDockedThoughtsAlwaysVisible === undefined) {
+          persisted.trackerPanelDockedThoughtsAlwaysVisible = false;
+        }
+        if (persisted.trackerPanelDockedThoughtsAlwaysVisible === undefined) {
+          persisted.trackerPanelDockedThoughtsAlwaysVisible = false;
+        }
+        // v36 -> v37: user-selectable straight or typographic quote formatting.
+        if (version <= 36) {
+          persisted.quoteFormat = normalizeQuoteFormat(persisted.quoteFormat);
+        }
+        persisted.quoteFormat = normalizeQuoteFormat(persisted.quoteFormat);
+        delete persisted.trackerPanelWidth;
         return persisted;
       },
       partialize: (state) => ({
@@ -1552,7 +1728,10 @@ export const useUIStore = create<UIState>()(
         trackerPanelSide: state.trackerPanelSide,
         trackerPanelHideHudWidgets: state.trackerPanelHideHudWidgets,
         trackerPanelUseExpressionSprites: state.trackerPanelUseExpressionSprites,
-        trackerPanelWidth: state.trackerPanelWidth,
+        trackerPanelThoughtBubbleDisplay: state.trackerPanelThoughtBubbleDisplay,
+        trackerPanelDockedThoughtsAlwaysVisible: state.trackerPanelDockedThoughtsAlwaysVisible,
+        trackerPanelSizeProfile: state.trackerPanelSizeProfile,
+        trackerTemperatureUnit: state.trackerTemperatureUnit,
         trackerPanelCollapsedSections: state.trackerPanelCollapsedSections,
         trackerPanelSectionOrder: state.trackerPanelSectionOrder,
         theme: state.theme,
@@ -1591,6 +1770,7 @@ export const useUIStore = create<UIState>()(
         confirmBeforeDelete: state.confirmBeforeDelete,
         messagesPerPage: state.messagesPerPage,
         boldDialogue: state.boldDialogue,
+        quoteFormat: state.quoteFormat,
         trimIncompleteModelOutput: state.trimIncompleteModelOutput,
         speechToTextEnabled: state.speechToTextEnabled,
         chibiProfessorMariEnabled: state.chibiProfessorMariEnabled,

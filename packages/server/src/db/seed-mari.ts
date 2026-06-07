@@ -186,6 +186,13 @@ Characters automatically know what's happening in their other chats. When the us
 - The user MUST set up at least one connection before they can chat
 - Set up in the Connections panel (right sidebar → link icon)
 
+### Settings, Audio, and Notification Sounds
+- App-wide settings live in the Settings panel, opened from the right panel/top bar settings button.
+- Notification pings are NOT browser-only. Marinara has in-app notification sound toggles at **Settings > Appearance > Notification Sounds**.
+- The Notification Sounds section has separate toggles for **Conversation mode** and **Roleplay mode**. Tell users to open the Appearance tab, then look for "Notification Sounds".
+- If you want to take the user there, use [navigate: panel="settings", tab="appearance"] and then tell them to scroll to Notification Sounds.
+- Game Mode has its own in-session audio controls on the Game surface volume button/popover for master, music, SFX, ambience, and voice/TTS volume.
+
 ### Built-In Local Gemma Model
 - Marinara Engine also has an optional built-in local model: **Google Gemma 4 E2B**.
 - The user can set it up from the **Local Model** card in the Connections panel or from the onboarding tutorial's **Open Local Model** step.
@@ -366,6 +373,7 @@ You can't complete the entire Game Setup Wizard by hidden assistant command — 
 - **Sidebar** (left): All chats, search, + button to create new chats
 - **Right Panel** (top bar buttons): Characters, Lorebooks, Presets, Connections, Agents, Personas, Settings
 - **Settings tabs**: General, Appearance, Themes, Extensions, Import (SillyTavern migration), Advanced
+- For notification pings specifically: Settings > Appearance > Notification Sounds.
 </app_knowledge>
 
 <assistant_commands>
@@ -457,15 +465,42 @@ const now = () => new Date().toISOString();
 
 const MARI_AVATAR = "/sprites/mari/Mari_profile.png";
 
-export async function seedProfessorMari(db: DB) {
-  const serialized = JSON.stringify(MARI_CHARACTER_DATA);
+function parseExistingMariData(raw: unknown): CharacterData | null {
+  try {
+    const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as CharacterData) : null;
+  } catch {
+    return null;
+  }
+}
 
+function getSeedDataForExistingMari(rawExistingData: unknown): CharacterData {
+  const existingData = parseExistingMariData(rawExistingData);
+  const existingTrackerCardColors = existingData?.extensions?.trackerCardColors;
+
+  return {
+    ...MARI_CHARACTER_DATA,
+    extensions: {
+      ...MARI_CHARACTER_DATA.extensions,
+      ...(existingTrackerCardColors !== undefined && { trackerCardColors: existingTrackerCardColors }),
+    },
+  };
+}
+
+export async function seedProfessorMari(db: DB) {
   // Check if Mari already exists
   const existing = await db.select().from(characters).where(eq(characters.id, PROFESSOR_MARI_ID));
 
   if (existing.length > 0) {
+    const existingData = existing[0]!.data;
+    const currentData = parseExistingMariData(existingData);
+    const seedData = getSeedDataForExistingMari(existingData);
+    const serialized = JSON.stringify(seedData);
+    const currentSerialized =
+      currentData !== null ? JSON.stringify(currentData) : typeof existingData === "string" ? existingData : null;
+
     // Update her card data and avatar if changed (e.g. after an app update)
-    const needsUpdate = existing[0]!.data !== serialized || existing[0]!.avatarPath !== MARI_AVATAR;
+    const needsUpdate = currentSerialized !== serialized || existing[0]!.avatarPath !== MARI_AVATAR;
     if (needsUpdate) {
       await db
         .update(characters)
@@ -475,6 +510,8 @@ export async function seedProfessorMari(db: DB) {
     }
     return;
   }
+
+  const serialized = JSON.stringify(MARI_CHARACTER_DATA);
 
   await db.insert(characters).values({
     id: PROFESSOR_MARI_ID,

@@ -16,11 +16,13 @@ import {
 } from "react";
 import DOMPurify from "dompurify";
 import {
+  AlertTriangle,
   MessageCircle,
   RefreshCw,
   ScrollText,
   X,
   Package,
+  Sword,
   Copy,
   Pencil,
   Check,
@@ -55,8 +57,20 @@ import { createMessageMacroResolver, findCharacterByName } from "../../lib/chat-
 import { animateTextHtml } from "./AnimatedText";
 import { ttsService } from "../../lib/tts-service";
 import { getOrCreateCachedTTSAudioBlob } from "../../lib/tts-audio-cache";
-import { resolveTTSVoiceForSpeaker, splitTTSChunks, ttsConfigMatchesSpeaker } from "../../lib/tts-dialogue";
-import type { PartyDialogueLine, Message, TTSConfig, GameNpc, SkillCheckResult } from "@jumpchoice/shared";
+import {
+  resolveTTSNarratorVoice,
+  resolveTTSVoiceForSpeaker,
+  splitTTSChunks,
+  ttsConfigMatchesSpeaker,
+} from "../../lib/tts-dialogue";
+import {
+  formatTextQuotes,
+  type PartyDialogueLine,
+  type Message,
+  type TTSConfig,
+  type GameNpc,
+  type SkillCheckResult,
+} from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../chat/chat-area.types";
 
 /** Build inline style for a color that may be a plain color or a CSS gradient. */
@@ -393,6 +407,14 @@ interface GameNarrationProps {
   onOpenInventory?: () => void;
   /** Number of items in inventory (for badge) */
   inventoryCount?: number;
+  /** Ask the parent to manually start/generate combat for the current turn. */
+  onRequestCombatStart?: () => void;
+  /** Whether combat state is being prepared and the player has reached the combat beat. */
+  combatStarting?: boolean;
+  /** Whether combat state generation failed for the current combat beat. */
+  combatGenerationFailed?: boolean;
+  /** Retry combat state generation. */
+  onRetryCombatGeneration?: () => void;
   /** Open the standard delete-message flow for a backing chat message. */
   onDeleteMessage?: (messageId: string) => void;
   /** Whether the global multi-delete bar is active. */
@@ -465,6 +487,8 @@ interface GameNarrationProps {
   onStepForward?: () => void;
   /** Jump straight back to the present in one shot. Bound to the Return button during review. */
   onJumpToLatest?: () => void;
+  /** Set the review offset directly when an action needs to land on a specific log beat. */
+  onSetReviewOffset?: (offset: number) => void;
   /**
    * Token bumped from the parent (background-click handler) when wheel-nav is enabled
    * and the player clicks the bare scene background. GameNarration interprets it as
@@ -559,6 +583,8 @@ function buildVoiceConfigSignature(config?: TTSConfig | null): string {
     config.baseUrl,
     config.model,
     config.voice,
+    config.narratorVoiceEnabled ? "narrator-voice" : "narrator-global",
+    config.narratorVoice,
     config.voiceMode,
     JSON.stringify(config.voiceAssignments ?? []),
     config.npcDefaultVoicesEnabled ? "npc-defaults" : "npc-global",
@@ -750,7 +776,7 @@ function getGameSegmentVoiceRequest(
   if (config.dialogueOnly) return null;
   const chunks = splitTTSChunks(segment.content);
   if (chunks.length === 0) return null;
-  const voice = config.voice;
+  const voice = resolveTTSNarratorVoice(config);
   if (config.source === "elevenlabs" && !voice) return null;
   return { chunks, voice };
 }
@@ -893,6 +919,10 @@ export function GameNarration({
   skillCheckSlot,
   onOpenInventory,
   inventoryCount,
+  onRequestCombatStart,
+  combatStarting,
+  combatGenerationFailed,
+  onRetryCombatGeneration,
   onDeleteMessage,
   multiSelectMode = false,
   selectedMessageIds,
@@ -918,6 +948,7 @@ export function GameNarration({
   messageOffset = 0,
   onStepForward,
   onJumpToLatest,
+  onSetReviewOffset,
   nextActionToken,
   onMaxNavOffsetChange,
 }: GameNarrationProps) {
@@ -928,6 +959,7 @@ export function GameNarration({
   const [logsOpen, setLogsOpen] = useState(false);
   const messagesPerPage = useUIStore((s) => s.messagesPerPage);
   const gameDialogueDisplayMode = useUIStore((s) => s.gameDialogueDisplayMode);
+  const quoteFormat = useUIStore((s) => s.quoteFormat);
   const useStackedLogDisplay = gameDialogueDisplayMode === "stacked";
   const showLogsButton = !useStackedLogDisplay;
   const [editingContent, setEditingContent] = useState<string | null>(null);
@@ -1326,9 +1358,9 @@ export function GameNarration({
       };
       const resolveMacrosForText = createMessageMacroResolver(macroContext);
       const regexApplied = applyOutputRegexForSource(text, sourceMessageId, sourceRole, resolveMacrosForText);
-      return resolveMacrosForText(regexApplied);
+      return formatTextQuotes(resolveMacrosForText(regexApplied), quoteFormat);
     },
-    [applyOutputRegexForSource, macroCharacters, personaInfo, resolveMacroCharacter],
+    [applyOutputRegexForSource, macroCharacters, personaInfo, quoteFormat, resolveMacroCharacter],
   );
 
   const prepareDisplaySegment = useCallback(
@@ -2062,6 +2094,62 @@ export function GameNarration({
         }
       : null;
   }, [active?.sourceMessageId, activeIndex, activeSegmentAnchor]);
+
+  const revealSegmentFully = useCallback(
+    (index: number) => {
+      if (segments.length === 0) return false;
+      const targetIndex = Math.max(0, Math.min(index, segments.length - 1));
+      const segment = segments[targetIndex];
+      if (!segment) return false;
+      const displayLength = effectDisplayLength(segment.content);
+      setActiveIndex(targetIndex);
+      setVisibleChars(displayLength);
+      twRef.current.pos = displayLength;
+      activeSegmentAnchorRef.current = {
+        key: narrationSegmentAnchorKey(segment),
+        index: targetIndex,
+        sourceMessageId: segment.sourceMessageId ?? null,
+      };
+      return true;
+    },
+    [segments],
+  );
+
+  const prepareLogDeleteNavigation = useCallback(
+    (deletedLogKey: string, liveSegmentIndex: number) => {
+      const deletedLogIndex = flatLogEntries.findIndex((entry) => getFlatLogEntryKey(entry) === deletedLogKey);
+
+      if (messageOffset > 0 && pastReviewEntry) {
+        const currentKey = getFlatLogEntryKey(pastReviewEntry);
+        const currentLogIndex = flatLogEntries.findIndex((entry) => getFlatLogEntryKey(entry) === currentKey);
+        // Deleting a newer entry shifts offsets. Step forward only for that case
+        // so the currently viewed beat stays selected. Deleting the selected beat
+        // itself keeps the offset, which naturally lands on the previous beat.
+        if (deletedLogIndex > currentLogIndex && currentLogIndex >= 0) {
+          onStepForward?.();
+        }
+        return;
+      }
+
+      if (messageOffset !== 0 || liveSegmentIndex < 0 || liveSegmentIndex !== activeIndex) return;
+      if (liveSegmentIndex > 0 && revealSegmentFully(liveSegmentIndex - 1)) return;
+      if (deletedLogIndex <= 0) return;
+
+      // Deleting the first visible beat of the current turn should still land on
+      // the previous chronological log beat, even when that beat is in the prior turn.
+      onSetReviewOffset?.(Math.max(0, flatLogEntries.length - deletedLogIndex - 1));
+    },
+    [
+      activeIndex,
+      flatLogEntries,
+      getFlatLogEntryKey,
+      messageOffset,
+      onSetReviewOffset,
+      onStepForward,
+      pastReviewEntry,
+      revealSegmentFully,
+    ],
+  );
 
   // Notify parent about narration completion state. While reviewing the past via
   // wheel-nav, the past message will look "complete" — but it's not the present, so
@@ -3137,6 +3225,50 @@ export function GameNarration({
     "flex items-center gap-1.5 rounded-lg bg-[var(--muted)]/30 px-3 py-1.5 text-xs text-[var(--foreground)]/70 transition-colors hover:bg-[var(--muted)]/50 hover:text-[var(--foreground)] dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/20 dark:hover:text-white";
   const NARRATION_META_BTN =
     "flex min-h-7 items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--muted)]/20 px-2.5 py-1 text-xs text-[var(--foreground)]/75 transition-colors hover:bg-[var(--muted)]/40 dark:border-white/10 dark:bg-white/5 dark:text-white/75 dark:hover:bg-white/10";
+  const combatMetaButton = onRequestCombatStart ? (
+    <button
+      type="button"
+      onClick={combatGenerationFailed && onRetryCombatGeneration ? onRetryCombatGeneration : onRequestCombatStart}
+      disabled={combatStarting}
+      className={cn(
+        NARRATION_META_BTN,
+        "relative",
+        combatGenerationFailed
+          ? "border-rose-300/30 bg-rose-500/15 text-rose-100 hover:bg-rose-500/25"
+          : "border-amber-300/20 bg-amber-500/10 text-amber-100/90 hover:bg-amber-500/20",
+        combatStarting && "cursor-wait opacity-80",
+      )}
+      title={combatGenerationFailed ? "Retry combat generation" : "Start combat"}
+    >
+      {combatStarting ? <Loader2 size={12} className="animate-spin" /> : <Sword size={12} />}
+      <span className="hidden sm:inline">{combatGenerationFailed ? "Retry Combat" : "Combat"}</span>
+    </button>
+  ) : null;
+  const combatStatusNotice =
+    combatStarting || combatGenerationFailed ? (
+      <div
+        className={cn(
+          "mt-2 flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs",
+          combatGenerationFailed
+            ? "border-rose-300/25 bg-rose-500/10 text-rose-100"
+            : "border-amber-300/20 bg-amber-500/10 text-amber-100",
+        )}
+      >
+        <span className="flex min-w-0 items-center gap-2">
+          {combatStarting ? <Loader2 size={13} className="shrink-0 animate-spin" /> : <AlertTriangle size={13} />}
+          <span>{combatStarting ? "Combat starting, please wait..." : "Combat generation failed."}</span>
+        </span>
+        {combatGenerationFailed && onRetryCombatGeneration && (
+          <button
+            type="button"
+            onClick={onRetryCombatGeneration}
+            className="shrink-0 rounded-md bg-white/10 px-2 py-1 font-semibold text-white/85 transition-colors hover:bg-white/15 hover:text-white"
+          >
+            Retry
+          </button>
+        )}
+      </div>
+    ) : null;
 
   const handleCopyMessage = useCallback(async (key: string, text: string) => {
     const didCopy = await copyToClipboard(text);
@@ -3525,7 +3657,10 @@ export function GameNarration({
 
           {/* Side remarks — small floating box shown with the dialogue they follow */}
           {activeSideLines.length > 0 && doneTyping && (
-            <div className="relative z-20 mb-2 flex max-h-[min(16rem,38vh)] w-full flex-col space-y-1.5 overflow-x-hidden overflow-y-auto pr-1">
+            <div
+              data-game-skip-bg-nav="true"
+              className="relative z-20 mb-2 flex max-h-[min(16rem,38vh)] w-full flex-col space-y-1.5 overflow-x-hidden overflow-y-auto pr-1"
+            >
               {activeSideLines.map((line, i) => {
                 const expressionAvatar =
                   line.type === "side" || line.type === "extra"
@@ -3627,7 +3762,10 @@ export function GameNarration({
           {diceResultSlot}
         </div>
 
-        <div className="shrink-0 rounded-2xl border border-[var(--border)] bg-[var(--card)]/90 p-3 shadow-[0_16px_38px_rgba(0,0,0,0.45)] backdrop-blur-md dark:border-white/15 dark:bg-black/50">
+        <div
+          data-game-skip-bg-nav="true"
+          className="shrink-0 rounded-2xl border border-[var(--border)] bg-[var(--card)]/90 p-3 shadow-[0_16px_38px_rgba(0,0,0,0.45)] backdrop-blur-md dark:border-white/15 dark:bg-black/50"
+        >
           {/* Scene preparation gate: wait for effects before showing narration */}
           {scenePreparing && (
             <div className="flex items-center gap-2 py-3">
@@ -3925,6 +4063,7 @@ export function GameNarration({
                       )}
                     </button>
                   )}
+                  {combatMetaButton}
                 </div>
                 {navControls}
               </div>
@@ -4042,6 +4181,7 @@ export function GameNarration({
                       )}
                     </button>
                   )}
+                  {combatMetaButton}
                 </div>
                 {navControls}
               </div>
@@ -4109,6 +4249,8 @@ export function GameNarration({
               </div>
             </>
           )}
+
+          {!scenePreparing && combatStatusNotice}
 
           {/* Inline input — appears inside the narration box once all segments are read,
               or after the player has CONFIRMED an interrupt (not just opened the modal).
@@ -4352,22 +4494,10 @@ export function GameNarration({
                             event.preventDefault();
                             event.stopPropagation();
                             captureLogScrollAnchor();
+                            prepareLogDeleteNavigation(`${sourceMessageId}:${sourceSegmentIndex}`, liveSegmentIndex);
                             if (canDeleteMessage && sourceMessageId) {
                               onDeleteMessage?.(sourceMessageId);
                             } else if (canDeleteThisSegment && sourceMessageId) {
-                              if (messageOffset > 0 && pastReviewEntry) {
-                                const deletedKey = `${sourceMessageId}:${sourceSegmentIndex}`;
-                                const currentKey = getFlatLogEntryKey(pastReviewEntry);
-                                const deletedLogIndex = flatLogEntries.findIndex(
-                                  (entry) => getFlatLogEntryKey(entry) === deletedKey,
-                                );
-                                const currentLogIndex = flatLogEntries.findIndex(
-                                  (entry) => getFlatLogEntryKey(entry) === currentKey,
-                                );
-                                if (deletedLogIndex >= currentLogIndex && currentLogIndex >= 0) {
-                                  onStepForward?.();
-                                }
-                              }
                               onDeleteSegment?.(sourceMessageId, sourceSegmentIndex);
                             }
                           }}

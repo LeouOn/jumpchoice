@@ -69,8 +69,10 @@ import {
   DEFAULT_AGENT_CONTEXT_SIZE,
   DEFAULT_AGENT_TOOLS,
   DEFAULT_AGENT_MAX_TOKENS,
+  DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH,
   LOCAL_SIDECAR_CONNECTION_ID,
   MAX_AGENT_MAX_TOKENS,
+  MAX_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH,
   MIN_AGENT_MAX_TOKENS,
   getDefaultBuiltInAgentSettings,
   getDefaultAgentPrompt,
@@ -78,6 +80,20 @@ import {
   type AgentResultType,
   type ToolDefinition,
 } from "@jumpchoice/shared";
+
+function parseActivationKeywordsText(value: string): string[] {
+  const seen = new Set<string>();
+  const keywords: string[] = [];
+  for (const line of value.split(/\r?\n|,/)) {
+    const keyword = line.trim();
+    if (!keyword) continue;
+    const dedupeKey = keyword.toLocaleLowerCase();
+    if (seen.has(dedupeKey)) continue;
+    seen.add(dedupeKey);
+    keywords.push(keyword);
+  }
+  return keywords;
+}
 
 function createCustomAgentType(name: string): string {
   const slug =
@@ -206,8 +222,13 @@ export function AgentEditor() {
   const [localContextSize, setLocalContextSize] = useState<number | "">("");
   const [localMaxTokens, setLocalMaxTokens] = useState<number | "">("");
   const [localRunInterval, setLocalRunInterval] = useState<number | "">("");
+  const [localActivationKeywordsText, setLocalActivationKeywordsText] = useState("");
+  const [localActivationScanDepth, setLocalActivationScanDepth] = useState<number | "">(
+    DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH,
+  );
   const [customCadenceInputFocused, setCustomCadenceInputFocused] = useState(false);
   const [localPrompt, setLocalPrompt] = useState("");
+  const [localAgentEnabled, setLocalAgentEnabled] = useState(true);
   const [localResultType, setLocalResultType] = useState<CustomAgentResultType>("context_injection");
   const [localInjectAsSection, setLocalInjectAsSection] = useState(false);
   const [localIncludePreGenInjections, setLocalIncludePreGenInjections] = useState(false);
@@ -215,6 +236,7 @@ export function AgentEditor() {
   const [localEnabledTools, setLocalEnabledTools] = useState<string[]>([]);
   const [localSpotifyClientId, setLocalSpotifyClientId] = useState("");
   const [localSourceLorebookIds, setLocalSourceLorebookIds] = useState<string[]>([]);
+  const [localUseChatActiveLorebooks, setLocalUseChatActiveLorebooks] = useState(false);
   const [localSourceFileIds, setLocalSourceFileIds] = useState<string[]>([]);
   const [localAutoGenerateAvatars, setLocalAutoGenerateAvatars] = useState(false);
   const [localAutoGenerateBackgrounds, setLocalAutoGenerateBackgrounds] = useState(false);
@@ -252,6 +274,7 @@ export function AgentEditor() {
       setLocalName(builtIn ? builtIn.name : dbConfig.name);
       setLocalDescription(dbConfig.description);
       setLocalPhase(dbConfig.phase as AgentPhase);
+      setLocalAgentEnabled(dbConfig.enabled !== "false");
       setLocalConnectionId(dbConfig.connectionId ?? "");
       const settings = dbConfig.settings
         ? typeof dbConfig.settings === "string"
@@ -264,12 +287,23 @@ export function AgentEditor() {
       setLocalRunInterval(
         (settings.runInterval as number | undefined) ?? (defaultSettings.runInterval as number) ?? "",
       );
+      setLocalActivationKeywordsText(
+        Array.isArray(settings.activationKeywords)
+          ? settings.activationKeywords.filter((keyword: unknown) => typeof keyword === "string").join("\n")
+          : "",
+      );
+      setLocalActivationScanDepth(
+        (settings.activationScanDepth as number | undefined) ?? DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH,
+      );
       setLocalInjectAsSection(
         (settings.injectAsSection as boolean | undefined) ?? defaultSettings.injectAsSection === true,
       );
       setLocalEnabledTools(settings.enabledTools ?? DEFAULT_AGENT_TOOLS[dbConfig.type] ?? []);
       setLocalSpotifyClientId(settings.spotifyClientId ?? "");
       setLocalSourceLorebookIds(settings.sourceLorebookIds ?? []);
+      setLocalUseChatActiveLorebooks(
+        (settings.useChatActiveLorebooks as boolean | undefined) ?? defaultSettings.useChatActiveLorebooks === true,
+      );
       setLocalSourceFileIds(settings.sourceFileIds ?? []);
       setLocalAutoGenerateAvatars(settings.autoGenerateAvatars ?? false);
       setLocalAutoGenerateBackgrounds(settings.autoGenerateBackgrounds ?? false);
@@ -284,15 +318,19 @@ export function AgentEditor() {
       setLocalName(builtIn.name);
       setLocalDescription(builtIn.description);
       setLocalPhase(builtIn.phase);
+      setLocalAgentEnabled(true);
       setLocalConnectionId("");
       setLocalImageConnectionId("");
       setLocalContextSize("");
       setLocalMaxTokens((defaultSettings.maxTokens as number) ?? "");
       setLocalRunInterval((defaultSettings.runInterval as number) ?? "");
+      setLocalActivationKeywordsText("");
+      setLocalActivationScanDepth(DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH);
       setLocalInjectAsSection(defaultSettings.injectAsSection === true);
       setLocalEnabledTools(DEFAULT_AGENT_TOOLS[builtIn.id] ?? []);
       setLocalSpotifyClientId("");
       setLocalSourceLorebookIds([]);
+      setLocalUseChatActiveLorebooks(defaultSettings.useChatActiveLorebooks === true);
       setLocalSourceFileIds([]);
       setLocalAutoGenerateAvatars(false);
       setLocalAutoGenerateBackgrounds(false);
@@ -308,15 +346,19 @@ export function AgentEditor() {
       setLocalName("New Agent");
       setLocalDescription("");
       setLocalPhase("post_processing");
+      setLocalAgentEnabled(true);
       setLocalConnectionId("");
       setLocalImageConnectionId("");
       setLocalContextSize("");
       setLocalMaxTokens(DEFAULT_AGENT_MAX_TOKENS);
       setLocalRunInterval(customRunIntervalMeta?.defaultValue ?? "");
+      setLocalActivationKeywordsText("");
+      setLocalActivationScanDepth(DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH);
       setLocalInjectAsSection(false);
       setLocalEnabledTools([]);
       setLocalSpotifyClientId("");
       setLocalSourceLorebookIds([]);
+      setLocalUseChatActiveLorebooks(false);
       setLocalSourceFileIds([]);
       setLocalAutoGenerateAvatars(false);
       setLocalAutoGenerateBackgrounds(false);
@@ -340,6 +382,9 @@ export function AgentEditor() {
 
   // Narrative Director agent — run interval setting
   const isDirectorAgent = agentDetailId === "director" || dbConfig?.type === "director";
+
+  // Illustrator agent — run interval setting
+  const isIllustratorAgent = agentDetailId === "illustrator" || dbConfig?.type === "illustrator";
 
   // Chat Summary agent — uses "Triggers After" instead of context size
   const isChatSummaryAgent = agentDetailId === "chat-summary" || dbConfig?.type === "chat-summary";
@@ -455,6 +500,14 @@ export function AgentEditor() {
     const isEditingCustomAgent = isCustomAgent || isNewCustomAgent;
     const savedPhase = isEditingCustomAgent && localResultType === "text_rewrite" ? "post_processing" : localPhase;
     const mayIncludeTurnData = isEditingCustomAgent && savedPhase === "post_processing";
+    const activationKeywords = isEditingCustomAgent ? parseActivationKeywordsText(localActivationKeywordsText) : [];
+    const activationScanDepth =
+      localActivationScanDepth === ""
+        ? DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH
+        : Math.max(
+            1,
+            Math.min(MAX_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH, Math.floor(Number(localActivationScanDepth) || 1)),
+          );
 
     // Preserve OAuth fields the form doesn't expose. The server replaces
     // `settings` wholesale, so anything we omit here would be wiped — and the
@@ -473,12 +526,18 @@ export function AgentEditor() {
       name: localName,
       description: localDescription,
       phase: savedPhase,
-      enabled: true,
+      enabled: localAgentEnabled,
       connectionId: localConnectionId || null,
       promptTemplate: localPrompt,
       settings: {
         ...preservedSpotifyFields,
         ...(isEditingCustomAgent ? { resultType: localResultType } : {}),
+        ...(activationKeywords.length > 0
+          ? {
+              activationKeywords,
+              activationScanDepth,
+            }
+          : {}),
         ...(mayIncludeTurnData && localIncludePreGenInjections ? { includePreGenInjections: true } : {}),
         ...(mayIncludeTurnData && localIncludeParallelResults ? { includeParallelResults: true } : {}),
         ...(localContextSize !== "" ? { contextSize: Number(localContextSize) } : {}),
@@ -487,6 +546,9 @@ export function AgentEditor() {
         ...(localInjectAsSection ? { injectAsSection: true } : {}),
         enabledTools: localEnabledTools,
         ...(localSpotifyClientId ? { spotifyClientId: localSpotifyClientId } : {}),
+        ...(isKnowledgeRetrievalAgent || isKnowledgeRouterAgent
+          ? { useChatActiveLorebooks: localUseChatActiveLorebooks }
+          : {}),
         ...(localSourceLorebookIds.length > 0 ? { sourceLorebookIds: localSourceLorebookIds } : {}),
         // Only persist sourceFileIds for the Knowledge Retrieval agent — the Router
         // doesn't read this setting. Without this guard, switching an agent from
@@ -529,6 +591,7 @@ export function AgentEditor() {
     localName,
     localDescription,
     localPhase,
+    localAgentEnabled,
     localResultType,
     localConnectionId,
     localImageConnectionId,
@@ -538,9 +601,12 @@ export function AgentEditor() {
     localContextSize,
     localMaxTokens,
     localRunInterval,
+    localActivationKeywordsText,
+    localActivationScanDepth,
     localInjectAsSection,
     localEnabledTools,
     localSpotifyClientId,
+    localUseChatActiveLorebooks,
     localSourceLorebookIds,
     localSourceFileIds,
     localAutoGenerateAvatars,
@@ -553,6 +619,7 @@ export function AgentEditor() {
     isCustomAgent,
     isNewCustomAgent,
     isKnowledgeRetrievalAgent,
+    isKnowledgeRouterAgent,
     updateAgent,
     createAgent,
     openAgentDetail,
@@ -731,7 +798,42 @@ export function AgentEditor() {
             />
           </FieldGroup>
 
-          {/* ── Pipeline Phase ── */}
+          {/* Agent Status */}
+          <FieldGroup
+            label="Agent Status"
+            icon={<Activity size="0.875rem" className="text-[var(--primary)]" />}
+            help="Controls whether this agent can run. Add as Prompt Section only controls whether saved output appears in prompt presets."
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setLocalAgentEnabled((enabled) => !enabled);
+                markDirty();
+              }}
+              className={cn(
+                "flex w-full items-center gap-3 rounded-xl p-3 text-left ring-1 transition-all",
+                localAgentEnabled
+                  ? "bg-[var(--primary)]/10 text-[var(--foreground)] ring-[var(--primary)]/40"
+                  : "bg-[var(--secondary)] text-[var(--muted-foreground)] ring-[var(--border)]",
+              )}
+            >
+              {localAgentEnabled ? (
+                <ToggleRight size="1rem" className="shrink-0 text-amber-400" />
+              ) : (
+                <ToggleLeft size="1rem" className="shrink-0" />
+              )}
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-medium">{localAgentEnabled ? "Enabled" : "Disabled"}</span>
+                <span className="block text-xs text-[var(--muted-foreground)]">
+                  {localAgentEnabled
+                    ? "This agent can run when its chat settings allow it."
+                    : "This agent is globally disabled and will appear under Disabled Agents."}
+                </span>
+              </span>
+            </button>
+          </FieldGroup>
+
+          {/* Agent Pipeline Phase */}
           <FieldGroup
             label="Pipeline Phase"
             icon={<Zap size="0.875rem" className="text-[var(--primary)]" />}
@@ -1234,6 +1336,60 @@ export function AgentEditor() {
             </FieldGroup>
           )}
 
+          {(isCustomAgent || isNewCustomAgent) && (
+            <FieldGroup
+              label="Activation Keywords"
+              icon={<Activity size="0.875rem" className="text-[var(--primary)]" />}
+              help="When keywords are set, this custom agent is skipped unless at least one keyword appears in the recent chat messages it scans."
+            >
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+                <div>
+                  <label className="mb-1 block text-[0.6875rem] font-medium text-[var(--muted-foreground)]">
+                    Keywords
+                  </label>
+                  <textarea
+                    value={localActivationKeywordsText}
+                    onChange={(e) => {
+                      setLocalActivationKeywordsText(e.target.value);
+                      markDirty();
+                    }}
+                    placeholder={"tavern\nsecret door\nmoonlit ritual"}
+                    rows={4}
+                    className="w-full resize-y rounded-xl bg-[var(--secondary)] px-3 py-2.5 text-sm ring-1 ring-[var(--border)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-[0.6875rem] font-medium text-[var(--muted-foreground)]">
+                    Scan Depth
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="number"
+                      min={1}
+                      max={MAX_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH}
+                      value={localActivationScanDepth}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocalActivationScanDepth(
+                          v === ""
+                            ? ""
+                            : Math.max(1, Math.min(MAX_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH, parseInt(v, 10) || 1)),
+                        );
+                        markDirty();
+                      }}
+                      placeholder={String(DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH)}
+                      className="w-28 rounded-xl bg-[var(--secondary)] px-3 py-2.5 text-sm tabular-nums ring-1 ring-[var(--border)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+                    />
+                    <span className="text-[0.6875rem] text-[var(--muted-foreground)]">messages</span>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-1 text-[0.625rem] text-[var(--muted-foreground)]">
+                Leave keywords empty to run this custom agent on its normal cadence.
+              </p>
+            </FieldGroup>
+          )}
+
           {isChatSummaryAgent && (
             <FieldGroup
               label="Triggers After"
@@ -1292,12 +1448,16 @@ export function AgentEditor() {
             </FieldGroup>
           )}
 
-          {/* ── Run Interval (Narrative Director) ── */}
-          {isDirectorAgent && (
+          {/* ── Run Interval (Narrative Director / Illustrator) ── */}
+          {(isDirectorAgent || isIllustratorAgent) && (
             <FieldGroup
               label="Run Interval"
               icon={<Clock size="0.875rem" className="text-[var(--primary)]" />}
-              help="How many assistant messages between each Narrative Director intervention. Higher values make the director less aggressive. Set to 1 to run every message."
+              help={
+                isIllustratorAgent
+                  ? "How many assistant messages between allowed Illustrator image generations. Set to 1 to allow it every message."
+                  : "How many assistant messages between each Narrative Director intervention. Higher values make the director less aggressive. Set to 1 to run every message."
+              }
             >
               <div className="flex items-center gap-3">
                 <input
@@ -1316,7 +1476,9 @@ export function AgentEditor() {
                 <span className="text-[0.6875rem] text-[var(--muted-foreground)]">messages</span>
               </div>
               <p className="mt-1 text-[0.625rem] text-[var(--muted-foreground)]">
-                The director only jumps in once every N assistant messages instead of steering every reply. Default: 5.
+                {isIllustratorAgent
+                  ? "The Illustrator can only create a new image once every N assistant messages. If it decides not to draw, the timer does not reset. Default: 5."
+                  : "The director only jumps in once every N assistant messages instead of steering every reply. Default: 5."}
               </p>
             </FieldGroup>
           )}
@@ -1659,15 +1821,43 @@ export function AgentEditor() {
               icon={<BookOpen size="0.875rem" className="text-amber-400" />}
               help={
                 isKnowledgeRouterAgent
-                  ? "Select lorebooks for this agent to route over. The router picks relevant entries by id and they're injected verbatim."
-                  : "Select lorebooks and/or upload files for this agent to scan. Supported file types: .txt, .md, .csv, .json, .xml, .html, .pdf"
+                  ? "Use chat-active lorebooks by default, or select fixed lorebooks for this agent to route over. The router picks relevant entries by id and injects them verbatim."
+                  : "Use chat-active lorebooks by default, select fixed lorebooks, and/or upload files for this agent to scan. Supported file types: .txt, .md, .csv, .json, .xml, .html, .pdf"
               }
             >
               <div className="space-y-4">
+                <button
+                  type="button"
+                  aria-pressed={localUseChatActiveLorebooks}
+                  aria-label={`Use this chat's active lorebooks: ${localUseChatActiveLorebooks ? "on" : "off"}`}
+                  onClick={() => {
+                    setLocalUseChatActiveLorebooks((value) => !value);
+                    markDirty();
+                  }}
+                  className={cn(
+                    "flex w-full items-start gap-3 rounded-xl p-3 text-left text-xs ring-1 transition-all",
+                    localUseChatActiveLorebooks
+                      ? "bg-[var(--primary)]/10 ring-[var(--primary)] text-[var(--foreground)]"
+                      : "ring-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--accent)]",
+                  )}
+                >
+                  {localUseChatActiveLorebooks ? (
+                    <ToggleRight size="1.25rem" className="mt-0.5 shrink-0 text-emerald-400" />
+                  ) : (
+                    <ToggleLeft size="1.25rem" className="mt-0.5 shrink-0" />
+                  )}
+                  <span className="min-w-0">
+                    <span className="block font-semibold">Use this chat&apos;s active lorebooks</span>
+                    <span className="mt-0.5 block text-[0.625rem] leading-tight">
+                      When no fixed source is selected below, this agent scans the lorebooks attached to the current
+                      chat.
+                    </span>
+                  </span>
+                </button>
                 {/* ── Lorebooks ── */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <p className="text-[0.6875rem] font-medium text-[var(--muted-foreground)]">Lorebooks</p>
+                    <p className="text-[0.6875rem] font-medium text-[var(--muted-foreground)]">Fixed source override</p>
                     {/* Description coverage badge — Knowledge Router only.
                         Tells the user how many entries in their selected source lorebooks
                         have descriptions filled in. Routing precision drops sharply when
@@ -1753,14 +1943,19 @@ export function AgentEditor() {
                   ) : (
                     <p className="text-[0.625rem] text-[var(--muted-foreground)]">No lorebooks available.</p>
                   )}
+                  {localSourceLorebookIds.length > 0 && (
+                    <p className="text-[0.625rem] text-[var(--muted-foreground)]">
+                      Fixed selections override chat-active lorebooks for every chat that uses this agent.
+                    </p>
+                  )}
                   {/* Router-only tip explaining the description fallback behavior.
                       Without this, users have no way to know that filling in entry
                       descriptions improves routing precision — the fallback to a
                       content snippet works invisibly. */}
-                  {isKnowledgeRouterAgent && localSourceLorebookIds.length > 0 && (
+                  {isKnowledgeRouterAgent && (localSourceLorebookIds.length > 0 || localUseChatActiveLorebooks) && (
                     <p className="text-[0.625rem] italic text-[var(--muted-foreground)]">
-                      Tip: entries without a description fall back to a short content snippet. Adding tight one-line
-                      descriptions to your most important entries improves routing precision.
+                      Tip: entry descriptions help Knowledge Router choose entries; descriptions are not triggers by
+                      themselves. Entries without a description fall back to a short content snippet.
                     </p>
                   )}
                 </div>

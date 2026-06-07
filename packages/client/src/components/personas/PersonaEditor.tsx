@@ -42,7 +42,6 @@ import { showAlertDialog, showConfirmDialog } from "../../lib/app-dialogs";
 import { extractColorsFromImage } from "../../lib/avatar-color-extraction";
 import { HelpTooltip } from "../ui/HelpTooltip";
 import { ColorPicker } from "../ui/ColorPicker";
-import { TrackerCardColorControls } from "../ui/TrackerCardColorControls";
 import { ExpandedTextarea } from "../ui/ExpandedTextarea";
 import { api } from "../../lib/api-client";
 import { parseTrackerCardColorConfig, serializeTrackerCardColorConfig } from "../../lib/tracker-card-colors";
@@ -64,6 +63,7 @@ import { SpriteFrameEditor } from "../ui/SpriteFrameEditor";
 import { SpriteWandCleanupEditor } from "../ui/SpriteWandCleanupEditor";
 import { ExportFormatDialog, type ExportFormatChoice } from "../ui/ExportFormatDialog";
 import { Modal } from "../ui/Modal";
+import { useQuoteFormatter } from "../../hooks/use-quote-formatter";
 import type { TrackerCardColorConfig } from "@jumpchoice/shared";
 
 // ── Tabs ──
@@ -130,6 +130,39 @@ interface PersonaRow {
   tags?: string;
 }
 
+function appendNewTags(existingTags: string[], rawInput: string) {
+  const seen = new Set(existingTags);
+  const additions: string[] = [];
+
+  for (const tag of rawInput.split(",").map((part) => part.trim())) {
+    if (!tag || seen.has(tag)) continue;
+    seen.add(tag);
+    additions.push(tag);
+  }
+
+  return additions.length > 0 ? [...existingTags, ...additions] : existingTags;
+}
+
+const PERSONA_QUOTE_FIELD_KEYS = new Set<string>(["description", "personality", "scenario", "backstory", "appearance"]);
+
+function formatPersonaFieldValue<K extends keyof PersonaFormData>(
+  key: K,
+  value: PersonaFormData[K],
+  formatQuotes: (value: string) => string,
+): PersonaFormData[K] {
+  if (PERSONA_QUOTE_FIELD_KEYS.has(String(key)) && typeof value === "string") {
+    return formatQuotes(value) as PersonaFormData[K];
+  }
+  if (key === "altDescriptions" && Array.isArray(value)) {
+    return value.map((entry) =>
+      entry && typeof entry === "object" && "content" in entry && typeof entry.content === "string"
+        ? { ...entry, content: formatQuotes(entry.content) }
+        : entry,
+    ) as PersonaFormData[K];
+  }
+  return value;
+}
+
 export function PersonaEditor() {
   const personaId = useUIStore((s) => s.personaDetailId);
   const closeDetail = useUIStore((s) => s.closePersonaDetail);
@@ -147,6 +180,7 @@ export function PersonaEditor() {
   const [avatarGeneratorOpen, setAvatarGeneratorOpen] = useState(false);
   const loadedPersonaIdRef = useRef<string | null>(null);
   const latestAvatarUploadTokenRef = useRef<string | null>(null);
+  const formatQuotes = useQuoteFormatter();
   const setEditorDirty = useUIStore((s) => s.setEditorDirty);
   useEffect(() => {
     setEditorDirty(dirty);
@@ -255,10 +289,14 @@ export function PersonaEditor() {
     setDirty(false);
   }, [rawPersona, dirty]);
 
-  const updateField = useCallback(<K extends keyof PersonaFormData>(key: K, value: PersonaFormData[K]) => {
-    setFormData((prev) => (prev ? { ...prev, [key]: value } : prev));
-    setDirty(true);
-  }, []);
+  const updateField = useCallback(
+    <K extends keyof PersonaFormData>(key: K, value: PersonaFormData[K]) => {
+      const nextValue = formatPersonaFieldValue(key, value, formatQuotes);
+      setFormData((prev) => (prev ? { ...prev, [key]: nextValue } : prev));
+      setDirty(true);
+    },
+    [formatQuotes],
+  );
 
   const handleSave = async () => {
     if (!personaId || !formData) return;
@@ -868,7 +906,7 @@ function PersonaSpritesTab({
     if (
       !(await showConfirmDialog({
         title: "Clean Sprite Backgrounds",
-        message: `Run the local backgroundremover model on ${visibleSprites.length} saved ${modeLabel} sprite${visibleSprites.length === 1 ? "" : "s"} at strength ${savedCleanupStrength}? Marinara will keep a restore point in case the cleanup looks wrong.`,
+        message: `Clean backgrounds on ${visibleSprites.length} saved ${modeLabel} sprite${visibleSprites.length === 1 ? "" : "s"} at strength ${savedCleanupStrength}? Marinara will keep a restore point in case the cleanup looks wrong.`,
         confirmLabel: "Clean",
       }))
     ) {
@@ -881,14 +919,18 @@ function PersonaSpritesTab({
         characterId: personaId,
         expressions: visibleSprites.map((sprite) => sprite.expression),
         cleanupStrength: savedCleanupStrength,
-        engine: "backgroundremover",
+        engine: "auto",
       });
 
       if (result.processed > 0) {
         setLastCleanupBackupId(result.backupId ?? null);
-        toast.success(
-          `Cleaned ${result.processed} saved sprite${result.processed === 1 ? "" : "s"} with backgroundremover.`,
-        );
+        const engineDetails =
+          result.backgroundRemoverProcessed && result.builtinProcessed
+            ? ` with backgroundremover and built-in fallback`
+            : result.backgroundRemoverProcessed
+              ? ` with backgroundremover`
+              : ` with built-in cleanup`;
+        toast.success(`Cleaned ${result.processed} saved sprite${result.processed === 1 ? "" : "s"}${engineDetails}.`);
       }
       if (result.failed.length > 0) {
         toast.warning(`${result.failed.length} sprite${result.failed.length === 1 ? "" : "s"} could not be cleaned.`);
@@ -1044,19 +1086,12 @@ function PersonaSpritesTab({
             <button
               type="button"
               onClick={() => void handleCleanVisibleSprites()}
-              disabled={
-                cleaningSprites ||
-                backgroundCleanupUnavailable ||
-                backgroundRemoverUnavailable ||
-                visibleSprites.length === 0
-              }
+              disabled={cleaningSprites || backgroundCleanupUnavailable || visibleSprites.length === 0}
               className="flex min-w-0 items-center justify-center gap-1.5 rounded-lg bg-[var(--secondary)] px-3 py-1.5 text-center text-[0.6875rem] font-medium leading-tight text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-all hover:bg-[var(--accent)] hover:text-[var(--foreground)] disabled:opacity-40 max-md:flex-1 max-md:basis-[calc(50%-0.25rem)] max-md:px-2.5"
               title={
                 backgroundCleanupUnavailable
                   ? backgroundCleanupReason
-                  : backgroundRemoverUnavailable
-                    ? backgroundRemoverReason
-                    : "Run the local backgroundremover model on the currently visible saved sprites"
+                  : "Clean backgrounds on the currently visible saved sprites"
               }
             >
               {cleaningSprites ? <Loader2 size="0.8125rem" className="animate-spin" /> : <Eraser size="0.8125rem" />}
@@ -1527,18 +1562,6 @@ function PersonaColorsTab({
           <li>&bull; Leave any field empty to use the default theme colors.</li>
         </ul>
       </div>
-
-      <TrackerCardColorControls
-        value={formData.trackerCardColors}
-        onChange={(value) => updateField("trackerCardColors", value)}
-        chatColors={{
-          nameColor: formData.nameColor,
-          dialogueColor: formData.dialogueColor,
-          boxColor: formData.boxColor,
-        }}
-        entityLabel="Persona"
-        previewName={formData.name || "You"}
-      />
     </div>
   );
 }
@@ -1881,10 +1904,9 @@ function DescriptionTab({
   const [newTag, setNewTag] = useState("");
 
   const addTag = () => {
-    const tag = newTag.trim();
-    if (!tag) return;
-    if (formData.tags.includes(tag)) return;
-    updateField("tags", [...formData.tags, tag]);
+    const nextTags = appendNewTags(formData.tags, newTag);
+    if (nextTags === formData.tags) return;
+    updateField("tags", nextTags);
     setNewTag("");
   };
 

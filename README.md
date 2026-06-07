@@ -2,6 +2,8 @@
 
 AI Chat & Roleplay Platform specialized for Jumpchain and Make-Your-Choice CYOA experiences.
 
+Current stable release: **[v1.7.0](https://github.com/Pasta-Devs/Marinara-Engine/releases/tag/v1.7.0)**.
+
 Forked from [Marinara Engine](https://github.com/Pasta-Devs/Marinara-Engine) with a fork-then-diverge strategy.
 
 ## Features

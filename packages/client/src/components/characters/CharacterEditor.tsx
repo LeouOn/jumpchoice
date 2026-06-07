@@ -11,6 +11,7 @@ import {
   useCharacter,
   useUpdateCharacter,
   useUploadAvatar,
+  useRemoveAvatar,
   useDeleteCharacter,
   useDuplicateCharacter,
   useCreatePersona,
@@ -39,6 +40,7 @@ import { showConfirmDialog } from "../../lib/app-dialogs";
 import { SpriteGenerationModal } from "../ui/SpriteGenerationModal";
 import { AvatarGenerationModal } from "../ui/AvatarGenerationModal";
 import { AvatarCropWidget } from "../ui/AvatarCropWidget";
+import { ImageUploadDropzone } from "../ui/ImageUploadDropzone";
 import {
   ArrowLeft,
   Save,
@@ -81,7 +83,6 @@ import { extractColorsFromImage } from "../../lib/avatar-color-extraction";
 import { HelpTooltip } from "../ui/HelpTooltip";
 import { api } from "../../lib/api-client";
 import { ColorPicker } from "../ui/ColorPicker";
-import { TrackerCardColorControls } from "../ui/TrackerCardColorControls";
 import { ExpandedTextarea } from "../ui/ExpandedTextarea";
 import { Modal } from "../ui/Modal";
 import { SpriteFrameEditor } from "../ui/SpriteFrameEditor";
@@ -89,6 +90,7 @@ import { SpriteWandCleanupEditor } from "../ui/SpriteWandCleanupEditor";
 import { ExportFormatDialog, type ExportFormatChoice } from "../ui/ExportFormatDialog";
 import type { CharacterCardVersion, CharacterData, RPGStatsConfig } from "@jumpchoice/shared";
 import { parseTrackerCardColorConfig, serializeTrackerCardColorConfig } from "../../lib/tracker-card-colors";
+import { useQuoteFormatter } from "../../hooks/use-quote-formatter";
 
 // ── Tabs ──
 const TABS = [
@@ -146,12 +148,69 @@ function normalizeAltDescriptions(value: unknown): AltDescriptionEntry[] {
     }));
 }
 
+function appendNewTags(existingTags: string[], rawInput: string) {
+  const seen = new Set(existingTags);
+  const additions: string[] = [];
+
+  for (const tag of rawInput.split(",").map((part) => part.trim())) {
+    if (!tag || seen.has(tag)) continue;
+    seen.add(tag);
+    additions.push(tag);
+  }
+
+  return additions.length > 0 ? [...existingTags, ...additions] : existingTags;
+}
+
+const CHARACTER_QUOTE_FIELD_KEYS = new Set<string>([
+  "description",
+  "personality",
+  "scenario",
+  "first_mes",
+  "mes_example",
+  "system_prompt",
+  "post_history_instructions",
+  "creator_notes",
+]);
+
+const CHARACTER_QUOTE_EXTENSION_KEYS = new Set(["appearance", "backstory"]);
+
+function formatCharacterFieldValue<K extends keyof CharacterData>(
+  key: K,
+  value: CharacterData[K],
+  formatQuotes: (value: string) => string,
+): CharacterData[K] {
+  if (CHARACTER_QUOTE_FIELD_KEYS.has(String(key)) && typeof value === "string") {
+    return formatQuotes(value) as CharacterData[K];
+  }
+  if (key === "alternate_greetings" && Array.isArray(value)) {
+    return value.map((entry) => (typeof entry === "string" ? formatQuotes(entry) : entry)) as CharacterData[K];
+  }
+  return value;
+}
+
+function formatCharacterExtensionValue(key: string, value: unknown, formatQuotes: (value: string) => string): unknown {
+  if (CHARACTER_QUOTE_EXTENSION_KEYS.has(key) && typeof value === "string") return formatQuotes(value);
+  if (key === "altDescriptions" && Array.isArray(value)) {
+    return value.map((entry) =>
+      entry && typeof entry === "object" && "content" in entry && typeof entry.content === "string"
+        ? { ...entry, content: formatQuotes(entry.content) }
+        : entry,
+    );
+  }
+  if (key === "depth_prompt" && value && typeof value === "object" && "prompt" in value) {
+    const depthPrompt = value as { prompt?: unknown };
+    if (typeof depthPrompt.prompt === "string") return { ...value, prompt: formatQuotes(depthPrompt.prompt) };
+  }
+  return value;
+}
+
 export function CharacterEditor() {
   const characterId = useUIStore((s) => s.characterDetailId);
   const closeDetail = useUIStore((s) => s.closeCharacterDetail);
   const { data: rawCharacter, isLoading } = useCharacter(characterId);
   const updateCharacter = useUpdateCharacter();
   const uploadAvatar = useUploadAvatar();
+  const removeAvatar = useRemoveAvatar();
   const deleteCharacter = useDeleteCharacter();
   const duplicateCharacter = useDuplicateCharacter();
   const createPersona = useCreatePersona();
@@ -166,6 +225,7 @@ export function CharacterEditor() {
   const [dirty, setDirty] = useState(false);
   const loadedCharacterIdRef = useRef<string | null>(null);
   const activeCharacterIdRef = useRef<string | null>(characterId);
+  const formatQuotes = useQuoteFormatter();
   const dirtyRef = useRef(false);
   const editRevisionRef = useRef(0);
   const setEditorDirty = useUIStore((s) => s.setEditorDirty);
@@ -230,10 +290,11 @@ export function CharacterEditor() {
 
   const updateField = useCallback(
     <K extends keyof CharacterData>(key: K, value: CharacterData[K]) => {
-      setFormData((prev) => (prev ? { ...prev, [key]: value } : prev));
+      const nextValue = formatCharacterFieldValue(key, value, formatQuotes);
+      setFormData((prev) => (prev ? { ...prev, [key]: nextValue } : prev));
       markDirty();
     },
-    [markDirty],
+    [formatQuotes, markDirty],
   );
 
   const setExtensionValue = useCallback((key: string, value: unknown) => {
@@ -245,10 +306,10 @@ export function CharacterEditor() {
 
   const updateExtension = useCallback(
     (key: string, value: unknown) => {
-      setExtensionValue(key, value);
+      setExtensionValue(key, formatCharacterExtensionValue(key, value, formatQuotes));
       markDirty();
     },
-    [markDirty, setExtensionValue],
+    [formatQuotes, markDirty, setExtensionValue],
   );
 
   const beginAvatarUpload = useCallback(() => {
@@ -334,7 +395,7 @@ export function CharacterEditor() {
       // framing, so the prior normalized crop coords are meaningless and would
       // produce a stale framing on the new file.
       if (shouldClearAvatarCrop) {
-        setExtensionValue("avatarCrop", undefined);
+        setExtensionValue("avatarCrop", null);
       }
       if (fallbackDirty || shouldClearAvatarCrop) {
         setDirtyState(true);
@@ -388,7 +449,7 @@ export function CharacterEditor() {
 
       setAvatarPreview(avatarDataUrl);
       if (shouldClearAvatarCrop) {
-        setExtensionValue("avatarCrop", undefined);
+        setExtensionValue("avatarCrop", null);
       }
       if (fallbackDirty || shouldClearAvatarCrop) {
         setDirtyState(true);
@@ -426,6 +487,35 @@ export function CharacterEditor() {
       uploadAvatar,
     ],
   );
+
+  const handleAvatarRemove = useCallback(async () => {
+    if (!characterId || !avatarPreview) return;
+    if (saving) {
+      toast.error("Wait for the current save to finish before removing the avatar.");
+      return;
+    }
+    if (avatarUploadInFlightRef.current) {
+      toast.error("Wait for the current avatar upload to finish before removing the avatar.");
+      return;
+    }
+
+    const confirmed = await showConfirmDialog({
+      title: "Remove Avatar",
+      message: `Remove the avatar from ${formData?.name || "this character"}? This clears the character card's avatar without deleting the character.`,
+      confirmLabel: "Remove",
+      tone: "destructive",
+    });
+    if (!confirmed) return;
+
+    try {
+      await removeAvatar.mutateAsync(characterId);
+      setAvatarPreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      toast.success("Avatar removed.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to remove avatar.");
+    }
+  }, [avatarPreview, characterId, formData?.name, removeAvatar, saving]);
 
   const handleDelete = async () => {
     if (!characterId) return;
@@ -561,10 +651,10 @@ export function CharacterEditor() {
   }, [avatarUploading, closeDetail, setDirtyState]);
 
   const addTag = () => {
-    const tag = newTag.trim();
-    if (!tag || !formData) return;
-    if (formData.tags.includes(tag)) return;
-    updateField("tags", [...formData.tags, tag]);
+    if (!formData) return;
+    const nextTags = appendNewTags(formData.tags, newTag);
+    if (nextTags === formData.tags) return;
+    updateField("tags", nextTags);
     setNewTag("");
   };
 
@@ -885,6 +975,8 @@ export function CharacterEditor() {
                 removeTag={removeTag}
                 removeAllTags={removeAllTags}
                 avatarPreview={avatarPreview}
+                onRemoveAvatar={handleAvatarRemove}
+                removingAvatar={removeAvatar.isPending}
               />
             )}
             {activeTab === "description" && (
@@ -1209,6 +1301,8 @@ function MetadataTab({
   removeTag,
   removeAllTags,
   avatarPreview,
+  onRemoveAvatar,
+  removingAvatar,
 }: {
   characterId: string | null;
   formData: CharacterData;
@@ -1221,6 +1315,8 @@ function MetadataTab({
   removeTag: (tag: string) => void;
   removeAllTags: () => void;
   avatarPreview: string | null;
+  onRemoveAvatar: () => void;
+  removingAvatar: boolean;
 }) {
   // Read existing crop in either current or legacy shape; the widget handles both
   // and writes back the current shape on first interaction.
@@ -1237,6 +1333,8 @@ function MetadataTab({
           alt={formData.name}
           crop={savedCrop}
           onChange={(next) => updateExtension("avatarCrop", next)}
+          onRemove={onRemoveAvatar}
+          removing={removingAvatar}
         />
       )}
 
@@ -1340,7 +1438,12 @@ function MetadataTab({
           <input
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addTag()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addTag();
+              }
+            }}
             placeholder="Add tag…"
             className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--secondary)] px-3 py-1.5 text-xs outline-none focus:border-[var(--primary)]/40"
           />
@@ -1795,7 +1898,7 @@ function AdvancedTab({
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)]">
             System Prompt{" "}
-            <HelpTooltip text="Overrides or appends to the main system prompt when this character is active. Use this for character-specific instructions the AI must follow." />
+            <HelpTooltip text="Character-specific instructions inserted by the prompt preset's character block or wherever the preset uses {{charSysInfo}}. This does not replace the chat's main system prompt." />
           </span>
           <button
             type="button"
@@ -1811,7 +1914,7 @@ function AdvancedTab({
           onChange={(e) => updateField("system_prompt", e.target.value)}
           rows={6}
           className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--secondary)] p-4 text-sm outline-none placeholder:text-[var(--muted-foreground)]/40 focus:border-[var(--primary)]/40 focus:ring-1 focus:ring-[var(--primary)]/20"
-          placeholder="Override or append to the system prompt for this character…"
+          placeholder="Character-specific instructions inserted through {{charSysInfo}} or the character prompt block…"
         />
       </label>
 
@@ -1897,7 +2000,7 @@ function AdvancedTab({
         title="System Prompt"
         value={formData.system_prompt}
         onChange={(value) => updateField("system_prompt", value)}
-        placeholder="Override or append to the system prompt for this character…"
+        placeholder="Character-specific instructions inserted through {{charSysInfo}} or the character prompt block…"
       />
       <ExpandedTextarea
         open={expandedField === "post_history"}
@@ -1925,19 +2028,12 @@ function CharacterGalleryTab({ characterId, characterName }: { characterId: stri
   const { data: images, isLoading } = useCharacterGalleryImages(characterId);
   const upload = useUploadCharacterGalleryImage(characterId);
   const remove = useDeleteCharacterGalleryImage(characterId);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [lightbox, setLightbox] = useState<CharacterGalleryImage | null>(null);
 
   const handleUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const input = e.currentTarget;
-      const files = Array.from(input.files ?? []);
+    (files: File[]) => {
       if (files.length === 0) return;
-      upload.mutate(files, {
-        onSettled: () => {
-          input.value = "";
-        },
-      });
+      upload.mutate(files);
     },
     [upload],
   );
@@ -1967,17 +2063,15 @@ function CharacterGalleryTab({ characterId, characterName }: { characterId: stri
         subtitle="Keep reference art, alternate outfits, and other character images attached to this character even if chats get deleted."
       />
 
-      <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
-
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        disabled={upload.isPending}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[var(--border)] px-4 py-6 text-xs text-[var(--muted-foreground)] transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] disabled:opacity-50"
-      >
-        <Upload size="1rem" />
-        {upload.isPending ? "Uploading…" : "Upload Character Images"}
-      </button>
+      <ImageUploadDropzone
+        label="Upload Character Images"
+        pending={upload.isPending}
+        pendingLabel="Uploading…"
+        dragLabel="Drop character images to upload"
+        onFilesSelected={handleUpload}
+        icon={<Upload size="1rem" />}
+        className="w-full"
+      />
 
       {isLoading ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -2330,7 +2424,7 @@ function SpritesTab({
     if (
       !(await showConfirmDialog({
         title: "Clean Sprite Backgrounds",
-        message: `Run the local backgroundremover model on ${visibleSprites.length} saved ${modeLabel} sprite${visibleSprites.length === 1 ? "" : "s"} at strength ${savedCleanupStrength}? Marinara will keep a restore point in case the cleanup looks wrong.`,
+        message: `Clean backgrounds on ${visibleSprites.length} saved ${modeLabel} sprite${visibleSprites.length === 1 ? "" : "s"} at strength ${savedCleanupStrength}? Marinara will keep a restore point in case the cleanup looks wrong.`,
         confirmLabel: "Clean",
       }))
     ) {
@@ -2343,14 +2437,18 @@ function SpritesTab({
         characterId,
         expressions: visibleSprites.map((sprite) => sprite.expression),
         cleanupStrength: savedCleanupStrength,
-        engine: "backgroundremover",
+        engine: "auto",
       });
 
       if (result.processed > 0) {
         setLastCleanupBackupId(result.backupId ?? null);
-        toast.success(
-          `Cleaned ${result.processed} saved sprite${result.processed === 1 ? "" : "s"} with backgroundremover.`,
-        );
+        const engineDetails =
+          result.backgroundRemoverProcessed && result.builtinProcessed
+            ? ` with backgroundremover and built-in fallback`
+            : result.backgroundRemoverProcessed
+              ? ` with backgroundremover`
+              : ` with built-in cleanup`;
+        toast.success(`Cleaned ${result.processed} saved sprite${result.processed === 1 ? "" : "s"}${engineDetails}.`);
       }
       if (result.failed.length > 0) {
         toast.warning(`${result.failed.length} sprite${result.failed.length === 1 ? "" : "s"} could not be cleaned.`);
@@ -2504,19 +2602,12 @@ function SpritesTab({
             <button
               type="button"
               onClick={() => void handleCleanVisibleSprites()}
-              disabled={
-                cleaningSprites ||
-                backgroundCleanupUnavailable ||
-                backgroundRemoverUnavailable ||
-                visibleSprites.length === 0
-              }
+              disabled={cleaningSprites || backgroundCleanupUnavailable || visibleSprites.length === 0}
               className="flex min-w-0 items-center justify-center gap-1.5 rounded-lg bg-[var(--secondary)] px-3 py-1.5 text-center text-[0.6875rem] font-medium leading-tight text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-all hover:bg-[var(--accent)] hover:text-[var(--foreground)] disabled:opacity-40 max-md:flex-1 max-md:basis-[calc(50%-0.25rem)] max-md:px-2.5"
               title={
                 backgroundCleanupUnavailable
                   ? backgroundCleanupReason
-                  : backgroundRemoverUnavailable
-                    ? backgroundRemoverReason
-                    : "Run the local backgroundremover model on the currently visible saved sprites"
+                  : "Clean backgrounds on the currently visible saved sprites"
               }
             >
               {cleaningSprites ? <Loader2 size="0.8125rem" className="animate-spin" /> : <Eraser size="0.8125rem" />}
@@ -3036,7 +3127,6 @@ function ColorsTab({
   const nameColor = (formData.extensions.nameColor as string) ?? "";
   const dialogueColor = (formData.extensions.dialogueColor as string) ?? "";
   const boxColor = (formData.extensions.boxColor as string) ?? "";
-  const trackerCardColors = parseTrackerCardColorConfig(formData.extensions.trackerCardColors);
   const [extracting, setExtracting] = useState(false);
 
   const handleExtract = async () => {
@@ -3165,14 +3255,6 @@ function ColorsTab({
           <li>&bull; Leave any field empty to use the default theme colors.</li>
         </ul>
       </div>
-
-      <TrackerCardColorControls
-        value={trackerCardColors}
-        onChange={(value) => updateExtension("trackerCardColors", value)}
-        chatColors={{ nameColor, dialogueColor, boxColor }}
-        entityLabel="Character"
-        previewName={formData.name || "Character"}
-      />
     </div>
   );
 }

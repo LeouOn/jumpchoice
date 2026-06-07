@@ -6,11 +6,11 @@ import { TopBar } from "./TopBar";
 import { SpotifyMobileWidget } from "../spotify/SpotifyMiniPlayer";
 import { ChatNotificationBubbles } from "../chat/ChatNotificationBubbles";
 import {
+  getTrackerPanelWidthForProfile,
   RIGHT_PANEL_WIDTH_MAX,
   RIGHT_PANEL_WIDTH_MIN,
   SIDEBAR_WIDTH_MAX,
   SIDEBAR_WIDTH_MIN,
-  TRACKER_PANEL_WIDTH_DEFAULT,
   TRACKER_PANEL_WIDTH_MAX,
   TRACKER_PANEL_WIDTH_MIN,
   useUIStore,
@@ -158,18 +158,15 @@ export function AppShell() {
   const trackerPanelOpen = useUIStore((s) => s.trackerPanelOpen);
   const trackerPanelSide = useUIStore((s) => s.trackerPanelSide);
   const trackerPanelHideHudWidgets = useUIStore((s) => s.trackerPanelHideHudWidgets);
-  const trackerPanelWidth = useUIStore((s) => s.trackerPanelWidth);
+  const trackerPanelSizeProfile = useUIStore((s) => s.trackerPanelSizeProfile);
   const setTrackerPanelOpen = useUIStore((s) => s.setTrackerPanelOpen);
-  const setTrackerPanelWidth = useUIStore((s) => s.setTrackerPanelWidth);
   const [sidebarDragWidth, setSidebarDragWidth] = useState<number | null>(null);
   const [rightPanelDragWidth, setRightPanelDragWidth] = useState<number | null>(null);
-  const [trackerPanelDragWidth, setTrackerPanelDragWidth] = useState<number | null>(null);
   const sidebarDragWidthRef = useRef<number | null>(null);
   const rightPanelDragWidthRef = useRef<number | null>(null);
-  const trackerPanelDragWidthRef = useRef<number | null>(null);
   const liveSidebarWidth = sidebarDragWidth ?? sidebarWidth;
   const liveRightPanelWidth = rightPanelDragWidth ?? rightPanelWidth;
-  const liveTrackerPanelWidth = trackerPanelDragWidth ?? trackerPanelWidth;
+  const trackerPanelWidth = getTrackerPanelWidthForProfile(trackerPanelSizeProfile);
 
   // Track mobile breakpoint for right-panel animation strategy
   const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
@@ -375,60 +372,6 @@ export function AppShell() {
     [isMobile, rightPanelWidth, setRightPanelWidth],
   );
 
-  const startTrackerPanelResize = useCallback(
-    (event: ReactMouseEvent<HTMLDivElement>) => {
-      if (isMobile) return;
-      event.preventDefault();
-      const originalCursor = document.body.style.cursor;
-      const originalUserSelect = document.body.style.userSelect;
-      document.body.style.cursor = "ew-resize";
-      document.body.style.userSelect = "none";
-      trackerPanelDragWidthRef.current = trackerPanelWidth;
-      setTrackerPanelDragWidth(trackerPanelWidth);
-
-      const outerEdge =
-        trackerPanelSide === "left"
-          ? sidebarOpen
-            ? liveSidebarWidth
-            : 0
-          : window.innerWidth - (rightPanelOpen ? liveRightPanelWidth : 0);
-
-      const onMove = (moveEvent: MouseEvent) => {
-        const rawWidth = trackerPanelSide === "left" ? moveEvent.clientX - outerEdge : outerEdge - moveEvent.clientX;
-        const nextWidth = clampWidth(rawWidth, TRACKER_PANEL_WIDTH_MIN, TRACKER_PANEL_WIDTH_MAX);
-        trackerPanelDragWidthRef.current = nextWidth;
-        setTrackerPanelDragWidth(nextWidth);
-      };
-      let finished = false;
-      const finishResize = () => {
-        if (finished) return;
-        finished = true;
-        setTrackerPanelWidth(trackerPanelDragWidthRef.current ?? useUIStore.getState().trackerPanelWidth);
-        trackerPanelDragWidthRef.current = null;
-        setTrackerPanelDragWidth(null);
-        document.body.style.cursor = originalCursor;
-        document.body.style.userSelect = originalUserSelect;
-        window.removeEventListener("mousemove", onMove);
-        window.removeEventListener("mouseup", finishResize);
-        window.removeEventListener("blur", finishResize);
-      };
-
-      window.addEventListener("mousemove", onMove);
-      window.addEventListener("mouseup", finishResize);
-      window.addEventListener("blur", finishResize);
-    },
-    [
-      isMobile,
-      liveRightPanelWidth,
-      liveSidebarWidth,
-      rightPanelOpen,
-      setTrackerPanelWidth,
-      sidebarOpen,
-      trackerPanelSide,
-      trackerPanelWidth,
-    ],
-  );
-
   const adjustSidebarWidth = useCallback(
     (event: ReactKeyboardEvent<HTMLDivElement>) => {
       const step = event.shiftKey ? PANEL_RESIZE_LARGE_STEP : PANEL_RESIZE_STEP;
@@ -476,9 +419,9 @@ export function AppShell() {
       else return;
 
       event.preventDefault();
-      setTrackerPanelWidth(clampWidth(nextWidth, TRACKER_PANEL_WIDTH_MIN, TRACKER_PANEL_WIDTH_MAX));
+      useUIStore.getState().setTrackerPanelWidth(clampWidth(nextWidth, TRACKER_PANEL_WIDTH_MIN, TRACKER_PANEL_WIDTH_MAX));
     },
-    [setTrackerPanelWidth, trackerPanelSide, trackerPanelWidth],
+    [trackerPanelSide, trackerPanelWidth],
   );
 
   const detailView = cyoaDetailId ? (
@@ -685,11 +628,11 @@ export function AppShell() {
 
   const trackerPanelChatAvoidance =
     !isMobile && trackerPanelAnchoredForMotion && trackerPanelSurfaceAvailable
-      ? Math.round(liveTrackerPanelWidth * 0.62)
+      ? Math.round(trackerPanelWidth * 0.62)
       : 0;
   const trackerPanelHudClearance =
     !isMobile && trackerPanelAnchoredForMotion && trackerPanelHideHudWidgets && trackerPanelSurfaceAvailable
-      ? liveTrackerPanelWidth + TRACKER_PANEL_HUD_GAP
+      ? trackerPanelWidth + TRACKER_PANEL_HUD_GAP
       : 0;
 
   const trackerPanelDesktop = (side: "left" | "right") =>
@@ -724,16 +667,16 @@ export function AppShell() {
           },
         }}
         data-component={`TrackerDataSidebarDesktop.${side}`}
+        data-tracker-size-profile={trackerPanelSizeProfile}
         aria-label="Tracker data panel"
         className={cn(
-          "mari-tracker-panel fixed z-30 hidden overflow-hidden bg-[var(--background)]/20 shadow-2xl ring-1 ring-[var(--border)]/35 backdrop-blur-2xl will-change-[transform,opacity] md:block",
-          trackerPanelDragWidth == null && "transition-[width] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+          "mari-tracker-panel fixed z-30 hidden overflow-hidden bg-[var(--background)]/20 shadow-2xl ring-1 ring-[var(--border)]/35 backdrop-blur-2xl transition-[width] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[transform,opacity] md:block",
           side === "left" ? "rounded-r-xl" : "rounded-l-xl",
         )}
         style={{
           top: trackerPanelTop,
           maxHeight: `calc(100vh - ${trackerPanelTop + TRACKER_PANEL_EDGE_OFFSET}px)`,
-          width: liveTrackerPanelWidth,
+          width: trackerPanelWidth,
           transformOrigin: `${side === "left" ? "left" : "right"} ${Math.max(
             -56,
             Math.min(56, (trackerPanelToggleAnchorY ?? trackerPanelTop) - trackerPanelTop),
@@ -743,29 +686,6 @@ export function AppShell() {
             : { right: rightPanelOpen ? liveRightPanelWidth + RESIZER_HITBOX : 0 }),
         }}
       >
-        <div
-          role="separator"
-          aria-orientation="vertical"
-          aria-label="Resize tracker panel"
-          aria-valuemin={TRACKER_PANEL_WIDTH_MIN}
-          aria-valuemax={TRACKER_PANEL_WIDTH_MAX}
-          aria-valuenow={Math.round(liveTrackerPanelWidth)}
-          tabIndex={0}
-          onMouseDown={startTrackerPanelResize}
-          onDoubleClick={() => setTrackerPanelWidth(TRACKER_PANEL_WIDTH_DEFAULT)}
-          onKeyDown={adjustTrackerPanelWidth}
-          className={cn(
-            "mari-resize-x group/resize absolute inset-y-0 z-20 hidden w-2 touch-none select-none bg-transparent focus-visible:outline-none md:block",
-            side === "left" ? "right-0" : "left-0",
-          )}
-        >
-          <span
-            className={cn(
-              "pointer-events-none absolute inset-y-1.5 w-px rounded-full bg-[var(--primary)]/0 transition-colors group-hover/resize:bg-[var(--primary)]/24 group-focus-visible/resize:bg-[var(--primary)]/42",
-              side === "left" ? "right-0" : "left-0",
-            )}
-          />
-        </div>
         <div className="mari-tracker-panel-scroll max-h-[inherit] overflow-x-hidden overflow-y-auto">
           <Suspense fallback={<SidePanelFallback />}>
             <TrackerDataSidebar />
