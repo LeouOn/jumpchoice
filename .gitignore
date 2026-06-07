@@ -51,3 +51,9 @@ release-artifacts/
 # Installer artifacts are published on GitHub Releases, not tracked in source
 installer/*.exe
 win/installer/*.exe
+
+# Git worktrees (used for isolated merge/sync work)
+.worktrees/
+
+# Git worktrees used for isolated branch work (e.g. upstream merges)
+.worktrees/
