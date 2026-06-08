@@ -1,6 +1,9 @@
 packages:
   - "packages/*"
 
+# Peer dependencies are not auto-installed (preserves the historical .npmrc value).
+autoInstallPeers: false
+
 # Supply-chain guardrails: delay newly published package versions long enough for
 # registry takedowns and advisory systems to catch common compromise waves.
 minimumReleaseAge: 1440
