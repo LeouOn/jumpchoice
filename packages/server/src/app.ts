@@ -189,6 +189,8 @@ export async function buildApp(https?: { cert: Buffer; key: Buffer }) {
         return reply.status(404).send({ error: "Not Found" });
       }
 
+      app.log.warn({ url: req.raw.url }, "static file not found, serving index.html fallback");
+
       reply.header("Cache-Control", "no-cache, must-revalidate");
       reply.header("Pragma", "no-cache");
       reply.header("Expires", "0");
