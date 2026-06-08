@@ -1,6 +1,6 @@
 {
   "name": "jumpchoice",
-  "version": "0.1.0",
+  "version": "1.7.0",
   "private": true,
   "description": "AI Chat & Roleplay Platform for Jumpchain and CYOA",
   "author": "JumpChoice Team",
@@ -12,16 +12,18 @@
     "pnpm": ">=10.33.2"
   },
   "scripts": {
+    "preinstall": "node ./scripts/clean-stale-client-artifacts.mjs",
     "dev": "pnpm build:shared && pnpm --filter @jumpchoice/server --filter @jumpchoice/client -r --parallel run dev",
     "dev:server": "pnpm --filter @jumpchoice/server dev",
-    "dev:client": "pnpm build:shared && pnpm --filter @jumpchoice/client dev",
-    "build": "pnpm --filter @jumpchoice/shared build && pnpm --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build",
+    "dev:client": "pnpm clean:stale-client && pnpm build:shared && pnpm --filter @jumpchoice/client dev",
+    "build": "pnpm clean:stale-client && pnpm --filter @jumpchoice/shared build && pnpm --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build",
     "build:shared": "pnpm --filter @jumpchoice/shared build",
     "build:server": "pnpm --filter @jumpchoice/server build",
-    "build:client": "pnpm build:shared && pnpm --filter @jumpchoice/client build",
-    "check": "pnpm impeccable:check && pnpm lint && pnpm build",
+    "build:client": "pnpm clean:stale-client && pnpm build:shared && pnpm --filter @jumpchoice/client build",
+    "check": "pnpm clean:stale-client && pnpm impeccable:check && pnpm lint && pnpm build",
     "start": "node packages/server/dist/index.js",
     "format": "prettier --write \"packages/**/*.{ts,tsx}\"",
+    "clean:stale-client": "node ./scripts/clean-stale-client-artifacts.mjs",
     "impeccable:check": "node ./scripts/check-impeccable-context.mjs",
     "lint": "pnpm -r run lint",
     "test": "node ./scripts/check-windows-installer-layout.mjs && vitest run",
@@ -38,21 +40,5 @@
     "esbuild": "^0.27.7",
     "prettier": "^3.8.3",
     "vitest": "^4.1.7"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "sharp",
-      "onnxruntime-node",
-      "protobufjs"
-    ],
-    "overrides": {
-      "onnxruntime-common": "1.24.3",
-      "onnxruntime-node": "1.24.3",
-      "onnxruntime-web": "1.24.3",
-      "protobufjs": "7.5.5",
-      "brace-expansion": "5.0.5",
-      "@anthropic-ai/sdk": "0.91.1"
-    }
   }
 }

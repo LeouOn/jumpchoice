@@ -58,6 +58,13 @@ release-artifacts/
 installer/*.exe
 win/installer/*.exe
 
+# Git worktrees used for isolated branch work (e.g. upstream merges)
+.worktrees/
+
+# Local docker compose overrides (per-machine dev config)
+docker-compose.override.yml
+docker-compose.override.yaml
+
 # CYOA test images
 test-cyoa-images/
 

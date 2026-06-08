@@ -3,7 +3,7 @@
 // Uses CSS animations instead of framer-motion to
 // avoid double-animation under React.StrictMode.
 // ──────────────────────────────────────────────
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -13,9 +13,10 @@ interface ModalProps {
   children: ReactNode;
   /** Width class, e.g. "max-w-md", "max-w-lg" */
   width?: string;
+  contentRef?: Ref<HTMLDivElement>;
 }
 
-export function Modal({ open, onClose, title, children, width = "max-w-md" }: ModalProps) {
+export function Modal({ open, onClose, title, children, width = "max-w-md", contentRef }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   // Track mounted state separately so we can play the exit animation
   // before actually removing the DOM nodes.
@@ -76,7 +77,7 @@ export function Modal({ open, onClose, title, children, width = "max-w-md" }: Mo
       aria-modal="true"
       aria-label={title}
       data-component="Modal"
-      className="mari-modal fixed inset-0 z-50 flex items-center justify-center p-3 max-md:pt-[max(0.75rem,env(safe-area-inset-top))] max-md:pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4"
+      className="mari-modal fixed inset-0 z-[10000] flex items-center justify-center p-3 max-md:pt-[max(0.75rem,env(safe-area-inset-top))] max-md:pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4"
       style={{
         opacity: isEntering ? 1 : 0,
         transition: "opacity 150ms ease-out",
@@ -118,7 +119,9 @@ export function Modal({ open, onClose, title, children, width = "max-w-md" }: Mo
         </div>
 
         {/* Content */}
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">{children}</div>
+        <div ref={contentRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+          {children}
+        </div>
       </div>
     </div>
   );

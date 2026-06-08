@@ -124,8 +124,8 @@ export async function executeAgent(
         ? buildExpressionAgentMessages(template, context)
         : config.type === "knowledge-retrieval"
           ? buildKnowledgeRetrievalAgentMessages(config, template, context)
-          : config.type === "spotify" && context.chatMode === "game"
-            ? buildGameSpotifyAgentMessages(template, context)
+          : config.type === "spotify"
+            ? buildSpotifyAgentMessages(config, template, context)
             : buildStandardAgentMessages(config, template, context);
 
     // Agents use lower temperature for reliability
@@ -616,7 +616,7 @@ function makeError(config: AgentExecConfig, error: string, startTime: number): A
 function shouldRunAgentIndividually(config: Pick<AgentExecConfig, "type">): boolean {
   // These agents either need compact prompts or carry large private extras that
   // must not be merged into unrelated batched agent requests.
-  return config.type === "expression" || config.type === "lorebook-keeper";
+  return config.type === "expression" || config.type === "lorebook-keeper" || config.type === "spotify";
 }
 
 function buildStandardAgentMessages(config: AgentExecConfig, template: string, context: AgentContext): ChatMessage[] {
@@ -744,10 +744,12 @@ function findLatestUserMessage(context: AgentContext): { index: number; content:
   return null;
 }
 
-function buildGameSpotifyAgentMessages(template: string, context: AgentContext): ChatMessage[] {
+function buildSpotifyAgentMessages(config: AgentExecConfig, template: string, context: AgentContext): ChatMessage[] {
+  const isGame = context.chatMode === "game";
+  const turnLabel = isGame ? "game" : "roleplay";
   const systemParts: string[] = [];
   systemParts.push(`<role>`);
-  systemParts.push(`You are a specialized Spotify DJ agent for the current game turn.`);
+  systemParts.push(`You are a specialized Spotify DJ agent for the current ${turnLabel} turn.`);
   systemParts.push(`</role>`);
   systemParts.push(``);
   systemParts.push(buildLoreBlock(context));
@@ -765,7 +767,19 @@ function buildGameSpotifyAgentMessages(template: string, context: AgentContext):
 
   const latestUser = findLatestUserMessage(context);
   const latestGameTurn = context.mainResponse?.trim() || findLatestAssistantMessage(context)?.content || "";
+  const agentContextSize = normalizeAgentContextSize(config.settings.contextSize);
+  const recentContext = context.recentMessages.slice(-agentContextSize).filter((message) => message.content.trim());
   const userParts: string[] = [];
+
+  if (recentContext.length > 0) {
+    userParts.push(`<recent_context>`);
+    for (const message of recentContext) {
+      const speaker = knowledgeRetrievalSpeakerLabel(message, context);
+      userParts.push(`${speaker}: ${truncateAgentText(message.content, 1200)}`);
+    }
+    userParts.push(`</recent_context>`);
+    userParts.push(``);
+  }
 
   if (latestUser?.content) {
     userParts.push(`<last_user_input>`);
@@ -775,14 +789,16 @@ function buildGameSpotifyAgentMessages(template: string, context: AgentContext):
   }
 
   if (latestGameTurn) {
-    userParts.push(`<last_game_turn>`);
+    userParts.push(isGame ? `<last_game_turn>` : `<last_roleplay_turn>`);
     userParts.push(truncateAgentText(latestGameTurn, 5000));
-    userParts.push(`</last_game_turn>`);
+    userParts.push(isGame ? `</last_game_turn>` : `</last_roleplay_turn>`);
     userParts.push(``);
   }
 
   userParts.push(
-    `Pick music for this game turn only. Use tools to inspect playback and fetch/search candidate tracks.`,
+    isGame
+      ? `Pick music for this game turn only. Use tools to inspect playback and fetch/search candidate tracks.`
+      : `Pick music for this roleplay turn. Use tools to inspect playback and fetch/search candidate tracks; if nothing is active or the current track does not fit, call spotify_play with a fitting queue.`,
   );
   userParts.push(`Now return the requested format.`);
 
@@ -1083,6 +1099,25 @@ function buildAgentExtras(context: AgentContext, agentTypes: string[] = []): str
     parts.push(`<current_game_state>`);
     parts.push(JSON.stringify(context.gameState));
     parts.push(`</current_game_state>`);
+  }
+
+  const gameImageStylePrompt =
+    context.chatMode === "game" && typeof context.memory._gameImageStylePrompt === "string"
+      ? context.memory._gameImageStylePrompt.trim()
+      : "";
+  if (agentTypes.includes("illustrator") && gameImageStylePrompt) {
+    parts.push(`<game_image_instructions>`);
+    parts.push(
+      `This chat is in Game Mode. Gallery -> Illustrate should produce a scene illustration for the current VN/game beat, not a generic character selfie.`,
+    );
+    parts.push(`Required visual style prompt: ${escapeXml(gameImageStylePrompt)}`);
+    parts.push(
+      `Carry this visual style into both the JSON "style" field and the generated "prompt". Do not replace it with a generic art style.`,
+    );
+    parts.push(
+      `Prefer a landscape/16:9 scene composition unless the latest assistant message clearly calls for another framing.`,
+    );
+    parts.push(`</game_image_instructions>`);
   }
 
   if (agentTypes.includes("expression")) {
@@ -1409,9 +1444,61 @@ function extractJson(text: string): string {
 
 /** Fix common LLM JSON mistakes: trailing commas, comments, ellipsis placeholders. */
 function repairJson(str: string): string {
-  return str
-    .replace(/\/\/[^\n]*/g, "") // remove single-line comments
-    .replace(/\/\*[\s\S]*?\*\//g, "") // remove multi-line comments
-    .replace(/,\s*([\]\}])/g, "$1") // remove trailing commas before ] or }
-    .replace(/\.\.\.[^"\n]*/g, ""); // remove ... continuations/placeholders
+  try {
+    JSON.parse(str);
+    return str;
+  } catch {
+    return stripJsonRepairTokens(str).replace(/,\s*([\]\}])/g, "$1");
+  }
+}
+
+function stripJsonRepairTokens(str: string): string {
+  let repaired = "";
+  let inString = false;
+  let escaped = false;
+
+  for (let index = 0; index < str.length; index += 1) {
+    const char = str[index] ?? "";
+    const next = str[index + 1];
+    const nextTwo = str.slice(index, index + 3);
+
+    if (inString) {
+      repaired += char;
+      if (escaped) {
+        escaped = false;
+      } else if (char === "\\") {
+        escaped = true;
+      } else if (char === '"') {
+        inString = false;
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      inString = true;
+      repaired += char;
+      continue;
+    }
+
+    if (char === "/" && next === "/") {
+      while (index + 1 < str.length && str[index + 1] !== "\n") index += 1;
+      continue;
+    }
+
+    if (char === "/" && next === "*") {
+      index += 2;
+      while (index + 1 < str.length && !(str[index] === "*" && str[index + 1] === "/")) index += 1;
+      index += 1;
+      continue;
+    }
+
+    if (nextTwo === "...") {
+      index += 2;
+      continue;
+    }
+
+    repaired += char;
+  }
+
+  return repaired;
 }

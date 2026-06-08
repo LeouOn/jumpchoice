@@ -25,6 +25,32 @@ function characterDataChanged(current: CharacterData, next: CharacterData) {
   return JSON.stringify(current) !== JSON.stringify(next);
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+
+function mergeCharacterData(
+  current: CharacterData,
+  data: Partial<CharacterData>,
+  options?: { mergeExtensions?: boolean },
+): CharacterData {
+  const merged = { ...current, ...data };
+  if ((options?.mergeExtensions ?? true) === false || !isRecord(data.extensions)) return merged;
+
+  const extensions = {
+    ...(isRecord(current.extensions) ? current.extensions : {}),
+    ...data.extensions,
+  };
+  for (const [key, value] of Object.entries(data.extensions)) {
+    if (value === undefined) delete extensions[key];
+  }
+
+  return {
+    ...merged,
+    extensions: extensions as CharacterData["extensions"],
+  };
+}
+
 export function createCharactersStorage(db: DB) {
   return {
     // ── Characters ──
@@ -117,12 +143,15 @@ export function createCharactersStorage(db: DB) {
         versionSource?: string | null;
         versionReason?: string | null;
         skipVersionSnapshot?: boolean;
+        mergeExtensions?: boolean;
       },
     ) {
       const existing = await this.getById(id);
       if (!existing) return null;
       const currentData = parseCharacterData(existing.data);
-      const merged = { ...currentData, ...data };
+      const merged = mergeCharacterData(currentData, data, {
+        mergeExtensions: options?.mergeExtensions,
+      });
       const nextComment = options?.comment !== undefined ? (options.comment ?? "") : (existing.comment ?? "");
       const nextAvatarPath = avatarPath !== undefined ? avatarPath : existing.avatarPath;
       const shouldSnapshot =
@@ -153,11 +182,14 @@ export function createCharactersStorage(db: DB) {
       return this.getById(id);
     },
 
-    async updateAvatar(id: string, avatarPath: string) {
+    async updateAvatar(id: string, avatarPath: string | null) {
       const existing = await this.getById(id);
       if (!existing) return null;
       if (existing.avatarPath !== avatarPath) {
-        await this.createVersionSnapshot(id, { source: "manual", reason: "Avatar update" });
+        await this.createVersionSnapshot(id, {
+          source: "manual",
+          reason: avatarPath ? "Avatar update" : "Avatar removed",
+        });
       }
       await db.update(characters).set({ avatarPath, updatedAt: now() }).where(eq(characters.id, id));
       return this.getById(id);

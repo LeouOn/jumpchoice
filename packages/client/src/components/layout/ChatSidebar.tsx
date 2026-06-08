@@ -49,6 +49,7 @@ import type { Chat, ChatFolder, ChatMode } from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal";
 import { Reorder, useDragControls } from "framer-motion";
 import { parseChatMetadata } from "../../lib/chat-display";
+import { getCurrentGameGroupRepresentative } from "../../lib/game-session-resolution";
 
 type ChatSortOption = "newest" | "oldest" | "name-asc" | "name-desc";
 
@@ -130,6 +131,7 @@ export function ChatSidebar() {
   const editorDirty = useUIStore((s) => s.editorDirty);
   const closeAllDetails = useUIStore((s) => s.closeAllDetails);
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
+  const chatModeShortcutRequest = useUIStore((s) => s.chatModeShortcutRequest);
   const setPendingNewChatMode = useChatStore((s) => s.setPendingNewChatMode);
 
   // Folder hooks
@@ -208,6 +210,15 @@ export function ChatSidebar() {
     setMultiSelectMode(false);
     setSelectedChatIds(new Set());
   }, []);
+
+  useEffect(() => {
+    if (!chatModeShortcutRequest) return;
+    setActiveTab(chatModeShortcutRequest.mode);
+    setSearchQuery("");
+    setActiveTag(null);
+    setTagsExpanded(false);
+    exitMultiSelect();
+  }, [chatModeShortcutRequest, exitMultiSelect]);
 
   // Exit multi-select when switching tabs
   useEffect(() => {
@@ -293,7 +304,10 @@ export function ChatSidebar() {
       if (chat.groupId) {
         if (seenGroups.has(chat.groupId)) continue;
         seenGroups.add(chat.groupId);
-        result.push({ chat, branchCount: totalGroupSizes.get(chat.groupId) ?? 1 });
+        result.push({
+          chat: getCurrentGameGroupRepresentative(chat, chats ?? filtered),
+          branchCount: totalGroupSizes.get(chat.groupId) ?? 1,
+        });
       } else {
         result.push({ chat, branchCount: 1 });
       }
@@ -803,13 +817,6 @@ export function ChatSidebar() {
           </span>
         )}
 
-        {/* Mode badge on hover */}
-        {!multiSelectMode && (
-          <span className="shrink-0 text-[0.625rem] text-[var(--muted-foreground)] opacity-0 transition-opacity group-hover:opacity-100 max-md:opacity-100">
-            {cfg.shortLabel}
-          </span>
-        )}
-
         {/* Move to folder */}
         {!multiSelectMode && modeFolders.length > 0 && (
           <button
@@ -889,6 +896,8 @@ export function ChatSidebar() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
+              aria-pressed={isActive}
+              data-chat-mode-tab={tab}
               className={cn(
                 "relative flex min-h-[2.125rem] flex-1 items-center justify-center gap-1.5 overflow-visible rounded-lg px-2 py-2 text-xs leading-normal font-medium transition-all",
                 isActive

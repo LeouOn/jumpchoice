@@ -119,8 +119,8 @@ export interface GameNpc {
   location: string;
   /** Party reputation with this NPC: -100 (hostile) to 100 (devoted) */
   reputation: number;
-  /** Whether the party has met this NPC */
-  met: boolean;
+  /** Whether the party has encountered (met) this NPC. Tracked separately from notes/reputation. */
+  met?: boolean;
   /** Notable interactions or knowledge */
   notes: string[];
   /** Optional avatar URL (generated or uploaded) */
@@ -449,6 +449,9 @@ export interface HudWidget {
 /** Type-specific widget config. */
 export interface HudWidgetConfig {
   // progress_bar / gauge / relationship_meter
+  /** Initial value used when the widget is created for a new session. */
+  startingValue?: number;
+  /** Current value shown at runtime. */
   value?: number;
   max?: number;
   milestones?: WidgetMilestone[];

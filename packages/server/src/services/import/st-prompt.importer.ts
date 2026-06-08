@@ -27,6 +27,7 @@ function normalizeTopP(v: number | null | undefined) {
   return clamped <= 0 ? 1 : clamped;
 }
 function toReasoningEffort(v: unknown): "low" | "medium" | "high" | "maximum" | null {
+  if (typeof v === "string" && v === "auto") return "maximum";
   if (typeof v === "string" && VALID_REASONING.has(v)) return v as "low" | "medium" | "high" | "maximum";
   return null;
 }
@@ -99,6 +100,7 @@ export async function importSTPreset(
         presencePenalty: clamp(preset.presence_penalty ?? 0, -2, 2),
         reasoningEffort: toReasoningEffort(preset.reasoning_effort),
         verbosity: null,
+        serviceTier: null,
         assistantPrefill: "",
         customParameters: {},
         squashSystemMessages: preset.squash_system_messages ?? true,

@@ -47,6 +47,7 @@ export * from "./constants/defaults.js";
 export * from "./constants/chat-modes.js";
 export * from "./constants/model-lists.js"; // also exports IMAGE_GENERATION_SOURCES
 export * from "./constants/agent-prompts.js";
+export * from "./constants/agent-activation.js";
 export * from "./constants/impersonate.js";
 export * from "./constants/image-generation-defaults.js";
 export * from "./constants/security.js";
@@ -67,3 +68,5 @@ export * from "./utils/lorebook-keyword-matching.js";
 export * from "./utils/regex-safety.js";
 export * from "./utils/game-state-text.js";
 export * from "./utils/chat-summary-entries.js";
+export * from "./utils/quest-state.js";
+export * from "./utils/quote-format.js";

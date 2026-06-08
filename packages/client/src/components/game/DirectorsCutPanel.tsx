@@ -27,7 +27,7 @@ export function DirectorsCutPanel({ chatId, onClose }: DirectorsCutPanelProps) {
           setOutputs(data.outputs);
           setLoading(false);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setLoading(false);
         }

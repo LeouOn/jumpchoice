@@ -141,7 +141,7 @@ export const PROVIDERS: Record<APIProvider, ProviderDefinition> = {
   minimax: {
     id: "minimax",
     name: "MiniMax",
-    defaultBaseUrl: "https://api.minimaxi.com/v1",
+    defaultBaseUrl: "https://api.minimax.io/v1",
     modelsEndpoint: "/models",
     supportsStreaming: true,
     usesAuthHeader: true,

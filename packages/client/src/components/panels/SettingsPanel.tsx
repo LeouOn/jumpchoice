@@ -5,9 +5,13 @@ import {
   APP_LANGUAGE_OPTIONS,
   TRACKER_DATA_PANEL_SECTIONS,
   useUIStore,
+  getTrackerPanelWidthForProfile,
   type GameDialogueDisplayMode,
   type RoleplayAvatarStyle,
   type TrackerDataPanelSection,
+  type TrackerPanelSizeProfile,
+  type TrackerTemperatureUnit,
+  type TrackerThoughtBubbleDisplay,
   type VisualTheme,
 } from "../../stores/ui.store";
 import { cn } from "../../lib/utils";
@@ -18,7 +22,7 @@ import { chatBackgroundUrlToMetadata } from "../../lib/backgrounds";
 import { forceRefreshSpa } from "@/lib/browser-runtime";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
-import { APP_VERSION, type Theme } from "@jumpchoice/shared";
+import { APP_VERSION, type QuoteFormat, type Theme } from "@jumpchoice/shared";
 import {
   findDuplicateTheme,
   useCreateTheme,
@@ -54,7 +58,9 @@ import {
   Eye,
   EyeOff,
   Download,
+  Dock,
   FolderOpen,
+  MessageCircle,
   RefreshCw,
   RotateCcw,
   ExternalLink,
@@ -68,10 +74,15 @@ import { useGameAssetStore } from "../../stores/game-asset.store";
 import { chatKeys } from "../../hooks/use-chats";
 import { HelpTooltip } from "../ui/HelpTooltip";
 import { TrackerPanelIcon } from "../ui/TrackerPanelIcon";
+import { TrackerSizeTierIcon } from "../ui/TrackerSizeTierIcon";
+import { ImageUploadDropzone } from "../ui/ImageUploadDropzone";
 import { ConversationSoundSetting, ToggleSetting } from "./settings/SettingControls";
+import { TrackerCardColorSettings } from "./settings/TrackerCardColorSettings";
+import { PromptOverridesEditor } from "./settings/PromptOverridesEditor";
 import { DraftNumberInput } from "../ui/DraftNumberInput";
 import { ExportFormatDialog, type ExportFormatChoice } from "../ui/ExportFormatDialog";
 import { inspectCharacterFilesForEmbeddedLorebooks } from "../../lib/character-import";
+import { showConfirmDialog } from "../../lib/app-dialogs";
 
 type CustomFontFace = {
   filename: string;
@@ -146,6 +157,11 @@ async function readSettingsResponseError(res: Response, fallback: string) {
 
 const ROLEPLAY_AVATAR_STYLE_OPTIONS: Array<{ id: RoleplayAvatarStyle; label: string; desc: string }> = [
   {
+    id: "none",
+    label: "None",
+    desc: "Hide message avatars and let roleplay bubbles use the full row.",
+  },
+  {
     id: "circles",
     label: "Small Circles",
     desc: "Compact portrait bubbles beside each roleplay message.",
@@ -175,6 +191,45 @@ const GAME_DIALOGUE_DISPLAY_OPTIONS: Array<{ id: GameDialogueDisplayMode; label:
   },
 ];
 
+const TRACKER_THOUGHT_BUBBLE_DISPLAY_OPTIONS: Array<{
+  id: TrackerThoughtBubbleDisplay;
+  label: string;
+  desc: string;
+}> = [
+  {
+    id: "inline",
+    label: "Docked",
+    desc: "Thoughts open inside the character card for a stable panel shape.",
+  },
+  {
+    id: "floating",
+    label: "Floating",
+    desc: "Thoughts open as a bubble beside the portrait.",
+  },
+];
+
+const TRACKER_PANEL_SIZE_PROFILE_OPTIONS: Array<{
+  id: TrackerPanelSizeProfile;
+  label: string;
+  desc: string;
+}> = [
+  {
+    id: "compact",
+    label: "Compact",
+    desc: "A narrow reference rail for quick stats and one-column cards.",
+  },
+  {
+    id: "standard",
+    label: "Standard",
+    desc: "Balanced tracker cards with room for editing and thoughts.",
+  },
+  {
+    id: "expanded",
+    label: "Expanded",
+    desc: "A roomier board for featured cards, portraits, and full thoughts.",
+  },
+];
+
 const TRACKER_PANEL_CARD_OPTIONS: Record<TrackerDataPanelSection, { label: string; desc: string }> = {
   world: {
     label: "World State",
@@ -197,6 +252,11 @@ const TRACKER_PANEL_CARD_OPTIONS: Record<TrackerDataPanelSection, { label: strin
     desc: "Extra tracker fields from custom tracker agents.",
   },
 };
+
+const QUOTE_FORMAT_OPTIONS: Array<{ id: QuoteFormat; label: string; sample: string }> = [
+  { id: "straight", label: "Straight", sample: '"Hello", it\'s me.' },
+  { id: "typographic", label: "Typographic", sample: "\u201cHello,\u201d it\u2019s me." },
+];
 
 const GAME_ASSET_CATEGORIES = [
   {
@@ -231,6 +291,8 @@ const GAME_ASSET_CATEGORIES = [
   },
 ] as const;
 
+const GAME_IMAGE_PROMPT_TEMPLATE_KEYS = ["game.npcPortrait", "game.background", "game.sceneIllustration"] as const;
+
 type GameAssetCategoryId = (typeof GAME_ASSET_CATEGORIES)[number]["id"];
 const GAME_ASSET_CATEGORY_BY_ID = new Map(GAME_ASSET_CATEGORIES.map((category) => [category.id, category]));
 
@@ -264,6 +326,7 @@ function ImageDimensionRow({
           value={width}
           min={64}
           max={4096}
+          commitOnValidChange
           onCommit={(nextWidth) => onCommit(nextWidth, height)}
           className="min-w-0 rounded-md border border-[var(--border)] bg-[var(--secondary)] px-2 py-1 text-xs"
         />
@@ -272,6 +335,7 @@ function ImageDimensionRow({
           value={height}
           min={64}
           max={4096}
+          commitOnValidChange
           onCommit={(nextHeight) => onCommit(width, nextHeight)}
           className="min-w-0 rounded-md border border-[var(--border)] bg-[var(--secondary)] px-2 py-1 text-xs"
         />
@@ -288,6 +352,8 @@ function TrackerPanelCardOrderSetting() {
     ...TRACKER_DATA_PANEL_SECTIONS.filter((section) => !trackerPanelSectionOrder.includes(section)),
   ];
   const isDefaultOrder = orderedSections.every((section, index) => section === TRACKER_DATA_PANEL_SECTIONS[index]);
+  const [orderOpen, setOrderOpen] = useState(!isDefaultOrder);
+  const orderId = React.useId();
 
   const moveCard = (section: TrackerDataPanelSection, direction: -1 | 1) => {
     const index = orderedSections.indexOf(section);
@@ -302,10 +368,23 @@ function TrackerPanelCardOrderSetting() {
   return (
     <div className="mt-1.5 flex flex-col gap-1.5 rounded-lg bg-[var(--background)]/36 p-1.5 ring-1 ring-[var(--border)]">
       <div className="flex min-h-5 items-center justify-between gap-2 px-0.5">
-        <span className="inline-flex min-w-0 items-center gap-1 text-[0.625rem] font-medium text-[var(--foreground)]">
-          Card order
-          <HelpTooltip text="Controls the top-to-bottom order of tracker cards when their matching tracker agents are enabled for a chat." />
-        </span>
+        <button
+          type="button"
+          onClick={() => setOrderOpen((open) => !open)}
+          aria-expanded={orderOpen}
+          aria-controls={orderId}
+          className="flex min-w-0 flex-1 items-center gap-1.5 rounded-sm text-left text-[0.625rem] font-medium text-[var(--foreground)] transition-colors hover:text-[var(--primary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--primary)]"
+        >
+          <ChevronDown
+            size="0.6875rem"
+            className={cn("shrink-0 text-[var(--muted-foreground)] transition-transform", !orderOpen && "-rotate-90")}
+          />
+          <span className="truncate">Card order</span>
+          <span className="shrink-0 rounded-full bg-[var(--secondary)] px-1.5 py-0.5 text-[0.5625rem] font-normal text-[var(--muted-foreground)]">
+            {isDefaultOrder ? "Default" : "Custom"}
+          </span>
+        </button>
+        <HelpTooltip text="Controls the top-to-bottom order of tracker cards when their matching tracker agents are enabled for a chat." />
         <button
           type="button"
           onClick={() => setTrackerPanelSectionOrder([...TRACKER_DATA_PANEL_SECTIONS])}
@@ -317,47 +396,287 @@ function TrackerPanelCardOrderSetting() {
           <RotateCcw size="0.6875rem" />
         </button>
       </div>
-      <div className="grid gap-0.5">
-        {orderedSections.map((section, index) => {
-          const option = TRACKER_PANEL_CARD_OPTIONS[section];
-          return (
-            <div
-              key={section}
-              className="grid min-h-7 min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-1.5 rounded-sm bg-[var(--secondary)]/42 px-1.5 py-1 ring-1 ring-[var(--border)]/60"
-              title={option.desc}
-            >
-              <div className="min-w-0">
-                <div className="truncate text-[0.6875rem] font-medium leading-4 text-[var(--foreground)]">
-                  {option.label}
+      {orderOpen && (
+        <div id={orderId} className="grid gap-0.5">
+          {orderedSections.map((section, index) => {
+            const option = TRACKER_PANEL_CARD_OPTIONS[section];
+            return (
+              <div
+                key={section}
+                className="grid min-h-7 min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-1.5 rounded-sm bg-[var(--secondary)]/42 px-1.5 py-1 ring-1 ring-[var(--border)]/60"
+                title={option.desc}
+              >
+                <div className="min-w-0">
+                  <div className="truncate text-[0.6875rem] font-medium leading-4 text-[var(--foreground)]">
+                    {option.label}
+                  </div>
+                </div>
+                <div className="flex shrink-0 items-center gap-0.5">
+                  <button
+                    type="button"
+                    onClick={() => moveCard(section, -1)}
+                    disabled={index === 0}
+                    title={`Move ${option.label} up`}
+                    aria-label={`Move ${option.label} up`}
+                    className="flex h-5 w-5 items-center justify-center rounded-sm text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-all hover:bg-[var(--background)] hover:text-[var(--primary)] active:scale-95 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[var(--muted-foreground)]"
+                  >
+                    <ArrowUp size="0.6875rem" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveCard(section, 1)}
+                    disabled={index === orderedSections.length - 1}
+                    title={`Move ${option.label} down`}
+                    aria-label={`Move ${option.label} down`}
+                    className="flex h-5 w-5 items-center justify-center rounded-sm text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-all hover:bg-[var(--background)] hover:text-[var(--primary)] active:scale-95 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[var(--muted-foreground)]"
+                  >
+                    <ArrowDown size="0.6875rem" />
+                  </button>
                 </div>
               </div>
-              <div className="flex shrink-0 items-center gap-0.5">
-                <button
-                  type="button"
-                  onClick={() => moveCard(section, -1)}
-                  disabled={index === 0}
-                  title={`Move ${option.label} up`}
-                  aria-label={`Move ${option.label} up`}
-                  className="flex h-5 w-5 items-center justify-center rounded-sm text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-all hover:bg-[var(--background)] hover:text-[var(--primary)] active:scale-95 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[var(--muted-foreground)]"
-                >
-                  <ArrowUp size="0.6875rem" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => moveCard(section, 1)}
-                  disabled={index === orderedSections.length - 1}
-                  title={`Move ${option.label} down`}
-                  aria-label={`Move ${option.label} down`}
-                  className="flex h-5 w-5 items-center justify-center rounded-sm text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-all hover:bg-[var(--background)] hover:text-[var(--primary)] active:scale-95 disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-[var(--muted-foreground)]"
-                >
-                  <ArrowDown size="0.6875rem" />
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
+  );
+}
+
+function TrackerPanelAppearanceDrawer({
+  trackerPanelEnabled,
+  setTrackerPanelEnabled,
+  trackerPanelHideHudWidgets,
+  setTrackerPanelHideHudWidgets,
+  trackerPanelUseExpressionSprites,
+  setTrackerPanelUseExpressionSprites,
+  trackerPanelThoughtBubbleDisplay,
+  setTrackerPanelThoughtBubbleDisplay,
+  trackerPanelDockedThoughtsAlwaysVisible,
+  setTrackerPanelDockedThoughtsAlwaysVisible,
+  trackerPanelSizeProfile,
+  setTrackerPanelSizeProfile,
+  trackerTemperatureUnit,
+  setTrackerTemperatureUnit,
+}: {
+  trackerPanelEnabled: boolean;
+  setTrackerPanelEnabled: (enabled: boolean) => void;
+  trackerPanelHideHudWidgets: boolean;
+  setTrackerPanelHideHudWidgets: (hidden: boolean) => void;
+  trackerPanelUseExpressionSprites: boolean;
+  setTrackerPanelUseExpressionSprites: (enabled: boolean) => void;
+  trackerPanelThoughtBubbleDisplay: TrackerThoughtBubbleDisplay;
+  setTrackerPanelThoughtBubbleDisplay: (display: TrackerThoughtBubbleDisplay) => void;
+  trackerPanelDockedThoughtsAlwaysVisible: boolean;
+  setTrackerPanelDockedThoughtsAlwaysVisible: (visible: boolean) => void;
+  trackerPanelSizeProfile: TrackerPanelSizeProfile;
+  setTrackerPanelSizeProfile: (profile: TrackerPanelSizeProfile) => void;
+  trackerTemperatureUnit: TrackerTemperatureUnit;
+  setTrackerTemperatureUnit: (unit: TrackerTemperatureUnit) => void;
+}) {
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const drawerId = React.useId();
+
+  const toggleTrackerPanel = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setTrackerPanelEnabled(!trackerPanelEnabled);
+    if (!trackerPanelEnabled) setDrawerOpen(true);
+  };
+
+  return (
+    <section className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--background)]/34 shadow-[inset_0_1px_0_color-mix(in_srgb,var(--foreground)_8%,transparent)]">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 px-3 py-2.5">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--secondary)]/70 text-[var(--primary)] ring-1 ring-[var(--border)]">
+            <TrackerPanelIcon size="0.9rem" strokeWidth={1.95} />
+          </span>
+          <span className="min-w-0">
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--foreground)]">
+              Tracker Panel
+              <HelpTooltip text="Controls the Roleplay HUD side panel for the fixed tracker board." />
+            </span>
+            <span className="block truncate text-[0.625rem] text-[var(--muted-foreground)]">
+              {trackerPanelEnabled ? "Shown in the Roleplay HUD" : "Hidden from the Roleplay HUD"}
+            </span>
+          </span>
+        </div>
+
+        <button
+          type="button"
+          role="switch"
+          aria-checked={trackerPanelEnabled}
+          aria-label={trackerPanelEnabled ? "Disable Tracker Panel" : "Enable Tracker Panel"}
+          onClick={toggleTrackerPanel}
+          className={cn(
+            "inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 ring-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]",
+            trackerPanelEnabled
+              ? "bg-[var(--primary)]/80 ring-[var(--primary)]/45"
+              : "bg-[var(--secondary)] ring-[var(--border)]",
+          )}
+        >
+          <span
+            className={cn(
+              "h-5 w-5 rounded-full bg-[var(--background)] shadow-sm transition-transform",
+              trackerPanelEnabled ? "translate-x-5" : "translate-x-0",
+            )}
+          />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setDrawerOpen((open) => !open)}
+          aria-expanded={drawerOpen}
+          aria-controls={drawerId}
+          aria-label={drawerOpen ? "Collapse Tracker Panel settings" : "Expand Tracker Panel settings"}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[var(--muted-foreground)] transition-all hover:bg-[var(--secondary)] hover:text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--primary)] active:scale-95"
+        >
+          <ChevronDown
+            size="0.875rem"
+            className={cn("transition-transform duration-200", drawerOpen ? "rotate-180" : "rotate-0")}
+          />
+        </button>
+      </div>
+
+      {drawerOpen && (
+        <fieldset
+          id={drawerId}
+          disabled={!trackerPanelEnabled}
+          className={cn(
+            "border-t border-[var(--border)] px-3 pb-3 pt-2 transition-opacity",
+            trackerPanelEnabled ? "" : "opacity-45",
+          )}
+        >
+          <ToggleSetting
+            label="Replace tracker HUD icons"
+            checked={trackerPanelHideHudWidgets}
+            onChange={setTrackerPanelHideHudWidgets}
+            help="Hides the old world/player tracker icon strip so the Tracker panel can dock to the edge. The Agents button stays visible."
+          />
+          <ToggleSetting
+            label="Use expression sprites for tracker portraits"
+            checked={trackerPanelUseExpressionSprites}
+            onChange={setTrackerPanelUseExpressionSprites}
+            help="When on, tracker portraits can switch to Expression Engine sprites if that agent is enabled for the chat and the character has matching sprite images."
+          />
+          <div className="mt-2 grid gap-1.5">
+            <span className="inline-flex items-center gap-1 text-[0.6875rem] font-medium">
+              Desktop size
+              <HelpTooltip text="Choose the designed desktop width for the Tracker panel. Compact favors quick scanning, Standard balances density, and Expanded gives character cards more room." />
+            </span>
+            <div className="grid grid-cols-3 gap-0.5 rounded-lg border border-[var(--border)] bg-[var(--secondary)]/45 p-0.5">
+              {TRACKER_PANEL_SIZE_PROFILE_OPTIONS.map((opt) => {
+                const selected = trackerPanelSizeProfile === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setTrackerPanelSizeProfile(opt.id)}
+                    aria-pressed={selected}
+                    title={`${opt.label}: ${getTrackerPanelWidthForProfile(opt.id)}px. ${opt.desc}`}
+                    className={cn(
+                      "flex min-h-8 min-w-0 items-center justify-center rounded-md px-1.5 text-[0.6875rem] transition-all disabled:cursor-not-allowed",
+                      selected
+                        ? "bg-[var(--primary)]/12 text-[var(--foreground)] ring-1 ring-[var(--primary)]/45"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
+                    )}
+                  >
+                    <span className="inline-flex items-center gap-1 font-semibold">
+                      <span className={cn("inline-flex", selected && "text-[var(--primary)]")}>
+                        <TrackerSizeTierIcon sizeProfile={opt.id} />
+                      </span>
+                      {opt.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="mt-2 grid gap-1.5">
+            <span className="inline-flex items-center gap-1 text-[0.6875rem] font-medium">
+              Thought display mode
+              <HelpTooltip text="Choose whether featured character thoughts open inside the tracker card or float beside the portrait. This no longer changes automatically when the panel width changes." />
+            </span>
+            <div className="grid grid-cols-2 gap-0.5 rounded-lg border border-[var(--border)] bg-[var(--secondary)]/45 p-0.5">
+              {TRACKER_THOUGHT_BUBBLE_DISPLAY_OPTIONS.map((opt) => {
+                const selected = trackerPanelThoughtBubbleDisplay === opt.id;
+                const Icon = opt.id === "inline" ? Dock : MessageCircle;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setTrackerPanelThoughtBubbleDisplay(opt.id)}
+                    aria-pressed={selected}
+                    title={opt.desc}
+                    className={cn(
+                      "flex min-h-8 min-w-0 items-center justify-center gap-1.5 rounded-md px-2 text-[0.6875rem] transition-all disabled:cursor-not-allowed",
+                      selected
+                        ? "bg-[var(--primary)]/12 text-[var(--foreground)] ring-1 ring-[var(--primary)]/45"
+                        : "text-[var(--muted-foreground)] hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
+                    )}
+                  >
+                    <span className="inline-flex items-center gap-1.5 font-semibold">
+                      <Icon size="0.75rem" className={selected ? "text-[var(--primary)]" : ""} />
+                      {opt.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <ToggleSetting
+            label="Always show Docked thoughts"
+            checked={trackerPanelDockedThoughtsAlwaysVisible}
+            onChange={setTrackerPanelDockedThoughtsAlwaysVisible}
+            help="When Thought display mode is Docked, every featured character's thought stays visible inside the tracker card instead of waiting for the per-card thought button."
+          />
+          <div className="mt-2 flex min-h-8 items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-1 text-[0.6875rem] font-medium">
+              Temperature unit
+              <HelpTooltip text="Changes Tracker Panel and roleplay HUD temperature displays without rewriting the saved world-state temperature." />
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={trackerTemperatureUnit === "fahrenheit"}
+              aria-label={`Tracker temperature unit: ${trackerTemperatureUnit === "celsius" ? "Celsius" : "Fahrenheit"}`}
+              title={
+                trackerTemperatureUnit === "celsius"
+                  ? "Showing tracker temperatures as °C. Click for °F."
+                  : "Showing tracker temperatures as °F. Click for °C."
+              }
+              onClick={() => setTrackerTemperatureUnit(trackerTemperatureUnit === "celsius" ? "fahrenheit" : "celsius")}
+              className="relative grid h-7 w-[4.75rem] shrink-0 grid-cols-2 items-center rounded-full border border-[var(--border)] bg-[var(--secondary)]/55 p-0.5 text-[0.625rem] font-semibold transition-colors hover:bg-[var(--accent)]/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--primary)]"
+            >
+              <span
+                className={cn(
+                  "absolute inset-y-0.5 left-0.5 w-[calc(50%-0.125rem)] rounded-full bg-[var(--primary)]/16 ring-1 ring-[var(--primary)]/45 transition-transform",
+                  trackerTemperatureUnit === "fahrenheit" && "translate-x-full",
+                )}
+              />
+              <span
+                className={cn(
+                  "relative z-10 text-center transition-colors",
+                  trackerTemperatureUnit === "celsius" ? "text-[var(--foreground)]" : "text-[var(--muted-foreground)]",
+                )}
+              >
+                °C
+              </span>
+              <span
+                className={cn(
+                  "relative z-10 text-center transition-colors",
+                  trackerTemperatureUnit === "fahrenheit"
+                    ? "text-[var(--foreground)]"
+                    : "text-[var(--muted-foreground)]",
+                )}
+              >
+                °F
+              </span>
+            </button>
+          </div>
+          <TrackerPanelCardOrderSetting />
+          <TrackerCardColorSettings />
+        </fieldset>
+      )}
+    </section>
   );
 }
 
@@ -446,6 +765,8 @@ function GeneralSettings() {
   const setMessagesPerPage = useUIStore((s) => s.setMessagesPerPage);
   const boldDialogue = useUIStore((s) => s.boldDialogue);
   const setBoldDialogue = useUIStore((s) => s.setBoldDialogue);
+  const quoteFormat = useUIStore((s) => s.quoteFormat);
+  const setQuoteFormat = useUIStore((s) => s.setQuoteFormat);
   const trimIncompleteModelOutput = useUIStore((s) => s.trimIncompleteModelOutput);
   const setTrimIncompleteModelOutput = useUIStore((s) => s.setTrimIncompleteModelOutput);
   const speechToTextEnabled = useUIStore((s) => s.speechToTextEnabled);
@@ -720,6 +1041,7 @@ function GeneralSettings() {
           value={messagesPerPage}
           min={0}
           max={500}
+          commitOnValidChange
           onCommit={(nextValue) => setMessagesPerPage(Math.max(0, Math.min(500, nextValue)))}
           className="w-16 rounded-md border border-[var(--border)] bg-[var(--secondary)] px-2 py-1 text-xs"
         />
@@ -734,6 +1056,35 @@ function GeneralSettings() {
           'When on, text inside dialogue quotation marks ("like this", 「like this」, or 『like this』) is bolded in addition to its dialogue highlight color. Turn it off to keep the color without bold.'
         }
       />
+
+      <div className="flex flex-col gap-1.5 rounded-lg p-1 transition-colors hover:bg-[var(--secondary)]/50">
+        <div className="flex items-center gap-2">
+          <span className="text-xs">Quote style</span>
+          <HelpTooltip text="Choose how straight and smart quotation marks are unified in chat inputs and displayed AI output." />
+        </div>
+        <div className="grid grid-cols-2 gap-1.5">
+          {QUOTE_FORMAT_OPTIONS.map((option) => {
+            const active = quoteFormat === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setQuoteFormat(option.id)}
+                className={cn(
+                  "flex min-w-0 flex-col items-start gap-0.5 rounded-lg px-2.5 py-2 text-left text-xs transition-all ring-1",
+                  active
+                    ? "bg-[var(--primary)]/15 text-[var(--primary)] ring-[var(--primary)]/35"
+                    : "bg-[var(--secondary)] text-[var(--muted-foreground)] ring-[var(--border)] hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
+                )}
+              >
+                <span className="font-medium">{option.label}</span>
+                <span className="max-w-full truncate text-[0.625rem] opacity-80">{option.sample}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       <ToggleSetting
         label="Trim incomplete model endings"
@@ -811,6 +1162,14 @@ function GeneralSettings() {
           />
         </div>
       </div>
+
+      <PromptOverridesEditor
+        title="Game Image Prompt Templates"
+        description="Edit the reusable templates Game Mode uses for NPC portraits, backgrounds, and scene illustrations."
+        help="These templates render before Game Mode sends recurring image-generation requests. One-off prompt review edits still only affect the current request."
+        keys={GAME_IMAGE_PROMPT_TEMPLATE_KEYS}
+        preferredKey="game.npcPortrait"
+      />
 
       {/* Game Assets Folders */}
       <div className="rounded-xl bg-[var(--secondary)]/50 p-4 ring-1 ring-[var(--border)]">
@@ -965,6 +1324,14 @@ function AppearanceSettings() {
   const setTrackerPanelHideHudWidgets = useUIStore((s) => s.setTrackerPanelHideHudWidgets);
   const trackerPanelUseExpressionSprites = useUIStore((s) => s.trackerPanelUseExpressionSprites);
   const setTrackerPanelUseExpressionSprites = useUIStore((s) => s.setTrackerPanelUseExpressionSprites);
+  const trackerPanelThoughtBubbleDisplay = useUIStore((s) => s.trackerPanelThoughtBubbleDisplay);
+  const setTrackerPanelThoughtBubbleDisplay = useUIStore((s) => s.setTrackerPanelThoughtBubbleDisplay);
+  const trackerPanelDockedThoughtsAlwaysVisible = useUIStore((s) => s.trackerPanelDockedThoughtsAlwaysVisible);
+  const setTrackerPanelDockedThoughtsAlwaysVisible = useUIStore((s) => s.setTrackerPanelDockedThoughtsAlwaysVisible);
+  const trackerPanelSizeProfile = useUIStore((s) => s.trackerPanelSizeProfile);
+  const setTrackerPanelSizeProfile = useUIStore((s) => s.setTrackerPanelSizeProfile);
+  const trackerTemperatureUnit = useUIStore((s) => s.trackerTemperatureUnit);
+  const setTrackerTemperatureUnit = useUIStore((s) => s.setTrackerTemperatureUnit);
 
   // Text appearance
   const chatFontColor = useUIStore((s) => s.chatFontColor);
@@ -1157,7 +1524,7 @@ function AppearanceSettings() {
       <label className="flex flex-col gap-1">
         <span className="text-xs font-medium inline-flex items-center gap-1">
           Display Size{" "}
-          <HelpTooltip text="Adjusts the base font size across the whole app. Larger sizes improve readability. Default is 17px." />
+          <HelpTooltip text="Adjusts the base font size across the whole app on this device. Larger sizes improve readability. Default is 17px." />
         </span>
         <select
           value={String(fontSize)}
@@ -1176,7 +1543,7 @@ function AppearanceSettings() {
       <label className="flex flex-col gap-1">
         <span className="text-xs font-medium inline-flex items-center gap-1">
           Chat Font Size{" "}
-          <HelpTooltip text="Adjusts the font size of chat messages. Drag the slider to find your preferred reading size. Default is 16px." />
+          <HelpTooltip text="Adjusts the font size of chat messages on this device. Drag the slider to find your preferred reading size. Default is 16px." />
         </span>
         <div className="flex items-center gap-3">
           <input
@@ -1306,40 +1673,28 @@ function AppearanceSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-1.5">
-          <TrackerPanelIcon size="0.875rem" strokeWidth={1.95} className="text-[var(--muted-foreground)]" />
-          <span className="text-xs font-medium">Tracker Panel</span>
-          <HelpTooltip text="Adds a compact side panel button to the Roleplay HUD for the fixed tracker board." />
-        </div>
-        <ToggleSetting
-          label="Show tracker panel button"
-          checked={trackerPanelEnabled}
-          onChange={setTrackerPanelEnabled}
-          help="When on, Roleplay HUD shows a side-panel button for the fixed Tracker panel."
-        />
-        <div className={cn("pl-5 transition-opacity", trackerPanelEnabled ? "" : "pointer-events-none opacity-45")}>
-          <ToggleSetting
-            label="Replace tracker HUD icons"
-            checked={trackerPanelHideHudWidgets}
-            onChange={setTrackerPanelHideHudWidgets}
-            help="Hides the old world/player tracker icon strip so the Tracker panel can dock to the edge. The Agents button stays visible."
-          />
-          <ToggleSetting
-            label="Use expression sprites for tracker portraits"
-            checked={trackerPanelUseExpressionSprites}
-            onChange={setTrackerPanelUseExpressionSprites}
-            help="When on, tracker portraits can switch to Expression Engine sprites if that agent is enabled for the chat and the character has matching sprite images."
-          />
-          <TrackerPanelCardOrderSetting />
-        </div>
-      </div>
+      <TrackerPanelAppearanceDrawer
+        trackerPanelEnabled={trackerPanelEnabled}
+        setTrackerPanelEnabled={setTrackerPanelEnabled}
+        trackerPanelHideHudWidgets={trackerPanelHideHudWidgets}
+        setTrackerPanelHideHudWidgets={setTrackerPanelHideHudWidgets}
+        trackerPanelUseExpressionSprites={trackerPanelUseExpressionSprites}
+        setTrackerPanelUseExpressionSprites={setTrackerPanelUseExpressionSprites}
+        trackerPanelThoughtBubbleDisplay={trackerPanelThoughtBubbleDisplay}
+        setTrackerPanelThoughtBubbleDisplay={setTrackerPanelThoughtBubbleDisplay}
+        trackerPanelDockedThoughtsAlwaysVisible={trackerPanelDockedThoughtsAlwaysVisible}
+        setTrackerPanelDockedThoughtsAlwaysVisible={setTrackerPanelDockedThoughtsAlwaysVisible}
+        trackerPanelSizeProfile={trackerPanelSizeProfile}
+        setTrackerPanelSizeProfile={setTrackerPanelSizeProfile}
+        trackerTemperatureUnit={trackerTemperatureUnit}
+        setTrackerTemperatureUnit={setTrackerTemperatureUnit}
+      />
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1.5">
           <Image size="0.75rem" className="text-[var(--muted-foreground)]" />
           <span className="text-xs font-medium">Roleplay Avatars</span>
-          <HelpTooltip text="Choose how avatars sit next to roleplay messages. Small Circles keeps the current compact layout. Small Rectangles keeps avatars beside the bubble but gives portraits a taller frame. Glued Side Panel embeds a larger portrait strip into the message bubble itself." />
+          <HelpTooltip text="Choose how avatars sit next to roleplay messages. None hides message avatars. Small Circles keeps the current compact layout. Small Rectangles gives portraits a taller frame. Glued Side Panel embeds a larger portrait strip into the message bubble itself." />
         </div>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {ROLEPLAY_AVATAR_STYLE_OPTIONS.map((opt) => (
@@ -1354,7 +1709,14 @@ function AppearanceSettings() {
               )}
             >
               <div className="w-full overflow-hidden rounded-md bg-[var(--secondary)]/80 ring-1 ring-[var(--border)]/70">
-                {opt.id === "circles" ? (
+                {opt.id === "none" ? (
+                  <div className="flex h-14 items-center px-3">
+                    <div className="flex-1 rounded-2xl bg-black/25 px-3 py-2">
+                      <div className="h-1.5 w-16 rounded-full bg-white/20" />
+                      <div className="mt-1.5 h-1.5 w-24 rounded-full bg-white/12" />
+                    </div>
+                  </div>
+                ) : opt.id === "circles" ? (
                   <div className="flex h-14 items-center px-3">
                     <div className="relative flex-1 rounded-2xl rounded-tl-sm bg-black/25 px-3 py-2">
                       <div className="absolute left-2 top-2 h-2.5 w-2.5 rounded-full bg-gradient-to-br from-rose-400 to-orange-300 shadow-[0_0_0_2px_rgba(255,255,255,0.16)]" />
@@ -1374,7 +1736,7 @@ function AppearanceSettings() {
                   </div>
                 ) : (
                   <div className="flex h-14 items-stretch overflow-hidden">
-                    <div className="relative w-14 overflow-hidden border-r border-white/8 bg-gradient-to-b from-rose-400/60 via-orange-300/45 to-transparent">
+                    <div className="relative w-20 overflow-hidden border-r border-white/8 bg-gradient-to-b from-rose-400/60 via-orange-300/45 to-transparent">
                       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[32%] backdrop-blur-[4px] [mask-image:linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.25)_28%,rgba(0,0,0,0.8)_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.25)_28%,rgba(0,0,0,0.8)_100%)]" />
                       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0)_0%,rgba(255,255,255,0)_72%,rgba(113,113,122,0.84)_92%,rgba(113,113,122,1)_100%)]" />
                     </div>
@@ -1393,28 +1755,34 @@ function AppearanceSettings() {
         <div className="rounded-lg border border-[var(--border)] bg-[var(--secondary)]/45 p-3">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="flex h-20 w-full shrink-0 items-end justify-center gap-3 overflow-hidden rounded-md bg-black/30 ring-1 ring-[var(--border)]/70 sm:w-28">
-              <div
-                className={cn(
-                  "mb-2 border border-white/20 bg-gradient-to-b from-rose-300/85 via-fuchsia-300/65 to-slate-900/90 shadow-lg transition-all",
-                  roleplayAvatarStyle === "circles"
-                    ? "rounded-full"
-                    : roleplayAvatarStyle === "rectangles"
-                      ? "rounded-xl"
-                      : "rounded-md",
-                )}
-                style={{
-                  width: `${
-                    roleplayAvatarStyle === "panel"
-                      ? Math.min(5.5, 2.2 * roleplayAvatarScale)
-                      : Math.min(5.5, (roleplayAvatarStyle === "rectangles" ? 2.15 : 2) * roleplayAvatarScale)
-                  }rem`,
-                  height: `${
+              {roleplayAvatarStyle === "none" ? (
+                <div className="mb-2 flex h-10 min-w-20 items-center justify-center rounded-md border border-dashed border-white/20 px-2 text-[0.625rem] font-medium text-white/35">
+                  No avatars
+                </div>
+              ) : (
+                <div
+                  className={cn(
+                    "mb-2 border border-white/20 bg-gradient-to-b from-rose-300/85 via-fuchsia-300/65 to-slate-900/90 shadow-lg transition-all",
                     roleplayAvatarStyle === "circles"
-                      ? Math.min(5.5, 2 * roleplayAvatarScale)
-                      : Math.min(6, (roleplayAvatarStyle === "rectangles" ? 2.7 : 3.4) * roleplayAvatarScale)
-                  }rem`,
-                }}
-              />
+                      ? "rounded-full"
+                      : roleplayAvatarStyle === "rectangles"
+                        ? "rounded-xl"
+                        : "rounded-md",
+                  )}
+                  style={{
+                    width: `${
+                      roleplayAvatarStyle === "panel"
+                        ? Math.min(6.5, 2.6 * roleplayAvatarScale)
+                        : Math.min(5.5, (roleplayAvatarStyle === "rectangles" ? 2.15 : 2) * roleplayAvatarScale)
+                    }rem`,
+                    height: `${
+                      roleplayAvatarStyle === "circles"
+                        ? Math.min(5.5, 2 * roleplayAvatarScale)
+                        : Math.min(6, (roleplayAvatarStyle === "rectangles" ? 2.7 : 3.4) * roleplayAvatarScale)
+                    }rem`,
+                  }}
+                />
+              )}
               <div
                 className="mb-1 rounded-full border border-white/20 bg-gradient-to-b from-violet-200/85 via-purple-200/70 to-slate-900/95 shadow-lg transition-all"
                 style={{
@@ -1751,7 +2119,6 @@ type BackgroundUploadResponse = {
 };
 
 function BackgroundPicker({ selected, onSelect }: { selected: string | null; onSelect: (url: string | null) => void }) {
-  const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [editingTags, setEditingTags] = useState<string | null>(null);
   const [tagInput, setTagInput] = useState("");
@@ -1803,8 +2170,7 @@ function BackgroundPicker({ selected, onSelect }: { selected: string | null; onS
     },
   });
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
+  const handleUpload = async (files: File[]) => {
     if (files.length === 0) return;
     setUploading(true);
     try {
@@ -1841,7 +2207,6 @@ function BackgroundPicker({ selected, onSelect }: { selected: string | null; onS
       toast.error("Background import failed.");
     } finally {
       setUploading(false);
-      e.target.value = "";
     }
   };
 
@@ -1861,16 +2226,15 @@ function BackgroundPicker({ selected, onSelect }: { selected: string | null; onS
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Upload button */}
-      <button
-        onClick={() => fileRef.current?.click()}
-        disabled={uploading}
-        className="flex items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-[var(--border)] p-3 text-xs text-[var(--muted-foreground)] transition-all hover:border-[var(--primary)]/40 hover:bg-[var(--secondary)]/50"
-      >
-        {uploading ? <Loader2 size="0.875rem" className="animate-spin" /> : <Upload size="0.875rem" />}
-        {uploading ? "Importing..." : "Import Backgrounds"}
-      </button>
-      <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
+      <ImageUploadDropzone
+        label="Import Backgrounds"
+        pending={uploading}
+        pendingLabel="Importing..."
+        dragLabel="Drop backgrounds to import"
+        onFilesSelected={(files) => void handleUpload(files)}
+        icon={uploading ? <Loader2 size="0.875rem" className="animate-spin" /> : <Upload size="0.875rem" />}
+        className="rounded-lg py-3 hover:border-[var(--primary)]/40 hover:bg-[var(--secondary)]/50"
+      />
 
       {/* Background grid */}
       {backgrounds && backgrounds.length > 0 && (
@@ -2594,6 +2958,12 @@ type ProfileImportStats = {
   files?: number;
 };
 
+type ProfileImportWarning = {
+  type?: string;
+  path?: string;
+  message?: string;
+};
+
 type ProfileImportProgressData = {
   phase: string;
   label: string;
@@ -2610,13 +2980,23 @@ type ProfileImportProgressState = {
   startedAt: number;
   elapsedSeconds: number;
   imported?: ProfileImportStats;
+  warnings?: ProfileImportWarning[];
   error?: string;
 };
 
 type ProfileImportStreamEvent =
   | { type: "started"; data?: { label?: string; totalItems?: number } }
   | { type: "progress"; data?: ProfileImportProgressData }
-  | { type: "done"; data?: { success?: boolean; imported?: ProfileImportStats; error?: string; message?: string } }
+  | {
+      type: "done";
+      data?: {
+        success?: boolean;
+        imported?: ProfileImportStats;
+        warnings?: ProfileImportWarning[];
+        error?: string;
+        message?: string;
+      };
+    }
   | { type: "error"; data?: string | { error?: string; message?: string } };
 
 function formatProfileImportDuration(seconds: number) {
@@ -2670,6 +3050,79 @@ function getProfileImportErrorMessage(data: unknown) {
     if (typeof record.error === "string") return record.error;
   }
   return "Unknown error";
+}
+
+function normalizeProfileImportWarnings(warnings: unknown): ProfileImportWarning[] {
+  if (!Array.isArray(warnings)) return [];
+  return warnings.flatMap((warning) => {
+    if (!warning || typeof warning !== "object") return [];
+    const record = warning as { type?: unknown; path?: unknown; message?: unknown };
+    const path = typeof record.path === "string" ? record.path : undefined;
+    const message = typeof record.message === "string" ? record.message : undefined;
+    const type = typeof record.type === "string" ? record.type : undefined;
+    if (!path && !message) return [];
+    return [{ type, path, message }];
+  });
+}
+
+function formatProfileImportWarningSummary(warnings: ProfileImportWarning[]) {
+  const missingAssets = warnings.filter((warning) => warning.type === "missing_asset" || warning.path);
+  if (missingAssets.length > 0) {
+    return `${missingAssets.length} asset file${missingAssets.length === 1 ? "" : "s"} missing from the ZIP. Imported the rest.`;
+  }
+  return `${warnings.length} import warning${warnings.length === 1 ? "" : "s"}.`;
+}
+
+function formatProfileImportWarningDetails(warnings: ProfileImportWarning[]) {
+  const paths = warnings.map((warning) => warning.path).filter((path): path is string => !!path);
+  if (paths.length === 0) return warnings[0]?.message ?? "";
+  const visible = paths.slice(0, 3).join(", ");
+  const extra = paths.length > 3 ? `, +${paths.length - 3} more` : "";
+  return `Missing: ${visible}${extra}`;
+}
+
+function getDownloadFilename(res: Response, fallback: string) {
+  const disposition = res.headers.get("Content-Disposition");
+  const match = disposition?.match(/filename="?([^";\n]+)"?/);
+  return match?.[1] ? decodeURIComponent(match[1]) : fallback;
+}
+
+type ProfileExportFailure = {
+  code?: string;
+  message: string;
+  fallbackFormat?: string;
+};
+
+async function readProfileExportFailure(res: Response, fallback: string): Promise<ProfileExportFailure> {
+  const contentType = res.headers.get("content-type") ?? "";
+
+  try {
+    if (contentType.includes("application/json")) {
+      const payload = (await res.json()) as {
+        code?: unknown;
+        error?: unknown;
+        message?: unknown;
+        fallbackFormat?: unknown;
+      };
+      const message = typeof payload.message === "string" ? payload.message : payload.error;
+      return {
+        code: typeof payload.code === "string" ? payload.code : undefined,
+        fallbackFormat: typeof payload.fallbackFormat === "string" ? payload.fallbackFormat : undefined,
+        message: typeof message === "string" && message.trim() ? message : fallback,
+      };
+    }
+
+    const text = (await res.text()).trim();
+    return { message: text ? text.slice(0, 500) : fallback };
+  } catch {
+    return { message: fallback };
+  }
+}
+
+async function isZipFile(file: File) {
+  if (file.size < 2) return false;
+  const head = new Uint8Array(await file.slice(0, 2).arrayBuffer());
+  return head[0] === 0x50 && head[1] === 0x4b;
 }
 
 async function* readProfileImportStream(res: Response): AsyncGenerator<ProfileImportStreamEvent> {
@@ -2777,44 +3230,53 @@ function ImportSettings() {
       elapsedSeconds: 0,
     });
     try {
-      const text = await file.text();
-      const envelope = JSON.parse(text) as { type?: string };
-      if (envelope.type !== "marinara_profile") {
-        setProfileImportProgress({
-          status: "error",
-          label: "Profile import failed",
-          completedItems: 0,
-          totalItems: 1,
-          startedAt,
-          elapsedSeconds: Math.floor((Date.now() - startedAt) / 1000),
-          error: "Not a valid profile export file.",
-        });
-        toast.error("Not a valid profile export file.");
-        return;
+      const isZip = await isZipFile(file);
+      let body: BodyInit;
+      if (isZip) {
+        const form = new FormData();
+        form.append("file", file, file.name);
+        body = form;
+      } else {
+        const text = await file.text();
+        const envelope = JSON.parse(text) as { type?: string };
+        if (envelope.type !== "marinara_profile") {
+          setProfileImportProgress({
+            status: "error",
+            label: "Profile import failed",
+            completedItems: 0,
+            totalItems: 1,
+            startedAt,
+            elapsedSeconds: Math.floor((Date.now() - startedAt) / 1000),
+            error: "Not a valid profile export file.",
+          });
+          toast.error("Not a valid profile export file.");
+          e.target.value = "";
+          return;
+        }
+        body = text;
       }
       setProfileImportProgress((current) =>
         current
           ? {
               ...current,
               status: "starting",
-              label: "Starting profile import",
+              label: isZip ? "Uploading profile archive" : "Starting profile import",
               elapsedSeconds: Math.floor((Date.now() - startedAt) / 1000),
             }
           : current,
       );
-      const res = await fetch("/api/backup/import-profile", {
+      const res = await api.raw("/backup/import-profile", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Accept: "text/event-stream",
-          ...getAdminSecretHeader(),
         },
-        body: text,
+        body,
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { error?: string; message?: string };
         throw new Error(data.message ?? data.error ?? res.statusText ?? "Unknown error");
       }
+      let importCompleted = false;
       for await (const event of readProfileImportStream(res)) {
         if (event.type === "started") {
           setProfileImportProgress((current) => ({
@@ -2844,28 +3306,39 @@ function ImportSettings() {
         }
         if (event.type === "done") {
           if (event.data?.success === false) throw new Error(event.data.error ?? event.data.message ?? "Unknown error");
+          importCompleted = true;
           qc.invalidateQueries();
           const imported = event.data?.imported;
+          const warnings = normalizeProfileImportWarnings(event.data?.warnings);
           const summary = formatProfileImportStats(imported);
           setProfileImportProgress((current) => {
             const totalItems = Math.max(1, current?.totalItems ?? 1);
             return {
               status: "success",
-              label: "Profile import complete",
+              label: warnings.length > 0 ? "Profile import complete with missing assets" : "Profile import complete",
               completedItems: totalItems,
               totalItems,
               startedAt,
               elapsedSeconds: Math.floor((Date.now() - startedAt) / 1000),
               imported,
+              warnings,
             };
           });
-          toast.success(summary ? `Imported: ${summary}` : "Profile imported.");
+          if (warnings.length > 0) {
+            const warningSummary = formatProfileImportWarningSummary(warnings);
+            toast.warning(summary ? `Imported: ${summary}. ${warningSummary}` : warningSummary);
+          } else {
+            toast.success(summary ? `Imported: ${summary}` : "Profile imported.");
+          }
         }
+      }
+      if (!importCompleted) {
+        throw new Error("Profile import stream closed before completion.");
       }
     } catch (err) {
       const message =
         err instanceof SyntaxError
-          ? "Import failed. Make sure this is a valid profile JSON file."
+          ? "Import failed. Make sure this is a valid profile JSON or ZIP file."
           : `Import failed: ${err instanceof Error ? err.message : "network/server error"}`;
       setProfileImportProgress({
         status: "error",
@@ -2885,7 +3358,7 @@ function ImportSettings() {
     <div className="flex flex-col gap-3">
       <div className="text-xs text-[var(--muted-foreground)]">
         Import data from Marinara exports, SillyTavern, or other tools. Full profile imports also restore synced custom
-        themes.
+        themes and profile archive assets.
       </div>
 
       {/* Profile import */}
@@ -2896,10 +3369,10 @@ function ImportSettings() {
         )}
       >
         {profileImportBusy ? <Loader2 size="1rem" className="animate-spin" /> : <Download size="1rem" />}
-        {profileImportBusy ? "Importing Profile..." : "Import Profile (JSON)"}
+        {profileImportBusy ? "Importing Profile..." : "Import Profile (JSON/ZIP)"}
         <input
           type="file"
-          accept=".json"
+          accept=".json,.zip,application/json,application/zip"
           onChange={handleProfileImport}
           disabled={profileImportBusy}
           className="hidden"
@@ -2914,14 +3387,18 @@ function ImportSettings() {
             "flex flex-col gap-2 rounded-lg border px-3 py-2 text-xs",
             profileImportProgress.status === "error"
               ? "border-[var(--destructive)]/40 bg-[var(--destructive)]/10 text-[var(--destructive)]"
-              : profileImportProgress.status === "success"
-                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
-                : "border-emerald-500/30 bg-emerald-500/10 text-[var(--foreground)]",
+              : profileImportProgress.status === "success" && profileImportProgress.warnings?.length
+                ? "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-200"
+                : profileImportProgress.status === "success"
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
+                  : "border-emerald-500/30 bg-emerald-500/10 text-[var(--foreground)]",
           )}
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2">
-              {profileImportProgress.status === "success" ? (
+              {profileImportProgress.status === "success" && profileImportProgress.warnings?.length ? (
+                <AlertTriangle size="0.875rem" className="shrink-0" />
+              ) : profileImportProgress.status === "success" ? (
                 <Check size="0.875rem" className="shrink-0" />
               ) : profileImportProgress.status === "error" ? (
                 <AlertTriangle size="0.875rem" className="shrink-0" />
@@ -2941,7 +3418,11 @@ function ImportSettings() {
                 <div
                   className={cn(
                     "h-full rounded-full transition-all duration-300",
-                    profileImportProgress.status === "success" ? "bg-emerald-500" : "bg-emerald-400",
+                    profileImportProgress.status === "success" && profileImportProgress.warnings?.length
+                      ? "bg-amber-500"
+                      : profileImportProgress.status === "success"
+                        ? "bg-emerald-500"
+                        : "bg-emerald-400",
                   )}
                   style={{ width: `${getProfileImportPercent(profileImportProgress)}%` }}
                 />
@@ -2961,6 +3442,16 @@ function ImportSettings() {
                   Imported so far: {formatProfileImportStats(profileImportProgress.imported)}
                 </div>
               )}
+              {profileImportProgress.warnings?.length ? (
+                <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1.5 text-[0.6875rem] text-amber-700 dark:text-amber-200">
+                  <div className="font-medium">{formatProfileImportWarningSummary(profileImportProgress.warnings)}</div>
+                  {formatProfileImportWarningDetails(profileImportProgress.warnings) && (
+                    <div className="mt-0.5 break-words text-amber-700/80 dark:text-amber-100/80">
+                      {formatProfileImportWarningDetails(profileImportProgress.warnings)}
+                    </div>
+                  )}
+                </div>
+              ) : null}
             </>
           )}
 
@@ -3151,27 +3642,61 @@ function AdvancedSettings() {
     if (enabled) setQuickRepliesDrawerOpen(true);
   };
 
-  const handleExportProfile = async (format: ExportFormatChoice) => {
+  type ProfileExportFormat = "native" | "compatible" | "zip";
+  const profileExportFallbackNames: Record<ProfileExportFormat, string> = {
+    native: "marinara-profile.json",
+    compatible: "marinara-compatible-export.zip",
+    zip: "marinara-profile.zip",
+  };
+  const profileExportSuccessMessages: Record<ProfileExportFormat, string> = {
+    native: "Profile exported!",
+    compatible: "Compatible export created!",
+    zip: "Profile ZIP exported!",
+  };
+
+  const handleExportProfile = async (format: ProfileExportFormat) => {
     setExportingProfile(true);
     setExportProfileDialogOpen(false);
     try {
-      const res = await fetch(`/api/backup/export-profile?format=${format}`, {
-        headers: getAdminSecretHeader(),
-      });
-      if (!res.ok) throw new Error(await readSettingsResponseError(res, "Export failed"));
+      const res = await api.raw(`/backup/export-profile?format=${format}`);
+      if (!res.ok) {
+        const failure = await readProfileExportFailure(res, "Export failed");
+        if (
+          format === "native" &&
+          failure.code === "PROFILE_EXPORT_JSON_TOO_LARGE" &&
+          failure.fallbackFormat === "zip"
+        ) {
+          const confirmed = await showConfirmDialog({
+            title: "Export profile as ZIP?",
+            message: failure.message,
+            confirmLabel: "Export ZIP",
+            cancelLabel: "Cancel",
+          });
+          if (confirmed) {
+            await handleExportProfile("zip");
+          }
+          return;
+        }
+        throw new Error(failure.message);
+      }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = format === "compatible" ? "marinara-compatible-export.zip" : "marinara-profile.json";
+      a.download = getDownloadFilename(res, profileExportFallbackNames[format]);
       a.click();
       URL.revokeObjectURL(url);
-      toast.success(format === "compatible" ? "Compatible export created!" : "Profile exported!");
+      toast.success(profileExportSuccessMessages[format]);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to export profile");
     } finally {
       setExportingProfile(false);
     }
+  };
+
+  const handleExportProfileChoice = (format: ExportFormatChoice) => {
+    if (format === "compatible-png") return;
+    void handleExportProfile(format);
   };
 
   const handleForceRefreshSpa = async () => {
@@ -3319,11 +3844,18 @@ function AdvancedSettings() {
     releaseUrl: string;
     releaseNotes: string;
     publishedAt: string;
-    installType: "git" | "standalone";
+    releaseTag?: string;
+    dockerImage?: string;
+    dockerImageTag?: string;
+    dockerLiteImageTag?: string;
+    installType: "git" | "docker" | "standalone";
+    serverPlatform?: "windows" | "macos" | "linux" | "android-termux" | "unknown";
+    clientPlatform?: "ios" | "android" | "desktop" | "unknown";
     applyAvailable?: boolean;
     updatesApplyEnabled?: boolean;
-    applyUnavailableReason?: "disabled" | "unsupported-install" | null;
+    applyUnavailableReason?: "disabled" | "unsupported-install" | "container-install" | null;
     manualUpdateCommand?: string | null;
+    manualUpdateHint?: string | null;
   }>({
     queryKey: ["update-check"],
     queryFn: () => api.get("/updates/check"),
@@ -3367,12 +3899,17 @@ function AdvancedSettings() {
   const currentCommit = health.data?.commit ?? updateCheck.data?.currentCommit ?? null;
   const currentBuildLabel = currentCommit ? `Build: ${currentCommit.slice(0, 7)}` : "Build: unavailable";
   const commitsBehind = updateCheck.data?.commitsBehind ?? 0;
+  const installType = updateCheck.data?.installType ?? "standalone";
+  const isIosClient = updateCheck.data?.clientPlatform === "ios";
   const applyUnavailableReason = updateCheck.data?.applyUnavailableReason ?? null;
   const manualUpdateCommand = updateCheck.data?.manualUpdateCommand ?? null;
+  const manualUpdateHint = updateCheck.data?.manualUpdateHint ?? null;
   const applyUnavailableCopy =
-    applyUnavailableReason === "disabled"
-      ? "This install can check for updates, but applying them from the browser is disabled. Update manually with the command below. Advanced git installs can enable server-side apply with UPDATES_APPLY_ENABLED=true."
-      : "This install can check for updates, but it cannot apply them from the browser. Relaunch the app if you use the launcher, or update manually for your install type.";
+    applyUnavailableReason === "container-install"
+      ? "Container installs cannot replace themselves from inside the browser. Pull the release image tag or latest image on the host, then restart the container."
+      : applyUnavailableReason === "disabled"
+        ? "This install can check for updates, but applying them from the browser is disabled. Update manually with the command below. Advanced git installs can enable server-side apply with UPDATES_APPLY_ENABLED=true."
+        : "This install can check for updates, but it cannot apply them from the browser. Relaunch the app if you use the launcher, or update manually for your install type.";
   const isClearing = clearAllData.isPending || expungeData.isPending;
   const isAllScopesSelected = selectedScopes.length === EXPUNGE_SCOPE_OPTIONS.length;
 
@@ -3404,11 +3941,11 @@ function AdvancedSettings() {
       <ExportFormatDialog
         open={exportProfileDialogOpen}
         title="Export Profile"
-        description="Native creates a Marinara profile JSON for restoring your data in Marinara. Compatible creates a ZIP of folderless JSON files for other platforms."
-        nativeDescription="Keeps Marinara fields, lorebook folders, character/persona metadata, presets, agents, and themes for re-import."
+        description="Native creates a Marinara profile JSON for restoring your data in Marinara. If the JSON would be too large, Marinara will offer a profile ZIP instead."
+        nativeDescription="Keeps Marinara fields, lorebook folders, character/persona metadata, presets, agents, themes, and inline assets for re-import."
         compatibleDescription="Exports direct character JSON, simple persona JSON, and folderless lorebooks for other roleplay tools."
         onClose={() => setExportProfileDialogOpen(false)}
-        onSelect={handleExportProfile}
+        onSelect={handleExportProfileChoice}
       />
 
       <div className="text-xs text-[var(--muted-foreground)]">Advanced settings for power users.</div>
@@ -3418,20 +3955,23 @@ function AdvancedSettings() {
           <Power size="0.75rem" className="text-[var(--muted-foreground)]" />
           <span className="text-xs font-medium">Admin Access</span>
         </div>
-        <div className="flex gap-2 max-sm:flex-col">
+        <div className="flex min-w-0 flex-wrap gap-2">
           <input
             type="password"
             value={adminSecret}
             onChange={(e) => setAdminSecret(e.target.value)}
             placeholder="ADMIN_SECRET"
-            className="flex-1 rounded-lg bg-[var(--background)] px-3 py-2 text-xs outline-none ring-1 ring-[var(--border)] placeholder:text-[var(--muted-foreground)]/50 focus:ring-[var(--primary)]"
+            className="min-w-0 flex-[1_1_12rem] rounded-lg bg-[var(--background)] px-3 py-2 text-xs outline-none ring-1 ring-[var(--border)] placeholder:text-[var(--muted-foreground)]/50 focus:ring-[var(--primary)]"
           />
           <button
+            type="button"
             onClick={saveAdminSecret}
-            className="flex items-center justify-center gap-1.5 rounded-lg bg-[var(--primary)] px-3 py-2 text-xs font-medium text-white transition-all hover:opacity-90 active:scale-95"
+            className="max-w-full shrink-0 whitespace-nowrap rounded-lg bg-[var(--primary)] px-3 py-2 text-xs font-medium text-white transition-all hover:opacity-90 active:scale-95"
           >
-            <Save size="0.75rem" />
-            Save
+            <span className="flex min-w-0 items-center justify-center gap-1.5">
+              <Save size="0.75rem" className="shrink-0" />
+              Save
+            </span>
           </button>
         </div>
       </div>
@@ -3506,6 +4046,12 @@ function AdvancedSettings() {
                 unreleased development commits, not just tagged releases.
               </p>
             )}
+            {isIosClient && (
+              <p className="text-[0.625rem] text-[var(--muted-foreground)]">
+                On iPhone or iPad, this updates the Marinara server you are connected to. Reload the Home Screen app
+                after the host finishes updating.
+              </p>
+            )}
             {updateCheck.data.applyAvailable ? (
               <button
                 onClick={() => applyUpdate.mutate()}
@@ -3544,6 +4090,26 @@ function AdvancedSettings() {
                 {updateCheck.data.versionUpdate && (
                   <span className="text-[0.625rem] text-[var(--muted-foreground)]">
                     Android APK assets are WebView shells, not standalone apps. Start Marinara in Termux first.
+                  </span>
+                )}
+                {manualUpdateHint && (
+                  <span className="text-[0.625rem] text-[var(--muted-foreground)]">{manualUpdateHint}</span>
+                )}
+                {installType === "docker" && updateCheck.data.dockerImageTag && (
+                  <span className="text-[0.625rem] text-[var(--muted-foreground)]">
+                    Container tag:{" "}
+                    <code className="break-all rounded bg-[var(--background)] px-1 py-0.5">
+                      {updateCheck.data.dockerImageTag}
+                    </code>
+                    {updateCheck.data.dockerLiteImageTag ? (
+                      <>
+                        {" "}
+                        Lite:{" "}
+                        <code className="break-all rounded bg-[var(--background)] px-1 py-0.5">
+                          {updateCheck.data.dockerLiteImageTag}
+                        </code>
+                      </>
+                    ) : null}
                   </span>
                 )}
                 {manualUpdateCommand && (
@@ -3588,6 +4154,8 @@ function AdvancedSettings() {
           />
         </div>
       </div>
+
+      <PromptOverridesEditor />
 
       <div className="retro-divider" />
       <div
@@ -3785,7 +4353,7 @@ function AdvancedSettings() {
         <div className="flex items-center gap-1.5">
           <Download size="0.75rem" className="text-[var(--muted-foreground)]" />
           <span className="text-xs font-medium">Backup & Export</span>
-          <HelpTooltip text="Download a full backup as a .zip archive (storage snapshots + avatars, sprites, backgrounds, gallery, fonts, knowledge sources). The zip also includes marinara-profile.json for one-click restore through Import Profile (JSON). The raw folders are for manual recovery." />
+          <HelpTooltip text="Download a full backup as a .zip archive (storage snapshots + avatars, sprites, backgrounds, gallery, fonts, knowledge sources). Import Profile can restore the zip directly. The raw folders are for manual recovery." />
         </div>
         <button
           onClick={handleCreateBackup}
@@ -3817,7 +4385,7 @@ function AdvancedSettings() {
           ) : (
             <>
               <Download size="0.8125rem" />
-              Export Profile (JSON)
+              Export Profile
             </>
           )}
         </button>

@@ -16,6 +16,7 @@ import {
   useFetchModels,
   useSaveConnectionDefaults,
   type ClaudeSubscriptionDiagnosis,
+  type RemoteConnectionModel,
 } from "../../hooks/use-connections";
 import { usePresets } from "../../hooks/use-presets";
 import {
@@ -233,7 +234,7 @@ export function ConnectionEditor() {
   }, [showModelDropdown]);
 
   // Remote models fetched from provider API
-  const [remoteModels, setRemoteModels] = useState<Array<{ id: string; name: string }>>([]);
+  const [remoteModels, setRemoteModels] = useState<RemoteConnectionModel[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Populate from server
@@ -324,8 +325,8 @@ export function ConnectionEditor() {
       { token: "%reference_image%", label: "%reference_image%", critical: false },
       { token: "%reference_image_name%", label: "%reference_image_name%", critical: false },
     ];
-    const hasReferenceImage = wf.includes("%reference_image%");
-    const hasReferenceImageName = wf.includes("%reference_image_name%");
+    const hasReferenceImage = /%reference_image(?:_0[1-4])?%/.test(wf);
+    const hasReferenceImageName = /%reference_image_name(?:_0[1-4])?%/.test(wf);
     const missing = KNOWN_SUBS.filter(({ token }) => {
       if (token === "%reference_image%" && hasReferenceImageName) return false;
       if (token === "%reference_image_name%" && hasReferenceImage) return false;
@@ -364,12 +365,16 @@ export function ConnectionEditor() {
 
   // Merge known models with remote models (remote first, deduped)
   const allModels = useMemo(() => {
-    const knownIds = new Set(providerModels.map((m) => m.id));
-    const uniqueRemote = remoteModels
-      .filter((m) => !knownIds.has(m.id))
-      .map((m) => ({ id: m.id, name: m.name, context: 0, maxOutput: 0, isRemote: true as const }));
-    const known = providerModels.map((m) => ({ ...m, isRemote: false as const }));
-    return [...known, ...uniqueRemote];
+    const remote = remoteModels.map((m) => ({
+      id: m.id,
+      name: m.name,
+      context: m.context ?? 0,
+      maxOutput: m.maxOutput ?? 0,
+      isRemote: true as const,
+    }));
+    const remoteIds = new Set(remote.map((m) => m.id));
+    const known = providerModels.filter((m) => !remoteIds.has(m.id)).map((m) => ({ ...m, isRemote: false as const }));
+    return [...remote, ...known];
   }, [providerModels, remoteModels]);
 
   const filteredModels = useMemo(() => {
@@ -379,8 +384,8 @@ export function ConnectionEditor() {
   }, [allModels, modelSearch]);
 
   const selectedModelInfo = useMemo(() => {
-    return providerModels.find((m) => m.id === localModel) ?? null;
-  }, [providerModels, localModel]);
+    return allModels.find((m) => m.id === localModel) ?? null;
+  }, [allModels, localModel]);
 
   // Clear remote models when provider changes
   useEffect(() => {
@@ -620,7 +625,7 @@ export function ConnectionEditor() {
     }
     fetchModels.mutate(connectionDetailId, {
       onSuccess: (data) => {
-        const result = data as { models: Array<{ id: string; name: string }> };
+        const result = data as { models: RemoteConnectionModel[] };
         setRemoteModels(result.models);
         setShowModelDropdown(true);
         requestAnimationFrame(() => {
@@ -634,9 +639,10 @@ export function ConnectionEditor() {
     });
   }, [connectionDetailId, dirty, handleSave, fetchModels]);
 
-  const selectModel = useCallback((model: { id: string; context?: number }) => {
+  const selectModel = useCallback((model: { id: string; context?: number; maxOutput?: number; isRemote?: boolean }) => {
     setLocalModel(model.id);
     if (model.context) setLocalMaxContext(Number(model.context));
+    if (model.isRemote && model.maxOutput) setLocalMaxTokensOverride(Number(model.maxOutput));
     setShowModelDropdown(false);
     setModelSearch("");
     setDirty(true);
@@ -1250,7 +1256,7 @@ export function ConnectionEditor() {
                               .map((m) => (
                                 <button
                                   key={m.id}
-                                  onClick={() => selectModel({ id: m.id })}
+                                  onClick={() => selectModel({ ...m, isRemote: true })}
                                   className={cn(
                                     "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[var(--accent)]",
                                     localModel === m.id && "bg-sky-400/5",
@@ -1389,8 +1395,8 @@ export function ConnectionEditor() {
                 icon={<Zap size="0.875rem" className="text-sky-400" />}
                 help={
                   selectedImageService === "runpod_comfyui"
-                    ? "Paste your ComfyUI workflow JSON (API format). RunPod needs the full workflow to execute; the endpoint sends this workflow to your serverless endpoint. Use placeholders like %prompt%, %seed%, %width%, %height%, and %reference_image% to let Marinara inject generation parameters."
-                    : "Paste a custom ComfyUI workflow JSON (API format). Use placeholders like %prompt%, %negative_prompt%, %width%, %height%, %seed%, %model%, %steps%, %cfg%, %sampler%, %scheduler%, and %denoise%. For reference images, use %reference_image% to inject a base64 string for workflows that decode it, or %reference_image_name% to upload the image to ComfyUI's input directory and inject the filename for a vanilla LoadImage node. Leave empty to use the built-in default txt2img workflow."
+                    ? "Paste your ComfyUI workflow JSON (API format). RunPod needs the full workflow to execute; the endpoint sends this workflow to your serverless endpoint. Use placeholders like %prompt%, %seed%, %width%, %height%, %reference_image%, and %reference_image_01% through %reference_image_04% to let Marinara inject generation parameters."
+                    : "Paste a custom ComfyUI workflow JSON (API format). Use placeholders like %prompt%, %negative_prompt%, %width%, %height%, %seed%, %model%, %steps%, %cfg%, %sampler%, %scheduler%, and %denoise%. For reference images, use %reference_image% / %reference_image_01% through %reference_image_04% to inject base64 strings, or %reference_image_name% / %reference_image_name_01% through %reference_image_name_04% to upload images to ComfyUI's input directory and inject filenames for LoadImage nodes. Leave empty to use the built-in default txt2img workflow."
                 }
               >
                 <textarea
@@ -1614,6 +1620,7 @@ export function ConnectionEditor() {
                 <div className="rounded-xl bg-[var(--secondary)]/40 p-3 ring-1 ring-[var(--border)]">
                   <GenerationParametersFields
                     value={localDefaultParameters}
+                    showOpenRouterServiceTier={localProvider === "openrouter"}
                     onChange={(next) => {
                       setLocalDefaultParameters(next);
                       markDirty();
@@ -2412,9 +2419,27 @@ function ImageGenerationDefaultsPanel({
                     onChange={(scheduler) => updateComfyUi({ scheduler })}
                   />
                 </div>
+                <label className="flex cursor-pointer items-start gap-3 rounded-lg bg-[var(--card)] px-3 py-2 ring-1 ring-[var(--border)]">
+                  <input
+                    type="checkbox"
+                    checked={comfyui.uploadPlaceholderOnMissingReference}
+                    onChange={(event) => updateComfyUi({ uploadPlaceholderOnMissingReference: event.target.checked })}
+                    className="mt-0.5 h-4 w-4 accent-sky-400"
+                  />
+                  <span className="min-w-0">
+                    <span className="block text-xs text-[var(--foreground)]">
+                      Upload a 1x1 placeholder when no reference image is provided
+                    </span>
+                    <span className="mt-0.5 block text-[0.55rem] text-[var(--muted-foreground)]">
+                      Custom workflows using %reference_image% or %reference_image_name% receive a tiny PNG instead of
+                      the raw placeholder text.
+                    </span>
+                  </span>
+                </label>
                 <p className="text-[0.55rem] text-[var(--muted-foreground)]">
-                  Custom ComfyUI workflows can use %steps%, %cfg%, %sampler%, %scheduler%, %denoise%, and %clip_skip%
-                  placeholders.
+                  Custom ComfyUI workflows can use %steps%, %cfg%, %sampler%, %scheduler%, %denoise%, %clip_skip%,
+                  %reference_image% / %reference_image_01%-%reference_image_04%, and %reference_image_name% /
+                  %reference_image_name_01%-%reference_image_name_04% placeholders.
                 </p>
               </>
             ) : (

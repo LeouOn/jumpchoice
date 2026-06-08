@@ -54,7 +54,6 @@ import { audioManager } from "../../lib/game-audio";
 import {
   parseGmTags,
   parseSegmentInventoryUpdates,
-  stripGmTags,
   type CombatEncounterTag,
   type ElementAttackTag,
   type CombatStatusTag,
@@ -90,7 +89,7 @@ import type {
   SceneSpotifyTrackSelection,
 } from "@jumpchoice/shared";
 import type { SceneSegmentEffect } from "@jumpchoice/shared";
-import { scoreMusic, scoreAmbient } from "@jumpchoice/shared";
+import { formatTextQuotes, scoreMusic, scoreAmbient } from "@jumpchoice/shared";
 import { GameNarration, formatNarration } from "./GameNarration";
 import { GameInput } from "./GameInput";
 import { GameMapPanel, MobileMapButton } from "./GameMap";
@@ -153,6 +152,15 @@ type GameAssetGenerationResult = {
   fallbackBackground?: string | null;
   generatedIllustration: { tag: string; segment?: number } | null;
   generatedNpcAvatars: Array<{ name: string; avatarUrl: string }>;
+};
+
+type PreparedCombatState = {
+  messageId: string;
+  party: Combatant[];
+  enemies: Combatant[];
+  itemEffects: CombatItemEffect[];
+  mechanics: CombatMechanic[];
+  dialogueCues: CombatDialogueCue[];
 };
 
 type GameAssetGenerationOptions = {
@@ -581,16 +589,16 @@ function isValidCombatant(value: unknown): value is Combatant {
 function generatedPartyMemberToCombatant(
   member: CombatPartyMember,
   index: number,
-  partyMembers: GamePartyMemberInfo[],
+  avatarCandidates: GamePartyMemberInfo[],
   fallbackLevel: number,
 ): Combatant {
-  const matchedPartyMember = findNamedEntry(partyMembers, member.name, (entry) => entry.name);
+  const matchedAvatar = findNamedEntry(avatarCandidates, member.name, (entry) => entry.name);
   const maxHp = Math.max(1, Number(member.maxHp) || Number(member.hp) || 1);
   const hp = Math.max(0, Math.min(maxHp, Number(member.hp) || maxHp));
   const level = combatLevelFromHp(maxHp, fallbackLevel);
   const element = member.attacks?.find((attack) => attack.element)?.element;
   return {
-    id: matchedPartyMember?.id ?? `generated-party-${index}-${slugifyCombatantId(member.name)}`,
+    id: matchedAvatar?.id ?? `generated-party-${index}-${slugifyCombatantId(member.name)}`,
     name: member.name || `Ally ${index + 1}`,
     hp,
     maxHp,
@@ -601,11 +609,27 @@ function generatedPartyMemberToCombatant(
     speed: 6 + level,
     level,
     side: "player",
-    sprite: matchedPartyMember?.avatarUrl ?? undefined,
+    sprite: matchedAvatar?.avatarUrl ?? undefined,
     statusEffects: combatStatusEffectsFromGenerated(member.statuses),
     skills: combatSkillsFromGeneratedAttacks(member.attacks, level),
     element,
   };
+}
+
+function hydrateCombatPartyAvatars(party: Combatant[], avatarCandidates: GamePartyMemberInfo[]): Combatant[] {
+  if (avatarCandidates.length === 0) return party;
+
+  let changed = false;
+  const nextParty = party.map((combatant) => {
+    if (combatant.side !== "player") return combatant;
+    const matchedAvatar = findNamedEntry(avatarCandidates, combatant.name, (entry) => entry.name);
+    const avatarUrl = matchedAvatar?.avatarUrl?.trim();
+    if (!avatarUrl || combatant.sprite === avatarUrl) return combatant;
+    changed = true;
+    return { ...combatant, sprite: avatarUrl };
+  });
+
+  return changed ? nextParty : party;
 }
 
 function generatedEnemyToCombatant(enemy: CombatEnemy, index: number, fallbackLevel: number): Combatant {
@@ -885,7 +909,6 @@ function mergeSceneAssetNpcCandidates(
       description: existing.description || description,
       location: existing.location || currentLocation || "",
       avatarUrl: existing.avatarUrl || avatarUrl,
-      met: true,
     });
   }
 
@@ -899,7 +922,6 @@ function mergeSceneAssetNpcCandidates(
     candidates.set(normalizedName, {
       ...existing,
       description: existing.description || candidate.description,
-      met: true,
     });
   }
 
@@ -1808,9 +1830,12 @@ export function GameSurface({
   const gameMiddleMouseNav = useUIStore((s) => s.gameMiddleMouseNav);
   const messagesPerPage = useUIStore((s) => s.messagesPerPage);
   const openGameAssetsBrowser = useUIStore((s) => s.openGameAssetsBrowser);
+  const quoteFormat = useUIStore((s) => s.quoteFormat);
   const gameSnapshot = useGameStateStore((s) => (s.current?.chatId === activeChatId ? s.current : null));
   const chatCharacterIds = useMemo(() => getChatCharacterIds(chat.characterIds), [chat.characterIds]);
   const useSpotifyGameMusic = chatMeta.gameUseSpotifyMusic === true;
+  const activeGameMetaId = typeof chatMeta.gameId === "string" ? chatMeta.gameId : "";
+  const sceneRuntimeScopeKey = `${activeChatId}:${activeGameMetaId}`;
   const { data: connectionsList } = useConnections();
   const updateChat = useUpdateChat();
   const languageConnections = useMemo(
@@ -2008,7 +2033,9 @@ export function GameSurface({
     null,
   );
   const [queuedCombatGeneration, setQueuedCombatGeneration] = useState<{ messageId: string } | null>(null);
+  const [preparedCombatState, setPreparedCombatState] = useState<PreparedCombatState | null>(null);
   const [combatGenerationPending, setCombatGenerationPending] = useState(false);
+  const [combatGenerationError, setCombatGenerationError] = useState<string | null>(null);
   const [combatItemEffects, setCombatItemEffects] = useState<CombatItemEffect[]>([]);
   const [combatMechanics, setCombatMechanics] = useState<CombatMechanic[]>([]);
   const [combatDialogueCues, setCombatDialogueCues] = useState<CombatDialogueCue[]>([]);
@@ -2309,15 +2336,15 @@ export function GameSurface({
     setAudioSettingsHydrated(true);
   }, [persistedGameAudioSettings]);
 
-  // Clear stale party dialogue when switching chats (M7)
-  const prevActiveChatRef = useRef(activeChatId);
+  // Clear stale runtime state when switching chats or replacing the game in the same chat.
+  const prevSceneRuntimeScopeRef = useRef(sceneRuntimeScopeKey);
   useEffect(() => {
     inventoryItemsRef.current = inventoryItems;
   }, [inventoryItems]);
 
   useEffect(() => {
-    if (prevActiveChatRef.current === activeChatId) return; // skip initial mount
-    prevActiveChatRef.current = activeChatId;
+    if (prevSceneRuntimeScopeRef.current === sceneRuntimeScopeKey) return; // skip initial mount
+    prevSceneRuntimeScopeRef.current = sceneRuntimeScopeKey;
     recentMusicHistoryRef.current = normalizeRecentMusicHistory(chatMeta.gameRecentMusic);
     recentSpotifyTrackHistoryRef.current = normalizeRecentSpotifyTrackHistory(chatMeta.gameRecentSpotifyTracks);
     setPartyDialogue([]);
@@ -2335,7 +2362,7 @@ export function GameSurface({
     setCombatSpriteSuggestion(null);
     setNarrationDoneMsgId(null);
     lastProcessedMsgRef.current = null;
-    // Reset inventory/readables for the new chat
+    // Reset inventory/readables for the new chat or game.
     setInventoryItems((chatMeta.gameInventory as Array<{ name: string; quantity: number }>) ?? []);
     setInventoryNotifications([]);
     setPendingInventorySegmentUpdates([]);
@@ -2350,7 +2377,7 @@ export function GameSurface({
     setPrepareSessionWidgetsOpen(false);
     // Allow the auto-tutorial to re-evaluate for the new chat (guard still gates on disabled flag)
     tutorialAutoTriggeredRef.current = false;
-  }, [activeChatId, chatMeta.gameInventory, chatMeta.gameRecentMusic, chatMeta.gameRecentSpotifyTracks]);
+  }, [sceneRuntimeScopeKey, chatMeta.gameInventory, chatMeta.gameRecentMusic, chatMeta.gameRecentSpotifyTracks]);
 
   const clearPendingInteractiveCommands = useCallback(() => {
     setActiveChoices(null);
@@ -2537,21 +2564,21 @@ export function GameSurface({
     fetchManifest();
   }, [fetchManifest]);
 
-  // Clean up audio + reset playback state when SWITCHING chats.
+  // Clean up audio + reset playback state when switching chats or replacing the game in the same chat.
   // On unmount, only dispose audio (stop sounds) but keep store state intact so that
   // same-chat remount (e.g. returning from persona editor) can read it immediately
   // without waiting for the scene restore effect.
-  const prevChatIdRef = useRef(activeChatId);
+  const prevSceneMediaScopeRef = useRef(sceneRuntimeScopeKey);
   useEffect(() => {
-    if (prevChatIdRef.current !== activeChatId) {
+    if (prevSceneMediaScopeRef.current !== sceneRuntimeScopeKey) {
       audioManager.dispose();
       useGameAssetStore.getState().resetPlaybackState();
-      prevChatIdRef.current = activeChatId;
+      prevSceneMediaScopeRef.current = sceneRuntimeScopeKey;
     }
     return () => {
       audioManager.dispose();
     };
-  }, [activeChatId]);
+  }, [sceneRuntimeScopeKey]);
 
   // Reconnect audio and background on mount if the store was disposed
   // (e.g. user left to home and returned to the same game).
@@ -2858,16 +2885,6 @@ export function GameSurface({
     [latestAssistantMsg?.content],
   );
 
-  // The GM prose that triggered combat, used as the opening combat-log entry so the
-  // player can read what set up the fight without having to open the Logs modal.
-  const combatStartNarration = useMemo(() => {
-    if (!combatStartMessageId) return null;
-    const triggerMsg = messages.find((m) => m.id === combatStartMessageId);
-    if (!triggerMsg?.content) return null;
-    const cleaned = stripGmTags(triggerMsg.content).trim();
-    return cleaned.length > 0 ? cleaned : null;
-  }, [combatStartMessageId, messages]);
-
   const combatLogEntries = useMemo(
     () =>
       messages
@@ -3133,6 +3150,18 @@ export function GameSurface({
   // ── Restore scene assets (background/music/ambient) from chat metadata on page load ──
   const sceneRestoredRef = useRef(false);
   const partyDialogueRestoredRef = useRef(false);
+  const restoredSceneScopeRef = useRef(sceneRuntimeScopeKey);
+
+  useEffect(() => {
+    if (restoredSceneScopeRef.current === sceneRuntimeScopeKey) return;
+    restoredSceneScopeRef.current = sceneRuntimeScopeKey;
+    sceneRestoredRef.current = false;
+    partyDialogueRestoredRef.current = false;
+    isRestoredRef.current = false;
+    sceneReadyMsgIdRef.current = undefined;
+    weatherMsgRef.current = null;
+    lastProcessedMsgRef.current = null;
+  }, [sceneRuntimeScopeKey]);
 
   if (sceneReadyMsgIdRef.current === undefined && !isMessagesLoading) {
     if (latestAssistantMsg && !isStreaming) {
@@ -3600,6 +3629,8 @@ export function GameSurface({
     setQueuedQte(null);
     setQueuedEncounter(null);
     setQueuedCombatGeneration(null);
+    setPreparedCombatState(null);
+    setCombatGenerationError(null);
     setCombatItemEffects([]);
     setCombatMechanics([]);
     setCombatDialogueCues([]);
@@ -4275,6 +4306,8 @@ export function GameSurface({
       // /generate-assets schema already caps this at 10 per turn so cost stays bounded.
       const pendingIllustration = result.generatedIllustration ? null : result.illustration;
       if (gameImageGenerationEnabled && (unresolvedBg || pendingIllustration || npcsNeedingAvatars.length > 0)) {
+        const messageTags = "content" in msg && typeof msg.content === "string" ? parseGmTags(msg.content) : null;
+        const combatTransitionTurn = !!(messageTags?.combatEncounter || messageTags?.stateChange === "combat");
         const assetPayload = {
           chatId: activeChatId,
           backgroundTag: unresolvedBg || undefined,
@@ -4282,7 +4315,7 @@ export function GameSurface({
           npcsNeedingAvatars: npcsNeedingAvatars.length > 0 ? npcsNeedingAvatars : undefined,
           debugMode: useUIStore.getState().debugMode,
         };
-        const blocksScene = introPresented;
+        const blocksScene = introPresented && !combatTransitionTurn;
         const markSceneReady = () => {
           sceneReadyMsgIdRef.current = msg.id;
           setSceneReadyTick((t) => t + 1);
@@ -4456,6 +4489,8 @@ export function GameSurface({
     const handler = (e: Event) => {
       const chatId = (e as CustomEvent).detail?.chatId;
       if (chatId !== activeChatId) return;
+      startGameGuardRef.current = false;
+      setStartGameRequested(false);
       setGenerationFailed(true);
     };
     window.addEventListener("marinara:generation-error", handler);
@@ -4720,11 +4755,11 @@ export function GameSurface({
       generate({
         chatId: activeChatId,
         connectionId: null,
-        userMessage: message,
+        userMessage: formatTextQuotes(message, quoteFormat),
         ...(attachments?.length ? { attachments } : {}),
       });
     },
-    [activeChatId, chatMeta.gameSessionStatus, generate],
+    [activeChatId, chatMeta.gameSessionStatus, generate, quoteFormat],
   );
 
   // Game mutations
@@ -4907,7 +4942,6 @@ export function GameSurface({
               pronouns: null,
               location: "",
               reputation: 0,
-              met: true,
               notes: [],
             } satisfies GameNpc);
 
@@ -4965,7 +4999,6 @@ export function GameSurface({
           pronouns: null,
           location: "",
           reputation: 0,
-          met: true,
           notes: [],
         } satisfies GameNpc);
 
@@ -5502,6 +5535,7 @@ export function GameSurface({
 
     const onWheel = (event: WheelEvent) => {
       if (event.deltaY === 0) return;
+      if (event.ctrlKey) return;
       if (inSkipUi(event.target)) return;
       const now = Date.now();
       // Throttle ~60ms so a single physical scroll-tick doesn't fire many times on touchpads.
@@ -5698,6 +5732,112 @@ export function GameSurface({
     return baseMembers;
   }, [chatCharacterIds, chatMeta, characters, characterMap, npcs, personaInfo]);
 
+  const combatAvatarCandidates = useMemo(() => {
+    const candidatesByName = new Map<string, GamePartyMemberInfo>();
+    const addCandidate = (candidate: GamePartyMemberInfo) => {
+      const normalizedName = normalizeSceneAssetName(candidate.name);
+      if (!normalizedName) return;
+      const existing = candidatesByName.get(normalizedName);
+      if (!existing || (!existing.avatarUrl && candidate.avatarUrl)) {
+        candidatesByName.set(normalizedName, candidate);
+      }
+    };
+
+    for (const member of partyMembers) addCandidate(member);
+    if (Array.isArray(chatMeta.gameNpcs)) {
+      for (const rawNpc of chatMeta.gameNpcs) {
+        if (!rawNpc || typeof rawNpc !== "object") continue;
+        const npc = rawNpc as Partial<GameNpc>;
+        if (typeof npc.name !== "string" || !npc.name.trim()) continue;
+        addCandidate({
+          id: typeof npc.id === "string" && npc.id.trim() ? npc.id : `npc:${normalizeSceneAssetName(npc.name)}`,
+          name: npc.name,
+          avatarUrl: typeof npc.avatarUrl === "string" ? npc.avatarUrl : null,
+          canRemove: false,
+        });
+      }
+    }
+    for (const character of characters) {
+      addCandidate({
+        id: character.id,
+        name: character.name,
+        avatarUrl: character.avatarUrl ?? null,
+        avatarCrop: character.avatarCrop ?? null,
+        nameColor: character.nameColor,
+        dialogueColor: character.dialogueColor,
+        canRemove: false,
+      });
+    }
+    for (const npc of npcs) {
+      addCandidate({
+        id: npc.id,
+        name: npc.name,
+        avatarUrl: npc.avatarUrl ?? null,
+        canRemove: false,
+      });
+    }
+    for (const presentCharacter of (gameSnapshot?.presentCharacters as SceneAssetPresentCharacter[] | undefined) ??
+      []) {
+      const name = typeof presentCharacter.name === "string" ? presentCharacter.name.trim() : "";
+      if (!name) continue;
+      addCandidate({
+        id: `present:${normalizeSceneAssetName(name)}`,
+        name,
+        avatarUrl:
+          typeof presentCharacter.avatarPath === "string" && presentCharacter.avatarPath.trim()
+            ? presentCharacter.avatarPath
+            : null,
+        canRemove: false,
+      });
+    }
+    if (personaInfo?.name) {
+      addCandidate({
+        id: "persona:active",
+        name: personaInfo.name,
+        avatarUrl: personaInfo.avatarUrl ?? null,
+        avatarCrop: personaInfo.avatarCrop ?? null,
+        nameColor: personaInfo.nameColor,
+        dialogueColor: personaInfo.dialogueColor,
+        canRemove: false,
+      });
+    }
+    for (const [normalizedName, avatarUrl] of npcAvatarLookup.entries()) {
+      const existing = candidatesByName.get(normalizedName);
+      if (existing) {
+        if (!existing.avatarUrl) {
+          candidatesByName.set(normalizedName, { ...existing, avatarUrl });
+        }
+        continue;
+      }
+      candidatesByName.set(normalizedName, {
+        id: `avatar:${normalizedName}`,
+        name: normalizedName,
+        avatarUrl,
+        canRemove: false,
+      });
+    }
+
+    return Array.from(candidatesByName.values());
+  }, [
+    characters,
+    chatMeta.gameNpcs,
+    gameSnapshot?.presentCharacters,
+    npcAvatarLookup,
+    npcs,
+    partyMembers,
+    personaInfo,
+  ]);
+
+  // Party-side combatants can be generated from story NPCs or restored from an
+  // older snapshot before their avatar was known. Re-check the wider character,
+  // NPC, present-character, and persona avatar pool whenever it changes so
+  // allies do not fall back to initials while their cards already have images.
+  useEffect(() => {
+    if (!combatParty) return;
+    const hydratedParty = hydrateCombatPartyAvatars(combatParty, combatAvatarCandidates);
+    if (hydratedParty !== combatParty) setCombatParty(hydratedParty);
+  }, [combatAvatarCandidates, combatParty]);
+
   // Auto-open the in-game tutorial on the user's first game.
   // Guard: only when setup is complete, party is loaded, and the user
   // hasn't permanently disabled it. Fires once per chat mount.
@@ -5743,6 +5883,14 @@ export function GameSurface({
 
   const combatUiActive = gameState === "combat" && !!combatParty && !!combatEnemies;
   const topOverlayOffsetClass = "top-3";
+  const queuedCombatMatchesLatest =
+    !!queuedCombatGeneration?.messageId &&
+    !!latestAssistantMsg?.id &&
+    queuedCombatGeneration.messageId === latestAssistantMsg.id;
+  const combatStartGateReached =
+    queuedCombatMatchesLatest && !isStreaming && !scenePreparing && (!latestNarrationText || narrationDone);
+  const combatStarting = combatStartGateReached && combatGenerationPending && !combatUiActive;
+  const combatGenerationFailedAtGate = combatStartGateReached && !!combatGenerationError && !combatUiActive;
 
   const combatDialogueLines = useMemo(() => {
     if (!combatUiActive || !latestAssistantMsg?.content || isStreaming) return [];
@@ -5765,7 +5913,7 @@ export function GameSurface({
       const fallbackLevel = sessionNumber ?? 5;
       const partyCombatants = Array.isArray(combatState.party)
         ? combatState.party.map((member, index) =>
-            generatedPartyMemberToCombatant(member, index, partyMembers, fallbackLevel),
+            generatedPartyMemberToCombatant(member, index, combatAvatarCandidates, fallbackLevel),
           )
         : [];
       const enemyCombatants = Array.isArray(combatState.enemies)
@@ -5775,7 +5923,7 @@ export function GameSurface({
       if (partyCombatants.length === 0 || enemyCombatants.length === 0) return null;
       return { party: partyCombatants, enemies: enemyCombatants };
     },
-    [partyMembers, sessionNumber],
+    [combatAvatarCandidates, sessionNumber],
   );
 
   useEffect(() => {
@@ -5836,6 +5984,121 @@ export function GameSurface({
     transitionGameState,
   ]);
 
+  const generateCombatStateForMessage = useCallback(
+    (messageId: string) => {
+      if (combatGenerationPending) return;
+      const debugMode = useUIStore.getState().debugMode;
+      if (debugMode) {
+        console.warn("[game-combat] Starting combat state generation", { chatId: activeChatId, messageId });
+      }
+      setCombatGenerationError(null);
+      setCombatGenerationPending(true);
+      api
+        .post<EncounterInitResponse>("/encounter/init", {
+          chatId: activeChatId,
+          connectionId: null,
+          settings: GAME_COMBAT_GENERATION_SETTINGS,
+          spellbookId: null,
+          debugMode,
+        })
+        .then(async (response) => {
+          const combatants = hydrateGeneratedCombatState(response.combatState);
+          if (!combatants) {
+            throw new Error("Combat generator returned an empty party or enemy list.");
+          }
+
+          const visuals = response.combatState.visuals;
+          const enemyAvatarRequests = (
+            Array.isArray(visuals?.enemyImagePrompts) && visuals.enemyImagePrompts.length > 0
+              ? visuals.enemyImagePrompts
+              : response.combatState.enemies.map((enemy) => ({
+                  name: enemy.name,
+                  prompt: enemy.description || enemy.sprite || `${enemy.name} combat enemy portrait`,
+                }))
+          )
+            .map((enemy) => ({
+              name: String(enemy.name ?? "").trim(),
+              description: String(enemy.prompt ?? "")
+                .trim()
+                .slice(0, 1000),
+            }))
+            .filter((enemy) => enemy.name && enemy.description)
+            .slice(0, 10);
+          const shouldGenerateBossVisuals = !!visuals?.isBossFight && !!chatMeta.enableSpriteGeneration;
+          const shouldGenerateEnemyAvatars = !!chatMeta.enableSpriteGeneration && enemyAvatarRequests.length > 0;
+          if (
+            (shouldGenerateBossVisuals && (visuals?.backgroundPrompt || visuals?.illustrationPrompt)) ||
+            shouldGenerateEnemyAvatars
+          ) {
+            const illustrationPrompt = visuals?.illustrationPrompt?.trim() || "";
+            const backgroundPrompt = visuals?.backgroundPrompt?.trim() || "";
+            const assetPayload = {
+              chatId: activeChatId,
+              backgroundTag: backgroundPrompt ? `boss fight: ${backgroundPrompt}` : undefined,
+              illustration:
+                illustrationPrompt.length >= 40
+                  ? {
+                      prompt: illustrationPrompt,
+                      reason: "Boss fight splash illustration",
+                      slug: visuals?.slug || "boss-fight",
+                      characters: [
+                        ...combatants.party.map((member) => member.name),
+                        ...combatants.enemies.map((enemy) => enemy.name),
+                      ].slice(0, 6),
+                    }
+                  : undefined,
+              npcsNeedingAvatars: shouldGenerateEnemyAvatars ? enemyAvatarRequests : undefined,
+              debugMode: useUIStore.getState().debugMode,
+            };
+            void requestAssetGeneration(assetPayload, { allowPromptReview: false })
+              .then((assetResult) => {
+                if (!assetResult?.generatedNpcAvatars?.length) return;
+                const avatarByName = new Map(
+                  assetResult.generatedNpcAvatars.map(
+                    (entry) => [normalizeSceneAssetName(entry.name), entry.avatarUrl] as const,
+                  ),
+                );
+                const applyAvatars = (enemies: Combatant[]) =>
+                  enemies.map((enemy) => {
+                    const avatarUrl = avatarByName.get(normalizeSceneAssetName(enemy.name));
+                    return avatarUrl ? { ...enemy, sprite: avatarUrl } : enemy;
+                  });
+                setPreparedCombatState((current) =>
+                  current?.messageId === messageId ? { ...current, enemies: applyAvatars(current.enemies) } : current,
+                );
+                setCombatEnemies((currentEnemies) => (currentEnemies ? applyAvatars(currentEnemies) : currentEnemies));
+              })
+              .catch((err) => {
+                console.warn("[game-combat] Failed to generate combat visuals", err);
+              });
+          }
+
+          setPreparedCombatState({
+            messageId,
+            party: combatants.party,
+            enemies: combatants.enemies,
+            itemEffects: Array.isArray(response.combatState.itemEffects) ? response.combatState.itemEffects : [],
+            mechanics: Array.isArray(response.combatState.mechanics) ? response.combatState.mechanics : [],
+            dialogueCues: Array.isArray(response.combatState.dialogueCues) ? response.combatState.dialogueCues : [],
+          });
+        })
+        .catch((err) => {
+          const message = err instanceof Error ? err.message : "Combat generation failed.";
+          console.warn("[game-combat] Failed to generate combat state", err);
+          setCombatGenerationError(message);
+          toast.error(`${message} Use the Combat button to retry.`);
+        })
+        .finally(() => setCombatGenerationPending(false));
+    },
+    [
+      activeChatId,
+      chatMeta.enableSpriteGeneration,
+      combatGenerationPending,
+      hydrateGeneratedCombatState,
+      requestAssetGeneration,
+    ],
+  );
+
   useEffect(() => {
     if (!queuedCombatGeneration || !latestAssistantMsg?.id) return;
     if (queuedCombatGeneration.messageId !== latestAssistantMsg.id) return;
@@ -5845,125 +6108,103 @@ export function GameSurface({
       )
     ) {
       setQueuedCombatGeneration(null);
+      setPreparedCombatState(null);
+      setCombatGenerationError(null);
       return;
     }
-    if (pendingEncounter || combatUiActive || combatGenerationPending) return;
-    if (isStreaming || scenePreparing || assetGenerationBlocksScene || directionsPlaying) return;
-    if (latestNarrationText && !narrationDone) return;
+    if (pendingEncounter || combatUiActive || combatGenerationPending || combatGenerationError) return;
+    if (preparedCombatState?.messageId === queuedCombatGeneration.messageId) return;
+    if (isStreaming || scenePreparing || assetGenerationBlocksScene) return;
 
-    setCombatGenerationPending(true);
-    api
-      .post<EncounterInitResponse>("/encounter/init", {
-        chatId: activeChatId,
-        connectionId: null,
-        settings: GAME_COMBAT_GENERATION_SETTINGS,
-        spellbookId: null,
-      })
-      .then(async (response) => {
-        const combatants = hydrateGeneratedCombatState(response.combatState);
-        if (!combatants) {
-          throw new Error("Combat generator returned an empty party or enemy list.");
-        }
-
-        const visuals = response.combatState.visuals;
-        const enemyAvatarRequests = (
-          Array.isArray(visuals?.enemyImagePrompts) && visuals.enemyImagePrompts.length > 0
-            ? visuals.enemyImagePrompts
-            : response.combatState.enemies.map((enemy) => ({
-                name: enemy.name,
-                prompt: enemy.description || enemy.sprite || `${enemy.name} combat enemy portrait`,
-              }))
-        )
-          .map((enemy) => ({
-            name: String(enemy.name ?? "").trim(),
-            description: String(enemy.prompt ?? "")
-              .trim()
-              .slice(0, 1000),
-          }))
-          .filter((enemy) => enemy.name && enemy.description)
-          .slice(0, 10);
-        const shouldGenerateBossVisuals = !!visuals?.isBossFight && !!chatMeta.enableSpriteGeneration;
-        const shouldGenerateEnemyAvatars = !!chatMeta.enableSpriteGeneration && enemyAvatarRequests.length > 0;
-        if (
-          (shouldGenerateBossVisuals && (visuals?.backgroundPrompt || visuals?.illustrationPrompt)) ||
-          shouldGenerateEnemyAvatars
-        ) {
-          const illustrationPrompt = visuals?.illustrationPrompt?.trim() || "";
-          const backgroundPrompt = visuals?.backgroundPrompt?.trim() || "";
-          const assetPayload = {
-            chatId: activeChatId,
-            backgroundTag: backgroundPrompt ? `boss fight: ${backgroundPrompt}` : undefined,
-            illustration:
-              illustrationPrompt.length >= 40
-                ? {
-                    prompt: illustrationPrompt,
-                    reason: "Boss fight splash illustration",
-                    slug: visuals?.slug || "boss-fight",
-                    characters: [
-                      ...combatants.party.map((member) => member.name),
-                      ...combatants.enemies.map((enemy) => enemy.name),
-                    ].slice(0, 6),
-                  }
-                : undefined,
-            npcsNeedingAvatars: shouldGenerateEnemyAvatars ? enemyAvatarRequests : undefined,
-            debugMode: useUIStore.getState().debugMode,
-          };
-          void requestAssetGeneration(assetPayload, { allowPromptReview: false }).then((assetResult) => {
-            if (!assetResult?.generatedNpcAvatars?.length) return;
-            const avatarByName = new Map(
-              assetResult.generatedNpcAvatars.map(
-                (entry) => [normalizeSceneAssetName(entry.name), entry.avatarUrl] as const,
-              ),
-            );
-            setCombatEnemies((currentEnemies) =>
-              currentEnemies
-                ? currentEnemies.map((enemy) => {
-                    const avatarUrl = avatarByName.get(normalizeSceneAssetName(enemy.name));
-                    return avatarUrl ? { ...enemy, sprite: avatarUrl } : enemy;
-                  })
-                : currentEnemies,
-            );
-          });
-        }
-
-        setCombatParty(combatants.party);
-        setCombatEnemies(combatants.enemies);
-        setCombatItemEffects(Array.isArray(response.combatState.itemEffects) ? response.combatState.itemEffects : []);
-        setCombatMechanics(Array.isArray(response.combatState.mechanics) ? response.combatState.mechanics : []);
-        setCombatDialogueCues(
-          Array.isArray(response.combatState.dialogueCues) ? response.combatState.dialogueCues : [],
-        );
-        setCombatStartMessageId(queuedCombatGeneration.messageId);
-        setQueuedCombatGeneration(null);
-        useGameModeStore.getState().setGameState("combat");
-        transitionGameState.mutate({ chatId: activeChatId, newState: "combat" });
-      })
-      .catch((err) => {
-        const message = err instanceof Error ? err.message : "Combat generation failed.";
-        console.warn("[game-combat] Failed to generate combat state", err);
-        toast.error(message);
-        setQueuedCombatGeneration(null);
-      })
-      .finally(() => setCombatGenerationPending(false));
+    generateCombatStateForMessage(queuedCombatGeneration.messageId);
   }, [
     activeChatId,
     combatGenerationPending,
+    combatGenerationError,
+    combatUiActive,
+    generateCombatStateForMessage,
+    isStreaming,
+    latestAssistantMsg?.id,
+    assetGenerationBlocksScene,
+    pendingEncounter,
+    preparedCombatState?.messageId,
+    queuedCombatGeneration,
+    scenePreparing,
+  ]);
+
+  useEffect(() => {
+    if (!queuedCombatGeneration || !latestAssistantMsg?.id) return;
+    if (queuedCombatGeneration.messageId !== latestAssistantMsg.id) return;
+    if (!preparedCombatState || preparedCombatState.messageId !== queuedCombatGeneration.messageId) return;
+    if (pendingEncounter || combatUiActive) return;
+    if (isStreaming || scenePreparing || assetGenerationBlocksScene || directionsPlaying) return;
+    if (latestNarrationText && !narrationDone) return;
+
+    setCombatParty(preparedCombatState.party);
+    setCombatEnemies(preparedCombatState.enemies);
+    setCombatItemEffects(preparedCombatState.itemEffects);
+    setCombatMechanics(preparedCombatState.mechanics);
+    setCombatDialogueCues(preparedCombatState.dialogueCues);
+    setCombatStartMessageId(preparedCombatState.messageId);
+    setQueuedCombatGeneration(null);
+    setPreparedCombatState(null);
+    setCombatGenerationError(null);
+    useGameModeStore.getState().setGameState("combat");
+    transitionGameState.mutate({ chatId: activeChatId, newState: "combat" });
+  }, [
+    activeChatId,
+    assetGenerationBlocksScene,
     combatUiActive,
     directionsPlaying,
-    chatMeta.enableSpriteGeneration,
-    hydrateGeneratedCombatState,
     isStreaming,
     latestAssistantMsg?.id,
     latestNarrationText,
     narrationDone,
-    assetGenerationBlocksScene,
     pendingEncounter,
+    preparedCombatState,
     queuedCombatGeneration,
-    requestAssetGeneration,
-    runGameAssetGeneration,
     scenePreparing,
     transitionGameState,
   ]);
+
+  const retryCombatGeneration = useCallback(() => {
+    const messageId = queuedCombatGeneration?.messageId ?? latestAssistantMsg?.id;
+    if (!messageId) {
+      toast.error("No current turn is available for combat generation.");
+      return;
+    }
+    setQueuedCombatGeneration({ messageId });
+    setPreparedCombatState(null);
+    setCombatGenerationError(null);
+    generateCombatStateForMessage(messageId);
+  }, [generateCombatStateForMessage, latestAssistantMsg?.id, queuedCombatGeneration?.messageId]);
+
+  const handleRequestManualCombatStart = useCallback(async () => {
+    if (combatUiActive) {
+      toast("Combat is already active.");
+      return;
+    }
+    if (combatGenerationPending) {
+      toast("Combat is already being prepared.");
+      return;
+    }
+    const messageId = latestAssistantMsg?.id;
+    if (!messageId) {
+      toast.error("The GM needs to write at least one turn before combat can start.");
+      return;
+    }
+    const confirmed = await showConfirmDialog({
+      title: "Start combat?",
+      message: "Generate a tactical combat encounter from the current game state?",
+      confirmLabel: "Yes",
+      cancelLabel: "No",
+    });
+    if (!confirmed) return;
+    setQueuedCombatGeneration({ messageId });
+    setPreparedCombatState(null);
+    setCombatGenerationError(null);
+    generateCombatStateForMessage(messageId);
+  }, [combatGenerationPending, combatUiActive, generateCombatStateForMessage, latestAssistantMsg?.id]);
 
   useEffect(() => {
     if (!queuedQte || !latestAssistantMsg?.id) return;
@@ -7425,23 +7666,23 @@ export function GameSurface({
     return undefined;
   }, [sceneAnalysisEnabled, chatBackground, currentBackground, scopedAssetMap]);
 
-  const lastResolvedBackgroundRef = useRef<{ chatId: string; url?: string }>({ chatId: activeChatId });
+  const lastResolvedBackgroundRef = useRef<{ scopeKey: string; url?: string }>({ scopeKey: sceneRuntimeScopeKey });
   useEffect(() => {
-    if (lastResolvedBackgroundRef.current.chatId !== activeChatId) {
-      lastResolvedBackgroundRef.current = { chatId: activeChatId };
+    if (lastResolvedBackgroundRef.current.scopeKey !== sceneRuntimeScopeKey) {
+      lastResolvedBackgroundRef.current = { scopeKey: sceneRuntimeScopeKey };
     }
-  }, [activeChatId]);
+  }, [sceneRuntimeScopeKey]);
   useEffect(() => {
     if (resolvedBackground !== undefined) {
-      lastResolvedBackgroundRef.current = { chatId: activeChatId, url: resolvedBackground };
-    } else if (!scenePreparing && lastResolvedBackgroundRef.current.chatId === activeChatId) {
-      lastResolvedBackgroundRef.current = { chatId: activeChatId };
+      lastResolvedBackgroundRef.current = { scopeKey: sceneRuntimeScopeKey, url: resolvedBackground };
+    } else if (!scenePreparing && lastResolvedBackgroundRef.current.scopeKey === sceneRuntimeScopeKey) {
+      lastResolvedBackgroundRef.current = { scopeKey: sceneRuntimeScopeKey };
     }
-  }, [activeChatId, resolvedBackground, scenePreparing]);
+  }, [sceneRuntimeScopeKey, resolvedBackground, scenePreparing]);
 
   const displayedBackground =
     resolvedBackground ??
-    (scenePreparing && lastResolvedBackgroundRef.current.chatId === activeChatId
+    (scenePreparing && lastResolvedBackgroundRef.current.scopeKey === sceneRuntimeScopeKey
       ? lastResolvedBackgroundRef.current.url
       : undefined);
 
@@ -7555,11 +7796,13 @@ export function GameSurface({
   // Don't auto-dismiss: wait for user to click Continue after typewriter finishes.
 
   const awaitingFirstTurn = sessionStatus === "active" && !introPresented;
+  const initialTurnFailed = generationFailed && !hasEverHadPlayableContent && !isStreaming && !startGame.isPending;
   if (
     (sessionStatus === "ready" && !introPresented) ||
     startGame.isPending ||
     startGameRequested ||
-    awaitingFirstTurn
+    awaitingFirstTurn ||
+    initialTurnFailed
   ) {
     const worldOverview = (chatMeta.gameWorldOverview as string) || null;
     const setupConfig = chatMeta.gameSetupConfig as Record<string, unknown> | undefined;
@@ -7635,18 +7878,24 @@ export function GameSurface({
                     </button>
                   ) : (
                     <>
-                      <div className="flex items-center gap-3 text-sm text-[var(--muted-foreground)] dark:text-white/60">
-                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--muted)]/40 border-t-[var(--foreground)]/70 dark:border-white/20 dark:border-t-white/70" />
-                        <span>
-                          {hasEverHadPlayableContent && !sceneProcessed
-                            ? "Preparing the scene..."
-                            : hasEverHadPlayableContent && pendingAssetGeneration && !assetGenerationFailed
-                              ? "Generating images..."
-                              : hasEverHadPlayableContent && isStreaming
-                                ? "The GM is narrating..."
-                                : "The adventure begins..."}
-                        </span>
-                      </div>
+                      {initialTurnFailed ? (
+                        <div className="max-w-sm text-sm text-[var(--muted-foreground)] dark:text-white/60">
+                          Game generation failed. Choose another GM / Party Model or retry this one.
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-3 text-sm text-[var(--muted-foreground)] dark:text-white/60">
+                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--muted)]/40 border-t-[var(--foreground)]/70 dark:border-white/20 dark:border-t-white/70" />
+                          <span>
+                            {hasEverHadPlayableContent && !sceneProcessed
+                              ? "Preparing the scene..."
+                              : hasEverHadPlayableContent && pendingAssetGeneration && !assetGenerationFailed
+                                ? "Generating images..."
+                                : hasEverHadPlayableContent && isStreaming
+                                  ? "The GM is narrating..."
+                                  : "The adventure begins..."}
+                          </span>
+                        </div>
+                      )}
                       {/* Retry only when scene analysis actually failed */}
                       {hasEverHadPlayableContent && !isStreaming && sceneAnalysisFailed && (
                         <div className="flex items-center gap-2">
@@ -8401,7 +8650,7 @@ export function GameSurface({
                             onCustomInstruction={handleCombatCustomInstruction}
                             onSpriteSuggestionChange={setCombatSpriteSuggestion}
                             _isStreaming={isStreaming}
-                            narration={combatStartNarration ?? "Combat starts!"}
+                            narration="Battle starts."
                             combatDialogue={combatDialogueLines}
                             combatDialogueCues={combatDialogueCues}
                             combatItemEffects={combatItemEffects}
@@ -8460,6 +8709,10 @@ export function GameSurface({
                           skillCheckSlot={skillCheckSlot}
                           onOpenInventory={() => setInventoryOpen(true)}
                           inventoryCount={inventoryItems.length}
+                          onRequestCombatStart={handleRequestManualCombatStart}
+                          combatStarting={combatStarting}
+                          combatGenerationFailed={combatGenerationFailedAtGate}
+                          onRetryCombatGeneration={retryCombatGeneration}
                           onDeleteMessage={onDeleteMessage}
                           multiSelectMode={multiSelectMode}
                           selectedMessageIds={selectedMessageIds}
@@ -8475,6 +8728,7 @@ export function GameSurface({
                           messageOffset={messageOffset}
                           onStepForward={handleStepForward}
                           onJumpToLatest={handleReturnToLatest}
+                          onSetReviewOffset={setMessageOffset}
                           nextActionToken={nextActionToken}
                           onMaxNavOffsetChange={handleMaxNavOffsetChange}
                           inputSlot={
@@ -8539,6 +8793,10 @@ export function GameSurface({
                       skillCheckSlot={skillCheckSlot}
                       onOpenInventory={() => setInventoryOpen(true)}
                       inventoryCount={inventoryItems.length}
+                      onRequestCombatStart={handleRequestManualCombatStart}
+                      combatStarting={combatStarting}
+                      combatGenerationFailed={combatGenerationFailedAtGate}
+                      onRetryCombatGeneration={retryCombatGeneration}
                       onDeleteMessage={onDeleteMessage}
                       multiSelectMode={multiSelectMode}
                       selectedMessageIds={selectedMessageIds}
@@ -8554,6 +8812,7 @@ export function GameSurface({
                       messageOffset={messageOffset}
                       onStepForward={handleStepForward}
                       onJumpToLatest={handleReturnToLatest}
+                      onSetReviewOffset={setMessageOffset}
                       nextActionToken={nextActionToken}
                       onMaxNavOffsetChange={handleMaxNavOffsetChange}
                       inputSlot={

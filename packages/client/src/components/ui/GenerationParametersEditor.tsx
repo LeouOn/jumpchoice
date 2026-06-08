@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { GenerationParameters } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { HelpTooltip } from "./HelpTooltip";
@@ -13,6 +13,7 @@ export type EditableGenerationParameters = Pick<
   | "presencePenalty"
   | "reasoningEffort"
   | "verbosity"
+  | "serviceTier"
   | "assistantPrefill"
   | "customParameters"
 >;
@@ -21,6 +22,8 @@ type EditableGenerationParameterOverrides = Partial<EditableGenerationParameters
 
 const REASONING_LEVELS = [null, "low", "medium", "high", "maximum"] as const;
 const VERBOSITY_LEVELS = [null, "low", "medium", "high"] as const;
+const OPENROUTER_SERVICE_TIERS = [null, "flex", "priority"] as const;
+const MAX_GENERATION_OUTPUT_TOKENS = 128000;
 
 export const CHAT_PARAMETER_DEFAULTS: EditableGenerationParameters = {
   temperature: 1,
@@ -31,6 +34,7 @@ export const CHAT_PARAMETER_DEFAULTS: EditableGenerationParameters = {
   presencePenalty: 0,
   reasoningEffort: "maximum",
   verbosity: "high",
+  serviceTier: null,
   assistantPrefill: "",
   customParameters: {},
 };
@@ -44,6 +48,7 @@ export const ROLEPLAY_PARAMETER_DEFAULTS: EditableGenerationParameters = {
   presencePenalty: 0,
   reasoningEffort: "maximum",
   verbosity: "high",
+  serviceTier: null,
   assistantPrefill: "",
   customParameters: {},
 };
@@ -86,6 +91,9 @@ export function parseEditableGenerationParameters(raw: unknown): EditableGenerat
   ) {
     next.verbosity = source.verbosity;
   }
+  if (source.serviceTier === null || source.serviceTier === "flex" || source.serviceTier === "priority") {
+    next.serviceTier = source.serviceTier;
+  }
   if (typeof source.assistantPrefill === "string") {
     next.assistantPrefill = source.assistantPrefill;
   }
@@ -111,9 +119,11 @@ export function getEditableGenerationParameters(
 export function GenerationParametersFields({
   value,
   onChange,
+  showOpenRouterServiceTier = false,
 }: {
   value: EditableGenerationParameters;
   onChange: (next: EditableGenerationParameters) => void;
+  showOpenRouterServiceTier?: boolean;
 }) {
   const set = <K extends keyof EditableGenerationParameters>(key: K, nextValue: EditableGenerationParameters[K]) => {
     onChange({ ...value, [key]: nextValue });
@@ -137,7 +147,7 @@ export function GenerationParametersFields({
           value={value.maxTokens}
           onChange={(nextValue) => set("maxTokens", nextValue)}
           min={1}
-          max={32768}
+          max={MAX_GENERATION_OUTPUT_TOKENS}
           step={256}
         />
         <ParamInput
@@ -200,6 +210,34 @@ export function GenerationParametersFields({
           value={value.customParameters}
           onChange={(nextValue) => set("customParameters", nextValue)}
         />
+        {showOpenRouterServiceTier && (
+          <div>
+            <span className="inline-flex items-center gap-1 text-[0.625rem] font-medium text-[var(--muted-foreground)]">
+              OpenRouter Service Tier
+              <HelpTooltip
+                text="Optional OpenRouter routing tier. Default sends no service_tier; Flex can be cheaper and slower, Priority can be faster and more expensive."
+                size="0.625rem"
+              />
+            </span>
+            <div className="mt-1 flex flex-wrap gap-1.5">
+              {OPENROUTER_SERVICE_TIERS.map((tier) => (
+                <button
+                  key={tier ?? "default"}
+                  type="button"
+                  onClick={() => set("serviceTier", tier)}
+                  className={cn(
+                    "rounded-lg px-2 py-1 text-[0.625rem] font-medium transition-all",
+                    value.serviceTier === tier
+                      ? "bg-[var(--primary)]/15 text-[var(--primary)] ring-1 ring-[var(--primary)]/30"
+                      : "bg-[var(--secondary)] text-[var(--muted-foreground)] ring-1 ring-[var(--border)] hover:bg-[var(--accent)]",
+                  )}
+                >
+                  {tier ? tier.charAt(0).toUpperCase() + tier.slice(1) : "Default"}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <div>
           <span className="inline-flex items-center gap-1 text-[0.625rem] font-medium text-[var(--muted-foreground)]">
             Reasoning Effort
@@ -377,21 +415,22 @@ function ParamInput({
   help?: string;
 }) {
   const [draft, setDraft] = useState(String(value));
-  const prevValue = useRef(value);
+  const [error, setError] = useState<string | null>(null);
 
-  if (value !== prevValue.current) {
-    prevValue.current = value;
+  useEffect(() => {
     setDraft(String(value));
-  }
+    setError(null);
+  }, [value]);
 
   const commit = () => {
     const nextValue = parseFloat(draft);
     if (!Number.isNaN(nextValue) && nextValue >= min && nextValue <= max) {
       onChange(nextValue);
       setDraft(String(nextValue));
+      setError(null);
       return;
     }
-    setDraft(String(value));
+    setError(`Enter a value from ${min.toLocaleString()} to ${max.toLocaleString()}.`);
   };
 
   return (
@@ -404,7 +443,10 @@ function ParamInput({
         type="text"
         inputMode="decimal"
         value={draft}
-        onChange={(event) => setDraft(event.target.value)}
+        onChange={(event) => {
+          setDraft(event.target.value);
+          setError(null);
+        }}
         onBlur={commit}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
@@ -416,6 +458,7 @@ function ParamInput({
         step={step}
         className="mt-0.5 w-full rounded-lg bg-[var(--secondary)] px-2.5 py-1.5 text-xs outline-none ring-1 ring-transparent transition-shadow focus:ring-[var(--primary)]/40"
       />
+      {error && <p className="mt-1 text-[0.5625rem] text-amber-500">{error}</p>}
     </div>
   );
 }

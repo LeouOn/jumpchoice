@@ -51,7 +51,7 @@ jobs:
         run: pnpm version:check
 
       - name: Check tracked installer artifacts
-        run: pnpm guard:installer-artifacts
+        run: pnpm check:installer
 
       - name: Render release notes
         run: pnpm release:notes -- "${{ steps.resolve_tag.outputs.version }}" --output release-notes.md
