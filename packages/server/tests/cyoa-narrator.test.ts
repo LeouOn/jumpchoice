@@ -374,3 +374,78 @@ describe("buildNarratorPrompts", () => {
     expect(result.characters).toContain("epic fantasy");
   });
 });
+
+describe("buildNarratorPrompts with difficulty", () => {
+  const baseBuild = { name: "Hero", selectedChoiceIds: ["c1"] };
+  const baseDoc = { name: "Doc", choices: [{ id: "c1", name: "Choice", category: "magic", pointCost: 5, tier: "B" }] };
+
+  it("applies Director aggression = 1 (Passive) language", () => {
+    const result = buildNarratorPrompts(
+      baseBuild,
+      baseDoc,
+      { directorAggression: 1, worldEscalation: 3, informationLeakage: 3, adversaryEnabled: false, stealthDisabled: false },
+    );
+    expect(result.director).toContain("Reveal information freely");
+  });
+
+  it("applies Director aggression = 5 (Merciless) language", () => {
+    const result = buildNarratorPrompts(
+      baseBuild,
+      baseDoc,
+      { directorAggression: 5, worldEscalation: 3, informationLeakage: 3, adversaryEnabled: false, stealthDisabled: false },
+    );
+    expect(result.director).toContain("Actively deceive");
+  });
+
+  it("applies World escalation = 1 (Glacial) language", () => {
+    const result = buildNarratorPrompts(
+      baseBuild,
+      baseDoc,
+      { directorAggression: 3, worldEscalation: 1, informationLeakage: 3, adversaryEnabled: false, stealthDisabled: false },
+    );
+    expect(result.world).toContain("React slowly");
+  });
+
+  it("applies World escalation = 5 (Relentless) language", () => {
+    const result = buildNarratorPrompts(
+      baseBuild,
+      baseDoc,
+      { directorAggression: 3, worldEscalation: 5, informationLeakage: 3, adversaryEnabled: false, stealthDisabled: false },
+    );
+    expect(result.world).toContain("React immediately");
+  });
+
+  it("applies Information leakage = 1 (Open) to Director", () => {
+    const result = buildNarratorPrompts(
+      baseBuild,
+      baseDoc,
+      { directorAggression: 3, worldEscalation: 3, informationLeakage: 1, adversaryEnabled: false, stealthDisabled: false },
+    );
+    expect(result.director).toContain("Pass full intelligence to the Narrator");
+  });
+
+  it("applies Information leakage = 5 (Blackout) to Director", () => {
+    const result = buildNarratorPrompts(
+      baseBuild,
+      baseDoc,
+      { directorAggression: 3, worldEscalation: 3, informationLeakage: 5, adversaryEnabled: false, stealthDisabled: false },
+    );
+    expect(result.director).toContain("Pass almost nothing");
+  });
+
+  it("uses default difficulty when not provided", () => {
+    const result = buildNarratorPrompts(baseBuild, baseDoc);
+    expect(result.director).toContain("Control information flow");
+    expect(result.world).toContain("React within a few turns");
+    expect(result.director).toContain("Filter intelligence through narrative context");
+  });
+
+  it("embeds character voice instructions in characters prompt", () => {
+    const result = buildNarratorPrompts(
+      baseBuild,
+      baseDoc,
+      { directorAggression: 3, worldEscalation: 3, informationLeakage: 3, adversaryEnabled: false, stealthDisabled: false },
+    );
+    expect(result.characters).toContain("When the player addresses an NPC");
+  });
+});

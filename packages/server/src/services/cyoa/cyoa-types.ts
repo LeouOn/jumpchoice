@@ -30,6 +30,7 @@ export interface CYOAChoice {
   prerequisites: string[];
   tags: string[];
   sourceImageIds: string[];
+  stealth?: boolean;
 }
 
 export interface CYOADocument {

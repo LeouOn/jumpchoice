@@ -9,10 +9,10 @@ import { DATA_DIR } from "../utils/data-dir.js";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { resolveBaseUrl } from "./generate/generate-route-utils.js";
-import { extractFromImage } from "../services/cyoa/cyoa-extractor.js";
+import { extractFromImage, type FallbackProvider } from "../services/cyoa/cyoa-extractor.js";
 import { mergeExtractions } from "../services/cyoa/cyoa-merger.js";
 import { analyzeDocument } from "../services/cyoa/cyoa-analyzer.js";
-import { cyoaDocuments, cyoaImages, cyoaChoices, cyoaBuilds } from "../db/schema/index.js";
+import { cyoaDocuments, cyoaImages, cyoaChoices, cyoaBuilds, messages } from "../db/schema/index.js";
 import { logger } from "../lib/logger.js";
 
 const CYOA_DIR = join(DATA_DIR, "cyoa");
@@ -21,6 +21,18 @@ const ALLOWED_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]
 function toMime(ext: string): string {
   const map: Record<string, string> = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".gif": "image/gif", ".webp": "image/webp", ".avif": "image/avif" };
   return map[ext] ?? "application/octet-stream";
+}
+
+function safeJsonParse<T = unknown>(value: unknown, fallback: T): T {
+  if (value == null) return fallback;
+  if (typeof value !== "string") return value as T;
+  if (value === "") return fallback;
+  try {
+    return JSON.parse(value) as T;
+  } catch (err) {
+    logger.warn("[cyoa] Failed to parse JSON field, using fallback: %s", (err as Error).message);
+    return fallback;
+  }
 }
 
 export async function cyoaRoutes(app: FastifyInstance) {
@@ -154,6 +166,44 @@ export async function cyoaRoutes(app: FastifyInstance) {
     if (!baseUrl) return reply.status(400).send({ error: "Invalid connection configuration" });
     const provider = createLLMProvider(conn.provider, baseUrl, conn.apiKey, conn.maxContext, conn.openrouterProvider, conn.maxTokensOverride);
 
+    const fallbackProviders: FallbackProvider[] = [];
+
+    const allConns = (await connections.list()) as any[];
+    const zhipuRow = allConns.find((c: any) => c.provider === "zhipu");
+    if (zhipuRow && conn.provider !== "zhipu") {
+      const zhipuConn = await connections.getWithKey(zhipuRow.id);
+      if (zhipuConn) {
+        const zhipuBaseUrl = resolveBaseUrl(zhipuConn as any);
+        if (zhipuBaseUrl) {
+          const visionModel = zhipuConn.model?.includes("v") ? zhipuConn.model : "glm-4v-flash";
+          fallbackProviders.push({
+            provider: createLLMProvider("zhipu", zhipuBaseUrl, zhipuConn.apiKey, zhipuConn.maxContext, zhipuConn.openrouterProvider, zhipuConn.maxTokensOverride) as any,
+            model: visionModel,
+            label: "zhipu-glm-vision",
+          });
+        }
+      }
+    }
+
+    const openrouterRow = allConns.find((c: any) => c.provider === "openrouter");
+    if (openrouterRow && conn.provider !== "openrouter") {
+      const openrouterConn = await connections.getWithKey(openrouterRow.id);
+      if (openrouterConn) {
+        const orBaseUrl = resolveBaseUrl(openrouterConn as any);
+        if (orBaseUrl) {
+          fallbackProviders.push({
+            provider: createLLMProvider("openrouter", orBaseUrl, openrouterConn.apiKey, openrouterConn.maxContext, openrouterConn.openrouterProvider, openrouterConn.maxTokensOverride) as any,
+            model: "google/gemini-3.5-flash",
+            label: "openrouter-gemini-3.5-flash",
+          });
+        }
+      }
+    }
+
+    logger.info("[cyoa] Extraction chain: primary=%s/%s, fallbacks=[%s]",
+      conn.provider, conn.model,
+      fallbackProviders.map((f) => `${f.label}/${f.model}`).join(", "));
+
     const images = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, documentId));
     if (images.length === 0) return reply.status(400).send({ error: "No images found for document" });
 
@@ -167,6 +217,7 @@ export async function cyoaRoutes(app: FastifyInstance) {
           pageNumber: img.pageNumber,
           provider: provider as any,
           model: conn.model,
+          fallbackProviders,
         });
         extractions.push(extraction);
         await app.db.update(cyoaImages).set({ extractionMethod: extraction.extractionMethod, extractionResult: JSON.stringify(extraction) }).where(eq(cyoaImages.id, img.id)).run();
@@ -325,15 +376,30 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const doc = docs[0];
     if (!doc) return reply.status(404).send({ error: "Not found" });
 
-    const images = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, id));
-    const choices = await app.db.select().from(cyoaChoices).where(eq(cyoaChoices.documentId, id));
+    const rawImages = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, id));
+    const rawChoices = await app.db.select().from(cyoaChoices).where(eq(cyoaChoices.documentId, id));
+
+    const images = rawImages.map((img: any) => ({
+      ...img,
+      filename: img.filePath?.split("/").pop() ?? "",
+      sizeBytes: img.byteSize ?? null,
+      extractions: img.extractionResult ? safeJsonParse(img.extractionResult, null) : null,
+    }));
+
+    const choices = rawChoices.map((c: any) => ({
+      ...c,
+      prerequisites: safeJsonParse(c.prerequisites, []),
+      tags: safeJsonParse(c.tags, []),
+      synergyIds: safeJsonParse(c.synergyIds, []),
+      sourceImageIds: safeJsonParse(c.sourceImageIds, []),
+    }));
 
     return {
       ...doc,
-      extractions: JSON.parse(doc.extractions || "[]"),
-      reviewedExtractions: JSON.parse(doc.reviewedExtractions || "[]"),
-      mergedDocument: JSON.parse(doc.mergedDocument || "{}"),
-      analysis: JSON.parse(doc.analysis || "{}"),
+      extractions: safeJsonParse(doc.extractions, []),
+      reviewedExtractions: safeJsonParse(doc.reviewedExtractions, []),
+      mergedDocument: safeJsonParse(doc.mergedDocument, {}),
+      analysis: safeJsonParse(doc.analysis, {}),
       images,
       choices,
     };
@@ -341,7 +407,18 @@ export async function cyoaRoutes(app: FastifyInstance) {
 
   // POST /prompts — build narrator prompts from a document + build
   app.post("/prompts", async (req, reply) => {
-    const { documentId, buildId } = req.body as { documentId?: string; buildId?: string };
+    const { documentId, buildId, difficulty } = req.body as {
+      documentId?: string;
+      buildId?: string;
+      difficulty?: {
+        directorAggression?: number;
+        worldEscalation?: number;
+        informationLeakage?: number;
+        adversaryEnabled?: boolean;
+        stealthDisabled?: boolean;
+      };
+    };
+
     if (!documentId || !buildId) return reply.status(400).send({ error: "documentId and buildId required" });
 
     const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, documentId));
@@ -360,13 +437,32 @@ export async function cyoaRoutes(app: FastifyInstance) {
     let analysis = null;
     try { analysis = JSON.parse(doc.analysis); } catch {}
 
+    const difficultySettings = {
+      directorAggression: difficulty?.directorAggression ?? 3,
+      worldEscalation: difficulty?.worldEscalation ?? 3,
+      informationLeakage: difficulty?.informationLeakage ?? 3,
+      adversaryEnabled: difficulty?.adversaryEnabled ?? true,
+      stealthDisabled: difficulty?.stealthDisabled ?? false,
+    };
+
     const { buildNarratorPrompts } = await import("../services/cyoa/cyoa-narrator.js");
     const prompts = buildNarratorPrompts(
       { name: build.name, description: build.description, selectedChoiceIds, notes: build.notes },
       { name: doc.name, description: doc.description, pointBudget: doc.pointBudget, choices, analysis },
+      difficultySettings,
     );
 
-    return reply.send(prompts);
+    let adversary: string | null = null;
+    if (difficultySettings.adversaryEnabled) {
+      const { buildAdversaryPrompt } = await import("../services/cyoa/cyoa-adversary.js");
+      adversary = buildAdversaryPrompt(
+        { name: build.name, description: build.description, selectedChoiceIds },
+        { name: doc.name, choices },
+        difficultySettings,
+      );
+    }
+
+    return reply.send({ ...prompts, adversary });
   });
 
   // DELETE /:id — delete document + files
@@ -387,4 +483,30 @@ export async function cyoaRoutes(app: FastifyInstance) {
 
     return { success: true };
   });
+
+  // GET /chats/:chatId/agent-outputs — fetch CYOA agent outputs for a chat
+  app.get<{ Params: { chatId: string } }>("/chats/:chatId/agent-outputs", async (req, reply) => {
+    const { chatId } = req.params;
+
+    const allMessages = await app.db
+      .select()
+      .from(messages)
+      .where(eq(messages.chatId, chatId))
+      .orderBy(messages.createdAt);
+
+    const cyoaOutputs = allMessages
+      .map((m) => {
+        const extra = (() => {
+          try { return JSON.parse(m.extra || "{}"); } catch { return {}; }
+        })();
+        if (typeof extra.agentType === "string" && extra.agentType.startsWith("cyoa-") && typeof extra.agentOutput === "string") {
+          return { id: m.id, agentType: extra.agentType, text: extra.agentOutput, createdAt: m.createdAt };
+        }
+        return null;
+      })
+      .filter((o): o is { id: string; agentType: string; text: string; createdAt: string } => o !== null);
+
+    return reply.send({ outputs: cyoaOutputs });
+  });
 }
+

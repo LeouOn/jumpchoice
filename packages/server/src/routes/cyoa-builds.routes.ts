@@ -22,7 +22,7 @@ export async function cyoaBuildsRoutes(app: FastifyInstance) {
     return rows.map(parseBuild);
   });
 
-  app.post<{ Params: { docId: string }; Body: { name?: string; description?: string } }>(
+  app.post<{ Params: { docId: string }; Body: { name?: string; description?: string; selectedChoiceIds?: string[]; notes?: string } }>(
     "/:docId/builds",
     async (req, reply) => {
       const { docId } = req.params;
@@ -31,13 +31,16 @@ export async function cyoaBuildsRoutes(app: FastifyInstance) {
 
       const timestamp = now();
       const id = newId();
+      const selectedChoiceIds = Array.isArray(req.body?.selectedChoiceIds)
+        ? JSON.stringify(req.body.selectedChoiceIds)
+        : "[]";
       const build = {
         id,
         documentId: docId,
         name: req.body?.name ?? "",
         description: req.body?.description ?? "",
-        selectedChoiceIds: "[]",
-        notes: "",
+        selectedChoiceIds,
+        notes: req.body?.notes ?? "",
         createdAt: timestamp,
         updatedAt: timestamp,
       };

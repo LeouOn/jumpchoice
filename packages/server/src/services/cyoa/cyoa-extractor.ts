@@ -9,12 +9,19 @@ export interface ExtractorProvider {
   chatComplete: (messages: any[], options: any) => Promise<{ content: string }>;
 }
 
+export interface FallbackProvider {
+  provider: ExtractorProvider;
+  model: string;
+  label: string;
+}
+
 export interface ExtractImageInput {
   imageId: string;
   imagePath: string;
   pageNumber: number | null;
   provider: ExtractorProvider;
   model: string;
+  fallbackProviders?: FallbackProvider[];
 }
 
 const VISION_PROMPT = `You are a CYOA (Choose Your Own Adventure) image analyzer. Extract all structured data from this image.
@@ -166,47 +173,75 @@ function emptyExtraction(
   };
 }
 
-export async function extractFromImage(input: ExtractImageInput): Promise<CYOAExtraction> {
-  const { imageId, imagePath, pageNumber, provider, model } = input;
+async function tryVisionExtraction(
+  provider: ExtractorProvider,
+  model: string,
+  dataUrl: string,
+  imageId: string,
+  pageNumber: number | null,
+  label: string,
+): Promise<CYOAExtraction | null> {
+  try {
+    const result = await provider.chatComplete(
+      [
+        { role: "system", content: VISION_PROMPT },
+        { role: "user", content: "Extract CYOA data from this image.", images: [dataUrl] },
+      ],
+      { model },
+    );
 
-  const dataUrl = imageToDataUrl(imagePath);
-  if (dataUrl) {
-    try {
-      const result = await provider.chatComplete(
+    if (result.content?.trim()) {
+      const parsed = parseJSONFromLLM(result.content);
+      if (parsed) {
+        logger.info("[cyoa-extractor] Vision extraction succeeded via %s for %s", label, imageId);
+        return buildExtraction(parsed, imageId, pageNumber, "vision");
+      }
+
+      logger.warn("[cyoa-extractor] Retrying vision (%s) with stricter prompt for %s", label, imageId);
+      const retry = await provider.chatComplete(
         [
-          { role: "system", content: VISION_PROMPT },
+          { role: "system", content: RETRY_PROMPT },
           { role: "user", content: "Extract CYOA data from this image.", images: [dataUrl] },
         ],
         { model },
       );
 
-      if (result.content?.trim()) {
-        const parsed = parseJSONFromLLM(result.content);
-        if (parsed) {
-          logger.debug("[cyoa-extractor] Vision extraction succeeded for %s", imageId);
-          return buildExtraction(parsed, imageId, pageNumber, "vision");
-        }
-
-        logger.warn("[cyoa-extractor] Retrying vision extraction with stricter prompt for %s", imageId);
-        const retry = await provider.chatComplete(
-          [
-            { role: "system", content: RETRY_PROMPT },
-            { role: "user", content: "Extract CYOA data from this image.", images: [dataUrl] },
-          ],
-          { model },
-        );
-
-        if (retry.content?.trim()) {
-          const retryParsed = parseJSONFromLLM(retry.content);
-          if (retryParsed) {
-            logger.debug("[cyoa-extractor] Vision retry succeeded for %s", imageId);
-            return buildExtraction(retryParsed, imageId, pageNumber, "vision");
-          }
+      if (retry.content?.trim()) {
+        const retryParsed = parseJSONFromLLM(retry.content);
+        if (retryParsed) {
+          logger.info("[cyoa-extractor] Vision retry succeeded via %s for %s", label, imageId);
+          return buildExtraction(retryParsed, imageId, pageNumber, "vision");
         }
       }
-      logger.warn("[cyoa-extractor] Vision extraction returned unparseable response for %s", imageId);
-    } catch (err) {
-      logger.error(err, "[cyoa-extractor] Vision extraction failed for %s", imageId);
+    }
+    logger.warn("[cyoa-extractor] Vision (%s) returned unparseable response for %s", label, imageId);
+  } catch (err) {
+    logger.error(err, "[cyoa-extractor] Vision (%s) failed for %s", label, imageId);
+  }
+  return null;
+}
+
+export async function extractFromImage(input: ExtractImageInput): Promise<CYOAExtraction> {
+  const { imageId, imagePath, pageNumber, provider, model, fallbackProviders } = input;
+
+  const dataUrl = imageToDataUrl(imagePath);
+  if (dataUrl) {
+    const primaryResult = await tryVisionExtraction(provider, model, dataUrl, imageId, pageNumber, "primary");
+    if (primaryResult) return primaryResult;
+
+    if (fallbackProviders?.length) {
+      for (const fallback of fallbackProviders) {
+        logger.info("[cyoa-extractor] Trying fallback vision provider: %s for %s", fallback.label, imageId);
+        const fallbackResult = await tryVisionExtraction(
+          fallback.provider,
+          fallback.model,
+          dataUrl,
+          imageId,
+          pageNumber,
+          fallback.label,
+        );
+        if (fallbackResult) return fallbackResult;
+      }
     }
   }
 
@@ -214,18 +249,20 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
   const ocrText = await ocrImage(imagePath);
   if (!ocrText) {
     return emptyExtraction(imageId, pageNumber, "ocr", [
-      "Vision extraction failed and OCR returned no text",
+      "All vision providers failed and OCR returned no text",
     ]);
   }
 
   const ocrPrompt = OCR_PROMPT_TEMPLATE.replace("{text}", ocrText);
+  const structuringProvider = fallbackProviders?.[0]?.provider ?? provider;
+  const structuringModel = fallbackProviders?.[0]?.model ?? model;
   try {
-    const result = await provider.chatComplete(
+    const result = await structuringProvider.chatComplete(
       [
         { role: "system", content: "You are a data extraction assistant." },
         { role: "user", content: ocrPrompt },
       ],
-      { model },
+      { model: structuringModel },
     );
 
     if (!result.content?.trim()) {
@@ -238,12 +275,12 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
     if (!parsed) {
       logger.warn("[cyoa-extractor] Retrying OCR structuring with stricter prompt for %s", imageId);
       try {
-        const retry = await provider.chatComplete(
+        const retry = await structuringProvider.chatComplete(
           [
             { role: "system", content: RETRY_PROMPT },
             { role: "user", content: ocrPrompt },
           ],
-          { model },
+          { model: structuringModel },
         );
         if (retry.content?.trim()) {
           const retryParsed = parseJSONFromLLM(retry.content);

@@ -6,7 +6,9 @@ import { useConnections } from "@/hooks/use-connections";
 import { useCreateAgent } from "@/hooks/use-agents";
 import { useCreateChat, useUpdateChatMetadata } from "@/hooks/use-chats";
 import { useChatStore } from "@/stores/chat.store";
-import { X, Loader2, BookOpen, Eye, Globe, MessageCircle } from "lucide-react";
+import { X, Loader2, Eye, Globe, Skull } from "lucide-react";
+import { CyoaSetupWizard } from "./CyoaSetupWizard";
+import { DEFAULT_CYOA_DIFFICULTY } from "./CyoaChatSettings";
 
 interface StartCampaignModalProps {
   build: CyoaBuild;
@@ -14,17 +16,24 @@ interface StartCampaignModalProps {
   onClose: () => void;
 }
 
-const AGENT_ROLES = [
-  { icon: BookOpen, name: "Narrator", desc: "Tells the story and presents choices", phase: "parallel" as const },
-  { icon: Eye, name: "Director", desc: "Controls what information reaches you", phase: "pre_generation" as const },
-  { icon: Globe, name: "World Simulator", desc: "Drives the opposition behind the scenes", phase: "pre_generation" as const },
-  { icon: MessageCircle, name: "Character Voices", desc: "Speaks as NPCs you encounter", phase: "parallel" as const },
+interface CreatedAgents {
+  world: string;
+  director: string;
+  adversary: string | null;
+  chatId: string;
+}
+
+const AGENT_CONFIGS = [
+  { type: "cyoa-world", name: "World Simulator", desc: "Tracks off-screen events and escalates opposition", phase: "pre_generation" as const, icon: Globe, key: "world" as const },
+  { type: "cyoa-director", name: "Director", desc: "Controls what information reaches the Narrator", phase: "pre_generation" as const, icon: Eye, key: "director" as const },
+  { type: "cyoa-adversary", name: "Adversary", desc: "The devil on the shoulder (can be disabled in setup)", phase: "pre_generation" as const, icon: Skull, key: "adversary" as const },
 ];
 
 export function StartCampaignModal({ build, document, onClose }: StartCampaignModalProps) {
   const [connectionId, setConnectionId] = useState("");
   const [launching, setLaunching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [createdAgents, setCreatedAgents] = useState<CreatedAgents | null>(null);
 
   const { data: connections } = useConnections();
   const typedConnections = (connections ?? []) as { id: string; name: string; provider: string }[];
@@ -40,27 +49,23 @@ export function StartCampaignModal({ build, document, onClose }: StartCampaignMo
     setError(null);
 
     try {
-      const prompts = await fetchPrompts.mutateAsync({ documentId: document.id, buildId: build.id });
-      const promptMap: Record<string, string> = {
-        Narrator: prompts.narrator,
-        Director: prompts.director,
-        "World Simulator": prompts.world,
-        "Character Voices": prompts.characters,
-      };
+      const prompts = await fetchPrompts.mutateAsync({ documentId: document.id, buildId: build.id, difficulty: DEFAULT_CYOA_DIFFICULTY });
 
-      const agentIds: string[] = [];
-      for (const role of AGENT_ROLES) {
+      const agentIds: Record<string, string | null> = {};
+      for (const config of AGENT_CONFIGS) {
+        const promptKey = config.key === "world" ? "world" : config.key === "director" ? "director" : "adversary";
+        const prompt = prompts[promptKey as keyof typeof prompts] as string | null;
         const agent = await createAgent.mutateAsync({
-          type: `cyoa-${role.name.toLowerCase().replace(" ", "-")}`,
-          name: `${role.name} — ${build.name}`,
-          description: `CYOA ${role.name} for ${document.name}`,
-          phase: role.phase,
+          type: config.type,
+          name: `${config.name} — ${build.name}`,
+          description: `CYOA ${config.name} for ${document.name}`,
+          phase: config.phase,
           enabled: true,
           connectionId,
-          promptTemplate: promptMap[role.name] ?? `CYOA Agent: ${role.name}. Build: ${build.name}.`,
+          promptTemplate: prompt ?? `CYOA ${config.name}. Build: ${build.name}.`,
           settings: {},
         }) as { id: string };
-        agentIds.push(agent.id);
+        agentIds[config.key] = agent.id;
       }
 
       const chat = await createChat.mutateAsync({
@@ -69,20 +74,40 @@ export function StartCampaignModal({ build, document, onClose }: StartCampaignMo
         connectionId,
       });
 
+      const initialAgentIds = [agentIds.world, agentIds.director, agentIds.adversary].filter((id): id is string => !!id);
       await updateChatMetadata.mutateAsync({
         id: chat.id,
         enableAgents: true,
-        activeAgentIds: agentIds,
+        activeAgentIds: initialAgentIds,
       });
 
-      setActiveChatId(chat.id);
-      onClose();
+      setCreatedAgents({ world: agentIds.world!, director: agentIds.director!, adversary: agentIds.adversary, chatId: chat.id });
     } catch (err) {
       setError(`Failed to launch campaign: ${(err as Error)?.message ?? "Unknown error"}`);
     } finally {
       setLaunching(false);
     }
   };
+
+  const handleWizardComplete = () => {
+    if (createdAgents) {
+      setActiveChatId(createdAgents.chatId);
+    }
+    onClose();
+  };
+
+  if (createdAgents) {
+    return (
+      <CyoaSetupWizard
+        build={build}
+        document={document}
+        chatId={createdAgents.chatId}
+        agentIds={createdAgents}
+        onComplete={handleWizardComplete}
+        onCancel={onClose}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -121,16 +146,19 @@ export function StartCampaignModal({ build, document, onClose }: StartCampaignMo
         <div className="mt-4 flex flex-col gap-2">
           <label className="text-xs font-medium text-[var(--muted-foreground)]">Campaign Agents</label>
           <div className="space-y-1.5">
-            {AGENT_ROLES.map((role) => (
-              <div key={role.name} className="flex items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--card)] px-3 py-2">
-                <role.icon className="h-3.5 w-3.5 text-[var(--primary)]" />
+            {AGENT_CONFIGS.map((config) => (
+              <div key={config.type} className="flex items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--card)] px-3 py-2">
+                <config.icon className="h-3.5 w-3.5 text-[var(--primary)]" />
                 <div>
-                  <p className="text-xs font-medium text-[var(--foreground)]">{role.name}</p>
-                  <p className="text-[10px] text-[var(--muted-foreground)]">{role.desc}</p>
+                  <p className="text-xs font-medium text-[var(--foreground)]">{config.name}</p>
+                  <p className="text-[10px] text-[var(--muted-foreground)]">{config.desc}</p>
                 </div>
               </div>
             ))}
           </div>
+          <p className="text-[10px] text-[var(--muted-foreground)]">
+            Character Voices and Narrator are built into the main generation prompt. You'll configure difficulty in the next step.
+          </p>
         </div>
 
         {error && <p className="mt-3 text-xs text-red-400">{error}</p>}

@@ -107,6 +107,7 @@ import { GameChoiceCards } from "./GameChoiceCards";
 import { GameQteOverlay } from "./GameQteOverlay";
 import { GameJournal } from "./GameJournal";
 import { GameJsonRepairModal } from "./GameJsonRepairModal";
+import { DirectorsCutPanel } from "./DirectorsCutPanel";
 import {
   GameImagePromptReviewModal,
   type GameImagePromptOverride,
@@ -1523,6 +1524,7 @@ import {
   Plug,
   RefreshCw,
   RotateCcw,
+  Scissors,
   ScrollText,
   Settings2,
   Square,
@@ -2000,9 +2002,13 @@ export function GameSurface({
     useGameAssetStore.getState().setCurrentMusic(null);
   }, [useSpotifyGameMusic]);
 
+  const isCyoa =
+    (chat?.metadata?.cyoaSettings as { isCyoa?: boolean } | undefined)?.isCyoa === true;
+
   const [historyOpen, setHistoryOpen] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [directorsCutOpen, setDirectorsCutOpen] = useState(false);
   const [combatLogsOpen, setCombatLogsOpen] = useState(false);
   const [spotifyRetryPending, setSpotifyRetryPending] = useState(false);
   const combatLogScrolledRef = useRef(false);
@@ -8009,6 +8015,21 @@ export function GameSurface({
                   >
                     <HelpCircle size={14} />
                   </button>
+                  {isCyoa && (
+                    <button
+                      onClick={() => setDirectorsCutOpen((open) => !open)}
+                      className={cn(
+                        "rounded-full p-2 transition-colors",
+                        directorsCutOpen
+                          ? "bg-[var(--primary)] text-white"
+                          : "text-[var(--muted-foreground)] hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
+                      )}
+                      title="Director's Cut"
+                      aria-label="Toggle Director's Cut panel"
+                    >
+                      <Scissors className="h-4 w-4" />
+                    </button>
+                  )}
                   <button
                     onClick={() => setHistoryOpen(true)}
                     className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/45 text-white/80 backdrop-blur-md transition-colors hover:bg-black/60 hover:text-white"
@@ -8960,6 +8981,7 @@ export function GameSurface({
               {journalOpen && (
                 <GameJournal
                   chatId={activeChatId}
+                  chat={chat}
                   npcs={npcs}
                   onClose={() => setJournalOpen(false)}
                   onNpcPortraitClick={handleNpcPortraitClick}
@@ -9201,6 +9223,10 @@ export function GameSurface({
         onClose={() => setJsonRepairRequest(null)}
         onApplied={handleJsonRepairApplied}
       />
+
+      {directorsCutOpen && isCyoa && activeChatId && (
+        <DirectorsCutPanel chatId={activeChatId} onClose={() => setDirectorsCutOpen(false)} />
+      )}
     </div>
   );
 }

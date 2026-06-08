@@ -522,6 +522,7 @@ const CREATE_TABLES: string[] = [
     category TEXT NOT NULL DEFAULT 'uncategorized',
     name TEXT NOT NULL,
     description TEXT NOT NULL DEFAULT '',
+    stealth INTEGER NOT NULL DEFAULT 0,
     point_cost INTEGER NOT NULL DEFAULT 0,
     prerequisites TEXT NOT NULL DEFAULT '[]',
     tags TEXT NOT NULL DEFAULT '[]',
@@ -817,6 +818,11 @@ const COLUMN_MIGRATIONS: ColumnMigration[] = [
     table: "memory_chunks",
     column: "source_chat_id",
     definition: "TEXT",
+  },
+  {
+    table: "cyoa_choices",
+    column: "stealth",
+    definition: "INTEGER NOT NULL DEFAULT 0",
   },
 ];
 

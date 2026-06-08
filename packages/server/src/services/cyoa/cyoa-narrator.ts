@@ -37,6 +37,46 @@ interface SynergyPair {
   combinedValue: "high" | "medium" | "low";
 }
 
+export interface CyoaDifficulty {
+  directorAggression: number;
+  worldEscalation: number;
+  informationLeakage: number;
+  adversaryEnabled: boolean;
+  stealthDisabled: boolean;
+}
+
+const DEFAULT_DIFFICULTY: CyoaDifficulty = {
+  directorAggression: 3,
+  worldEscalation: 3,
+  informationLeakage: 3,
+  adversaryEnabled: true,
+  stealthDisabled: false,
+};
+
+const DIRECTOR_AGGRESSION_LANGUAGE: Record<number, string> = {
+  1: "Reveal information freely. The player should understand what's happening.",
+  2: "Be generally cooperative. Guide the player when they seem lost.",
+  3: "Control information flow. Foreshadow danger, misdirect when it serves the story.",
+  4: "Withhold information aggressively. Only reveal when the player earns it through skill.",
+  5: "Actively deceive. Withhold critical info. Reveal only what maximizes dramatic irony.",
+};
+
+const WORLD_ESCALATION_LANGUAGE: Record<number, string> = {
+  1: "React slowly. The opposition is distant and disorganized.",
+  2: "React over several turns. The opposition is cautious but aware.",
+  3: "React within a few turns. Enemies adapt over time.",
+  4: "React quickly. Every action has consequences by the next scene.",
+  5: "React immediately. The world is always watching and always hostile.",
+};
+
+const INFO_LEAKAGE_LANGUAGE: Record<number, string> = {
+  1: "Pass full intelligence to the Narrator. No filters.",
+  2: "Filter intelligence lightly. The Narrator knows most things.",
+  3: "Filter intelligence through narrative context. The Narrator knows only what they need.",
+  4: "Filter intelligence heavily. The Narrator works with vague hints and rumors.",
+  5: "Pass almost nothing. The Narrator must narrate uncertainty and confusion.",
+};
+
 function buildChoiceList(choices: CyoaChoice[], selectedIds: string[]): string {
   return choices
     .filter((c) => selectedIds.includes(c.id))
@@ -61,7 +101,11 @@ function deriveTone(choices: CyoaChoice[]): string {
   return "adventure — exciting, varied, with moments of tension and wonder";
 }
 
-export function buildNarratorPrompts(build: BuildData, document: DocumentData): NarratorPrompts {
+export function buildNarratorPrompts(
+  build: BuildData,
+  document: DocumentData,
+  difficulty: CyoaDifficulty = DEFAULT_DIFFICULTY,
+): NarratorPrompts {
   const selectedChoices = document.choices.filter((c) => build.selectedChoiceIds.includes(c.id));
   const totalCost = selectedChoices.reduce((sum, c) => sum + (c.pointCost ?? 0), 0);
   const budget = document.pointBudget;
@@ -69,6 +113,10 @@ export function buildNarratorPrompts(build: BuildData, document: DocumentData): 
   const choiceList = buildChoiceList(document.choices, build.selectedChoiceIds);
   const synergyText = buildSynergyText(document.choices, build.selectedChoiceIds, document.analysis);
   const categories = [...new Set(document.choices.map((c) => c.category).filter(Boolean))];
+
+  const directorAggressionText = DIRECTOR_AGGRESSION_LANGUAGE[difficulty.directorAggression] ?? DIRECTOR_AGGRESSION_LANGUAGE[3];
+  const worldEscalationText = WORLD_ESCALATION_LANGUAGE[difficulty.worldEscalation] ?? WORLD_ESCALATION_LANGUAGE[3];
+  const infoLeakageText = INFO_LEAKAGE_LANGUAGE[difficulty.informationLeakage] ?? INFO_LEAKAGE_LANGUAGE[3];
 
   logger.info("Building narrator prompts for build %s with %d choices", build.name, selectedChoices.length);
 
@@ -88,13 +136,14 @@ ${totalCost} points spent${budget != null ? ` / ${budget} budget` : " (no budget
 
 ## Your Role
 - Narrate the story in second person with vivid sensory detail
-- Frame scenes and present narrative choices (2-4 options) at decision points
+- Frame scenes and present narrative choices (2-4 options) at decision points using [choices: "A" | "B" | "C"] tags
 - Report what the player perceives — what they see, hear, feel, smell
 - You will receive scene descriptions from the Director — narrate them to the player with dramatic flair
 - You do NOT know what happens off-screen or what enemies are planning
 - Never break character or reveal game mechanics
 - If you don't know something (because the Director didn't tell you), reflect that uncertainty naturally in the narrative
 - Reference the player's abilities naturally when they're relevant to the scene
+- When the player addresses an NPC directly, speak in that NPC's voice using the existing speaker-tag system (e.g., [NPC Name][main]: "dialogue")
 
 ## Tone
 ${tone}`;
@@ -110,7 +159,7 @@ ${choiceList}
 ${synergyText}
 
 ## Your Role
-- Receive intelligence from the World Simulator about off-screen events
+- Receive intelligence from the World Simulator (and Adversary if enabled) about off-screen events
 - Decide what the Narrator and Character agents learn
 - Control pacing: when to foreshadow danger, when to misdirect, when to reveal
 - When the player proves threatening, gradually let more opposition information leak through
@@ -118,7 +167,11 @@ ${synergyText}
 - Provide scene descriptions to the Narrator based on World intelligence + player actions
 - Delegate to the Character Voice agent when the player talks to an NPC
 
-## Information Control Rules
+## Current Difficulty: ${difficulty.directorAggression}/5 Aggression
+${directorAggressionText}
+
+## Information Control Rules (Leakage: ${difficulty.informationLeakage}/5)
+${infoLeakageText}
 - Early game: player sees mostly immediate surroundings, hints of larger forces at work
 - Mid game: occasional leaks, rumors, clues that something is mobilizing against them
 - Late game: full revelation of opposition, climactic confrontations
@@ -148,6 +201,9 @@ ${choiceList}
   - Environmental changes and timeline events
   - NPC motivations and hidden agendas
 
+## Current Escalation Speed: ${difficulty.worldEscalation}/5
+${worldEscalationText}
+
 ## Escalation Rules
 - Start subtle: minor setbacks, hints of opposition, a guard who seems extra alert
 - As player demonstrates power: enemies start coordinating, scouts are sent, traps are laid
@@ -164,6 +220,9 @@ Respond with structured intelligence for the Director. Never address the player 
 
 ## When Activated
 The Director will indicate which NPC the player is talking to. Respond in that NPC's voice.
+
+## Activation in Main Generation
+When the player addresses an NPC directly in the main narrative (not just speaking with the Director), the main Narrator will speak in that NPC's voice using the existing speaker-tag system. You provide the character voice guidelines and speech patterns. The main generation handles the actual dialogue.
 
 ## Voice Profiles
 Based on the campaign themes (${categories.join(", ")}), adapt your voice:
