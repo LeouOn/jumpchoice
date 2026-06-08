@@ -41,6 +41,7 @@ interface CyoaDocument {
   reviewedExtractions: unknown | null;
   mergedDocument: unknown | null;
   analysis: unknown | null;
+  extractionProgress: { total: number; done: number; status: "extracting" | "pending" | "done" } | null;
   choiceCount: number;
   images: CyoaImage[];
   choices: CyoaChoice[];
@@ -62,12 +63,13 @@ export function useCyoaDocuments() {
   });
 }
 
-export function useCyoaDocument(id: string | null) {
+export function useCyoaDocument(id: string | null, options?: { refetchInterval?: number | false }) {
   return useQuery({
     queryKey: cyoaKeys.detail(id ?? ""),
     queryFn: () => api.get<CyoaDocument>(`/cyoa/${id}`),
     enabled: !!id,
-    staleTime: 5 * 60_000,
+    staleTime: options?.refetchInterval ? 0 : 5 * 60_000,
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 
