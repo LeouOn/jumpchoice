@@ -158,7 +158,7 @@ export async function buildApp(https?: { cert: Buffer; key: Buffer }) {
     await app.register(fastifyStatic, {
       root: clientDist,
       prefix: "/",
-      wildcard: false,
+      wildcard: true,
       maxAge: 0,
       setHeaders(res, filePath) {
         const fileName = basename(filePath);
