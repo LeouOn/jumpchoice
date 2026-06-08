@@ -57,3 +57,13 @@ release-artifacts/
 # Installer artifacts are published on GitHub Releases, not tracked in source
 installer/*.exe
 win/installer/*.exe
+
+# CYOA test images
+test-cyoa-images/
+
+# Tesseract OCR cached training data (downloaded on-demand by tesseract.js)
+*.traineddata
+
+# Agent workspace and session artifacts
+.omo/
+.codegraph/
