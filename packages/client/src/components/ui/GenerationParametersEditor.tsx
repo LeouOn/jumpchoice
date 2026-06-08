@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { GenerationParameters } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { HelpTooltip } from "./HelpTooltip";

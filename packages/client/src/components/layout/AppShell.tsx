@@ -407,24 +407,6 @@ export function AppShell() {
     [rightPanelWidth, setRightPanelWidth],
   );
 
-  const adjustTrackerPanelWidth = useCallback(
-    (event: ReactKeyboardEvent<HTMLDivElement>) => {
-      const step = event.shiftKey ? PANEL_RESIZE_LARGE_STEP : PANEL_RESIZE_STEP;
-      let nextWidth: number;
-
-      if (event.key === "ArrowLeft") nextWidth = trackerPanelWidth + (trackerPanelSide === "right" ? step : -step);
-      else if (event.key === "ArrowRight")
-        nextWidth = trackerPanelWidth + (trackerPanelSide === "right" ? -step : step);
-      else if (event.key === "Home") nextWidth = TRACKER_PANEL_WIDTH_MIN;
-      else if (event.key === "End") nextWidth = TRACKER_PANEL_WIDTH_MAX;
-      else return;
-
-      event.preventDefault();
-      useUIStore.getState().setTrackerPanelWidth(clampWidth(nextWidth, TRACKER_PANEL_WIDTH_MIN, TRACKER_PANEL_WIDTH_MAX));
-    },
-    [trackerPanelSide, trackerPanelWidth],
-  );
-
   const detailView = cyoaDetailId ? (
     <CyoaEditor />
   ) : regexDetailId ? (
