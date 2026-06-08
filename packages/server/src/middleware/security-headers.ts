@@ -30,7 +30,7 @@ const CONTENT_SECURITY_POLICY = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
-  "font-src 'self' data:",
+  "font-src 'self' data: https://frontend-cdn.perplexity.ai",
   "connect-src 'self' http: https: ws: wss:",
   "frame-src 'self' https://sdk.scdn.co https://accounts.spotify.com",
   "worker-src 'self' blob:",

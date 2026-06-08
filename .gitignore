@@ -64,3 +64,13 @@ win/installer/*.exe
 # Local docker compose overrides (per-machine dev config)
 docker-compose.override.yml
 docker-compose.override.yaml
+
+# CYOA test images
+test-cyoa-images/
+
+# Tesseract OCR cached training data (downloaded on-demand by tesseract.js)
+*.traineddata
+
+# Agent workspace and session artifacts
+.omo/
+.codegraph/

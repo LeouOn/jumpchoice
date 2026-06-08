@@ -25,6 +25,7 @@ export * from "./types/game.js";
 export * from "./types/sidecar.js";
 export * from "./types/image-generation-defaults.js";
 export * from "./types/narrative.js";
+export * from "./types/jump-document.js";
 
 // Schemas
 export * from "./schemas/chat.schema.js";

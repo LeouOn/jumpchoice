@@ -208,6 +208,7 @@ export async function cyoaRoutes(app: FastifyInstance) {
     if (images.length === 0) return reply.status(400).send({ error: "No images found for document" });
 
     const extractions = [];
+    const totalCount = images.length;
     for (const img of images) {
       const imagePath = join(CYOA_DIR, img.filePath);
       try {
@@ -235,11 +236,26 @@ export async function cyoaRoutes(app: FastifyInstance) {
           warnings: ["Extraction failed: " + (err instanceof Error ? err.message : String(err))],
         });
       }
+      // ── Incremental progress: update document.extractions so the client can poll ──
+      const progressMeta = {
+        total: totalCount,
+        done: extractions.length,
+        status: "extracting" as const,
+      };
+      // Write partial extraction data + progress into the document row so
+      // GET /cyoa/:id returns real-time per-image completion as we go.
+      await app.db.update(cyoaDocuments).set({
+        extractions: JSON.stringify(extractions),
+        metadata: JSON.stringify({ ...safeJsonParse(doc.metadata ?? "{}", {}), extractionProgress: progressMeta }),
+      }).where(eq(cyoaDocuments.id, documentId)).run();
     }
 
     const timestamp = now();
+    // Build final metadata including completion marker
+    const finalMeta = { ...safeJsonParse(doc.metadata ?? "{}", {}), extractionProgress: { total: totalCount, done: totalCount, status: "done" as const } };
     await app.db.update(cyoaDocuments).set({
       extractions: JSON.stringify(extractions),
+      metadata: JSON.stringify(finalMeta),
       status: "pending_review",
       updatedAt: timestamp,
     }).where(eq(cyoaDocuments.id, documentId)).run();
@@ -400,6 +416,7 @@ export async function cyoaRoutes(app: FastifyInstance) {
       reviewedExtractions: safeJsonParse(doc.reviewedExtractions, []),
       mergedDocument: safeJsonParse(doc.mergedDocument, {}),
       analysis: safeJsonParse(doc.analysis, {}),
+      extractionProgress: safeJsonParse((safeJsonParse(doc.metadata ?? "{}", {}) as any).extractionProgress, null),
       images,
       choices,
     };

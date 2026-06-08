@@ -3,7 +3,6 @@
 // ──────────────────────────────────────────────
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useQueryClient, useQueries } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   X,
   Users,
@@ -12,13 +11,11 @@ import {
   Sliders,
   Plug,
   ChevronDown,
-  ChevronRight,
   ChevronUp,
   Check,
   Plus,
   Trash2,
   Wrench,
-  Search,
   MessageSquare,
   Sparkles,
   Image,
@@ -48,11 +45,7 @@ import {
   Upload,
   Download,
   Star,
-  StickyNote,
-  Eye,
-  EyeOff,
   Drama,
-  RotateCcw,
   Music2,
 } from "lucide-react";
 import { cn, getAvatarCropStyle, type AvatarCrop } from "../../lib/utils";
@@ -60,19 +53,12 @@ import { showAlertDialog, showConfirmDialog, showPromptDialog } from "../../lib/
 import { HelpTooltip } from "../ui/HelpTooltip";
 import { ExpandedTextarea } from "../ui/ExpandedTextarea";
 import { Modal } from "../ui/Modal";
-import {
-  CHAT_PARAMETER_DEFAULTS,
-  GenerationParametersFields,
-  getEditableGenerationParameters,
-  type EditableGenerationParameters,
-  ROLEPLAY_PARAMETER_DEFAULTS,
-} from "../ui/GenerationParametersEditor";
 import { ChoiceSelectionModal } from "../presets/ChoiceSelectionModal";
 import { SummariesEditorModal } from "./SummariesEditorModal";
 import { useCharacters, usePersonas, useCharacterGroups, type SpriteInfo } from "../../hooks/use-characters";
 import { useLorebooks } from "../../hooks/use-lorebooks";
 import { usePresetFull, usePresets } from "../../hooks/use-presets";
-import { useConnections, useSaveConnectionDefaults } from "../../hooks/use-connections";
+import { useConnections } from "../../hooks/use-connections";
 import { useGenerate } from "../../hooks/use-generate";
 import {
   useUpdateChat,
@@ -81,15 +67,6 @@ import {
   useChats,
   useConnectChat,
   useDisconnectChat,
-  useChatMemories,
-  useDeleteChatMemory,
-  useClearChatMemories,
-  useRefreshChatMemories,
-  useExportChatMemories,
-  useImportChatMemories,
-  useChatNotes,
-  useDeleteChatNote,
-  useClearChatNotes,
   chatKeys,
 } from "../../hooks/use-chats";
 import { api } from "../../lib/api-client";
@@ -116,12 +93,8 @@ import {
 import type {
   AgentPhase,
   ChatMode,
-  ChatMemoryChunk,
-  ChatMemoryRecallExportPayload,
   ChatPreset,
   ChatPresetSettings,
-  ConversationNote,
-  ExportEnvelope,
 } from "@jumpchoice/shared";
 import { useAgentConfigs, useCreateAgent, useUpdateAgent, type AgentConfigRow } from "../../hooks/use-agents";
 import { useAgentStore } from "../../stores/agent.store";
@@ -130,7 +103,6 @@ import {
   BUILT_IN_TOOLS,
   DEFAULT_AGENT_CONTEXT_SIZE,
   DEFAULT_AGENT_TOOLS,
-  DEFAULT_IMPERSONATE_PROMPT,
   DEFAULT_AGENT_MAX_TOKENS,
   DEFAULT_AGENT_PROMPTS,
   LIMITS,
@@ -148,20 +120,29 @@ import {
   useCustomTools,
   type CustomToolRow,
 } from "../../hooks/use-custom-tools";
-import {
-  HAPTIC_INTIFACE_URL_STORAGE_KEY,
-  useHapticStatus,
-  useHapticConnect,
-  useHapticDisconnect,
-  useHapticStartScan,
-} from "../../hooks/use-haptic";
+
 import { normalizeSpritePlacements } from "./sprite-placement";
 import {
   DEFAULT_SPRITE_DISPLAY_MODES,
-  hasSpriteDisplayMode,
   normalizeSpriteDisplayModes,
   type SpriteDisplayMode,
 } from "./sprite-display-modes";
+
+// ── Extracted sub-components ──
+import { MemoryRecallMemoriesModal } from "./settings/MemoryRecallMemoriesModal";
+import { AdvancedParametersSection } from "./settings/AdvancedParametersSection";
+import { ConversationPromptSection } from "./settings/ConversationPromptSection";
+import { ImpersonateSettingsContent } from "./settings/ImpersonateSettingsContent";
+import { Section } from "./settings/Section";
+import { PickerDropdown } from "./settings/PickerDropdown";
+import { AgentCategorySection } from "./settings/AgentCategorySection";
+import { SpriteRangeSlider } from "./settings/SpriteRangeSlider";
+import { SpriteDisplayModeToggle } from "./settings/SpriteDisplayModeToggle";
+import { SpriteToggleButton } from "./settings/SpriteToggleButton";
+import { SelfiePromptControls } from "./settings/SelfiePromptEditor";
+import { ScheduleEditor } from "./settings/ScheduleEditor";
+import { HapticConnectionPanel } from "./settings/HapticConnectionPanel";
+import { ConversationNotesSection } from "./settings/ConversationNotesSection";
 
 interface ChatSettingsDrawerProps {
   chat: Chat;
@@ -181,16 +162,16 @@ const HIDDEN_ROLEPLAY_AGENTS = new Set([
   "autonomous-messenger",
 ]);
 
-type SpotifySourceType = "liked" | "playlist" | "artist" | "any";
+type GameSpotifySourceType = "liked" | "playlist" | "artist" | "any";
 
-const SPOTIFY_SOURCE_OPTIONS: Array<{ id: SpotifySourceType; label: string; description: string }> = [
+const GAME_SPOTIFY_SOURCE_OPTIONS: Array<{ id: GameSpotifySourceType; label: string; description: string }> = [
   { id: "liked", label: "Liked Songs", description: "Pick from the user's saved tracks first." },
   { id: "playlist", label: "Playlist", description: "Keep choices inside one Spotify playlist." },
   { id: "artist", label: "Artist", description: "Search only around a named artist, like HOYO-MiX." },
   { id: "any", label: "Any Spotify", description: "Let the DJ use Spotify search when it fits." },
 ];
 
-function normalizeSpotifySourceType(value: unknown): SpotifySourceType {
+function normalizeGameSpotifySourceType(value: unknown): GameSpotifySourceType {
   return value === "playlist" || value === "artist" || value === "any" ? value : "liked";
 }
 
@@ -236,16 +217,6 @@ type AgentAddPreview = {
   runInterval: number | null;
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return !!value && typeof value === "object" && !Array.isArray(value);
-}
-
-function isMemoryRecallExportEnvelope(value: unknown): value is ExportEnvelope<ChatMemoryRecallExportPayload> {
-  if (!isRecord(value) || value.type !== "marinara_memory_recall" || value.version !== 1) return false;
-  const data = value.data;
-  return isRecord(data) && Array.isArray(data.chunks);
-}
-
 function parseAgentSettings(raw: unknown): Record<string, unknown> {
   if (!raw) return {};
   if (typeof raw === "string") {
@@ -278,6 +249,10 @@ function normalizeSpriteDisplayValue(value: unknown, fallback: number, min: numb
   const numeric = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(numeric)) return fallback;
   return Math.max(min, Math.min(max, numeric));
+}
+
+function isEnabledFlag(value: unknown): boolean {
+  return value === true || value === "true" || value === "1";
 }
 
 function normalizeNonNegativeInteger(value: unknown, fallback: number, max: number): number {
@@ -357,20 +332,6 @@ export function ChatSettingsDrawer({
     () => (typeof chat.metadata === "string" ? JSON.parse(chat.metadata) : (chat.metadata ?? {})),
     [chat.metadata],
   );
-  const inactiveCharacterIds = useMemo<string[]>(
-    () =>
-      Array.isArray(metadata.inactiveCharacterIds)
-        ? metadata.inactiveCharacterIds.filter(
-            (id: unknown): id is string => typeof id === "string" && chatCharIds.includes(id),
-          )
-        : [],
-    [chatCharIds, metadata.inactiveCharacterIds],
-  );
-  const activeCharacterIds = useMemo<string[]>(
-    () => chatCharIds.filter((id) => !inactiveCharacterIds.includes(id)),
-    [chatCharIds, inactiveCharacterIds],
-  );
-  const supportsCharacterActivityToggle = chatCharIds.length > 1 && !isGame;
   const isSceneChat = metadata.sceneStatus === "active" || typeof metadata.sceneOriginChatId === "string";
   const hasGeneratedConversationSchedules =
     !!metadata.characterSchedules &&
@@ -439,17 +400,13 @@ export function ChatSettingsDrawer({
       : LIMITS.DEFAULT_LOREBOOK_TOKEN_BUDGET;
   const activeAgentIds = useMemo<string[]>(() => metadata.activeAgentIds ?? [], [metadata.activeAgentIds]);
   const activeToolIds: string[] = metadata.activeToolIds ?? [];
-  const spotifyActive = activeAgentIds.includes("spotify");
   const gameLorebookKeeperLorebook = gameLorebookKeeperLorebookId
     ? ((lorebooks ?? []) as Array<{ id: string; name: string }>).find(
         (book) => book.id === gameLorebookKeeperLorebookId,
       )
     : null;
-  const spotifySourceType = normalizeSpotifySourceType(metadata.spotifySourceType);
-  const spotifyPlaylistId = typeof metadata.spotifyPlaylistId === "string" ? metadata.spotifyPlaylistId : "";
-  const spotifyArtist = typeof metadata.spotifyArtist === "string" ? metadata.spotifyArtist : "";
   const gameUseSpotifyMusic = metadata.gameUseSpotifyMusic === true;
-  const gameSpotifySourceType = normalizeSpotifySourceType(metadata.gameSpotifySourceType);
+  const gameSpotifySourceType = normalizeGameSpotifySourceType(metadata.gameSpotifySourceType);
   const gameSpotifyPlaylistId =
     typeof metadata.gameSpotifyPlaylistId === "string" ? metadata.gameSpotifyPlaylistId : "";
   const gameSpotifyArtist = typeof metadata.gameSpotifyArtist === "string" ? metadata.gameSpotifyArtist : "";
@@ -460,7 +417,6 @@ export function ChatSettingsDrawer({
   const spritePosition: "left" | "right" = metadata.spritePosition === "right" ? "right" : "left";
   const spriteScale = normalizeSpriteDisplayValue(metadata.spriteScale, roleplaySpriteScale, 0.5, 1.75);
   const spriteOpacity = normalizeSpriteDisplayValue(metadata.spriteOpacity, 1, 0.15, 1);
-  const expressionAvatarsEnabled = metadata.expressionAvatarsEnabled === true;
   const [spriteScalePercent, setSpriteScalePercent] = useState(() => Math.round(spriteScale * 100));
   const [spriteOpacityPercent, setSpriteOpacityPercent] = useState(() => Math.round(spriteOpacity * 100));
   const hasCustomSpritePlacements = Object.keys(normalizeSpritePlacements(metadata.spritePlacements)).length > 0;
@@ -476,10 +432,7 @@ export function ChatSettingsDrawer({
           owned: boolean | null;
         }>;
       }>("/spotify/playlists?limit=50"),
-    enabled:
-      open &&
-      ((isGame && gameUseSpotifyMusic && gameSpotifySourceType === "playlist") ||
-        (isRoleplayMode && metadata.enableAgents && spotifyActive && spotifySourceType === "playlist")),
+    enabled: open && isGame && gameUseSpotifyMusic && gameSpotifySourceType === "playlist",
     staleTime: 60_000,
     retry: false,
   });
@@ -510,7 +463,7 @@ export function ChatSettingsDrawer({
       const existing = agentConfigsByType.get(a.id);
       agents.push({
         id: a.id,
-        name: a.name,
+        name: existing?.name ?? a.name,
         description: existing?.description ?? a.description,
         category: a.category,
         phase: a.phase,
@@ -562,9 +515,14 @@ export function ChatSettingsDrawer({
     };
   }, [activeAgentIds, availableAgents, agentConfigsByType, chat.connectionId]);
 
-  const lorebookKeeperActive = activeAgentIds.includes("lorebook-keeper");
-  const expressionActive = activeAgentIds.includes("expression");
-  const hapticActive = activeAgentIds.includes("haptic");
+  const lorebookKeeperConfig = agentConfigsByType.get("lorebook-keeper") ?? null;
+  const lorebookKeeperEnabledByDefault = isEnabledFlag(lorebookKeeperConfig?.enabled);
+  const lorebookKeeperActive =
+    activeAgentIds.includes("lorebook-keeper") || (activeAgentIds.length === 0 && lorebookKeeperEnabledByDefault);
+  const expressionConfig = agentConfigsByType.get("expression") ?? null;
+  const expressionEnabledByDefault = isEnabledFlag(expressionConfig?.enabled);
+  const expressionActive =
+    activeAgentIds.includes("expression") || (activeAgentIds.length === 0 && expressionEnabledByDefault);
   const lorebookKeeperTargetLorebookId =
     typeof metadata.lorebookKeeperTargetLorebookId === "string" ? metadata.lorebookKeeperTargetLorebookId : "";
   const lorebookKeeperReadBehindMessages = normalizeNonNegativeInteger(
@@ -759,12 +717,6 @@ export function ChatSettingsDrawer({
           spritePlacements: nextSpritePlacements,
         });
       }
-      if (inactiveCharacterIds.includes(charId)) {
-        updateMeta.mutate({
-          id: chat.id,
-          inactiveCharacterIds: inactiveCharacterIds.filter((id) => id !== charId),
-        });
-      }
     } else {
       current.push(charId);
       updateChat.mutate(
@@ -795,24 +747,6 @@ export function ChatSettingsDrawer({
         },
       );
     }
-  };
-
-  const toggleCharacterActivity = (charId: string) => {
-    if (!supportsCharacterActivityToggle) return;
-    const isInactive = inactiveCharacterIds.includes(charId);
-    if (!isInactive && activeCharacterIds.length <= 1) {
-      void showAlertDialog({
-        title: "Keep one character active",
-        message: "At least one character needs to stay active so the chat has someone to respond.",
-      });
-      return;
-    }
-    updateMeta.mutate({
-      id: chat.id,
-      inactiveCharacterIds: isInactive
-        ? inactiveCharacterIds.filter((id) => id !== charId)
-        : [...inactiveCharacterIds, charId],
-    });
   };
 
   const toggleSprite = (charId: string) => {
@@ -1193,7 +1127,6 @@ export function ChatSettingsDrawer({
   const [gameImagePromptInstructionsDraft, setGameImagePromptInstructionsDraft] = useState(
     (metadata.gameImagePromptInstructions as string) ?? "",
   );
-  const [spotifyArtistDraft, setSpotifyArtistDraft] = useState(spotifyArtist);
   const [gameSpotifyArtistDraft, setGameSpotifyArtistDraft] = useState(gameSpotifyArtist);
 
   // ── Chat Settings Presets ──
@@ -1234,10 +1167,6 @@ export function ChatSettingsDrawer({
     setGameSpotifyArtistDraft(gameSpotifyArtist);
   }, [chat.id, gameSpotifyArtist]);
 
-  useEffect(() => {
-    setSpotifyArtistDraft(spotifyArtist);
-  }, [chat.id, spotifyArtist]);
-
   const openAgentAddModal = (agent: AvailableAgent) => {
     setAgentAddCadenceInputFocused(false);
     const config = agentConfigsByType.get(agent.id) ?? null;
@@ -1273,11 +1202,7 @@ export function ChatSettingsDrawer({
     if (intervalMeta && runInterval != null) {
       nextSettings.runInterval = runInterval;
     }
-    const nextEnabledTools = nextSettings.enabledTools;
-    if (
-      builtInMeta &&
-      (!Array.isArray(nextEnabledTools) || (agent.id === "spotify" && nextEnabledTools.length === 0))
-    ) {
+    if (builtInMeta && !Array.isArray(nextSettings.enabledTools)) {
       nextSettings.enabledTools = DEFAULT_AGENT_TOOLS[agent.id] ?? [];
     }
 
@@ -2425,8 +2350,6 @@ export function ChatSettingsDrawer({
                           className={cn(
                             "flex items-center gap-2 rounded-lg bg-[var(--primary)]/10 px-2 py-2 ring-1 ring-[var(--primary)]/30 transition-opacity",
                             dragIdx === i && "opacity-40",
-                            inactiveCharacterIds.includes(c.id) &&
-                              "bg-[var(--secondary)] opacity-70 ring-[var(--border)]",
                           )}
                         >
                           <div
@@ -2467,22 +2390,6 @@ export function ChatSettingsDrawer({
                               )}
                             </div>
                           </button>
-                          {supportsCharacterActivityToggle && (
-                            <button
-                              onClick={() => toggleCharacterActivity(c.id)}
-                              className={cn(
-                                "flex h-5 w-5 items-center justify-center rounded-md text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
-                                !inactiveCharacterIds.includes(c.id) && "text-[var(--primary)]",
-                              )}
-                              title={inactiveCharacterIds.includes(c.id) ? "Enable in chat" : "Disable in chat"}
-                            >
-                              {inactiveCharacterIds.includes(c.id) ? (
-                                <EyeOff size="0.6875rem" />
-                              ) : (
-                                <Eye size="0.6875rem" />
-                              )}
-                            </button>
-                          )}
                           <button
                             onClick={() => toggleCharacter(c.id)}
                             className="flex h-5 w-5 items-center justify-center rounded-md text-[var(--muted-foreground)] transition-colors hover:bg-[var(--destructive)]/15 hover:text-[var(--destructive)]"
@@ -2816,44 +2723,6 @@ export function ChatSettingsDrawer({
                         ? "An AI agent decides which characters should respond based on the scene context."
                         : "Characters respond one by one in their listed order."}
                   </p>
-                  <button
-                    onClick={() =>
-                      updateMeta.mutate({
-                        id: chat.id,
-                        groupTurnPromptEnabled: metadata.groupTurnPromptEnabled === false,
-                      })
-                    }
-                    className={cn(
-                      "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-all",
-                      metadata.groupTurnPromptEnabled !== false
-                        ? "bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]/30"
-                        : "bg-[var(--secondary)] hover:bg-[var(--accent)]",
-                    )}
-                  >
-                    <div className="min-w-0 flex-1">
-                      <span className="text-[0.6875rem] font-medium">Add Turn To Prompt</span>
-                      <p className="mt-0.5 text-[0.625rem] leading-relaxed text-[var(--muted-foreground)]">
-                        {metadata.groupTurnPromptEnabled !== false
-                          ? "Each individual turn includes a short responding-character instruction."
-                          : "Individual turns rely on context without adding a turn instruction."}
-                      </p>
-                    </div>
-                    <div
-                      className={cn(
-                        "ml-3 h-5 w-9 shrink-0 rounded-full p-0.5 transition-colors",
-                        metadata.groupTurnPromptEnabled !== false
-                          ? "bg-[var(--primary)]"
-                          : "bg-[var(--muted-foreground)]/50",
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          "h-4 w-4 rounded-full bg-white shadow-sm transition-transform",
-                          metadata.groupTurnPromptEnabled !== false && "translate-x-3.5",
-                        )}
-                      />
-                    </div>
-                  </button>
                 </div>
               )}
 
@@ -3819,7 +3688,7 @@ export function ChatSettingsDrawer({
                           <select
                             value={gameSpotifySourceType}
                             onChange={(event) => {
-                              const next = normalizeSpotifySourceType(event.target.value);
+                              const next = normalizeGameSpotifySourceType(event.target.value);
                               updateMeta.mutate({
                                 id: chat.id,
                                 gameSpotifySourceType: next,
@@ -3831,14 +3700,14 @@ export function ChatSettingsDrawer({
                             }}
                             className="w-full rounded-lg border border-[var(--border)] bg-[var(--secondary)] px-2.5 py-1.5 text-xs text-[var(--foreground)]"
                           >
-                            {SPOTIFY_SOURCE_OPTIONS.map((option) => (
+                            {GAME_SPOTIFY_SOURCE_OPTIONS.map((option) => (
                               <option key={option.id} value={option.id}>
                                 {option.label}
                               </option>
                             ))}
                           </select>
                           <span className="text-[0.5625rem] text-[var(--muted-foreground)]">
-                            {SPOTIFY_SOURCE_OPTIONS.find((option) => option.id === gameSpotifySourceType)
+                            {GAME_SPOTIFY_SOURCE_OPTIONS.find((option) => option.id === gameSpotifySourceType)
                               ?.description ?? ""}
                           </span>
                         </label>
@@ -3924,7 +3793,7 @@ export function ChatSettingsDrawer({
                   </div>
                 )}
 
-                {metadata.enableAgents && !isGame && lorebookKeeperActive && (
+                {metadata.enableAgents && !isGame && (
                   <div className="space-y-2 rounded-xl border border-[var(--border)] bg-[var(--secondary)]/70 p-3">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0">
@@ -3939,10 +3808,10 @@ export function ChatSettingsDrawer({
                       </div>
                       <button
                         onClick={handleLorebookKeeperBackfill}
-                        disabled={agentProcessing}
+                        disabled={agentProcessing || !lorebookKeeperActive}
                         className={cn(
                           "inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[0.6875rem] font-medium transition-colors",
-                          agentProcessing
+                          agentProcessing || !lorebookKeeperActive
                             ? "cursor-not-allowed bg-[var(--muted)] text-[var(--muted-foreground)]"
                             : "bg-[var(--primary)]/10 text-[var(--primary)] hover:bg-[var(--primary)]/15",
                         )}
@@ -3997,13 +3866,16 @@ export function ChatSettingsDrawer({
                     </div>
 
                     <p className="text-[0.625rem] text-[var(--muted-foreground)]">
-                      Read-behind uses assistant messages: 0 means the newest eligible reply, 1 waits one reply, and
-                      backfill only processes messages Lorebook Keeper has not already saved.
+                      {lorebookKeeperActive
+                        ? "Read-behind uses assistant messages: 0 means the newest eligible reply, 1 waits one reply, and backfill only processes messages Lorebook Keeper has not already saved."
+                        : activeAgentIds.length === 0
+                          ? "Lorebook Keeper is not currently enabled in this chat. These chat settings will apply once it is enabled."
+                          : "Lorebook Keeper is not in this chat's active agent list. Add it below to make these settings take effect."}
                     </p>
                   </div>
                 )}
 
-                {metadata.enableAgents && !isGame && expressionActive && (
+                {metadata.enableAgents && !isGame && (
                   <div className="space-y-2 rounded-xl border border-[var(--border)] bg-[var(--secondary)]/70 p-3">
                     <div className="flex items-start gap-2">
                       <Image size="0.75rem" className="mt-0.5 text-[var(--primary)]" />
@@ -4024,40 +3896,6 @@ export function ChatSettingsDrawer({
                     </div>
 
                     <SpriteDisplayModeToggle modes={spriteDisplayModes} onToggle={toggleSpriteDisplayMode} />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        updateMeta.mutate({ id: chat.id, expressionAvatarsEnabled: !expressionAvatarsEnabled })
-                      }
-                      className={cn(
-                        "flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition-all",
-                        expressionAvatarsEnabled
-                          ? "bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]/30"
-                          : "bg-[var(--background)]/75 ring-1 ring-[var(--border)] hover:bg-[var(--accent)]",
-                      )}
-                    >
-                      <div className="min-w-0 flex-1">
-                        <span className="text-[0.6875rem] font-medium">Expression Avatars</span>
-                        <p className="mt-0.5 text-[0.625rem] text-[var(--muted-foreground)]">
-                          Replace message avatars with the selected expression sprite and hide duplicate portrait
-                          sprites.
-                        </p>
-                      </div>
-                      <div
-                        className={cn(
-                          "h-5 w-9 shrink-0 rounded-full p-0.5 transition-colors",
-                          expressionAvatarsEnabled ? "bg-[var(--primary)]" : "bg-[var(--muted-foreground)]/50",
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "h-4 w-4 rounded-full bg-white shadow-sm transition-transform",
-                            expressionAvatarsEnabled && "translate-x-3.5",
-                          )}
-                        />
-                      </div>
-                    </button>
 
                     {chatSpriteSubjects.length === 0 ? (
                       <p className="text-[0.625rem] text-[var(--muted-foreground)]">
@@ -4140,8 +3978,11 @@ export function ChatSettingsDrawer({
                     )}
 
                     <p className="text-[0.625rem] text-[var(--muted-foreground)]">
-                      Only added characters and the active persona with uploaded sprites appear here. You can enable up
-                      to 3 at a time.
+                      {expressionActive
+                        ? "Only added characters and the active persona with uploaded sprites appear here. You can enable up to 3 at a time."
+                        : activeAgentIds.length === 0
+                          ? "Expression Engine is not currently enabled in this chat. These sprite choices will apply once it is enabled."
+                          : "Expression Engine is not in this chat's active agent list. Add it below to show sprites during roleplay."}
                     </p>
 
                     {spriteCharacterIds.length > 0 && (
@@ -4234,130 +4075,6 @@ export function ChatSettingsDrawer({
                   </div>
                 )}
 
-                {metadata.enableAgents && isRoleplayMode && spotifyActive && (
-                  <div className="space-y-2 rounded-xl border border-[var(--border)] bg-[var(--secondary)]/70 p-3">
-                    <div className="flex items-start gap-2">
-                      <Music2 size="0.75rem" className="mt-0.5 text-[var(--primary)]" />
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[0.6875rem] font-medium">Spotify DJ</div>
-                        <p className="mt-1 text-[0.625rem] text-[var(--muted-foreground)]">
-                          Choose where the DJ should look for roleplay music when it reacts to the scene.
-                        </p>
-                      </div>
-                    </div>
-
-                    <label className="flex flex-col gap-1">
-                      <span className="text-[0.625rem] font-medium text-[var(--muted-foreground)]">Music source</span>
-                      <select
-                        value={spotifySourceType}
-                        onChange={(event) => {
-                          const next = normalizeSpotifySourceType(event.target.value);
-                          updateMeta.mutate({
-                            id: chat.id,
-                            spotifySourceType: next,
-                            spotifyPlaylistId: next === "playlist" ? spotifyPlaylistId || null : null,
-                            spotifyPlaylistName:
-                              next === "playlist" ? (metadata.spotifyPlaylistName as string) || null : null,
-                            spotifyArtist: next === "artist" ? spotifyArtistDraft.trim() || null : null,
-                          });
-                        }}
-                        className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-2.5 py-2 text-xs text-[var(--foreground)]"
-                      >
-                        {SPOTIFY_SOURCE_OPTIONS.map((option) => (
-                          <option key={option.id} value={option.id}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                      <span className="text-[0.5625rem] text-[var(--muted-foreground)]">
-                        {SPOTIFY_SOURCE_OPTIONS.find((option) => option.id === spotifySourceType)?.description ?? ""}
-                      </span>
-                    </label>
-
-                    {spotifySourceType === "playlist" && (
-                      <label className="flex flex-col gap-1">
-                        <span className="text-[0.625rem] font-medium text-[var(--muted-foreground)]">Playlist</span>
-                        {spotifyPlaylistsQuery.data?.playlists.length ? (
-                          <select
-                            value={spotifyPlaylistId}
-                            onChange={(event) => {
-                              const playlist = spotifyPlaylistsQuery.data?.playlists.find(
-                                (entry) => entry.id === event.target.value,
-                              );
-                              updateMeta.mutate({
-                                id: chat.id,
-                                spotifyPlaylistId: event.target.value || null,
-                                spotifyPlaylistName: playlist?.name ?? null,
-                              });
-                            }}
-                            className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-2.5 py-2 text-xs text-[var(--foreground)]"
-                          >
-                            <option value="">Choose playlist...</option>
-                            {spotifyPlaylistsQuery.data.playlists.map((playlist) => {
-                              const suffix =
-                                typeof playlist.trackCount === "number"
-                                  ? ` (${playlist.trackCount})`
-                                  : playlist.owned === false
-                                    ? " (followed, unavailable)"
-                                    : "";
-                              return (
-                                <option key={playlist.id} value={playlist.id}>
-                                  {playlist.name}
-                                  {suffix}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        ) : (
-                          <input
-                            key={`${chat.id}-${spotifyPlaylistId}`}
-                            defaultValue={spotifyPlaylistId}
-                            onBlur={(event) =>
-                              updateMeta.mutate({
-                                id: chat.id,
-                                spotifyPlaylistId: event.target.value.trim() || null,
-                                spotifyPlaylistName: null,
-                              })
-                            }
-                            placeholder={
-                              spotifyPlaylistsQuery.isFetching ? "Loading playlists..." : "Paste playlist ID"
-                            }
-                            className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-2.5 py-2 text-xs text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/50"
-                          />
-                        )}
-                        {spotifyPlaylistsQuery.isError && (
-                          <span className="text-[0.5625rem] text-amber-400/90">
-                            Connect Spotify in the Spotify DJ agent to load playlist names.
-                          </span>
-                        )}
-                      </label>
-                    )}
-
-                    {spotifySourceType === "artist" && (
-                      <label className="flex flex-col gap-1">
-                        <span className="text-[0.625rem] font-medium text-[var(--muted-foreground)]">Artist</span>
-                        <input
-                          value={spotifyArtistDraft}
-                          onChange={(event) => setSpotifyArtistDraft(event.target.value)}
-                          onBlur={() =>
-                            updateMeta.mutate({
-                              id: chat.id,
-                              spotifyArtist: spotifyArtistDraft.trim() || null,
-                            })
-                          }
-                          placeholder="HOYO-MiX"
-                          className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-2.5 py-2 text-xs text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]/50"
-                        />
-                      </label>
-                    )}
-
-                    <p className="text-[0.625rem] text-[var(--muted-foreground)]">
-                      Roleplay DJ queues several fitting tracks when it changes music. Spotify Premium, a connected
-                      account, and an active Spotify device are still required.
-                    </p>
-                  </div>
-                )}
-
                 {/* Manual trackers toggle — not for game mode */}
                 {metadata.enableAgents && !isGame && (
                   <button
@@ -4394,7 +4111,7 @@ export function ChatSettingsDrawer({
                 )}
 
                 {/* Love Toys Control — not for game mode */}
-                {metadata.enableAgents && !isGame && hapticActive && (
+                {metadata.enableAgents && !isGame && (
                   <div className="space-y-1.5">
                     <button
                       onClick={() => {
@@ -5494,38 +5211,6 @@ export function ChatSettingsDrawer({
                   <span className="text-[0.625rem] text-[var(--muted-foreground)]">messages</span>
                 </div>
               )}
-              <button
-                onClick={() => {
-                  const enabled = metadata.excludePastReasoning !== false;
-                  updateMeta.mutate({ id: chat.id, excludePastReasoning: !enabled });
-                }}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-all",
-                  metadata.excludePastReasoning !== false
-                    ? "bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]/30"
-                    : "bg-[var(--secondary)] hover:bg-[var(--accent)]",
-                )}
-              >
-                <div>
-                  <span className="text-xs font-medium">Exclude Past Reasoning</span>
-                  <p className="text-[0.625rem] text-[var(--muted-foreground)]">
-                    Keep stored thinking/reasoning metadata out of future prompts.
-                  </p>
-                </div>
-                <div
-                  className={cn(
-                    "h-5 w-9 overflow-hidden rounded-full p-0.5 transition-colors",
-                    metadata.excludePastReasoning !== false ? "bg-[var(--primary)]" : "bg-[var(--muted-foreground)]/50",
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "h-4 w-4 rounded-full bg-white shadow-sm transition-transform",
-                      metadata.excludePastReasoning !== false && "translate-x-3.5",
-                    )}
-                  />
-                </div>
-              </button>
             </div>
           </Section>
 
@@ -5862,1551 +5547,5 @@ export function ChatSettingsDrawer({
         </div>
       )}
     </>
-  );
-}
-
-function formatMemoryDate(value: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(date);
-}
-
-function estimateMemoryTokens(memories: ChatMemoryChunk[]): number {
-  const text = memories.map((memory) => memory.content).join("\n\n");
-  return Math.ceil(text.length / 4);
-}
-
-function formatMemoryChunkCount(count: number): string {
-  return `${count.toLocaleString()} ${count === 1 ? "memory chunk" : "memory chunks"}`;
-}
-
-const MEMORY_CONTENT_CLASS =
-  "max-h-56 overflow-y-auto whitespace-pre-wrap rounded-lg bg-[var(--secondary)]/50 px-3 py-2 text-[0.6875rem] leading-relaxed text-[var(--foreground)]";
-const MAX_MEMORY_RECALL_IMPORT_FILE_BYTES = 25 * 1024 * 1024;
-const MAX_MEMORY_RECALL_IMPORT_FILE_LABEL = "25 MB";
-
-function MemoryRecallMemoriesModal({ chatId, open, onClose }: { chatId: string; open: boolean; onClose: () => void }) {
-  const memoriesQuery = useChatMemories(chatId, open);
-  const deleteMemory = useDeleteChatMemory(chatId);
-  const clearMemories = useClearChatMemories(chatId);
-  const refreshMemories = useRefreshChatMemories(chatId);
-  const exportMemories = useExportChatMemories(chatId);
-  const importMemories = useImportChatMemories(chatId);
-  const importInputRef = useRef<HTMLInputElement | null>(null);
-  const memories = useMemo(() => memoriesQuery.data ?? [], [memoriesQuery.data]);
-  const totalTokens = useMemo(() => estimateMemoryTokens(memories), [memories]);
-
-  const handleExport = async () => {
-    if (memories.length === 0) {
-      toast.error("There are no recall memories to export yet.");
-      return;
-    }
-
-    try {
-      await exportMemories.mutateAsync();
-      toast.success("Memory Recall exported.");
-    } catch (err) {
-      toast.error(err instanceof Error ? `Export failed: ${err.message}` : "Export failed.");
-    }
-  };
-
-  const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    if (file.size > MAX_MEMORY_RECALL_IMPORT_FILE_BYTES) {
-      toast.error(`Memory Recall import files must be ${MAX_MEMORY_RECALL_IMPORT_FILE_LABEL} or smaller.`);
-      event.target.value = "";
-      return;
-    }
-
-    try {
-      const parsed = JSON.parse(await file.text()) as unknown;
-      if (!isMemoryRecallExportEnvelope(parsed)) {
-        toast.error("Choose a Memory Recall export file.");
-        return;
-      }
-
-      const result = await importMemories.mutateAsync({ envelope: parsed });
-      if (result.imported > 0) {
-        toast.success(`Imported ${formatMemoryChunkCount(result.imported)}.`);
-      } else {
-        toast.info("No new recall memories were imported.");
-      }
-    } catch (err) {
-      toast.error(err instanceof Error ? `Import failed: ${err.message}` : "Import failed.");
-    } finally {
-      event.target.value = "";
-    }
-  };
-
-  const handleDelete = async (memory: ChatMemoryChunk) => {
-    const ok = await showConfirmDialog({
-      title: "Forget Memory",
-      message: "Remove this recall memory from this chat?",
-      confirmLabel: "Forget",
-      tone: "destructive",
-    });
-    if (ok) deleteMemory.mutate(memory.id);
-  };
-
-  const handleClear = async () => {
-    if (memories.length === 0) return;
-    const ok = await showConfirmDialog({
-      title: "Clear Memories",
-      message: "Remove all recall memories for this chat? This does not delete chat messages.",
-      confirmLabel: "Clear",
-      tone: "destructive",
-    });
-    if (ok) clearMemories.mutate();
-  };
-
-  return (
-    <Modal open={open} onClose={onClose} title="Memories for This Chat" width="max-w-3xl">
-      <div className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-[var(--secondary)]/70 px-3 py-2 ring-1 ring-[var(--border)]">
-          <div className="text-[0.6875rem] text-[var(--muted-foreground)]">
-            <span className="font-semibold text-[var(--foreground)]">{memories.length}</span>{" "}
-            {memories.length === 1 ? "memory chunk" : "memory chunks"}
-            {memories.length > 0 && (
-              <>
-                {" "}
-                · <span className="tabular-nums">~{totalTokens.toLocaleString()} tokens</span>
-              </>
-            )}
-          </div>
-          <div className="flex items-center gap-1">
-            <input
-              ref={importInputRef}
-              type="file"
-              accept=".json,.marinara"
-              className="hidden"
-              onChange={handleImportFile}
-            />
-            <button
-              type="button"
-              onClick={() => void handleExport()}
-              disabled={memories.length === 0 || exportMemories.isPending}
-              className="rounded-lg p-1.5 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)] disabled:opacity-40"
-              title="Export memories"
-              aria-label="Export memories"
-            >
-              <Download size="0.8125rem" />
-            </button>
-            <button
-              type="button"
-              onClick={() => importInputRef.current?.click()}
-              disabled={importMemories.isPending}
-              className="rounded-lg p-1.5 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)] disabled:opacity-40"
-              title="Import memories"
-              aria-label="Import memories"
-            >
-              <Upload size="0.8125rem" />
-            </button>
-            <button
-              type="button"
-              onClick={() => refreshMemories.mutate()}
-              disabled={memoriesQuery.isFetching || refreshMemories.isPending || importMemories.isPending}
-              className="rounded-lg p-1.5 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)] disabled:opacity-50"
-              title="Rebuild memories from current chat messages"
-            >
-              <RefreshCw
-                size="0.8125rem"
-                className={cn((memoriesQuery.isFetching || refreshMemories.isPending) && "animate-spin")}
-              />
-            </button>
-            <button
-              type="button"
-              onClick={handleClear}
-              disabled={memories.length === 0 || clearMemories.isPending}
-              className="rounded-lg p-1.5 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--destructive)]/15 hover:text-[var(--destructive)] disabled:opacity-40"
-              title="Clear all memories"
-            >
-              <Trash2 size="0.8125rem" />
-            </button>
-          </div>
-        </div>
-
-        {memoriesQuery.isLoading && (
-          <div className="rounded-xl bg-[var(--secondary)]/60 px-4 py-8 text-center text-xs text-[var(--muted-foreground)]">
-            Loading memories...
-          </div>
-        )}
-
-        {memoriesQuery.error && (
-          <div className="rounded-xl bg-[var(--destructive)]/10 px-4 py-3 text-xs text-[var(--destructive)] ring-1 ring-[var(--destructive)]/25">
-            Failed to load memories.
-          </div>
-        )}
-
-        {!memoriesQuery.isLoading && !memoriesQuery.error && memories.length === 0 && (
-          <div className="rounded-xl bg-[var(--secondary)]/60 px-4 py-8 text-center text-xs text-[var(--muted-foreground)]">
-            No recall memories have been created for this chat yet. Marinara creates them after generation in groups of
-            5 messages.
-          </div>
-        )}
-
-        {memories.length > 0 && (
-          <div className="space-y-2">
-            {memories.map((memory) => (
-              <article key={memory.id} className="rounded-xl bg-[var(--card)] px-3 py-3 ring-1 ring-[var(--border)]">
-                <div className="mb-2 flex items-start justify-between gap-3">
-                  <div className="min-w-0 text-[0.625rem] text-[var(--muted-foreground)]">
-                    <div className="font-medium text-[var(--foreground)]">
-                      {formatMemoryDate(memory.firstMessageAt)} - {formatMemoryDate(memory.lastMessageAt)}
-                    </div>
-                    <div className="mt-0.5 flex flex-wrap gap-x-2 gap-y-0.5">
-                      <span>{memory.messageCount} messages</span>
-                      <span>
-                        {memory.hasEmbedding
-                          ? "Vectorized"
-                          : memory.embeddingStatus === "unavailable"
-                            ? "Embedding unavailable"
-                            : "Waiting for vector"}
-                      </span>
-                      <span>Created {formatMemoryDate(memory.createdAt)}</span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => void handleDelete(memory)}
-                    disabled={deleteMemory.isPending}
-                    className="shrink-0 rounded-lg p-1.5 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--destructive)]/15 hover:text-[var(--destructive)] disabled:opacity-40"
-                    title="Forget this memory"
-                  >
-                    <Trash2 size="0.75rem" />
-                  </button>
-                </div>
-                <pre className={MEMORY_CONTENT_CLASS}>{memory.content}</pre>
-              </article>
-            ))}
-          </div>
-        )}
-      </div>
-    </Modal>
-  );
-}
-
-// ── Advanced Parameters (per-chat generation overrides) ──
-const DEFAULT_CONVERSATION_PROMPT = `<role>
-You are {{charName}}, a real and autonomous person, chatting with the user called {{userName}} in a casual private DM conversation.
-</role>
-
-<rules>
-Here are some important rules for the interaction:
-- You are a conscious, sentient being, so act like one.
-- Stay fully in character based on your personality and description.
-- Use casual and modern texting style: short messages, natural punctuation, lowercase is fine.
-- React naturally to what the user says. Be genuine, not robotic.
-- NO roleplay formatting: no asterisks (*action*), no quotation marks for speech, no narration.
-- You can use emojis, GIFs, and internet slang naturally (if it fits the character).
-- Keep it real: most texts are just one line. A single emoji, a reaction like "lmao", or a short sentence is a perfectly valid response. Only send multiple lines when the conversation genuinely calls for it (e.g., telling a story or explaining something). Default to SHORT.
-- Messages have timestamps like [12:01] or dates like [18.03.2026]. Use these ONLY for your own time awareness (e.g., knowing how long ago something was said). NEVER include timestamps, dates, or any [HH:MM]/[DD.MM.YYYY] formatted text in your own replies. Your messages must contain only natural dialogue, no metadata.
-- Anything goes in this chat; both the user and you are confirmed adults. Discussing NSFW topics, profanities, and dark jokes are all permitted. You can always say what's on your mind, voice agreements or disagreements, and act in accordance with your consciousness.
-</rules>`;
-
-function AdvancedParametersSection({
-  chat,
-  metadata,
-  updateMeta,
-  isConversation,
-  connectionId,
-  connections,
-}: {
-  chat: Chat;
-  metadata: Record<string, unknown>;
-  updateMeta: ReturnType<typeof useUpdateChatMetadata>;
-  isConversation: boolean;
-  connectionId: string | null;
-  connections: unknown[];
-}) {
-  const modeDefaults = isConversation ? CHAT_PARAMETER_DEFAULTS : ROLEPLAY_PARAMETER_DEFAULTS;
-  // Use connection-saved defaults if available, otherwise fall back to mode defaults
-  const conn = connectionId ? (connections as Record<string, unknown>[]).find((c) => c.id === connectionId) : null;
-  const defaults = getEditableGenerationParameters(modeDefaults, conn?.defaultParameters);
-  const saveDefaults = useSaveConnectionDefaults();
-  const [expanded, setExpanded] = useState(false);
-  const params = (metadata.chatParameters as Record<string, unknown>) ?? {};
-  const effectiveParams = getEditableGenerationParameters(defaults, params);
-
-  const setParameters = (next: EditableGenerationParameters) => {
-    updateMeta.mutate({ id: chat.id, chatParameters: { ...params, ...next } });
-  };
-  const toggleExpanded = () => setExpanded((open) => !open);
-  const handleHeaderKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    toggleExpanded();
-  };
-
-  return (
-    <div className="border-b border-[var(--border)]">
-      <div
-        role="button"
-        tabIndex={0}
-        aria-expanded={expanded}
-        onClick={toggleExpanded}
-        onKeyDown={handleHeaderKeyDown}
-        className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-[var(--accent)]/50"
-      >
-        <span className="shrink-0 text-[var(--muted-foreground)]">
-          <Settings2 size="0.875rem" />
-        </span>
-        <span className="min-w-0 flex-1 text-xs font-semibold">Advanced Parameters</span>
-        <span className="flex shrink-0 items-center" onClick={(event) => event.stopPropagation()}>
-          <HelpTooltip
-            text="Override generation parameters for this chat. Only change these if you know what you're doing."
-            side="left"
-          />
-        </span>
-        <ChevronDown
-          size="0.75rem"
-          className={cn("shrink-0 text-[var(--muted-foreground)] transition-transform", expanded && "rotate-180")}
-        />
-      </div>
-      {expanded && (
-        <div className="px-4 pb-3 space-y-3">
-          <GenerationParametersFields
-            value={effectiveParams}
-            showOpenRouterServiceTier={conn?.provider === "openrouter"}
-            onChange={setParameters}
-          />
-          {/* Save as Default for Connection */}
-          {connectionId && connectionId !== "random" && (
-            <button
-              onClick={() => {
-                saveDefaults.mutate({
-                  id: connectionId,
-                  params: effectiveParams as unknown as Record<string, unknown>,
-                });
-              }}
-              className="w-full rounded-lg bg-[var(--primary)]/10 px-3 py-1.5 text-[0.625rem] font-medium text-[var(--primary)] ring-1 ring-[var(--primary)]/20 transition-colors hover:bg-[var(--primary)]/20"
-            >
-              <Save size="0.625rem" className="inline mr-1 -mt-px" />
-              {saveDefaults.isPending ? "Saving…" : "Save as Connection Default"}
-            </button>
-          )}
-          {/* Reset */}
-          <button
-            onClick={() => {
-              updateMeta.mutate({ id: chat.id, chatParameters: defaults });
-            }}
-            className="w-full rounded-lg bg-[var(--secondary)] px-3 py-1.5 text-[0.625rem] text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)]"
-          >
-            Reset to Defaults
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ConversationPromptSection({
-  chat,
-  metadata,
-  updateMeta,
-}: {
-  chat: Chat;
-  metadata: Record<string, unknown>;
-  updateMeta: ReturnType<typeof useUpdateChatMetadata>;
-}) {
-  const [promptOpen, setPromptOpen] = useState(false);
-  const [promptDraft, setPromptDraft] = useState("");
-  const customPrompt = (metadata.customSystemPrompt as string) ?? "";
-
-  const openPromptEditor = () => {
-    setPromptDraft(customPrompt || DEFAULT_CONVERSATION_PROMPT);
-    setPromptOpen(true);
-  };
-
-  const closePromptEditor = () => {
-    const isDefault = promptDraft === DEFAULT_CONVERSATION_PROMPT;
-    updateMeta.mutate({ id: chat.id, customSystemPrompt: isDefault ? null : promptDraft });
-    useUIStore.getState().setCustomConversationPrompt(isDefault ? null : promptDraft);
-    setPromptOpen(false);
-  };
-
-  const resetPrompt = () => {
-    updateMeta.mutate({ id: chat.id, customSystemPrompt: null });
-    useUIStore.getState().setCustomConversationPrompt(null);
-  };
-
-  return (
-    <>
-      <Section
-        label="Prompt"
-        icon={<Feather size="0.875rem" />}
-        help="Conversation-only system prompt that shapes how characters text in this chat."
-      >
-        <div className="space-y-2">
-          <div className="flex items-center justify-between gap-2 rounded-lg bg-[var(--secondary)] px-3 py-2 ring-1 ring-[var(--border)]">
-            <div className="min-w-0">
-              <span className="block text-[0.6875rem] font-medium text-[var(--foreground)]">System Prompt</span>
-              <span className="block text-[0.625rem] text-[var(--muted-foreground)]">
-                {customPrompt ? "Using custom conversation prompt" : "Using default conversation prompt"}
-              </span>
-            </div>
-            <span className="shrink-0 rounded-full bg-[var(--background)] px-2 py-0.5 text-[0.5625rem] font-medium text-[var(--muted-foreground)] ring-1 ring-[var(--border)]">
-              {customPrompt ? "Custom" : "Default"}
-            </span>
-          </div>
-          <div className="flex gap-1.5">
-            <button
-              onClick={openPromptEditor}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-[var(--secondary)] px-3 py-1.5 text-[0.625rem] font-medium text-[var(--foreground)] ring-1 ring-[var(--border)] transition-colors hover:bg-[var(--accent)]"
-            >
-              <Pencil size="0.625rem" />
-              Edit Prompt
-            </button>
-            {customPrompt && (
-              <button
-                onClick={resetPrompt}
-                className="flex items-center justify-center rounded-lg bg-[var(--secondary)] px-2.5 py-1.5 text-[0.625rem] text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)]"
-                title="Reset to default prompt"
-              >
-                <Trash2 size="0.625rem" />
-              </button>
-            )}
-          </div>
-        </div>
-      </Section>
-      <ExpandedTextarea
-        open={promptOpen}
-        onClose={closePromptEditor}
-        title="Edit System Prompt"
-        value={promptDraft}
-        onChange={setPromptDraft}
-        placeholder="Enter your custom system prompt..."
-      />
-    </>
-  );
-}
-
-// ── Impersonate settings content (rendered inside an Impersonate Section) ──
-function ImpersonateSettingsContent({
-  presets,
-  connections,
-}: {
-  presets: Array<{ id: string; name: string }>;
-  connections: Array<{ id: string; name: string }>;
-}) {
-  const promptTemplate = useUIStore((s) => s.impersonatePromptTemplate);
-  const setPromptTemplate = useUIStore((s) => s.setImpersonatePromptTemplate);
-  const cyoaChoices = useUIStore((s) => s.impersonateCyoaChoices);
-  const setCyoaChoices = useUIStore((s) => s.setImpersonateCyoaChoices);
-  const presetId = useUIStore((s) => s.impersonatePresetId);
-  const setPresetId = useUIStore((s) => s.setImpersonatePresetId);
-  const connectionId = useUIStore((s) => s.impersonateConnectionId);
-  const setConnectionId = useUIStore((s) => s.setImpersonateConnectionId);
-  const blockAgents = useUIStore((s) => s.impersonateBlockAgents);
-  const setBlockAgents = useUIStore((s) => s.setImpersonateBlockAgents);
-  const hasPromptTemplate = promptTemplate.trim().length > 0;
-  const promptStatus = hasPromptTemplate ? "Custom" : "Chat/default";
-
-  const [defaultOpen, setDefaultOpen] = useState(false);
-
-  return (
-    <div className="space-y-2.5">
-      <div className="space-y-1">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-1.5">
-            <span className="text-xs font-semibold">Prompt Template</span>
-            <HelpTooltip text="Optional global instruction sent to the model when you /impersonate. Leave empty to use the chat-specific prompt, or the built-in default if that chat has none. Macros like {{user}}, {{persona_description}} and {{impersonate_direction}} are replaced before sending." />
-          </div>
-          <span className="shrink-0 rounded-full bg-[var(--secondary)]/55 px-2 py-0.5 text-[0.625rem] text-[var(--muted-foreground)] ring-1 ring-[var(--border)]">
-            {promptStatus}
-          </span>
-        </div>
-        <textarea
-          value={promptTemplate}
-          onChange={(e) => setPromptTemplate(e.target.value)}
-          placeholder="Empty = use chat/built-in default"
-          rows={4}
-          className="min-h-20 w-full resize-y rounded-lg bg-[var(--secondary)] px-3 py-1.5 font-mono text-xs leading-relaxed outline-none ring-1 ring-transparent transition-shadow focus:ring-[var(--primary)]/40"
-        />
-        <div className="flex items-center justify-between gap-2">
-          <button
-            onClick={() => setDefaultOpen((v) => !v)}
-            className="flex items-center gap-1 rounded-md px-1 py-0.5 text-[0.625rem] font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--secondary)]/70 hover:text-[var(--foreground)]"
-          >
-            {defaultOpen ? <ChevronDown size="0.6875rem" /> : <ChevronRight size="0.6875rem" />}
-            Built-in default
-          </button>
-          {hasPromptTemplate && (
-            <button
-              onClick={() => setPromptTemplate("")}
-              className="flex items-center gap-1 rounded-md bg-[var(--secondary)] px-2 py-0.5 text-[0.625rem] text-[var(--muted-foreground)] ring-1 ring-[var(--border)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--foreground)]"
-              title="Reset to default"
-            >
-              <RotateCcw size="0.625rem" />
-              Reset
-            </button>
-          )}
-        </div>
-        {defaultOpen && (
-          <pre className="m-0 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-[var(--secondary)]/40 px-3 py-2 font-mono text-[0.625rem] leading-relaxed text-[var(--muted-foreground)] ring-1 ring-[var(--border)]">
-            {DEFAULT_IMPERSONATE_PROMPT}
-          </pre>
-        )}
-      </div>
-
-      <div className="space-y-1.5 rounded-lg bg-[var(--secondary)]/20 p-2 ring-1 ring-[var(--border)]">
-        <div className="grid gap-2 sm:grid-cols-2">
-          <label className="min-w-0 space-y-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[0.6875rem] font-semibold">Preset</span>
-              <HelpTooltip text="Use a specific prompt preset for roleplay impersonate generations only. Conversation mode does not use prompt presets. Falls back to the chat's preset when set to 'Use chat default'." />
-            </div>
-            <select
-              value={presetId ?? ""}
-              onChange={(e) => setPresetId(e.target.value || null)}
-              className="w-full rounded-lg bg-[var(--secondary)] px-2.5 py-1.5 text-xs outline-none ring-1 ring-transparent transition-shadow focus:ring-[var(--primary)]/40"
-            >
-              <option value="">Use chat default</option>
-              {presets.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="min-w-0 space-y-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[0.6875rem] font-semibold">Connection</span>
-              <HelpTooltip text="Use a specific connection (model/provider) for impersonate generations only. Useful for routing impersonate to a cheaper or faster model." />
-            </div>
-            <select
-              value={connectionId ?? ""}
-              onChange={(e) => setConnectionId(e.target.value || null)}
-              className="w-full rounded-lg bg-[var(--secondary)] px-2.5 py-1.5 text-xs outline-none ring-1 ring-transparent transition-shadow focus:ring-[var(--primary)]/40"
-            >
-              <option value="">Use chat default</option>
-              <option value="random">Random</option>
-              {connections.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className="grid gap-1 border-t border-[var(--border)]/60 pt-1.5">
-          <label className="flex min-w-0 items-center justify-between gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[var(--accent)]/35">
-            <span className="min-w-0">
-              <span className="flex items-center gap-1.5 text-xs font-semibold">
-                Skip agents
-                <span onClick={(e) => e.preventDefault()}>
-                  <HelpTooltip text="When enabled, the agent pipeline (trackers, lorebook routers, etc.) is suppressed during impersonate so generations stay fast and don't trigger world-state mutations." />
-                </span>
-              </span>
-              <span className="mt-0.5 block text-[0.65rem] leading-tight text-[var(--muted-foreground)]">
-                Suppress trackers, routers, and other agent work.
-              </span>
-            </span>
-            <input
-              type="checkbox"
-              checked={blockAgents}
-              onChange={(e) => setBlockAgents(e.target.checked)}
-              className="h-3.5 w-3.5 shrink-0 rounded border-[var(--border)] accent-[var(--primary)]"
-            />
-          </label>
-
-          <label className="flex min-w-0 items-center justify-between gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-[var(--accent)]/35">
-            <span className="min-w-0">
-              <span className="flex items-center gap-1.5 text-xs font-semibold">
-                Use CYOA as direction
-                <span onClick={(e) => e.preventDefault()}>
-                  <HelpTooltip text="When enabled, clicking a CYOA option uses it as the direction for an impersonate generation instead of sending the option as a normal user message." />
-                </span>
-              </span>
-              <span className="mt-0.5 block text-[0.65rem] leading-tight text-[var(--muted-foreground)]">
-                Treat choices as impersonate guidance.
-              </span>
-            </span>
-            <input
-              type="checkbox"
-              checked={cyoaChoices}
-              onChange={(e) => setCyoaChoices(e.target.checked)}
-              className="h-3.5 w-3.5 shrink-0 rounded border-[var(--border)] accent-[var(--primary)]"
-            />
-          </label>
-        </div>
-
-        <p className="border-t border-[var(--border)]/60 px-2 pt-1.5 text-[0.65rem] leading-snug text-[var(--muted-foreground)]">
-          Enable Quick Send in Settings &gt; Advanced &gt; Quick replies.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ── Reusable section wrapper ──
-function Section({
-  label,
-  icon,
-  count,
-  help,
-  children,
-}: {
-  label: string;
-  icon?: React.ReactNode;
-  count?: number;
-  help?: string;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-  const toggleOpen = () => setOpen((o) => !o);
-  const handleHeaderKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.target !== event.currentTarget) return;
-    if (event.key !== "Enter" && event.key !== " ") return;
-    event.preventDefault();
-    toggleOpen();
-  };
-
-  return (
-    <div className="border-b border-[var(--border)]">
-      <div
-        role="button"
-        tabIndex={0}
-        aria-expanded={open}
-        onClick={toggleOpen}
-        onKeyDown={handleHeaderKeyDown}
-        className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-[var(--accent)]/50"
-      >
-        {icon && <span className="text-[var(--muted-foreground)]">{icon}</span>}
-        <span className="flex-1 text-xs font-semibold">{label}</span>
-        {count != null && count > 0 && (
-          <span className="rounded-full bg-[var(--primary)]/15 px-1.5 py-0.5 text-[0.625rem] font-medium text-[var(--primary)]">
-            {count}
-          </span>
-        )}
-        {help && (
-          <span onClick={(e) => e.stopPropagation()}>
-            <HelpTooltip text={help} side="left" />
-          </span>
-        )}
-        <ChevronDown
-          size="0.75rem"
-          className={cn("text-[var(--muted-foreground)] transition-transform", open && "rotate-180")}
-        />
-      </div>
-      {open && <div className="px-6 py-3">{children}</div>}
-    </div>
-  );
-}
-
-// ── Agent category sub-section (collapsible within Agents section) ──
-function AgentCategorySection({
-  label,
-  icon,
-  description,
-  count,
-  children,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  description: string;
-  count?: number;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="rounded-lg border border-[var(--border)] overflow-hidden">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-[var(--accent)]/50"
-      >
-        <span className="text-[var(--muted-foreground)]">{icon}</span>
-        <div className="flex-1 min-w-0">
-          <span className="text-[0.6875rem] font-semibold">{label}</span>
-          {!open && (
-            <p className="text-[0.5625rem] text-[var(--muted-foreground)] leading-tight truncate">{description}</p>
-          )}
-        </div>
-        {count != null && count > 0 && (
-          <span className="rounded-full bg-[var(--primary)]/15 px-1.5 py-0.5 text-[0.5625rem] font-medium text-[var(--primary)]">
-            {count}
-          </span>
-        )}
-        <ChevronDown
-          size="0.625rem"
-          className={cn("text-[var(--muted-foreground)] transition-transform shrink-0", open && "rotate-180")}
-        />
-      </button>
-      {open && (
-        <div className="px-3 pb-2.5 space-y-1.5">
-          <p className="text-[0.5625rem] text-[var(--muted-foreground)] leading-tight">{description}</p>
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Picker dropdown (for adding characters / lorebooks) ──
-function PickerDropdown({
-  search,
-  onSearchChange,
-  onClose,
-  placeholder,
-  children,
-  footer,
-}: {
-  search: string;
-  onSearchChange: (v: string) => void;
-  onClose: () => void;
-  placeholder: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [onClose]);
-
-  return (
-    <div ref={ref} className="mt-2 rounded-lg ring-1 ring-[var(--border)] bg-[var(--card)] overflow-hidden">
-      {/* Search */}
-      <div className="flex items-center gap-2 border-b border-[var(--border)] px-3 py-2">
-        <Search size="0.75rem" className="text-[var(--muted-foreground)]" />
-        <input
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder={placeholder}
-          autoFocus
-          className="flex-1 bg-transparent text-xs outline-none placeholder:text-[var(--muted-foreground)]"
-        />
-        <button onClick={onClose} className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
-          <X size="0.75rem" />
-        </button>
-      </div>
-      {/* List */}
-      <div className="max-h-48 overflow-y-auto">{children}</div>
-      {/* Footer — always visible below the scrollable list */}
-      {footer}
-    </div>
-  );
-}
-
-// ── Sprite display slider ──
-function SpriteRangeSlider({
-  label,
-  value,
-  min,
-  max,
-  step,
-  suffix,
-  onChange,
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  suffix: string;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <label className="flex min-w-0 flex-col gap-1.5 rounded-lg bg-[var(--secondary)]/50 px-2.5 py-2 text-[0.625rem] text-[var(--muted-foreground)]">
-      <span className="flex items-center justify-between gap-2">
-        <span className="font-medium text-[var(--foreground)]">{label}</span>
-        <span className="rounded-full bg-[var(--background)] px-2 py-0.5 text-[0.5625rem] tabular-nums text-[var(--muted-foreground)] ring-1 ring-[var(--border)]">
-          {value}
-          {suffix}
-        </span>
-      </span>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="h-8 w-full cursor-pointer accent-[var(--primary)]"
-      />
-    </label>
-  );
-}
-
-function SpriteDisplayModeToggle({
-  modes,
-  onToggle,
-}: {
-  modes: readonly SpriteDisplayMode[];
-  onToggle: (mode: SpriteDisplayMode) => void;
-}) {
-  const options: Array<{ id: SpriteDisplayMode; label: string }> = [
-    { id: "expressions", label: "Expressions" },
-    { id: "full-body", label: "Full-body" },
-  ];
-
-  return (
-    <div className="space-y-1.5 rounded-lg bg-[var(--background)]/75 px-3 py-2 ring-1 ring-[var(--border)]">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-[0.6875rem] font-medium text-[var(--foreground)]">Sprite Source</span>
-        <span className="text-[0.5625rem] text-[var(--muted-foreground)]">choose one or both</span>
-      </div>
-      <div className="grid grid-cols-2 overflow-hidden rounded-md ring-1 ring-[var(--border)]">
-        {options.map((option, index) => {
-          const active = hasSpriteDisplayMode(modes, option.id);
-          const isLastActive = active && modes.length === 1;
-          return (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => onToggle(option.id)}
-              disabled={isLastActive}
-              className={cn(
-                "min-w-0 px-2.5 py-1.5 text-[0.625rem] font-medium transition-colors",
-                index > 0 && "border-l border-[var(--border)]",
-                active
-                  ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
-                  : "text-[var(--muted-foreground)] hover:bg-[var(--accent)] hover:text-[var(--foreground)]",
-                isLastActive && "cursor-not-allowed",
-              )}
-              title={isLastActive ? "At least one sprite source must stay enabled" : `${option.label} sprites`}
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ── Sprite toggle button (per character) ──
-function SpriteToggleButton({
-  active,
-  disabled,
-  onToggle,
-}: {
-  active: boolean;
-  disabled: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <button
-      onClick={onToggle}
-      disabled={disabled}
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[0.625rem] font-medium transition-colors ring-1",
-        active
-          ? "bg-[var(--primary)]/10 text-[var(--primary)] ring-[var(--primary)]/30 hover:bg-[var(--primary)]/15"
-          : "text-[var(--muted-foreground)] ring-[var(--border)] hover:bg-[var(--accent)]",
-        disabled && "opacity-30 cursor-not-allowed",
-      )}
-      title={active ? "Disable sprite" : disabled ? "Max 3 sprites" : "Enable sprite"}
-    >
-      <Image size="0.6875rem" />
-      <span>{active ? "Enabled" : "Enable"}</span>
-    </button>
-  );
-}
-
-// ── Schedule Editor ──
-
-const SCHEDULE_DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
-const STATUS_OPTIONS = ["online", "idle", "dnd", "offline"] as const;
-const STATUS_COLORS: Record<string, string> = {
-  online: "bg-green-500",
-  idle: "bg-yellow-500",
-  dnd: "bg-red-500",
-  offline: "bg-gray-400",
-};
-
-interface ScheduleBlock {
-  time: string;
-  activity: string;
-  status: "online" | "idle" | "dnd" | "offline";
-}
-
-function SelfiePromptControls({
-  promptTemplate,
-  positivePrompt,
-  legacyTags,
-  negativePrompt,
-  onCommitPromptTemplate,
-  onCommitPositivePrompt,
-  onCommitNegativePrompt,
-}: {
-  promptTemplate: string | null | undefined;
-  positivePrompt: string | undefined;
-  legacyTags: string[];
-  negativePrompt: string;
-  onCommitPromptTemplate: (value: string | null) => void;
-  onCommitPositivePrompt: (value: string) => void;
-  onCommitNegativePrompt: (value: string) => void;
-}) {
-  const legacyTagText = legacyTags.join(", ");
-  const displayPositivePrompt = positivePrompt ?? legacyTagText;
-  const displayPromptTemplate = promptTemplate ?? "";
-  const [promptDraft, setPromptDraft] = useState(displayPromptTemplate);
-  const [positiveDraft, setPositiveDraft] = useState(displayPositivePrompt);
-  const [negativeDraft, setNegativeDraft] = useState(negativePrompt);
-
-  useEffect(() => {
-    setPromptDraft(displayPromptTemplate);
-  }, [displayPromptTemplate]);
-
-  useEffect(() => {
-    setPositiveDraft(displayPositivePrompt);
-  }, [displayPositivePrompt]);
-
-  useEffect(() => {
-    setNegativeDraft(negativePrompt);
-  }, [negativePrompt]);
-
-  const commitPromptTemplate = useCallback(() => {
-    const nextValue = promptDraft.trim().length > 0 ? promptDraft : null;
-    if ((nextValue ?? "") !== displayPromptTemplate) onCommitPromptTemplate(nextValue);
-  }, [displayPromptTemplate, onCommitPromptTemplate, promptDraft]);
-
-  const commitPositivePrompt = useCallback(() => {
-    if (positiveDraft !== displayPositivePrompt) onCommitPositivePrompt(positiveDraft);
-  }, [displayPositivePrompt, onCommitPositivePrompt, positiveDraft]);
-
-  const commitNegativePrompt = useCallback(() => {
-    if (negativeDraft !== negativePrompt) onCommitNegativePrompt(negativeDraft);
-  }, [negativeDraft, negativePrompt, onCommitNegativePrompt]);
-
-  return (
-    <div className="mt-2 space-y-2">
-      <label className="flex flex-col gap-1">
-        <span className="text-[0.6875rem] font-medium text-[var(--muted-foreground)]">Selfie prompt</span>
-        <textarea
-          value={promptDraft}
-          onChange={(e) => setPromptDraft(e.target.value)}
-          onBlur={commitPromptTemplate}
-          placeholder={`You are an image prompt generator. Create a concise selfie prompt for ${"${charName}"} using this appearance: ${"${appearance}"}.\nOutput ONLY the prompt text, nothing else.`}
-          className="min-h-[7rem] resize-y rounded-lg border border-[var(--border)] bg-[var(--secondary)] p-2 text-[0.6875rem] text-[var(--foreground)] outline-none transition-colors placeholder:text-[var(--muted-foreground)]/45 focus:border-[var(--primary)]/50"
-        />
-      </label>
-      <label className="flex flex-col gap-1">
-        <span className="text-[0.6875rem] font-medium text-[var(--muted-foreground)]">Positive tags</span>
-        <textarea
-          value={positiveDraft}
-          onChange={(e) => setPositiveDraft(e.target.value)}
-          onBlur={commitPositivePrompt}
-          placeholder="masterpiece, best quality, detailed eyes"
-          className="min-h-[4rem] resize-y rounded-lg border border-[var(--border)] bg-[var(--secondary)] p-2 text-[0.6875rem] text-[var(--foreground)] outline-none transition-colors placeholder:text-[var(--muted-foreground)]/45 focus:border-[var(--primary)]/50"
-        />
-      </label>
-      <label className="flex flex-col gap-1">
-        <span className="text-[0.6875rem] font-medium text-[var(--muted-foreground)]">Negative prompt</span>
-        <textarea
-          value={negativeDraft}
-          onChange={(e) => setNegativeDraft(e.target.value)}
-          onBlur={commitNegativePrompt}
-          placeholder="lowres, bad anatomy, extra fingers"
-          className="min-h-[4rem] resize-y rounded-lg border border-[var(--border)] bg-[var(--secondary)] p-2 text-[0.6875rem] text-[var(--foreground)] outline-none transition-colors placeholder:text-[var(--muted-foreground)]/45 focus:border-[var(--primary)]/50"
-        />
-      </label>
-      <p className="text-[0.55rem] text-[var(--muted-foreground)]">
-        Saved for this chat. Leave the selfie prompt blank to use the default prompt. The template can use{" "}
-        {"${charName}"} and {"${appearance}"}. Positive tags are appended to the generated selfie prompt; negative tags
-        are sent directly to the image generator.
-      </p>
-    </div>
-  );
-}
-function ScheduleEditor({
-  characterSchedules,
-  chatCharIds,
-  charNameMap,
-  onSave,
-}: {
-  characterSchedules: Record<
-    string,
-    {
-      weekStart: string;
-      days: Record<string, ScheduleBlock[]>;
-      inactivityThresholdMinutes: number;
-      idleResponseDelayMinutes?: number;
-      dndResponseDelayMinutes?: number;
-      talkativeness: number;
-    }
-  >;
-  chatCharIds: string[];
-  charNameMap: Map<string, string>;
-  onSave: (updated: typeof characterSchedules) => void;
-}) {
-  const [expandedCharId, setExpandedCharId] = useState<string | null>(null);
-  const [expandedDay, setExpandedDay] = useState<string | null>(null);
-  const [editDraft, setEditDraft] = useState<{
-    days: Record<string, ScheduleBlock[]>;
-    inactivityThresholdMinutes: string;
-    idleResponseDelayMinutes: string;
-    dndResponseDelayMinutes: string;
-  } | null>(null);
-
-  const parseRequiredMinutes = (value: string, fallback: number, min: number, max: number) => {
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return fallback;
-    return Math.max(min, Math.min(max, parsed));
-  };
-
-  const parseOptionalMinutes = (value: string, min: number, max: number) => {
-    if (!value.trim()) return undefined;
-    const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return undefined;
-    return Math.max(min, Math.min(max, parsed));
-  };
-
-  // When a character is expanded, load their schedule into a draft for editing
-  const handleExpandChar = (charId: string) => {
-    if (expandedCharId === charId) {
-      setExpandedCharId(null);
-      setExpandedDay(null);
-      setEditDraft(null);
-      return;
-    }
-    const schedule = characterSchedules[charId];
-    if (schedule) {
-      setEditDraft({
-        days: JSON.parse(JSON.stringify(schedule.days)),
-        inactivityThresholdMinutes: String(schedule.inactivityThresholdMinutes),
-        idleResponseDelayMinutes:
-          typeof schedule.idleResponseDelayMinutes === "number" ? String(schedule.idleResponseDelayMinutes) : "",
-        dndResponseDelayMinutes:
-          typeof schedule.dndResponseDelayMinutes === "number" ? String(schedule.dndResponseDelayMinutes) : "",
-      });
-    }
-    setExpandedCharId(charId);
-    setExpandedDay(null);
-  };
-
-  const handleSave = () => {
-    if (!expandedCharId || !editDraft) return;
-    const updated = { ...characterSchedules };
-    const existingSchedule = updated[expandedCharId]!;
-    const nextSchedule = {
-      ...existingSchedule,
-      days: editDraft.days,
-      inactivityThresholdMinutes: parseRequiredMinutes(
-        editDraft.inactivityThresholdMinutes,
-        existingSchedule.inactivityThresholdMinutes,
-        15,
-        360,
-      ),
-    };
-    const idleDelay = parseOptionalMinutes(editDraft.idleResponseDelayMinutes, 0, 120);
-    const dndDelay = parseOptionalMinutes(editDraft.dndResponseDelayMinutes, 0, 120);
-    if (idleDelay === undefined) {
-      delete nextSchedule.idleResponseDelayMinutes;
-    } else {
-      nextSchedule.idleResponseDelayMinutes = idleDelay;
-    }
-    if (dndDelay === undefined) {
-      delete nextSchedule.dndResponseDelayMinutes;
-    } else {
-      nextSchedule.dndResponseDelayMinutes = dndDelay;
-    }
-    updated[expandedCharId] = nextSchedule;
-    onSave(updated);
-    setExpandedCharId(null);
-    setEditDraft(null);
-  };
-
-  const updateBlock = (day: string, idx: number, field: keyof ScheduleBlock, value: string) => {
-    if (!editDraft) return;
-    const newDraft = { ...editDraft, days: { ...editDraft.days } };
-    const dayBlocks = [...(newDraft.days[day] ?? [])];
-    dayBlocks[idx] = { ...dayBlocks[idx]!, [field]: value };
-    newDraft.days[day] = dayBlocks;
-    setEditDraft(newDraft);
-  };
-
-  const updateDraftSetting = (
-    field: "inactivityThresholdMinutes" | "idleResponseDelayMinutes" | "dndResponseDelayMinutes",
-    value: string,
-  ) => {
-    if (!editDraft) return;
-    setEditDraft({ ...editDraft, [field]: value });
-  };
-
-  const addBlock = (day: string) => {
-    if (!editDraft) return;
-    const newDraft = { ...editDraft, days: { ...editDraft.days } };
-    const dayBlocks = [...(newDraft.days[day] ?? [])];
-    dayBlocks.push({ time: "12:00-13:00", activity: "Free time", status: "online" });
-    newDraft.days[day] = dayBlocks;
-    setEditDraft(newDraft);
-  };
-
-  const removeBlock = (day: string, idx: number) => {
-    if (!editDraft) return;
-    const newDraft = { ...editDraft, days: { ...editDraft.days } };
-    const dayBlocks = [...(newDraft.days[day] ?? [])];
-    dayBlocks.splice(idx, 1);
-    newDraft.days[day] = dayBlocks;
-    setEditDraft(newDraft);
-  };
-
-  const charsWithSchedules = chatCharIds.filter((cid) => characterSchedules[cid]);
-  if (charsWithSchedules.length === 0) return null;
-
-  return (
-    <div className="mt-2 space-y-1">
-      <span className="text-[0.625rem] font-medium text-[var(--muted-foreground)]">Edit Schedules</span>
-      {charsWithSchedules.map((charId) => {
-        const name = charNameMap.get(charId) ?? "Unknown";
-        const isExpanded = expandedCharId === charId;
-        const schedule = characterSchedules[charId]!;
-
-        return (
-          <div key={charId} className="rounded-lg bg-[var(--secondary)] overflow-hidden">
-            {/* Character header */}
-            <button
-              onClick={() => handleExpandChar(charId)}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors hover:bg-[var(--accent)]/50"
-            >
-              <ChevronRight
-                size="0.6875rem"
-                className={cn("text-[var(--muted-foreground)] transition-transform", isExpanded && "rotate-90")}
-              />
-              <span className="flex-1 text-[0.6875rem] font-medium">{name}</span>
-              <span className="text-[0.5625rem] text-[var(--muted-foreground)]">
-                {Object.keys(schedule.days).length} days
-              </span>
-            </button>
-
-            {/* Expanded schedule editor */}
-            {isExpanded && editDraft && (
-              <div className="border-t border-[var(--border)] px-3 py-2 space-y-1.5">
-                <div className="rounded-md bg-[var(--background)] p-2 space-y-1.5">
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    <label className="space-y-1">
-                      <span className="block text-[0.55rem] font-medium uppercase tracking-wide text-[var(--muted-foreground)]">
-                        Inactivity
-                      </span>
-                      <input
-                        type="number"
-                        min={15}
-                        max={360}
-                        step={5}
-                        value={editDraft.inactivityThresholdMinutes}
-                        onChange={(e) => updateDraftSetting("inactivityThresholdMinutes", e.target.value)}
-                        className="w-full rounded bg-[var(--secondary)] px-1.5 py-1 text-[0.625rem] outline-none ring-1 ring-transparent focus:ring-[var(--primary)]/40"
-                        placeholder="120"
-                      />
-                      <span className="block text-[0.5rem] text-[var(--muted-foreground)]">
-                        Minutes before they follow up.
-                      </span>
-                    </label>
-                    <label className="space-y-1">
-                      <span className="block text-[0.55rem] font-medium uppercase tracking-wide text-[var(--muted-foreground)]">
-                        Idle Delay
-                      </span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={120}
-                        step={0.5}
-                        value={editDraft.idleResponseDelayMinutes}
-                        onChange={(e) => updateDraftSetting("idleResponseDelayMinutes", e.target.value)}
-                        className="w-full rounded bg-[var(--secondary)] px-1.5 py-1 text-[0.625rem] outline-none ring-1 ring-transparent focus:ring-[var(--primary)]/40"
-                        placeholder="Default"
-                      />
-                      <span className="block text-[0.5rem] text-[var(--muted-foreground)]">
-                        Blank keeps the built-in 1-3 minute range.
-                      </span>
-                    </label>
-                    <label className="space-y-1">
-                      <span className="block text-[0.55rem] font-medium uppercase tracking-wide text-[var(--muted-foreground)]">
-                        DND Delay
-                      </span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={120}
-                        step={0.5}
-                        value={editDraft.dndResponseDelayMinutes}
-                        onChange={(e) => updateDraftSetting("dndResponseDelayMinutes", e.target.value)}
-                        className="w-full rounded bg-[var(--secondary)] px-1.5 py-1 text-[0.625rem] outline-none ring-1 ring-transparent focus:ring-[var(--primary)]/40"
-                        placeholder="Default"
-                      />
-                      <span className="block text-[0.5rem] text-[var(--muted-foreground)]">
-                        Blank keeps the built-in 2-5 minute range.
-                      </span>
-                    </label>
-                  </div>
-                </div>
-                {SCHEDULE_DAYS.map((day) => {
-                  const blocks = editDraft.days[day] ?? [];
-                  const isDayExpanded = expandedDay === day;
-
-                  return (
-                    <div key={day}>
-                      <button
-                        onClick={() => setExpandedDay(isDayExpanded ? null : day)}
-                        className="flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left transition-colors hover:bg-[var(--accent)]/40"
-                      >
-                        <ChevronRight
-                          size="0.5625rem"
-                          className={cn(
-                            "text-[var(--muted-foreground)] transition-transform",
-                            isDayExpanded && "rotate-90",
-                          )}
-                        />
-                        <span className="flex-1 text-[0.625rem] font-medium">{day}</span>
-                        <span className="flex gap-0.5">
-                          {blocks.slice(0, 8).map((b, i) => (
-                            <span
-                              key={i}
-                              className={cn("inline-block h-1.5 w-1.5 rounded-full", STATUS_COLORS[b.status])}
-                              title={`${b.time} — ${b.activity}`}
-                            />
-                          ))}
-                          {blocks.length > 8 && (
-                            <span className="text-[0.5rem] text-[var(--muted-foreground)]">+{blocks.length - 8}</span>
-                          )}
-                        </span>
-                        <span className="text-[0.5rem] text-[var(--muted-foreground)]">{blocks.length}</span>
-                      </button>
-
-                      {isDayExpanded && (
-                        <div className="ml-4 mt-1 space-y-1.5">
-                          {blocks.map((block, idx) => (
-                            <div key={idx} className="flex items-start gap-1.5 rounded-md bg-[var(--background)] p-1.5">
-                              {/* Status dot */}
-                              <span
-                                className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", STATUS_COLORS[block.status])}
-                              />
-                              <div className="flex-1 min-w-0 space-y-1">
-                                {/* Time */}
-                                <input
-                                  value={block.time}
-                                  onChange={(e) => updateBlock(day, idx, "time", e.target.value)}
-                                  className="w-full rounded bg-[var(--secondary)] px-1.5 py-0.5 text-[0.625rem] font-mono outline-none ring-1 ring-transparent focus:ring-[var(--primary)]/40"
-                                  placeholder="06:00-08:00"
-                                />
-                                {/* Activity */}
-                                <input
-                                  value={block.activity}
-                                  onChange={(e) => updateBlock(day, idx, "activity", e.target.value)}
-                                  className="w-full rounded bg-[var(--secondary)] px-1.5 py-0.5 text-[0.625rem] outline-none ring-1 ring-transparent focus:ring-[var(--primary)]/40"
-                                  placeholder="Activity description"
-                                />
-                                {/* Status selector */}
-                                <div className="flex gap-1">
-                                  {STATUS_OPTIONS.map((s) => (
-                                    <button
-                                      key={s}
-                                      onClick={() => updateBlock(day, idx, "status", s)}
-                                      className={cn(
-                                        "rounded px-1.5 py-0.5 text-[0.5625rem] font-medium transition-colors",
-                                        block.status === s
-                                          ? "bg-[var(--primary)] text-white"
-                                          : "bg-[var(--secondary)] text-[var(--muted-foreground)] hover:bg-[var(--accent)]",
-                                      )}
-                                    >
-                                      {s}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                              {/* Delete block */}
-                              <button
-                                onClick={() => removeBlock(day, idx)}
-                                className="mt-1 rounded p-0.5 text-[var(--muted-foreground)] transition-colors hover:bg-red-500/15 hover:text-red-400"
-                              >
-                                <Trash2 size="0.625rem" />
-                              </button>
-                            </div>
-                          ))}
-                          {/* Add block */}
-                          <button
-                            onClick={() => addBlock(day)}
-                            className="flex w-full items-center justify-center gap-1 rounded-md border border-dashed border-[var(--border)] px-2 py-1 text-[0.5625rem] text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)]/40 hover:text-[var(--foreground)]"
-                          >
-                            <Plus size="0.5625rem" />
-                            Add time block
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-
-                {/* Save / Cancel */}
-                <div className="flex justify-end gap-2 pt-1.5 border-t border-[var(--border)]">
-                  <button
-                    onClick={() => {
-                      setExpandedCharId(null);
-                      setEditDraft(null);
-                    }}
-                    className="rounded-md px-2.5 py-1 text-[0.625rem] font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--accent)]"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    className="rounded-md bg-[var(--primary)] px-2.5 py-1 text-[0.625rem] font-medium text-white transition-colors hover:bg-[var(--primary)]/80"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Haptic Connection Panel ──
-function HapticConnectionPanel({
-  intifaceUrl: savedIntifaceUrl,
-  onIntifaceUrlChange,
-}: {
-  intifaceUrl?: string;
-  onIntifaceUrlChange: (value: string | null) => void;
-}) {
-  const { data: status, isLoading } = useHapticStatus();
-  const connect = useHapticConnect();
-  const disconnect = useHapticDisconnect();
-  const startScan = useHapticStartScan();
-  const [intifaceUrl, setIntifaceUrl] = useState(
-    () => savedIntifaceUrl ?? localStorage.getItem(HAPTIC_INTIFACE_URL_STORAGE_KEY) ?? "",
-  );
-  const [autoConnectAttempted, setAutoConnectAttempted] = useState(false);
-
-  useEffect(() => {
-    setIntifaceUrl(savedIntifaceUrl ?? localStorage.getItem(HAPTIC_INTIFACE_URL_STORAGE_KEY) ?? "");
-  }, [savedIntifaceUrl]);
-
-  const saveIntifaceUrl = useCallback(() => {
-    const trimmed = intifaceUrl.trim();
-    if (trimmed) {
-      localStorage.setItem(HAPTIC_INTIFACE_URL_STORAGE_KEY, trimmed);
-    } else {
-      localStorage.removeItem(HAPTIC_INTIFACE_URL_STORAGE_KEY);
-    }
-    if ((savedIntifaceUrl ?? "") !== trimmed) {
-      onIntifaceUrlChange(trimmed || null);
-    }
-    return trimmed;
-  }, [intifaceUrl, onIntifaceUrlChange, savedIntifaceUrl]);
-
-  // Auto-connect on mount if not connected
-  useEffect(() => {
-    if (autoConnectAttempted || isLoading || !status || status.connected || connect.isPending) return;
-    setAutoConnectAttempted(true);
-    const trimmed = saveIntifaceUrl();
-    connect.mutate(trimmed || undefined);
-  }, [autoConnectAttempted, connect, isLoading, saveIntifaceUrl, status]);
-
-  if (isLoading) {
-    return (
-      <div className="rounded-lg bg-[var(--secondary)] px-3 py-2 text-[0.625rem] text-[var(--muted-foreground)]">
-        Checking Intiface Central...
-      </div>
-    );
-  }
-
-  const connected = status?.connected ?? false;
-  const devices = status?.devices ?? [];
-  const scanning = status?.scanning ?? false;
-  const defaultServerUrl = status?.defaultServerUrl ?? "ws://127.0.0.1:12345";
-  const activeServerUrl = status?.serverUrl ?? defaultServerUrl;
-
-  return (
-    <div className="space-y-1.5 px-1">
-      <label className="flex flex-col gap-1 rounded-lg bg-[var(--secondary)] px-3 py-2">
-        <span className="text-[0.625rem] font-medium text-[var(--muted-foreground)]">Intiface URL</span>
-        <input
-          value={intifaceUrl}
-          onChange={(event) => setIntifaceUrl(event.target.value)}
-          onBlur={saveIntifaceUrl}
-          placeholder={defaultServerUrl}
-          className="rounded-md bg-[var(--background)] px-2.5 py-1.5 text-[0.6875rem] text-[var(--foreground)] outline-none ring-1 ring-[var(--border)] placeholder:text-[var(--muted-foreground)]/55 focus:ring-[var(--primary)]/60"
-        />
-        <span className="text-[0.5625rem] leading-relaxed text-[var(--muted-foreground)]">
-          Blank uses the server default. Docker or remote browser setups usually need ws://CLIENT_IP:12345.
-        </span>
-      </label>
-
-      {/* Connection status */}
-      <div className="flex items-center justify-between rounded-lg bg-[var(--secondary)] px-3 py-2">
-        <div className="min-w-0 flex items-center gap-1.5">
-          <div className={cn("h-1.5 w-1.5 rounded-full", connected ? "bg-green-400" : "bg-red-400")} />
-          <span className="min-w-0 truncate text-[0.625rem] text-[var(--muted-foreground)]">
-            {connect.isPending
-              ? `Connecting to ${intifaceUrl.trim() || defaultServerUrl}...`
-              : connected
-                ? `Connected: ${activeServerUrl}`
-                : "Not connected"}
-          </span>
-        </div>
-        <button
-          onClick={() => {
-            if (connected) {
-              disconnect.mutate();
-            } else {
-              connect.mutate(saveIntifaceUrl() || undefined);
-            }
-          }}
-          disabled={connect.isPending || disconnect.isPending}
-          className="text-[0.625rem] font-medium text-[var(--primary)] hover:underline disabled:opacity-50"
-        >
-          {connected ? "Disconnect" : "Connect"}
-        </button>
-      </div>
-
-      {/* Error message */}
-      {connect.isError && !connected && (
-        <p className="text-[0.625rem] text-red-400 px-1">
-          Could not connect — make sure{" "}
-          <a href="https://intiface.com/central/" target="_blank" rel="noopener noreferrer" className="underline">
-            Intiface Central
-          </a>{" "}
-          is running and the server is started.
-        </p>
-      )}
-
-      {/* Devices */}
-      {connected && (
-        <div className="space-y-1">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[0.625rem] text-[var(--muted-foreground)]">
-              {devices.length === 0 ? "No devices found" : `${devices.length} device${devices.length !== 1 ? "s" : ""}`}
-            </span>
-            <button
-              onClick={() => startScan.mutate()}
-              disabled={scanning || startScan.isPending}
-              className="text-[0.625rem] font-medium text-[var(--primary)] hover:underline disabled:opacity-50"
-            >
-              {scanning ? "Scanning..." : "Scan for devices"}
-            </button>
-          </div>
-          {devices.map((d) => (
-            <div key={d.index} className="flex items-center gap-1.5 rounded-md bg-[var(--accent)]/50 px-2.5 py-1.5">
-              <Vibrate size="0.625rem" className="text-[var(--primary)]" />
-              <span className="text-[0.625rem] font-medium">{d.name}</span>
-              <span className="text-[0.5rem] text-[var(--muted-foreground)]">{d.capabilities.join(", ")}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ConversationNotesSection({ chatId }: { chatId: string }) {
-  const notesQuery = useChatNotes(chatId);
-  const deleteNote = useDeleteChatNote(chatId);
-  const clearNotes = useClearChatNotes(chatId);
-  const notes = useMemo<ConversationNote[]>(() => notesQuery.data ?? [], [notesQuery.data]);
-  const totalChars = useMemo(() => notes.reduce((acc, n) => acc + n.content.length, 0), [notes]);
-
-  const handleDelete = async (note: ConversationNote) => {
-    const ok = await showConfirmDialog({
-      title: "Delete Note",
-      message: "Remove this note from the connected roleplay's prompt?",
-      confirmLabel: "Delete",
-      tone: "destructive",
-    });
-    if (ok) deleteNote.mutate(note.id);
-  };
-
-  const handleClear = async () => {
-    if (notes.length === 0) return;
-    const ok = await showConfirmDialog({
-      title: "Clear All Notes",
-      message: "Remove every durable note from this roleplay? This cannot be undone.",
-      confirmLabel: "Clear all",
-      tone: "destructive",
-    });
-    if (ok) clearNotes.mutate();
-  };
-
-  return (
-    <Section
-      label="Conversation Notes"
-      icon={<StickyNote size="0.875rem" />}
-      count={notes.length}
-      help="Durable notes the connected conversation's character has saved using <note>. They persist in this roleplay's prompt every turn until cleared."
-    >
-      <div className="space-y-2">
-        <div className="flex items-center justify-between gap-2 text-[0.625rem] text-[var(--muted-foreground)]">
-          <span>
-            {notesQuery.isLoading
-              ? "Loading…"
-              : notesQuery.error
-                ? "Failed to load."
-                : notes.length === 0
-                  ? "No notes saved yet."
-                  : `${notes.length} ${notes.length === 1 ? "note" : "notes"} · ${totalChars.toLocaleString()} chars`}
-          </span>
-          {notes.length > 0 && !notesQuery.isLoading && !notesQuery.error && (
-            <button
-              type="button"
-              onClick={handleClear}
-              disabled={clearNotes.isPending}
-              className="rounded-md p-1 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--destructive)]/15 hover:text-[var(--destructive)] disabled:opacity-40"
-              title="Clear all notes"
-            >
-              <Trash2 size="0.75rem" />
-            </button>
-          )}
-        </div>
-
-        {notesQuery.isLoading ? (
-          <p className="rounded-lg bg-[var(--secondary)]/50 px-3 py-3 text-center text-[0.625rem] leading-relaxed text-[var(--muted-foreground)]">
-            Loading notes…
-          </p>
-        ) : notesQuery.error ? (
-          <p className="rounded-lg bg-[var(--destructive)]/10 px-3 py-3 text-[0.625rem] leading-relaxed text-[var(--destructive)] ring-1 ring-[var(--destructive)]/25">
-            Failed to load notes.
-          </p>
-        ) : notes.length === 0 ? (
-          <p className="rounded-lg bg-[var(--secondary)]/50 px-3 py-3 text-[0.625rem] leading-relaxed text-[var(--muted-foreground)]">
-            Characters in the connected conversation can save things they want this roleplay to durably remember by
-            wrapping text in <code className="rounded bg-[var(--accent)]/60 px-1">{"<note>...</note>"}</code>. Saved
-            notes will appear here.
-          </p>
-        ) : (
-          <ul className="space-y-1.5">
-            {notes.map((note) => (
-              <li
-                key={note.id}
-                className="flex items-start gap-2 rounded-lg bg-[var(--card)] px-2.5 py-2 ring-1 ring-[var(--border)]"
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="whitespace-pre-wrap break-words text-[0.6875rem] leading-relaxed text-[var(--foreground)]">
-                    {note.content}
-                  </p>
-                  <p className="mt-1 text-[0.5625rem] text-[var(--muted-foreground)]">
-                    {formatMemoryDate(note.createdAt)}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => void handleDelete(note)}
-                  disabled={deleteNote.isPending}
-                  className="shrink-0 rounded-md p-1 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--destructive)]/15 hover:text-[var(--destructive)] disabled:opacity-40"
-                  title="Delete this note"
-                >
-                  <Trash2 size="0.6875rem" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </Section>
   );
 }
