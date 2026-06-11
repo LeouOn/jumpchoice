@@ -52,6 +52,7 @@ import { promptOverridesRoutes } from "./prompt-overrides.routes.js";
 import { csrfDiagnosticsRoutes } from "./csrf-diagnostics.routes.js";
 import { cyoaRoutes } from "./cyoa.routes.js";
 import { cyoaBuildsRoutes } from "./cyoa-builds.routes.js";
+import { learningRoutes } from "./learning.routes.js";
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(chatsRoutes, { prefix: "/api/chats" });
@@ -103,6 +104,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(csrfDiagnosticsRoutes, { prefix: "/api/csrf" });
   await app.register(cyoaRoutes, { prefix: "/api/cyoa" });
   await app.register(cyoaBuildsRoutes, { prefix: "/api/cyoa" });
+  await app.register(learningRoutes, { prefix: "/api/learning" });
   if (process.env.MARINARA_LITE !== "true" && process.env.MARINARA_LITE !== "1") {
     await app.register(sidecarRoutes, { prefix: "/api/sidecar" });
   }
