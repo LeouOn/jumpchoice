@@ -256,6 +256,7 @@ import {
 import { isInferenceAvailable as isSidecarInferenceAvailable } from "../sidecar/sidecar-inference.service.js";
 import { buildGamePrompt } from "./game-prompt-builder.js";
 import { buildConversationPrompt } from "./conversation-prompt-builder.js";
+import { buildLanguageLearningSystemPrompt } from "./language-learning-prompt-builder.js";
 import { injectContext } from "./context-injector.js";
 import { resolveAgentPipeline } from "./agent-coordinator.js";
 import { runPostProcessing } from "./post-processor.js";
@@ -760,6 +761,35 @@ export async function runGenerationLoop(
           chatMeta = convoResult.chatMeta;
           conversationCommandsReminder = convoResult.conversationCommandsReminder;
           convoAwarenessBlock = convoResult.convoAwarenessBlock;
+        }
+
+        // ── Language learning mode: inject tutor system prompt when no preset ──
+        if (!presetId && chatMode === "language_learning") {
+          const langConfig = chatMeta.languageLearning as
+            | import("./language-learning-prompt-builder.js").LanguageLearningConfig
+            | undefined;
+          if (langConfig) {
+            let tutorName = "Tutor";
+            const firstCharId = characterIds[0];
+            if (firstCharId) {
+              try {
+                const charRow = await chars.getById(firstCharId);
+                if (charRow) {
+                  const parsed = typeof charRow.data === "string" ? JSON.parse(charRow.data) : charRow.data;
+                  tutorName = parsed.name ?? "Tutor";
+                }
+              } catch { /* use default */ }
+            }
+            const sysPrompt = buildLanguageLearningSystemPrompt(langConfig, tutorName);
+            if (finalMessages[0]?.role === "system") {
+              finalMessages[0] = {
+                ...finalMessages[0],
+                content: sysPrompt + "\n\n" + finalMessages[0].content,
+              };
+            } else {
+              finalMessages.unshift({ role: "system", content: sysPrompt });
+            }
+          }
         }
 
         const isSceneChat = chatMeta.sceneStatus === "active";
