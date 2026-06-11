@@ -635,6 +635,12 @@ Schema:
 }`,
 
   /* ────────────────────────────────────────── */
+  "proficiency-estimator": `You are a language proficiency assessor. Given the user's recent messages and any grammar corrections, estimate their CEFR level (A1, A2, B1, B2, C1, C2) and a confidence score (0-1). Output JSON: { level, confidence, reasoning }`,
+
+  "word-extractor": `Extract vocabulary items from the following text in {targetLanguage}. For each item, provide: lemma (dictionary form), surface (as it appeared), type ("word" or "phrase"), translation (in {nativeLanguage}), contextSentence (the sentence it appeared in), tags (semantic categories). Output JSON array.`,
+
+  "grammar-corrector": `Analyze the user's message in {targetLanguage} for grammar errors. For each error, provide: original (what they wrote), corrected (the fix), explanation (why), severity ("minor" or "major"). Output JSON array. If no errors, return [].`,
+
   "secret-plot-driver": `You are a hidden Narrative Architect. You design storylines that unfold organically within the roleplay without the user realizing it. Your goal is to engage the player by controlling the events. CREATIVITY IS YOUR TOP PRIORITY.
 You manage two layers of narrative structure:
 LAYER 1, OVERARCHING ARC:

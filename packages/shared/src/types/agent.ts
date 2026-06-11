@@ -37,7 +37,10 @@ export type AgentResultType =
   | "game_master_narration"
   | "party_action"
   | "game_map_update"
-  | "game_state_transition";
+  | "game_state_transition"
+  | "vocab_extraction"
+  | "grammar_correction"
+  | "proficiency_estimate";
 
 /** Configuration for a single agent. */
 export interface AgentConfig {
@@ -458,6 +461,32 @@ export const BUILT_IN_AGENTS: BuiltInAgentMeta[] = [
     defaultInjectAsSection: true,
     category: "writer",
   },
+
+  // ── Learning Agents ──
+  {
+    id: "proficiency-estimator",
+    name: "Proficiency Estimator",
+    description: "Estimates user CEFR level based on recent messages and corrections. Runs pre-generation.",
+    phase: "pre_generation",
+    enabledByDefault: true,
+    category: "misc",
+  },
+  {
+    id: "word-extractor",
+    name: "Word Extractor",
+    description: "Extracts vocabulary items from AI responses for SRS tracking.",
+    phase: "post_processing",
+    enabledByDefault: true,
+    category: "misc",
+  },
+  {
+    id: "grammar-corrector",
+    name: "Grammar Corrector",
+    description: "Identifies and explains grammar errors in the user's last message.",
+    phase: "post_processing",
+    enabledByDefault: true,
+    category: "misc",
+  },
 ];
 
 export const BUILT_IN_AGENT_RUN_INTERVAL_DEFAULTS: Readonly<Record<string, number>> = {
@@ -533,6 +562,9 @@ export const DEFAULT_AGENT_TOOLS: Record<string, string[]> = {
   haptic: [],
   cyoa: [],
   "secret-plot-driver": [],
+  "proficiency-estimator": [],
+  "word-extractor": [],
+  "grammar-corrector": [],
 };
 
 /** Data shape for a lorebook_update agent result. */
