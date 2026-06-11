@@ -173,6 +173,11 @@ const GameSurface = lazy(async () => {
   return { default: module.GameSurface };
 });
 
+const LanguageLearningSurface = lazy(async () => {
+  const module = await import("../language-learning/LanguageLearningSurface");
+  return { default: module.LanguageLearningSurface };
+});
+
 export function ChatArea() {
   const activeChatId = useChatStore((s) => s.activeChatId);
   const streamingChatId = useChatStore((s) => s.streamingChatId);
@@ -1878,6 +1883,88 @@ export function ChatArea() {
           />
         </>
       </Suspense>
+    );
+  }
+
+  // ═══════════════════════════════════════════════
+  // Language Learning mode — conversation + learning panel
+  // ═══════════════════════════════════════════════
+  if (chatMode === "language_learning") {
+    return (
+      <>
+        <Suspense fallback={surfaceFallback}>
+          <LanguageLearningSurface
+            activeChatId={activeChatId}
+            chat={chat}
+            messages={messages}
+            isLoading={isLoading}
+            hasNextPage={!!hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            fetchNextPage={fetchNextPage}
+            pageCount={pageCount}
+            totalMessageCount={totalMessageCount}
+            characterMap={characterMap}
+            characterNames={characterNames}
+            personaInfo={personaInfo}
+            chatMeta={chatMeta}
+            chatCharIds={chatCharIds}
+            connectedChatName={connectedChatName}
+            sceneInfo={conversationSceneInfo}
+            settingsOpen={settingsOpen}
+            filesOpen={filesOpen}
+            galleryOpen={galleryOpen}
+            wizardOpen={wizardOpen}
+            peekPromptData={peekPromptData}
+            deleteDialogMessageId={deleteDialogMessageId}
+            deleteDialogCanDeleteSwipe={deleteDialogCanDeleteSwipe}
+            deleteDialogActiveSwipeIndex={deleteDialogActiveSwipeIndex}
+            deleteDialogSwipeCount={deleteDialogSwipeCount}
+            multiSelectMode={multiSelectMode}
+            selectedMessageIds={selectedMessageIds}
+            spriteArrangeMode={spriteArrangeMode}
+            onDelete={handleDelete}
+            onRegenerate={handleRegenerate}
+            onEdit={handleEdit}
+            onSetActiveSwipe={handleSetActiveSwipe}
+            onToggleHiddenFromAI={handleToggleHiddenFromAI}
+            onPeekPrompt={handlePeekPrompt}
+            onToggleSelectMessage={handleToggleSelectMessage}
+            onSwitchChat={chat?.connectedChatId ? () => setActiveChatId(chat.connectedChatId!) : undefined}
+            onConcludeScene={chatMeta.sceneStatus === "active" ? () => concludeScene(activeChatId) : undefined}
+            onAbandonScene={chatMeta.sceneStatus === "active" ? () => abandonScene(activeChatId) : undefined}
+            onOpenSettings={() => setSettingsOpen(true)}
+            onOpenFiles={() => setFilesOpen(true)}
+            onOpenGallery={() => setGalleryOpen(true)}
+            onCloseSettings={() => setSettingsOpen(false)}
+            onCloseFiles={() => setFilesOpen(false)}
+            onCloseGallery={() => setGalleryOpen(false)}
+            onWizardFinish={() => {
+              setWizardOpen(false);
+              setSettingsOpen(true);
+            }}
+            onClosePeekPrompt={() => setPeekPromptData(null)}
+            onResetSpritePlacements={handleResetSpritePlacements}
+            onSpriteSideChange={handleSetSpritePosition}
+            onToggleSpriteArrange={() => setSpriteArrangeMode((prev) => !prev)}
+            onDeleteConfirm={handleDeleteConfirm}
+            onDeleteSwipe={handleDeleteSwipe}
+            onDeleteMore={handleDeleteMore}
+            onCloseDeleteDialog={() => setDeleteDialogMessageId(null)}
+            onBulkDelete={handleBulkDelete}
+            onCancelMultiSelect={handleCancelMultiSelect}
+            onUnselectAllMessages={handleUnselectAllMessages}
+            onSelectAllAboveSelection={handleSelectAllAboveSelection}
+            onSelectAllBelowSelection={handleSelectAllBelowSelection}
+            lastAssistantMessageId={lastAssistantMessageId}
+          />
+        </Suspense>
+        {pendingNewChatMode && (
+          <NewChatConnectionGate
+            mode={pendingNewChatMode}
+            onClose={() => useChatStore.getState().setPendingNewChatMode(null)}
+          />
+        )}
+      </>
     );
   }
 
