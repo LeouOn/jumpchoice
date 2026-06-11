@@ -41,12 +41,8 @@ function createMockDB() {
       return {
         values(rows: any) {
           const input = Array.isArray(rows) ? rows : [rows];
-          const p = Promise.resolve().then(() => { pushToTable(name, input); });
-          return {
-            run: () => p,
-            then(resolve: any, reject: any) { return p.then(resolve, reject); },
-            catch(reject: any) { return p.catch(reject); },
-          };
+          pushToTable(name, input);
+          return Promise.resolve() as any;
         },
       };
     },
@@ -56,15 +52,9 @@ function createMockDB() {
         set(patch: any) {
           return {
             where(_condition: any) {
-              const p = Promise.resolve().then(() => {
-                const data = getTableData(name);
-                for (const row of data) Object.assign(row, patch);
-              });
-              return {
-                run: () => p,
-                then(resolve: any, reject: any) { return p.then(resolve, reject); },
-                catch(reject: any) { return p.catch(reject); },
-              };
+              const data = getTableData(name);
+              for (const row of data) Object.assign(row, patch);
+              return Promise.resolve() as any;
             },
           };
         },
