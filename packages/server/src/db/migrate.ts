@@ -544,6 +544,71 @@ const CREATE_TABLES: string[] = [
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS languages (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    language_code TEXT NOT NULL,
+    native_language TEXT NOT NULL DEFAULT 'English',
+    proficiency_level TEXT,
+    proficiency_confidence REAL,
+    tutor_persona TEXT NOT NULL DEFAULT 'default',
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS vocabulary (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL,
+    language_code TEXT NOT NULL,
+    lemma TEXT NOT NULL,
+    surface TEXT NOT NULL,
+    type TEXT NOT NULL,
+    translation TEXT NOT NULL,
+    context_sentence TEXT NOT NULL DEFAULT '',
+    source_chat_id TEXT,
+    tags TEXT NOT NULL DEFAULT '[]',
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS srs_state (
+    id TEXT PRIMARY KEY NOT NULL,
+    vocabulary_id TEXT NOT NULL UNIQUE,
+    stability REAL NOT NULL DEFAULT 1.0,
+    difficulty REAL NOT NULL DEFAULT 5.0,
+    last_review TEXT,
+    next_due TEXT NOT NULL,
+    reps INTEGER NOT NULL DEFAULT 0,
+    lapses INTEGER NOT NULL DEFAULT 0,
+    suspended TEXT NOT NULL DEFAULT 'false'
+  )`,
+  `CREATE TABLE IF NOT EXISTS srs_reviews (
+    id TEXT PRIMARY KEY NOT NULL,
+    vocabulary_id TEXT NOT NULL,
+    grade INTEGER NOT NULL,
+    reviewed_at TEXT NOT NULL,
+    interval REAL NOT NULL,
+    stability_after REAL NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS corrections (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL,
+    language_code TEXT NOT NULL,
+    chat_id TEXT NOT NULL,
+    message_id TEXT,
+    original TEXT NOT NULL,
+    corrected TEXT NOT NULL,
+    explanation TEXT NOT NULL DEFAULT '',
+    severity TEXT NOT NULL,
+    dismissed TEXT NOT NULL DEFAULT 'false',
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS proficiency_snapshots (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT NOT NULL,
+    language_code TEXT NOT NULL,
+    level TEXT NOT NULL,
+    confidence REAL NOT NULL,
+    estimated_at TEXT NOT NULL,
+    source TEXT NOT NULL
+  )`,
 ];
 
 // ── Column migrations (ALTER TABLE for schema evolution) ──

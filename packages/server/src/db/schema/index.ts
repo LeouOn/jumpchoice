@@ -22,3 +22,4 @@ export * from "./prompt-overrides.js";
 export * from "./cyoa.js";
 export * from "./cyoa-builds.js";
 export * from "./jump-doc.js";
+export * from "./learning.js";
