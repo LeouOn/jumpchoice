@@ -153,8 +153,11 @@ export async function injectContext(
   let presetHandledLorebooks = initialPresetHandledLorebooks;
   let knowledgeRouterActivationPassCompleted = initialKnowledgeRouterActivationPassCompleted;
 
-  // ── Lorebook injection for conversation / roleplay / visual_novel (no preset) ──
-  const needsLorebook = !presetId && (chatMode === "conversation" || chatMode === "roleplay" || chatMode === "visual_novel");
+  // ── Lorebook injection for conversation / roleplay / visual_novel / language_learning (no preset) ──
+  const needsLorebook = !presetId && (
+    chatMode === "conversation" || chatMode === "roleplay" ||
+    chatMode === "visual_novel" || chatMode === "language_learning"
+  );
   if (needsLorebook) {
     sendProgress("lorebooks");
     const lorebookResult = await processLorebooks(db, toLorebookScanMessages(), null, {
