@@ -41,4 +41,15 @@ export const CHAT_MODES: Record<ChatMode, ChatModeDefinition> = {
     icon: "🎲",
     defaultAgents: ["world-state", "quest", "expression", "combat"],
   },
+  language_learning: {
+    id: "language_learning",
+    name: "Language Learning",
+    description: "Interactive language tutor with vocabulary tracking, grammar corrections, and conversation practice.",
+    icon: "📚",
+    defaultAgents: [
+      "proficiency-estimator",
+      "word-extractor",
+      "grammar-corrector",
+    ],
+  },
 };

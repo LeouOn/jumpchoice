@@ -26,6 +26,7 @@ export * from "./types/sidecar.js";
 export * from "./types/image-generation-defaults.js";
 export * from "./types/narrative.js";
 export * from "./types/jump-document.js";
+export * from "./types/learning.js";
 
 // Schemas
 export * from "./schemas/chat.schema.js";
@@ -55,6 +56,7 @@ export * from "./constants/game-assets.js";
 export * from "./constants/narrative-principles.js";
 export * from "./constants/narrator-personas.js";
 export * from "./constants/chain-of-thought-modes.js";
+export * from "./constants/learning-defaults.js";
 
 // Utils
 export * from "./utils/macro-engine.js";

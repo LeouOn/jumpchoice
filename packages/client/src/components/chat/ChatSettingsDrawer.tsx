@@ -183,6 +183,7 @@ const MODE_INTROS: Record<ChatMode, string> = {
   visual_novel:
     "Sprite- and background-driven roleplay — expressions, world state, and CYOA choices are available as optional agents below.",
   game: "Full Game Master with built-in dice, combat, encounters, world state, and session/map tracking — the Scene Analysis toggle below adds optional cinematic visuals (backgrounds, music, weather).",
+  language_learning: "Interactive language tutor — vocabulary tracking, grammar corrections, and conversation practice with adaptive difficulty.",
 };
 
 type AvailableAgent = {

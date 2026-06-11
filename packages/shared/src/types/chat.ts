@@ -5,7 +5,7 @@
 import type { GenerationGuideSource } from "../utils/generation-guide.js";
 
 /** The four primary chat modes the engine supports. */
-export type ChatMode = "conversation" | "roleplay" | "visual_novel" | "game";
+export type ChatMode = "conversation" | "roleplay" | "visual_novel" | "game" | "language_learning";
 
 /** How a multi-character (group) chat is handled. */
 export type GroupChatMode = "merged" | "individual";

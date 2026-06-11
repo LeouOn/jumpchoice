@@ -8,12 +8,13 @@ import { useUIStore } from "../../stores/ui.store";
 import { filterLanguageGenerationConnections } from "../../lib/connection-filters";
 import { cn } from "../../lib/utils";
 
-type Mode = "conversation" | "roleplay" | "game";
+type Mode = "conversation" | "roleplay" | "game" | "language_learning";
 
 const MODE_META: Record<Mode, { label: string; icon: React.ReactNode }> = {
   conversation: { label: "Conversation", icon: <MessageCircle size="0.875rem" /> },
   roleplay: { label: "Roleplay", icon: <BookOpen size="0.875rem" /> },
   game: { label: "Game", icon: <BookOpen size="0.875rem" /> },
+  language_learning: { label: "Language Learning", icon: <BookOpen size="0.875rem" /> },
 };
 
 interface NewChatConnectionGateProps {
