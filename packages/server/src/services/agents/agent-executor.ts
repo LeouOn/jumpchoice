@@ -1282,6 +1282,9 @@ const AGENT_RESULT_TYPE_MAP: Record<string, AgentResultType> = {
   haptic: "haptic_command",
   cyoa: "cyoa_choices",
   "secret-plot-driver": "secret_plot",
+  "proficiency-estimator": "proficiency_estimate",
+  "word-extractor": "vocab_extraction",
+  "grammar-corrector": "grammar_correction",
 };
 
 const AGENT_RESULT_TYPES = new Set<AgentResultType>([
@@ -1310,6 +1313,9 @@ const AGENT_RESULT_TYPES = new Set<AgentResultType>([
   "party_action",
   "game_map_update",
   "game_state_transition",
+  "vocab_extraction",
+  "grammar_correction",
+  "proficiency_estimate",
 ]);
 
 const TEXT_RESULT_TYPES = new Set<AgentResultType>(["context_injection", "director_event"]);
