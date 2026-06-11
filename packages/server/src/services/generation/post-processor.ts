@@ -57,6 +57,9 @@ import {
 } from "./helpers.js";
 import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
+import { executeWordExtractor } from "../agents/word-extractor.js";
+import { executeGrammarCorrector } from "../agents/grammar-corrector.js";
+import { createLearningCoordinator } from "../learning/learning-coordinator.js";
 
 export interface PostProcessorContext {
   db: any;
@@ -167,6 +170,7 @@ export async function runPostProcessing(
     textRewriteAgents,
     sendAgentEvent,
     updateChatMetadataForTools,
+    chatMode,
   } = ctx;
 
   // Await parallel agents that were started alongside the generation
@@ -1502,6 +1506,62 @@ export async function runPostProcessing(
               })}\n\n`,
             );
           }
+        }
+      }
+    }
+
+    // ── Language learning: run word extractor + grammar corrector in post-gen ──
+    if (chatMode === "language_learning" && messageId && !abortController.signal.aborted) {
+      const wordExtractorAgent = resolvedAgents.find((a) => a.type === "word-extractor");
+      const grammarCorrectorAgent = resolvedAgents.find((a) => a.type === "grammar-corrector");
+
+      const wordExtractorPromise = wordExtractorAgent
+        ? executeWordExtractor(wordExtractorAgent, { ...agentContext, mainResponse: combinedResponse }, wordExtractorAgent.provider, wordExtractorAgent.model).catch((err) => {
+            logger.warn(err, "[word-extractor] failed — continuing");
+            return null as AgentResult | null;
+          })
+        : Promise.resolve(null as AgentResult | null);
+
+      const grammarCorrectorPromise = grammarCorrectorAgent
+        ? executeGrammarCorrector(grammarCorrectorAgent, { ...agentContext, mainResponse: combinedResponse }, grammarCorrectorAgent.provider, grammarCorrectorAgent.model).catch((err) => {
+            logger.warn(err, "[grammar-corrector] failed — continuing");
+            return null as AgentResult | null;
+          })
+        : Promise.resolve(null as AgentResult | null);
+
+      const [wordResult, grammarResult] = await Promise.all([wordExtractorPromise, grammarCorrectorPromise]);
+
+      const coordinator = createLearningCoordinator(db);
+      const langConfig = chatMeta.languageLearning as
+        | import("./language-learning-prompt-builder.js").LanguageLearningConfig
+        | undefined;
+      const languageCode = langConfig?.languageCode ?? "en";
+      const userId = ((chatMeta as Record<string, unknown>).userId as string) ?? "unknown";
+
+      if (wordResult?.success && Array.isArray(wordResult.data)) {
+        try {
+          await coordinator.processExtractedVocab(
+            wordResult.data as import("@jumpchoice/shared").ExtractedVocab[],
+            userId,
+            languageCode,
+            input.chatId,
+          );
+        } catch (err) {
+          logger.warn(err, "[word-extractor] failed to persist vocab");
+        }
+      }
+
+      if (grammarResult?.success && Array.isArray(grammarResult.data)) {
+        try {
+          await coordinator.processExtractedCorrections(
+            grammarResult.data as import("@jumpchoice/shared").ExtractedCorrection[],
+            userId,
+            languageCode,
+            input.chatId,
+            messageId,
+          );
+        } catch (err) {
+          logger.warn(err, "[grammar-corrector] failed to persist corrections");
         }
       }
     }

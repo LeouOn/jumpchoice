@@ -2,6 +2,8 @@ import { BUILT_IN_AGENTS } from "@jumpchoice/shared";
 import type { AgentResult } from "@jumpchoice/shared";
 import { executeKnowledgeRetrieval } from "../agents/knowledge-retrieval.js";
 import { executeKnowledgeRouter } from "../agents/knowledge-router.js";
+import { executeProficiencyEstimator } from "../agents/proficiency-estimator.js";
+import { createLearningCoordinator } from "../learning/learning-coordinator.js";
 import { logger } from "../../lib/logger.js";
 import {
   findLastIndex,
@@ -89,6 +91,7 @@ export async function runPreGeneration(
   finalMessages: any[],
 ): Promise<PreGenResult> {
   const {
+    db,
     resolvedAgents,
     input,
     reviewedAgentTypes,
@@ -733,11 +736,51 @@ export async function runPreGeneration(
           resultType: "context_injection",
           data: { text: "Chat summary injected into prompt" },
           success: true,
-          error: null,
+           error: null,
           durationMs: 0,
         },
       })}\n\n`,
     );
+  }
+
+  // ── Language learning: run proficiency estimator in pre-gen ──
+  if (chatMode === "language_learning" && !input.regenerateMessageId) {
+    const proficiencyAgent = resolvedAgents.find((a) => a.type === "proficiency-estimator");
+    if (proficiencyAgent) {
+      try {
+        const langConfig = chatMeta.languageLearning as
+          | import("../generation/language-learning-prompt-builder.js").LanguageLearningConfig
+          | undefined;
+        if (langConfig) {
+          const profResult = await executeProficiencyEstimator(
+            proficiencyAgent,
+            agentContext,
+            proficiencyAgent.provider,
+            proficiencyAgent.model,
+          );
+          sendAgentEvent(profResult);
+          if (profResult.success && profResult.data) {
+            const coordinator = createLearningCoordinator(db);
+            const data = profResult.data as { level?: string; confidence?: number };
+            if (data.level) {
+              const userId = (chatMeta.userId as string) ?? "unknown";
+              const langs = await coordinator.proficiency.listLanguages(userId);
+              const lang = langs.find((l) => l.code === langConfig.languageCode);
+              if (lang) {
+                await coordinator.proficiency.setLevel(
+                  lang.id,
+                  data.level as import("@jumpchoice/shared").CefrLevel,
+                  data.confidence ?? 0.5,
+                  "ai_estimated" as import("@jumpchoice/shared").ProficiencySource,
+                );
+              }
+            }
+          }
+        }
+      } catch (err) {
+        logger.warn(err, "[proficiency-estimator] failed — continuing generation");
+      }
+    }
   }
 
   return { contextInjections, finalMessages, abortGeneration: false };
