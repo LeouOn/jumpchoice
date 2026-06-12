@@ -15,12 +15,29 @@ const setLevelSchema = z.object({
   source: z.enum(["user_set","ai_estimated","hybrid"]),
 });
 
+const addVocabSchema = z.object({
+  userId: z.string(),
+  languageCode: z.string(),
+  lemma: z.string(),
+  surface: z.string(),
+  type: z.enum(["word", "phrase"]),
+  translation: z.string(),
+  contextSentence: z.string(),
+  sourceChatId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+});
+
+const submitReviewsSchema = z.object({
+  vocabularyIds: z.array(z.string()),
+  grade: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+});
+
 export async function learningRoutes(app: FastifyInstance) {
   const coordinator = createLearningCoordinator(app.db);
 
   // Languages
-  app.get("/languages", async (req) => {
-    const userId = (req.query as any).userId;
+  app.get<{ Querystring: { userId: string } }>("/languages", async (req) => {
+    const userId = req.query.userId;
     return coordinator.proficiency.listLanguages(userId);
   });
   app.post("/languages", async (req, reply) => {
@@ -34,22 +51,36 @@ export async function learningRoutes(app: FastifyInstance) {
   });
 
   // Vocabulary
-  app.get("/vocab", async (req) => {
-    const { userId, languageCode, status, search, limit, offset } = req.query as any;
-    return coordinator.vocab.listByLanguage(userId, languageCode, { status, search, limit, offset });
+  app.get<{
+    Querystring: {
+      userId: string;
+      languageCode: string;
+      status?: string;
+      search?: string;
+      limit?: string;
+      offset?: string;
+    };
+  }>("/vocab", async (req) => {
+    const { userId, languageCode, status, search, limit, offset } = req.query;
+    return coordinator.vocab.listByLanguage(userId, languageCode, {
+      status,
+      search,
+      limit: limit ? Number.parseInt(limit, 10) : undefined,
+      offset: offset ? Number.parseInt(offset, 10) : undefined,
+    });
   });
-  app.post("/vocab", async (req) => {
-    const input = (req.body as any);
+  app.post<{ Body: z.infer<typeof addVocabSchema> }>("/vocab", async (req) => {
+    const input = addVocabSchema.parse(req.body);
     return coordinator.vocab.add(input);
   });
-  app.get("/vocab/stats", async (req) => {
-    const { userId, languageCode } = req.query as any;
+  app.get<{ Querystring: { userId: string; languageCode: string } }>("/vocab/stats", async (req) => {
+    const { userId, languageCode } = req.query;
     return coordinator.vocab.stats(userId, languageCode);
   });
 
   // Corrections
-  app.get("/corrections", async (req) => {
-    const { chatId } = req.query as any;
+  app.get<{ Querystring: { chatId: string } }>("/corrections", async (req) => {
+    const { chatId } = req.query;
     return coordinator.corrections.getByChat(chatId);
   });
   app.patch<{ Params: { id: string } }>("/corrections/:id/dismiss", async (req) => {
@@ -58,8 +89,8 @@ export async function learningRoutes(app: FastifyInstance) {
   });
 
   // Reviews
-  app.post("/reviews", async (req) => {
-    const { vocabularyIds, grade } = req.body as { vocabularyIds: string[]; grade: 1|2|3|4 };
+  app.post<{ Body: z.infer<typeof submitReviewsSchema> }>("/reviews", async (req) => {
+    const { vocabularyIds, grade } = submitReviewsSchema.parse(req.body);
     return coordinator.scheduleReviews(vocabularyIds, grade);
   });
 }

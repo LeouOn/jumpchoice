@@ -1,6 +1,6 @@
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, count } from "drizzle-orm";
 import type { DB } from "../../db/connection.js";
-import { vocabulary, srsState } from "../../db/schema/learning.js";
+import { vocabulary, srsState, srsReviews } from "../../db/schema/learning.js";
 import { newId, now } from "../../utils/id-generator.js";
 import { SrsScheduler } from "./srs-scheduler.js";
 import type { NewVocabulary, Vocabulary, VocabStats } from "@jumpchoice/shared";
@@ -66,10 +66,46 @@ export function createVocabularyService(db: DB) {
     },
 
     async stats(userId: string, languageCode: string): Promise<VocabStats> {
-      const rows = await db.select().from(vocabulary)
-        .where(and(eq(vocabulary.userId, userId), eq(vocabulary.languageCode, languageCode)));
-      const total = rows.length;
-      return { total, newCount: 0, learning: 0, known: 0, dueToday: 0, retentionRate: 0 };
+      const scope = and(eq(vocabulary.userId, userId), eq(vocabulary.languageCode, languageCode));
+
+      // Join vocabulary + srsState to compute bucket counts in one query
+      const rows = await db
+        .select({
+          total: count(),
+          newCount: sql<number>`sum(case when ${srsState.reps} = 0 then 1 else 0 end)`,
+          learning: sql<number>`sum(case when ${srsState.reps} > 0 and ${srsState.reps} < 3 then 1 else 0 end)`,
+          known: sql<number>`sum(case when ${srsState.reps} >= 3 and ${srsState.stability} >= 21 then 1 else 0 end)`,
+          dueToday: sql<number>`sum(case when ${srsState.nextDue} <= ${now()} then 1 else 0 end)`,
+        })
+        .from(vocabulary)
+        .leftJoin(srsState, eq(srsState.vocabularyId, vocabulary.id))
+        .where(scope);
+
+      // Retention rate: good reviews (grade >= 3) / all reviews
+      const reviewRows = await db
+        .select({
+          totalReviews: count(),
+          successful: sql<number>`sum(case when ${srsReviews.grade} >= 3 then 1 else 0 end)`,
+        })
+        .from(srsReviews)
+        .innerJoin(vocabulary, eq(vocabulary.id, srsReviews.vocabularyId))
+        .where(scope);
+
+      const row = rows[0]!;
+      const reviewRow = reviewRows[0]!;
+
+      const retentionRate = reviewRow.totalReviews > 0
+        ? Math.round((reviewRow.successful / reviewRow.totalReviews) * 100) / 100
+        : 0;
+
+      return {
+        total: row.total,
+        newCount: row.newCount,
+        learning: row.learning,
+        known: row.known,
+        dueToday: row.dueToday,
+        retentionRate,
+      };
     },
   };
 }

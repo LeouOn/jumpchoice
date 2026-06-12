@@ -20,8 +20,6 @@ export function ReviewSession() {
 
   const { items, currentIndex } = reviewSession;
   const current = items[currentIndex];
-  const _isLast = currentIndex >= items.length - 1;
-
   if (!current) {
     // Session complete
     return (
