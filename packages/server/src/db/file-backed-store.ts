@@ -193,6 +193,12 @@ export const FILE_BACKED_TABLES = [
   "cyoa_choices",
   "cyoa_builds",
   "installed_extensions",
+  "languages",
+  "vocabulary",
+  "srs_state",
+  "srs_reviews",
+  "corrections",
+  "proficiency_snapshots",
 ] as const;
 
 type FileBackedTable = (typeof FILE_BACKED_TABLES)[number];
@@ -224,6 +230,8 @@ const CASCADES: Array<{ parent: FileBackedTable; child: FileBackedTable; parentK
   { parent: "cyoa_documents", child: "cyoa_images", parentKey: "id", childKey: "documentId" },
   { parent: "cyoa_documents", child: "cyoa_choices", parentKey: "id", childKey: "documentId" },
   { parent: "cyoa_documents", child: "cyoa_builds", parentKey: "id", childKey: "documentId" },
+  { parent: "vocabulary", child: "srs_state", parentKey: "id", childKey: "vocabularyId" },
+  { parent: "vocabulary", child: "srs_reviews", parentKey: "id", childKey: "vocabularyId" },
 ];
 
 const tableMetasByObject = new WeakMap<object, TableMeta>();
