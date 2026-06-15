@@ -28,6 +28,13 @@ export const characterExtensionsSchema = z
   })
   .passthrough();
 
+export const characterAssetSchema = z.object({
+  type: z.string(),
+  uri: z.string(),
+  name: z.string(),
+  ext: z.string().default("png"),
+});
+
 export const characterBookEntrySchema = z.object({
   keys: z.array(z.string()).default([]),
   content: z.string().default(""),
@@ -43,6 +50,20 @@ export const characterBookEntrySchema = z.object({
   secondary_keys: z.array(z.string()).default([]),
   constant: z.boolean().default(false),
   position: z.enum(["before_char", "after_char"]).catch("before_char").default("before_char"),
+  // ── V3 lorebook entry fields ──
+  probability: z.number().min(0).max(100).optional(),
+  use_regex: z.boolean().optional(),
+  position_numeric: z.number().int().min(0).max(4).optional(),
+  group: z.string().optional(),
+  group_weight: z.number().optional(),
+  sticky: z.number().int().min(0).optional(),
+  cooldown: z.number().int().min(0).optional(),
+  delay: z.number().int().min(0).optional(),
+  ephemeral: z.boolean().optional(),
+  selective_logic: z.number().int().min(0).max(2).optional(),
+  match_whole_words: z.boolean().optional(),
+  prevent_recursion: z.boolean().optional(),
+  exclude_from_vectorization: z.boolean().optional(),
 });
 
 export const characterBookSchema = z.object({
@@ -71,11 +92,25 @@ export const characterDataSchema = z.object({
   alternate_greetings: z.array(z.string()).default([]),
   extensions: characterExtensionsSchema.default({}),
   character_book: characterBookSchema.nullable().default(null),
+  // ── V3-only fields (optional for backward compat with V2) ──
+  nickname: z.string().optional(),
+  assets: z.array(characterAssetSchema).optional(),
+  creator_notes_multilingual: z.record(z.string(), z.string()).optional(),
+  source: z.array(z.string()).optional(),
+  group_only_greetings: z.array(z.string()).default([]),
+  creation_date: z.number().optional(),
+  modification_date: z.number().optional(),
 });
 
 export const characterCardV2Schema = z.object({
   spec: z.literal("chara_card_v2"),
   spec_version: z.literal("2.0"),
+  data: characterDataSchema,
+});
+
+export const characterCardV3Schema = z.object({
+  spec: z.literal("chara_card_v3"),
+  spec_version: z.literal("3.0"),
   data: characterDataSchema,
 });
 
@@ -106,6 +141,7 @@ export const updatePersonaGroupSchema = createPersonaGroupSchema.partial();
 export type CreateCharacterInput = z.infer<typeof createCharacterSchema>;
 export type UpdateCharacterInput = z.infer<typeof updateCharacterSchema>;
 export type CharacterCardV2Input = z.infer<typeof characterCardV2Schema>;
+export type CharacterCardV3Input = z.infer<typeof characterCardV3Schema>;
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
 export type UpdateGroupInput = z.infer<typeof updateGroupSchema>;
 export type CreatePersonaGroupInput = z.infer<typeof createPersonaGroupSchema>;
