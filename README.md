@@ -84,6 +84,6 @@ Edit `packages/server/narrative-config.json` to set default persona and CoT mode
 ## Documentation
 
 - [Roadmap](ROADMAP.md)
-- [Architecture](docs/jumpchoice/ARCHITECTURE.md)
-- [Module Specs](docs/jumpchoice/MODULES.md)
+- [Architecture (Future Vision)](docs/future-vision/ARCHITECTURE.md)
+- [Module Specs (Future Vision)](docs/future-vision/MODULES.md)
 - [Narrative Engine](docs/NARRATIVE_ENGINE.md)
