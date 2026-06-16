@@ -617,3 +617,9 @@ function convertRisuToV2(raw: Record<string, unknown>): CharacterData {
     character_book: null,
   });
 }
+
+// ── Test-only exports ──
+// Exposed so the unit tests in tests/ccv3-*.test.ts can call the otherwise
+// private normalizers directly. Renamed with a `ForTest` suffix to make the
+// intent obvious at import sites. These are NOT part of the public importer API.
+export { normalizeV2 as normalizeCharacterDataForTest, normalizeCharacterBook as normalizeCharacterBookForTest };
