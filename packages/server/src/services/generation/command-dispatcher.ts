@@ -60,6 +60,47 @@ import {
 
 import type { CharInfoEntry } from "./types.js";
 
+/** Minimal shape of a lorebook row for lookup/display in command dispatch. */
+interface LorebookSummary {
+  id: string;
+  name: string;
+  description?: string;
+  category?: string;
+}
+
+/** Minimal shape of a lorebook entry for lookup/display in command dispatch. */
+interface LorebookEntrySummary {
+  id: string;
+  name: string;
+  content: string;
+  keys?: unknown[];
+}
+
+/** Minimal shape of a chat row for lookup in command dispatch. */
+interface ChatSummary {
+  id: string;
+  name?: string;
+  mode?: string;
+}
+
+/** Minimal shape of a preset row for lookup in command dispatch. */
+interface PresetSummary {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+/** Update payload accepted by chars.updatePersona. */
+type PersonaUpdateFields = {
+  name?: string;
+  comment?: string;
+  description?: string;
+  personality?: string;
+  scenario?: string;
+  backstory?: string;
+  appearance?: string;
+};
+
 export interface CommandDispatchContext {
   db: any;
   app: any;
@@ -193,7 +234,7 @@ export async function dispatchCharacterCommands(
                     const charData = JSON.parse(charRow.data as string);
                     const newStatus = schedCmd.status ?? charData.extensions?.conversationStatus ?? "online";
                     const extensions = { ...(charData.extensions ?? {}), conversationStatus: newStatus };
-                    await chars.update(characterId, { extensions } as any);
+                    await chars.update(characterId, { extensions });
                   }
 
                   // Sync to other chats with this character
@@ -349,7 +390,7 @@ export async function dispatchCharacterCommands(
                   const imgModel = imgConnFull.model || "";
                   const imgBaseUrl = imgConnFull.baseUrl || "https://image.pollinations.ai";
                   const imgApiKey = imgConnFull.apiKey || "";
-                  const imgSource = (imgConnFull as any).imageGenerationSource || imgModel;
+                  const imgSource = imgConnFull.imageGenerationSource || imgModel;
                   const imageDefaults = resolveConnectionImageDefaults(imgConnFull);
                   const imageSettings = await loadImageGenerationUserSettings(db);
 
@@ -397,7 +438,7 @@ export async function dispatchCharacterCommands(
                       url: imageUrl,
                       filename: `selfie_${charName.toLowerCase().replace(/\s+/g, "_")}.${imageResult.ext}`,
                       prompt: finalSelfiePrompt,
-                      galleryId: (galleryEntry as any)?.id,
+                      galleryId: galleryEntry?.id,
                     };
                     await chats.appendSwipeAttachment(messageId, generationSwipeIndex, attachment);
 
@@ -417,7 +458,7 @@ export async function dispatchCharacterCommands(
                         messageId,
                         imageUrl,
                         prompt: finalSelfiePrompt,
-                        galleryId: (galleryEntry as any)?.id,
+                        galleryId: galleryEntry?.id,
                       },
                     })}\n\n`,
                   );
@@ -479,7 +520,7 @@ export async function dispatchCharacterCommands(
               });
 
               extensions.characterMemories = memories;
-              await chars.update(targetChar.id, { extensions } as any);
+              await chars.update(targetChar.id, { extensions });
 
               logger.info(
                 `[commands] Memory created: "${srcCharName}" → "${targetData.name}": ${memCmd.summary}`,
@@ -869,7 +910,7 @@ export async function dispatchCharacterCommands(
                 },
                 character_book: null,
               };
-              const created = await chars.create(charData as any);
+              const created = await chars.create(charData);
               if (created) {
                 reply.raw.write(
                   `data: ${JSON.stringify({
@@ -971,13 +1012,13 @@ export async function dispatchCharacterCommands(
                 return p.name?.toLowerCase() === upCmd.name.toLowerCase();
               });
               if (targetPersona) {
-                const sets: Record<string, unknown> = {};
+                const sets: PersonaUpdateFields = {};
                 if (upCmd.description !== undefined) sets.description = upCmd.description;
                 if (upCmd.personality !== undefined) sets.personality = upCmd.personality;
                 if (upCmd.appearance !== undefined) sets.appearance = upCmd.appearance;
                 if (upCmd.scenario !== undefined) sets.scenario = upCmd.scenario;
                 if (upCmd.backstory !== undefined) sets.backstory = upCmd.backstory;
-                await chars.updatePersona(targetPersona.id, sets as any);
+                await chars.updatePersona(targetPersona.id, sets);
                 reply.raw.write(
                   `data: ${JSON.stringify({
                     type: "assistant_action",
@@ -1059,10 +1100,10 @@ export async function dispatchCharacterCommands(
             const ulCmd = command as UpdateLorebookCommand;
             try {
               const allLorebooks = await lorebooksStore.list();
-              const targetLorebook = (allLorebooks as any[]).find((lb: any) => {
-                if (lb.id === ulCmd.name) return true;
-                return lb.name?.toLowerCase() === ulCmd.name.toLowerCase();
-              });
+                const targetLorebook = (allLorebooks as unknown as LorebookSummary[]).find((lb) => {
+                  if (lb.id === ulCmd.name) return true;
+                  return lb.name?.toLowerCase() === ulCmd.name.toLowerCase();
+                });
 
               if (!targetLorebook) {
                 logger.warn('[commands] Update lorebook: "%s" not found', ulCmd.name);
@@ -1081,12 +1122,12 @@ export async function dispatchCharacterCommands(
                 if (category !== undefined) lorebookUpdates.category = category;
                 if (ulCmd.tags !== undefined) lorebookUpdates.tags = ulCmd.tags;
                 if (Object.keys(lorebookUpdates).length > 0) {
-                  await lorebooksStore.update(targetLorebook.id, lorebookUpdates as any);
+                  await lorebooksStore.update(targetLorebook.id, lorebookUpdates);
                 }
 
-                const existingEntries = (await lorebooksStore.listEntries(targetLorebook.id)) as any[];
-                const existingByName = new Map(
-                  existingEntries.map((entry) => [
+                const existingEntries = await lorebooksStore.listEntries(targetLorebook.id);
+                const existingByName = new Map<string, LorebookEntrySummary>(
+                  existingEntries.map((entry: LorebookEntrySummary) => [
                     String(entry.name ?? "")
                       .trim()
                       .toLowerCase(),
@@ -1096,10 +1137,10 @@ export async function dispatchCharacterCommands(
                 let updatedEntryCount = 0;
                 let createdEntryCount = 0;
 
-                for (const entry of ulCmd.entries ?? []) {
-                  const matchName = (entry.matchName || entry.name).trim().toLowerCase();
-                  const existingEntry = existingByName.get(matchName);
-                  if (existingEntry) {
+                  for (const entry of ulCmd.entries ?? []) {
+                    const matchName = (entry.matchName || entry.name).trim().toLowerCase();
+                    const existingEntry: LorebookEntrySummary | undefined = existingByName.get(matchName);
+                    if (existingEntry) {
                     const entryUpdates: Record<string, unknown> = {};
                     if (entry.name !== undefined) entryUpdates.name = entry.name;
                     if (entry.content !== undefined) entryUpdates.content = entry.content;
@@ -1112,7 +1153,7 @@ export async function dispatchCharacterCommands(
                     if (Object.keys(entryUpdates).length > 0) {
                       const updatedEntry = await lorebooksStore.updateEntry(
                         existingEntry.id,
-                        entryUpdates as any,
+                        entryUpdates,
                       );
                       if (updatedEntry) {
                         updatedEntryCount += 1;
@@ -1271,8 +1312,8 @@ export async function dispatchCharacterCommands(
                 }
               } else if (fetchCmd.fetchType === "lorebook") {
                 const allLorebooks = await lorebooksStore.list();
-                const found = (allLorebooks as any[]).find(
-                  (lb: any) => lb.name?.toLowerCase() === fetchCmd.name.toLowerCase(),
+                const found = allLorebooks.find(
+                  (lb: LorebookSummary) => lb.name?.toLowerCase() === fetchCmd.name.toLowerCase(),
                 );
                 if (found) {
                   const entries = await lorebooksStore.listEntries(found.id);
@@ -1280,7 +1321,7 @@ export async function dispatchCharacterCommands(
                   if (found.description) parts.push(`Description: ${found.description}`);
                   if (found.category) parts.push(`Category: ${found.category}`);
                   parts.push(`Entries (${entries.length}):`);
-                  for (const entry of entries as any[]) {
+                  for (const entry of entries as LorebookEntrySummary[]) {
                     parts.push(
                       `\n  Entry: ${entry.name}\n  Keys: ${(Array.isArray(entry.keys) ? entry.keys : []).join(", ")}\n  Content: ${entry.content}`,
                     );
@@ -1289,8 +1330,8 @@ export async function dispatchCharacterCommands(
                 }
               } else if (fetchCmd.fetchType === "chat") {
                 const allChats = await chats.list();
-                const found = (allChats as any[]).find(
-                  (c: any) => c.name?.toLowerCase() === fetchCmd.name.toLowerCase(),
+                const found = allChats.find(
+                  (c: ChatSummary) => c.name?.toLowerCase() === fetchCmd.name.toLowerCase(),
                 );
                 if (found) {
                   const parts = [`Chat: ${found.name}`, `Mode: ${found.mode}`];
@@ -1307,8 +1348,8 @@ export async function dispatchCharacterCommands(
                 }
               } else if (fetchCmd.fetchType === "preset") {
                 const allPresetsList = await presets.list();
-                const found = (allPresetsList as any[]).find(
-                  (p: any) => p.name?.toLowerCase() === fetchCmd.name.toLowerCase(),
+                const found = allPresetsList.find(
+                  (p: PresetSummary) => p.name?.toLowerCase() === fetchCmd.name.toLowerCase(),
                 );
                 if (found) {
                   const sections = await presets.listSections(found.id);

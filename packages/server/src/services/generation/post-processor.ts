@@ -132,6 +132,36 @@ export interface PostProcessorResult {
   pendingIllustration: Promise<void> | null;
 }
 
+/** Present-character entry produced by the character-tracker agent. */
+interface TrackerCharacterEntry {
+  name?: string;
+  avatarPath?: string;
+  appearance?: string;
+  outfit?: string;
+  mood?: string;
+  [key: string]: unknown;
+}
+
+/** Persona stat bar from the persona-stats agent. */
+interface PersonaStatBar {
+  name: string;
+  value: number;
+}
+
+/** Inventory item from the persona-stats agent. */
+interface InventoryItem {
+  name: string;
+  quantity?: number;
+}
+
+/** Quest update entry from the quest-tracker agent. */
+interface QuestUpdateEntry {
+  questName: string;
+  action: "create" | "update" | "complete" | "fail";
+  objectives?: Array<{ text?: string; description?: string; completed?: boolean } | string>;
+  description?: string;
+}
+
 export async function runPostProcessing(
   ctx: PostProcessorContext,
 ): Promise<PostProcessorResult> {
@@ -190,7 +220,7 @@ export async function runPostProcessing(
   // assistant message from this turn so group-chat cadence counts from the
   // earliest generated response.
   const preGenAnchorMessageId =
-    (firstSavedMsg as any)?.role === "assistant" ? ((firstSavedMsg as any)?.id ?? "") : "";
+    firstSavedMsg?.role === "assistant" ? (firstSavedMsg?.id ?? "") : "";
   if (preGenAnchorMessageId && !input.regenerateMessageId && !abortController.signal.aborted) {
     const preGenSuccessful = pipeline.results.filter((r: AgentResult) => {
       if (!r.success || r.agentType !== "director") return false;
@@ -250,7 +280,7 @@ export async function runPostProcessing(
       const lorebookKeeperContext = historicalLorebookTarget
         ? buildHistoricalLorebookKeeperContext(agentContext, lorebookKeeperMessages, historicalLorebookTarget.id)
         : { ...agentContext, mainResponse: combinedResponse };
-      const processedMessageId = historicalLorebookTarget?.id ?? (lastSavedMsg as any)?.id ?? "";
+      const processedMessageId = historicalLorebookTarget?.id ?? lastSavedMsg?.id ?? "";
 
       if (lorebookKeeperContext && processedMessageId) {
         lorebookKeeperProcessedMessageId = processedMessageId;
@@ -348,7 +378,7 @@ export async function runPostProcessing(
     const sortedResults = [...postResults].sort(
       (a, b) => (RESULT_ORDER[a.type] ?? 1) - (RESULT_ORDER[b.type] ?? 1),
     );
-    const messageId = (lastSavedMsg as any)?.id ?? "";
+    const messageId = lastSavedMsg?.id ?? "";
     // Determine swipe index for this generation so ALL tracker agents target the
     // same (messageId, swipeIndex) snapshot that the world-state agent creates.
     let targetSwipeIndex = 0;
@@ -472,8 +502,8 @@ export async function runPostProcessing(
                   imgModel: imgConnFull.model || "",
                   imgBaseUrl: imgConnFull.baseUrl || "https://image.pollinations.ai",
                   imgApiKey: imgConnFull.apiKey || "",
-                  imgSource: (imgConnFull as any).imageGenerationSource || imgConnFull.model || "",
-                  imgService: imgConnFull.imageService || (imgConnFull as any).imageGenerationSource || "",
+                    imgSource: imgConnFull.imageGenerationSource || imgConnFull.model || "",
+                    imgService: imgConnFull.imageService || imgConnFull.imageGenerationSource || "",
                   imgEndpointId: imgConnFull.imageEndpointId || undefined,
                   imgComfyWorkflow: imgConnFull.comfyuiWorkflow || undefined,
                   imgDefaults: imageDefaults,
@@ -730,7 +760,7 @@ export async function runPostProcessing(
       ) {
         try {
           const ctData = result.data as Record<string, unknown>;
-          const chars = (ctData.presentCharacters as any[]) ?? [];
+          const chars = (ctData.presentCharacters as TrackerCharacterEntry[]) ?? [];
           const snapBeforeUpdate = await gameStateStore.getByMessage(messageId, targetSwipeIndex);
           const oldChars: any[] = snapBeforeUpdate?.presentCharacters
             ? typeof snapBeforeUpdate.presentCharacters === "string"
@@ -802,7 +832,7 @@ export async function runPostProcessing(
                   const imgModel = imgConnFull.model || "";
                   const imgBaseUrl = imgConnFull.baseUrl || "https://image.pollinations.ai";
                   const imgApiKey = imgConnFull.apiKey || "";
-                  const imgSource = (imgConnFull as any).imageGenerationSource || imgModel;
+                  const imgSource = imgConnFull.imageGenerationSource || imgModel;
                   const imgServiceHint = imgConnFull.imageService || imgSource;
                   const imageDefaults = resolveConnectionImageDefaults(imgConnFull);
                   const imageSettings = await loadImageGenerationUserSettings(db);
@@ -937,9 +967,9 @@ export async function runPostProcessing(
       ) {
         try {
           const psData = result.data as Record<string, unknown>;
-          const bars = (psData.stats as any[]) ?? [];
+          const bars = (psData.stats as PersonaStatBar[]) ?? [];
           const status = (psData.status as string) ?? "";
-          const inventory = (psData.inventory as any[]) ?? [];
+          const inventory = (psData.inventory as InventoryItem[]) ?? [];
 
           // Ensure a snapshot exists for this (messageId, swipeIndex).
           // If world-state didn't create one, updateByMessage clones the
@@ -984,10 +1014,10 @@ export async function runPostProcessing(
           if (inventory.length > 0) {
             const existingInv = snap?.playerStats
               ? typeof snap.playerStats === "string"
-                ? ((JSON.parse(snap.playerStats) as any).inventory ?? [])
-                : ((snap.playerStats as any).inventory ?? [])
+                ? (JSON.parse(snap.playerStats).inventory ?? [])
+                : (snap.playerStats as { inventory?: unknown[] }).inventory ?? []
               : [];
-            const oldNames = new Set((existingInv as any[]).map((i: any) => i.name));
+            const oldNames = new Set((existingInv as InventoryItem[]).map((i) => i.name));
             for (const item of inventory) {
               if (!oldNames.has(item.name)) {
                 updateJournal(db, input.chatId, (j) =>
@@ -1010,7 +1040,7 @@ export async function runPostProcessing(
       ) {
         try {
           const ctData = result.data as Record<string, unknown>;
-          const fields = (ctData.fields as any[]) ?? [];
+          const fields = (ctData.fields as Array<Record<string, unknown>>) ?? [];
           if (fields.length > 0) {
             // Ensure a snapshot exists for this (messageId, swipeIndex)
             let snap = await gameStateStore.getByMessage(messageId, targetSwipeIndex);
@@ -1046,7 +1076,7 @@ export async function runPostProcessing(
       if (result.success && result.type === "quest_update" && result.data && typeof result.data === "object") {
         try {
           const qData = result.data as Record<string, unknown>;
-          const updates = (qData.updates as any[]) ?? [];
+          const updates = (qData.updates as QuestUpdateEntry[]) ?? [];
           logger.debug(
             "[generate] Quest agent result — updates: %d, data keys: %s %s",
             updates.length,
@@ -1145,7 +1175,7 @@ export async function runPostProcessing(
       if (result.success && result.type === "lorebook_update" && result.data && typeof result.data === "object") {
         try {
           const lkData = result.data as Record<string, unknown>;
-          const updates = (lkData.updates as any[]) ?? [];
+          const updates = (lkData.updates as Array<Record<string, unknown>>) ?? [];
           if (updates.length > 0) {
             await persistLorebookKeeperUpdates({
               lorebooksStore,
@@ -1316,7 +1346,7 @@ export async function runPostProcessing(
                 const imgModel = imgConnFull.model || "";
                 const imgBaseUrl = imgConnFull.baseUrl || "https://image.pollinations.ai";
                 const imgApiKey = imgConnFull.apiKey || "";
-                const imgSource = (imgConnFull as any).imageGenerationSource || imgModel;
+                const imgSource = imgConnFull.imageGenerationSource || imgModel;
                 const imgServiceHint = imgConnFull.imageService || imgSource;
                 const imageDefaults = resolveConnectionImageDefaults(imgConnFull);
                 const imageSettings = await loadImageGenerationUserSettings(db);
@@ -1394,7 +1424,7 @@ export async function runPostProcessing(
                     if (visual) appearanceLines.push(`${ci.name}: ${visual}`);
                   }
                   if (includePersona && persona) {
-                    const pAppearance = (persona as any).appearance ?? "";
+                    const pAppearance = persona.appearance ?? "";
                     if (pAppearance) appearanceLines.push(`${personaName}: ${pAppearance}`);
                   }
                   if (appearanceLines.length > 0 || illustratorRefImages) {
@@ -1447,7 +1477,7 @@ export async function runPostProcessing(
                     url: imageUrl,
                     filename: `illustration.${imageResult.ext}`,
                     prompt: fullPrompt,
-                    galleryId: (galleryEntry as any)?.id,
+                    galleryId: galleryEntry?.id,
                   };
 
                   // Always persist to the swipe row so the attachment survives
@@ -1471,7 +1501,7 @@ export async function runPostProcessing(
                       imageUrl,
                       prompt: fullPrompt,
                       reason: illData.reason,
-                      galleryId: (galleryEntry as any)?.id,
+                      galleryId: galleryEntry?.id,
                     },
                   })}\n\n`,
                 );

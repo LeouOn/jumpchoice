@@ -650,10 +650,10 @@ export async function runGenerationLoop(
 
           const assemblerInput: AssemblerInput = {
             db: db,
-            preset: preset as any,
-            sections: sections as any,
-            groups: groups as any,
-            choiceBlocks: choiceBlocks as any,
+            preset: preset,
+            sections: sections,
+            groups: groups,
+            choiceBlocks: choiceBlocks,
             chatChoices,
             chatId: input.chatId,
             characterIds: promptCharacterIds,
@@ -1258,7 +1258,7 @@ export async function runGenerationLoop(
         if (resolvedAgents.some((a) => a.type === "cyoa")) {
           const lastAssistantMsg = chatMessages.filter((m: any) => m.role === "assistant").at(-1);
           if (lastAssistantMsg) {
-            const lastExtra = parseExtra((lastAssistantMsg as any).extra);
+            const lastExtra = parseExtra(lastAssistantMsg.extra);
             if (lastExtra.cyoaChoices) {
               agentContext.memory._lastCyoaChoices = lastExtra.cyoaChoices;
             }
