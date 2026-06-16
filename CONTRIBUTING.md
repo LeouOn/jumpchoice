@@ -1,6 +1,6 @@
-# Contributing to Marinara Engine
+# Contributing to JumpChoice
 
-This is the canonical contributor guide for Marinara Engine. Use it with `README.md` for the product overview, `CHANGELOG.md` for release notes, and `CLAUDE.md` only as a thin companion for maintainers using AI agent. All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+This is the canonical contributor guide for JumpChoice. Use it with `README.md` for the product overview, `CHANGELOG.md` for release notes, and `CLAUDE.md` only as a thin companion for maintainers using AI agent. All participants are expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Tech Stack
 
@@ -23,8 +23,8 @@ Prerequisites:
 Typical local setup:
 
 ```bash
-git clone https://github.com/Pasta-Devs/Marinara-Engine.git
-cd Marinara-Engine
+git clone https://github.com/LeouOn/jumpchoice.git
+cd jumpchoice
 git checkout staging
 pnpm install
 pnpm build
@@ -44,7 +44,7 @@ Copy `.env.example` to `.env` when you need to change ports, HTTPS settings, or 
 
 ## Branches
 
-Marinara Engine uses two long-lived branches:
+JumpChoice uses two long-lived branches:
 
 | Branch    | Role                                                                                           |
 | --------- | ---------------------------------------------------------------------------------------------- |
@@ -148,7 +148,7 @@ All server-side logging goes through a shared [Pino](https://getpino.io/) logger
 
 ## AI Agent Workflow
 
-AI coding agents should use `.github/agents/chai-workflow.md` as an additive workflow overlay. It adapts the Chai Agent Workflow Pack for Marinara's branch, issue, PR, validation, and risky-work expectations.
+AI coding agents should use `.github/agents/chai-workflow.md` as an additive workflow overlay. It adapts the Chai Agent Workflow Pack for JumpChoice's branch, issue, PR, validation, and risky-work expectations.
 
 The overlay is not a substitute for this guide. When instructions conflict, follow this file, `AGENTS.md`, package-specific instructions, and maintainer requests first. The overlay is mainly a proof and coordination layer: reproduce before fixing when practical, verify the user-facing claim before saying done, keep PR/issue text exact, leave PR checkboxes unchecked for humans, and call out risky-work proof gaps honestly.
 

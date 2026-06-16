@@ -1,6 +1,6 @@
 # Changelog
 
-This file is the release-notes source of truth for Marinara Engine. Reuse these entries when publishing GitHub Releases for tags in the `vX.Y.Z` format.
+This file is the release-notes source of truth for JumpChoice. Reuse these entries when publishing GitHub Releases for tags in the `vX.Y.Z` format.
 
 ## [Unreleased]
 
@@ -15,7 +15,7 @@ This file is the release-notes source of truth for Marinara Engine. Reuse these 
 
 ### Added
 
-- Added a Marinara-specific AI agent workflow overlay, adapted from the Chai Agent Workflow Pack, covering proof discipline, bugfix/feature lanes, issue filing, PR gates, and risky-work claim boundaries.
+- Added a JumpChoice-specific AI agent workflow overlay, adapted from the Chai Agent Workflow Pack, covering proof discipline, bugfix/feature lanes, issue filing, PR gates, and risky-work claim boundaries.
 - Added a None option for Roleplay message avatars so messages can render without avatar attachments.
 - Added default starting values for numeric Game HUD widgets, with setup/editor clamps that keep start values within the configured max.
 - Added a prompt override editor for registered prompt templates, including conversation selfie overrides, collapsible settings, and draft preservation.
