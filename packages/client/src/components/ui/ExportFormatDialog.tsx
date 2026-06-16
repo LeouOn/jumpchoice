@@ -1,8 +1,13 @@
-import { FileJson, ImageDown, Layers, X } from "lucide-react";
+import { FileArchive, FileJson, ImageDown, Layers, Sparkles, X } from "lucide-react";
 import { Modal } from "./Modal";
 import { cn } from "../../lib/utils";
 
-export type ExportFormatChoice = "native" | "compatible" | "compatible-png";
+export type ExportFormatChoice =
+  | "native"
+  | "compatible"
+  | "compatible-png"
+  | "compatible-png-v3"
+  | "charx";
 
 interface ExportFormatDialogProps {
   open: boolean;
@@ -11,7 +16,10 @@ interface ExportFormatDialogProps {
   nativeDescription?: string;
   compatibleDescription?: string;
   pngDescription?: string;
+  pngV3Description?: string;
+  charxDescription?: string;
   showPngOption?: boolean;
+  showV3Options?: boolean;
   onClose: () => void;
   onSelect: (format: ExportFormatChoice) => void;
 }
@@ -23,7 +31,10 @@ export function ExportFormatDialog({
   nativeDescription = "Keeps Marinara-specific fields, folders, metadata, and import fidelity.",
   compatibleDescription = "Uses folderless, platform-friendly JSON where possible for tools like SillyTavern and Chub.",
   pngDescription = "Chara Card V2 PNG with the avatar baked in — works in SillyTavern, Chub, and Risu.",
+  pngV3Description = "Character Card V3 PNG. Dual-writes ccv3 + chara chunks so V3-aware readers pick up nicknames, assets, and group greetings.",
+  charxDescription = "RisuAI CharX archive (.charx). A V3 zip bundle with the card JSON and referenced assets.",
   showPngOption = false,
+  showV3Options = false,
   onClose,
   onSelect,
 }: ExportFormatDialogProps) {
@@ -38,8 +49,21 @@ export function ExportFormatDialog({
     ...(showPngOption
       ? [{ id: "compatible-png" as const, label: "Compatible PNG Card", icon: ImageDown, description: pngDescription }]
       : []),
+    ...(showPngOption && showV3Options
+      ? [
+          {
+            id: "compatible-png-v3" as const,
+            label: "PNG Card (V3)",
+            icon: Sparkles,
+            description: pngV3Description,
+          },
+        ]
+      : []),
+    ...(showV3Options
+      ? [{ id: "charx" as const, label: "CharX Archive", icon: FileArchive, description: charxDescription }]
+      : []),
   ];
-  const gridColumns = options.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2";
+  const gridColumns = options.length >= 4 ? "sm:grid-cols-3" : options.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2";
 
   return (
     <Modal open={open} onClose={onClose} title={title} width="max-w-lg">

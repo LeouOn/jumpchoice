@@ -3695,7 +3695,9 @@ function AdvancedSettings() {
   };
 
   const handleExportProfileChoice = (format: ExportFormatChoice) => {
-    if (format === "compatible-png") return;
+    // Only "native" and "compatible" map to profile export; PNG/V3/CharX are
+    // character-only formats that never apply here.
+    if (format !== "native" && format !== "compatible") return;
     void handleExportProfile(format);
   };
 

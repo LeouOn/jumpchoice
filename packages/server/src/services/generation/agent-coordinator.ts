@@ -357,6 +357,9 @@ export async function resolveAgentPipeline(
   }
 
   // Resolve character info (used for agent context AND prompt fallback)
+  // In a group chat, prefer each character's V3 group_only_greetings[0] over
+  // first_mes so the greeting reflects the group context.
+  const isGroupChat = characterIds.length > 1;
   const charInfo: CharInfoEntry[] = [];
   for (const cid of characterIds) {
     const charRow = await chars.getById(cid);
@@ -368,6 +371,13 @@ export async function resolveAgentPipeline(
         scenario = scenario.replace(/<assistant_capabilities>[\s\S]*?<\/assistant_capabilities>/gi, "").trim();
       }
       const description = getCharacterDescriptionWithExtensions(charData);
+      const groupOnlyGreetings = Array.isArray(charData.group_only_greetings)
+        ? charData.group_only_greetings
+        : [];
+      const firstMes =
+        isGroupChat && groupOnlyGreetings.length > 0
+          ? (groupOnlyGreetings[0] ?? charData.first_mes ?? "")
+          : (charData.first_mes ?? "");
       charInfo.push({
         id: cid,
         name: charData.name ?? "Unknown",
@@ -379,7 +389,7 @@ export async function resolveAgentPipeline(
         backstory: charData.extensions?.backstory ?? "",
         appearance: charData.extensions?.appearance ?? "",
         mesExample: charData.mes_example ?? "",
-        firstMes: charData.first_mes ?? "",
+        firstMes,
         postHistoryInstructions: charData.post_history_instructions ?? "",
         tags: Array.isArray(charData.tags) ? charData.tags.map(String).filter(Boolean) : [],
         talkativeness: Math.max(0, Math.min(1, Number(charData.extensions?.talkativeness ?? 0.5))),

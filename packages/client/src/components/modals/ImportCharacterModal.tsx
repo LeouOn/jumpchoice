@@ -3,14 +3,16 @@
 // ──────────────────────────────────────────────
 import { useState, useRef } from "react";
 import { Modal } from "../ui/Modal";
-import { Download, FileJson, Image, CheckCircle, XCircle, Loader2, BookOpen } from "lucide-react";
+import { Download, FileJson, Image, CheckCircle, XCircle, Loader2, BookOpen, Sparkles } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { characterKeys } from "../../hooks/use-characters";
 import { lorebookKeys } from "../../hooks/use-lorebooks";
 import { api } from "../../lib/api-client";
 import {
   inspectCharacterFilesForEmbeddedLorebooks,
+  inspectCharacterFilesForV3,
   type EmbeddedLorebookImportPreview,
+  type V3CardPreview,
 } from "../../lib/character-import";
 
 interface Props {
@@ -41,6 +43,7 @@ export function ImportCharacterModal({ open, onClose }: Props) {
     files: File[];
     previews: EmbeddedLorebookImportPreview[];
   } | null>(null);
+  const [v3Previews, setV3Previews] = useState<V3CardPreview[]>([]);
   const [tagImportMode, setTagImportMode] = useState<TagImportMode>("all");
   const qc = useQueryClient();
 
@@ -55,6 +58,7 @@ export function ImportCharacterModal({ open, onClose }: Props) {
     setStatus("loading");
     setResults([]);
     setPendingLorebookChoice(null);
+    setV3Previews([]);
 
     try {
       const stCharacterFiles: File[] = [];
@@ -84,6 +88,15 @@ export function ImportCharacterModal({ open, onClose }: Props) {
           marinaraPayloads.push({ file, payload: json });
         } else {
           stCharacterFiles.push(file);
+        }
+      }
+
+      if (stCharacterFiles.length > 0) {
+        try {
+          const detected = await inspectCharacterFilesForV3(stCharacterFiles);
+          if (detected.length > 0) setV3Previews(detected);
+        } catch {
+          // V3 detection is best-effort; never block the import on it.
         }
       }
 
@@ -231,6 +244,7 @@ export function ImportCharacterModal({ open, onClose }: Props) {
     setStatus("idle");
     setResults([]);
     setPendingLorebookChoice(null);
+    setV3Previews([]);
     setTagImportMode("all");
   };
 
@@ -282,6 +296,53 @@ export function ImportCharacterModal({ open, onClose }: Props) {
                   >
                     Import Lorebook
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {v3Previews.length > 0 && (
+          <div className="rounded-xl border border-sky-400/30 bg-sky-400/10 p-4">
+            <div className="flex items-start gap-3">
+              <Sparkles className="mt-0.5 shrink-0 text-sky-400" size="1.125rem" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-[var(--foreground)]">
+                  {v3Previews.length} Character Card V3 detected
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-[var(--muted-foreground)]">
+                  These files use the V3 spec. Nicknames, group-only greetings, and assets import with the card.
+                </p>
+                <div className="mt-3 max-h-40 overflow-y-auto rounded-lg border border-[var(--border)]/70 bg-[var(--background)]/40">
+                  {v3Previews.map((preview) => {
+                    const totalAssets = preview.assetCount ?? null;
+                    return (
+                      <div
+                        key={`${preview.filename}-${preview.format}`}
+                        className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-[var(--border)]/60 px-3 py-2 text-xs last:border-b-0"
+                      >
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="rounded-full bg-sky-500/15 px-1.5 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide text-sky-400">
+                            V3
+                          </span>
+                          <span className="min-w-0 truncate font-medium">{preview.filename}</span>
+                        </span>
+                        {preview.nickname && (
+                          <span className="shrink-0 text-[var(--muted-foreground)]">
+                            Nickname: <span className="text-[var(--foreground)]">{preview.nickname}</span>
+                          </span>
+                        )}
+                        {totalAssets !== null && (
+                          <span className="shrink-0 text-[var(--muted-foreground)]">
+                            {totalAssets} {totalAssets === 1 ? "asset" : "assets"}
+                          </span>
+                        )}
+                        {preview.format === "charx" && totalAssets === null && (
+                          <span className="shrink-0 text-[var(--muted-foreground)]">CharX archive</span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

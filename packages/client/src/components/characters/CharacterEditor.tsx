@@ -784,15 +784,20 @@ export function CharacterEditor() {
       <ExportFormatDialog
         open={exportDialogOpen}
         title="Export Character"
-        description="Native keeps Marinara metadata. Compatible exports direct Chara Card V2 JSON for other platforms."
+        description="Native keeps Marinara metadata. Compatible exports direct Chara Card JSON for other platforms. V3 options carry nicknames, group greetings, and assets."
         compatibleDescription="Exports direct Chara Card V2 JSON without the Marinara wrapper."
         showPngOption
+        showV3Options
         onClose={() => setExportDialogOpen(false)}
         onSelect={(format: ExportFormatChoice) => {
           if (!characterId) return;
           setExportDialogOpen(false);
           if (format === "compatible-png") {
             void api.download(`/characters/${characterId}/export-png`, "character.png");
+          } else if (format === "compatible-png-v3") {
+            void api.download(`/characters/${characterId}/export-png?format=v3`, "character-v3.png");
+          } else if (format === "charx") {
+            void api.download(`/characters/${characterId}/export-charx`, "character.charx");
           } else {
             void api.download(`/characters/${characterId}/export?format=${format}`);
           }
@@ -1399,6 +1404,55 @@ function MetadataTab({
         </label>
       </div>
 
+      {/* Nickname (V3) */}
+      <label className="block space-y-1.5">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)]">
+          Nickname{" "}
+          <HelpTooltip text="V3-only. A short nickname that overrides {{char}} replacement in prompts. Leave empty to use the full name." />
+        </span>
+        <input
+          value={formData.nickname ?? ""}
+          onChange={(e) => updateField("nickname", e.target.value)}
+          className="w-full rounded-xl border border-[var(--border)] bg-[var(--secondary)] px-3 py-2 text-sm outline-none focus:border-[var(--primary)]/40 focus:ring-1 focus:ring-[var(--primary)]/20"
+          placeholder="Short name used as {{char}} (V3)"
+        />
+      </label>
+
+      {/* V3 timestamps (read-only) */}
+      {Boolean(formData.creation_date ?? formData.modification_date) && (
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/40 p-3">
+          <p className="mb-1.5 text-[0.625rem] font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">
+            Card Timestamps (V3)
+          </p>
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-[var(--muted-foreground)]">
+            {formData.creation_date ? (
+              <span>
+                Created:{" "}
+                <span className="font-medium text-[var(--foreground)]">
+                  {new Date(formData.creation_date * 1000).toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </span>
+            ) : null}
+            {formData.modification_date ? (
+              <span>
+                Modified:{" "}
+                <span className="font-medium text-[var(--foreground)]">
+                  {new Date(formData.modification_date * 1000).toLocaleString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </span>
+            ) : null}
+          </div>
+        </div>
+      )}
+
       {/* Tags */}
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-2">
@@ -1993,6 +2047,21 @@ function AdvancedTab({
           </label>
         </div>
       </div>
+
+      {/* Group Chat Greetings (V3) */}
+      <label className="block space-y-1.5">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)]">
+          Group Chat Greetings (V3){" "}
+          <HelpTooltip text="V3-only. Opening messages active only in group chats. One greeting per line; the picker cycles through them." />
+        </span>
+        <textarea
+          value={(formData.group_only_greetings ?? []).join("\n")}
+          onChange={(e) => updateField("group_only_greetings", e.target.value.split("\n"))}
+          rows={5}
+          className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--secondary)] p-3 text-sm outline-none placeholder:text-[var(--muted-foreground)]/40 focus:border-[var(--primary)]/40 focus:ring-1 focus:ring-[var(--primary)]/20"
+          placeholder={"One greeting per line, e.g.\n*waves* Oh, you're all here! Welcome, welcome.\nHmph. Didn't expect a crowd today."}
+        />
+      </label>
 
       <ExpandedTextarea
         open={expandedField === "system_prompt"}
