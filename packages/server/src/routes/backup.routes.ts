@@ -13,6 +13,7 @@ import { inflateRawSync } from "zlib";
 import AdmZip from "adm-zip";
 import { FILE_BACKED_TABLES } from "../db/file-backed-store.js";
 import * as schema from "../db/schema/index.js";
+import type { SQLiteTable, IndexColumn } from "drizzle-orm/sqlite-core";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";
 import { createLorebooksStorage } from "../services/storage/lorebooks.storage.js";
 import { createPromptsStorage } from "../services/storage/prompts.storage.js";
@@ -350,7 +351,7 @@ async function buildProfileTableSnapshot(app: FastifyInstance): Promise<ProfileT
   for (const tableName of FILE_BACKED_TABLES) {
     const table = profileTableObjects.get(tableName);
     if (!table) continue;
-    const rows = (await app.db.select().from(table as any)) as Array<Record<string, unknown>>;
+    const rows = (await app.db.select().from(table as unknown as SQLiteTable)) as Array<Record<string, unknown>>;
     tables[tableName] = sanitizeProfileTableRows(tableName, rows);
   }
 
@@ -537,11 +538,11 @@ async function importProfileStorageSnapshot(
     }
 
     emit("tables", `Importing ${tableName.replace(/_/g, " ")}`);
-    const primaryKey = (table as Record<string, unknown>).id;
+    const primaryKey = (table as Record<string, unknown>).id as unknown as IndexColumn | undefined;
     for (const row of rows) {
-      const cleanRow = { ...row };
+      const cleanRow: Record<string, unknown> = { ...row };
       if (tableName === "api_connections") cleanRow.apiKeyEncrypted = "";
-      const insert = app.db.insert(table as any).values(cleanRow as any) as any;
+      const insert = app.db.insert(table as unknown as SQLiteTable).values(cleanRow);
       if (primaryKey) {
         await insert.onConflictDoUpdate({ target: primaryKey, set: cleanRow });
       } else {
@@ -599,7 +600,7 @@ async function buildProfileExportEnvelope(
 
   const allChars = await chars.list();
   const characterExports = await Promise.all(
-    allChars.map(async (c: any) => {
+    allChars.map(async (c) => {
       let avatarBase64: string | null = null;
       const avatarPath = resolveProfileExportFilePath(dataDir, c.avatarPath);
       if (includeLegacyAvatarBase64 && avatarPath && existsSync(avatarPath)) {
@@ -611,7 +612,7 @@ async function buildProfileExportEnvelope(
 
   const allPersonaRows = await chars.listPersonas();
   const allPersonas = await Promise.all(
-    (allPersonaRows as any[]).map(async (p: any) => {
+    allPersonaRows.map(async (p) => {
       let avatarBase64: string | null = null;
       const avatarPath = resolveProfileExportFilePath(dataDir, p.avatarPath);
       if (includeLegacyAvatarBase64 && avatarPath && existsSync(avatarPath)) {
@@ -623,16 +624,17 @@ async function buildProfileExportEnvelope(
 
   const allLorebooks = await lbs.list();
   const lorebookExports = await Promise.all(
-    (allLorebooks as any[]).map(async (lb: any) => {
-      const folders = await lbs.listFolders(lb.id);
-      const entries = await lbs.listEntries(lb.id);
+    allLorebooks.map(async (lb) => {
+      const lorebookId = (lb as unknown as { id: string }).id;
+      const folders = await lbs.listFolders(lorebookId);
+      const entries = await lbs.listEntries(lorebookId);
       return { ...lb, folders, entries };
     }),
   );
 
   const allPresets = await presets.list();
   const presetExports = await Promise.all(
-    (allPresets as any[]).map(async (p: any) => {
+    allPresets.map(async (p) => {
       const groups = await presets.listGroups(p.id);
       const sections = await presets.listSections(p.id);
       const choices = await presets.listChoiceBlocksForPreset(p.id);
@@ -1870,9 +1872,10 @@ export async function backupRoutes(app: FastifyInstance) {
               );
               const folderIdMap = new Map<string, string>();
               if (created && Array.isArray(lb.folders)) {
+                const createdId = (created as unknown as { id: string }).id;
                 for (const folder of lb.folders) {
                   const oldId = typeof folder.id === "string" ? folder.id : null;
-                  const createdFolder = (await lbs.createFolder((created as any).id, {
+                  const createdFolder = (await lbs.createFolder(createdId, {
                     name: folder.name ?? "Folder",
                     enabled: folder.enabled === "true" || folder.enabled === true,
                     parentFolderId: null,
@@ -1882,12 +1885,13 @@ export async function backupRoutes(app: FastifyInstance) {
                 }
               }
               if (created && Array.isArray(lb.entries)) {
+                const createdId = (created as unknown as { id: string }).id;
                 for (const entry of lb.entries) {
                   const folderId =
                     typeof entry.folderId === "string" && folderIdMap.has(entry.folderId)
                       ? folderIdMap.get(entry.folderId)
                       : null;
-                  await lbs.createEntry({ ...entry, lorebookId: (created as any).id, folderId });
+                  await lbs.createEntry({ ...entry, lorebookId: createdId, folderId });
                 }
               }
               stats.lorebooks++;
@@ -1922,7 +1926,7 @@ export async function backupRoutes(app: FastifyInstance) {
                   normalizeTimestampOverrides({ createdAt: p.createdAt, updatedAt: p.updatedAt }),
                 );
                 if (created) {
-                  const newPresetId = (created as any).id;
+                  const newPresetId = created.id;
                   // Map old group IDs → new group IDs for section groupId references
                   const groupIdMap = new Map<string, string>();
 
@@ -1938,7 +1942,7 @@ export async function backupRoutes(app: FastifyInstance) {
                           order: g.order ?? 100,
                           enabled: g.enabled === "true" || g.enabled === true,
                         });
-                        if (newGroup) groupIdMap.set(g.id, (newGroup as any).id);
+                        if (newGroup) groupIdMap.set(g.id, newGroup.id);
                       } catch {
                         /* skip individual group */
                       }
