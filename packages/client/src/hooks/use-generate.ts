@@ -643,8 +643,6 @@ export function useGenerate() {
         clearFailedAgentTypes();
         setRegenerateMessageId(params.regenerateMessageId ?? null);
       }
-      console.warn("[Generate] Starting generation for chat:", params.chatId);
-
       // A stale in-flight message refetch can overwrite the saved assistant
       // message after it is upserted into the cache. Cancel early so the
       // post-save refresh owns the query lifecycle for this generation.
@@ -1756,7 +1754,6 @@ export function useGenerate() {
         // Always notify game surface that generation completed for this chat.
         // Dispatched unconditionally — GameSurface uses lastProcessedMsgRef
         // to prevent duplicate processing.
-        console.warn("[use-generate] dispatching generation-complete for chat:", params.chatId);
         window.dispatchEvent(new CustomEvent("marinara:generation-complete", { detail: { chatId: params.chatId } }));
 
         // Auto-translate newly generated assistant messages if enabled

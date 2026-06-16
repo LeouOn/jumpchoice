@@ -73,4 +73,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   </React.StrictMode>,
 );
 
-registerServiceWorker();
+// Skip PWA registration in dev — the Vite dev server doesn't serve /sw.js,
+// causing repeated "Failed to update a ServiceWorker" console errors.
+if (!import.meta.env.DEV) {
+  registerServiceWorker();
+}
