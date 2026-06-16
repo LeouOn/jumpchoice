@@ -279,7 +279,32 @@ import { characterKeys } from "./use-characters";
 import { lorebookKeys } from "./use-lorebooks";
 import { playNotificationPing } from "../lib/notification-sound";
 import { stripGmTagsKeepReadables } from "../lib/game-tag-parser";
-import type { Chat, GameMap, Message } from "@jumpchoice/shared";
+import type {
+  AgentResultType,
+  Chat,
+  GameMap,
+  GameState,
+  Message,
+  PlayerStats,
+} from "@jumpchoice/shared";
+
+/**
+ * Mirror of the `Panel` union from `../stores/ui.store` (which is not exported).
+ * Used to type agent-emitted `navigate` action payloads without falling back to `any`.
+ * Keep in sync with `ui.store.ts` if the panel list changes.
+ */
+type RightPanelId =
+  | "chat"
+  | "characters"
+  | "lorebooks"
+  | "presets"
+  | "connections"
+  | "agents"
+  | "personas"
+  | "settings"
+  | "bot-browser"
+  | "cyoa"
+  | "language-learning";
 
 function sortMessagesByCreatedAt(messages: Message[]): Message[] {
   return [...messages].sort((a, b) => {
@@ -532,9 +557,14 @@ function applyGameStatePatchToStore(
   const current = useGameStateStore.getState().current;
 
   if (current?.chatId === chatId) {
-    const merged = { ...current, ...patch, chatId, ...(anchor ?? {}) };
+    const merged: GameState = {
+      ...current,
+      ...(patch as Partial<GameState>),
+      chatId,
+      ...(anchor ?? {}),
+    };
     if (patch.playerStats && typeof patch.playerStats === "object" && current.playerStats) {
-      const mergedPS = { ...current.playerStats, ...(patch.playerStats as object) };
+      const mergedPS: PlayerStats = { ...current.playerStats, ...(patch.playerStats as PlayerStats) };
       const patchPS = patch.playerStats as Record<string, unknown>;
       if (
         Array.isArray(patchPS.activeQuests) &&
@@ -543,15 +573,17 @@ function applyGameStatePatchToStore(
       ) {
         mergedPS.activeQuests = current.playerStats.activeQuests;
       }
-      (merged as any).playerStats = mergedPS;
+      merged.playerStats = mergedPS;
     }
-    useGameStateStore.getState().setGameState(merged as any);
+    useGameStateStore.getState().setGameState(merged);
     return;
   }
 
   // Agent data may arrive before the base game state is loaded. Seed a minimal
   // state with chatId so mounted tracker/HUD views recognise it as current.
-  useGameStateStore.getState().setGameState({ ...patch, chatId, ...(anchor ?? {}) } as any);
+  useGameStateStore
+    .getState()
+    .setGameState({ ...(patch as Partial<GameState>), chatId, ...(anchor ?? {}) } as GameState);
 }
 
 /**
@@ -1030,7 +1062,7 @@ export function useGenerate() {
               const result = event.data as {
                 agentType: string;
                 agentName: string;
-                resultType: string;
+                resultType: AgentResultType;
                 data: unknown;
                 success: boolean;
                 error: string | null;
@@ -1065,7 +1097,7 @@ export function useGenerate() {
               addResult(result.agentType, {
                 agentId: result.agentType,
                 agentType: result.agentType,
-                type: result.resultType as any,
+                type: result.resultType,
                 data: result.data,
                 tokensUsed: 0,
                 durationMs: result.durationMs,
@@ -1145,11 +1177,11 @@ export function useGenerate() {
                   };
                   const questMerge = applyQuestUpdatesToPlayerStats(existing, updates);
                   const quests = questMerge.quests;
-                  const merged = cur
+                  const merged: GameState = cur
                     ? { ...cur, playerStats: questMerge.playerStats }
-                    : { playerStats: questMerge.playerStats };
+                    : ({ playerStats: questMerge.playerStats } as unknown as GameState);
                   console.warn(`[Agent] Quest merge result — activeQuests:`, quests);
-                  setGameState(merged as any);
+                  setGameState(merged);
                 } else {
                   console.warn(`[Agent] Quest agent returned success but 0 updates — data shape:`, Object.keys(qd));
                 }
@@ -1532,11 +1564,13 @@ export function useGenerate() {
                 const fetchType = (actionData.fetchType as string) ?? "data";
                 toast(`Fetched ${fetchType}: ${actionData.name}`, { icon: "📋" });
               } else if (actionData.action === "navigate") {
-                const panel = actionData.panel as string;
-                const tab = actionData.tab as string | null;
-                useUIStore.getState().openRightPanel(panel as any);
+                const panel = actionData.panel as RightPanelId | undefined;
+                const tab = actionData.tab as string | undefined;
+                if (panel) {
+                  useUIStore.getState().openRightPanel(panel);
+                }
                 if (panel === "settings" && tab) {
-                  useUIStore.getState().setSettingsTab(tab as any);
+                  useUIStore.getState().setSettingsTab(tab);
                 }
               }
               break;
@@ -1550,7 +1584,7 @@ export function useGenerate() {
 
             case "typing": {
               // Generation is about to start — show "X is typing..."
-              const typingNames = (event as any).characters as string[] | undefined;
+              const typingNames = (event as { characters?: unknown }).characters as string[] | undefined;
               const typingLabel = typingNames?.length === 1 ? typingNames[0] : (typingNames?.join(", ") ?? "Character");
               useChatStore.getState().setPerChatTyping(params.chatId, typingLabel);
               if (isActiveChat()) setTypingCharacterName(typingLabel);
@@ -1559,10 +1593,10 @@ export function useGenerate() {
 
             case "delayed": {
               // Character is busy (DND/idle) — show waiting indicator
-              const delayedNames = (event as any).characters as string[] | undefined;
+              const delayedNames = (event as { characters?: unknown }).characters as string[] | undefined;
               const delayedLabel =
                 delayedNames?.length === 1 ? delayedNames[0] : (delayedNames?.join(", ") ?? "Character");
-              const delayedStatus = ((event as any).status as string) ?? "idle";
+              const delayedStatus = ((event as { status?: unknown }).status as string) ?? "idle";
               useChatStore.getState().setPerChatDelayed(params.chatId, { name: delayedLabel, status: delayedStatus });
               if (isActiveChat()) setDelayedCharacterInfo({ name: delayedLabel, status: delayedStatus });
               // Refresh character data so sidebar status dots update immediately
@@ -1572,7 +1606,7 @@ export function useGenerate() {
 
             case "offline": {
               // Character is offline — message was saved but no generation
-              const names = (event as any).characters as string[] | undefined;
+              const names = (event as { characters?: unknown }).characters as string[] | undefined;
               const label = names?.length === 1 ? names[0] : "Characters";
               toast(`${label} is offline. They'll respond when they're back online.`, { icon: "💤" });
               if (isActiveChat()) setProcessing(false);
@@ -1875,7 +1909,7 @@ export function useGenerate() {
               const result = event.data as {
                 agentType: string;
                 agentName: string;
-                resultType: string;
+                resultType: AgentResultType;
                 data: unknown;
                 success: boolean;
                 error: string | null;
@@ -1905,7 +1939,7 @@ export function useGenerate() {
               addResult(result.agentType, {
                 agentId: result.agentType,
                 agentType: result.agentType,
-                type: result.resultType as any,
+                type: result.resultType,
                 data: result.data,
                 tokensUsed: 0,
                 durationMs: result.durationMs,
@@ -1965,10 +1999,10 @@ export function useGenerate() {
                       status: "",
                     };
                     const questMerge = applyQuestUpdatesToPlayerStats(existing, updates);
-                    const merged = cur
+                    const merged: GameState = cur
                       ? { ...cur, playerStats: questMerge.playerStats }
-                      : { playerStats: questMerge.playerStats };
-                    setGameState(merged as any);
+                      : ({ playerStats: questMerge.playerStats } as unknown as GameState);
+                    setGameState(merged);
                   }
                 }
               }
@@ -2094,10 +2128,11 @@ function formatAgentBubble(agentType: string, agentName: string, data: unknown):
 
   switch (agentType) {
     case "continuity": {
-      const issues = (d.issues as any[]) ?? [];
+      type ContinuityIssue = { description?: unknown; suggestion?: unknown; severity?: unknown };
+      const issues = (d.issues as ContinuityIssue[] | undefined) ?? [];
       if (!issues.length) return null;
       return issues
-        .map((i: any) => {
+        .map((i) => {
           const description = typeof i.description === "string" ? i.description.trim() : "";
           const suggestion = typeof i.suggestion === "string" ? i.suggestion.trim() : "";
           const detail = suggestion ? `${description} Fix: ${suggestion}` : description;
@@ -2107,10 +2142,11 @@ function formatAgentBubble(agentType: string, agentName: string, data: unknown):
     }
 
     case "prompt-reviewer": {
-      const issues = (d.issues as any[]) ?? [];
+      type PromptIssue = { severity?: unknown; description?: unknown };
+      const issues = (d.issues as PromptIssue[] | undefined) ?? [];
       if (!issues.length) return `✅ ${d.summary ?? "Prompt looks good"}`;
       return issues
-        .map((i: any) => `${i.severity === "error" ? "🔴" : i.severity === "warning" ? "🟡" : "💡"} ${i.description}`)
+        .map((i) => `${i.severity === "error" ? "🔴" : i.severity === "warning" ? "🟡" : "💡"} ${i.description}`)
         .join("\n");
     }
 
@@ -2121,16 +2157,18 @@ function formatAgentBubble(agentType: string, agentName: string, data: unknown):
     }
 
     case "quest": {
-      const updates = (d.updates as any[]) ?? [];
+      type QuestUpdate = { action?: unknown; questName?: unknown };
+      const updates = (d.updates as QuestUpdate[] | undefined) ?? [];
       if (!updates.length) return null;
-      return updates.map((u: any) => `${u.action === "complete" ? "✅" : "📜"} ${u.questName}`).join("\n");
+      return updates.map((u) => `${u.action === "complete" ? "✅" : "📜"} ${u.questName}`).join("\n");
     }
 
     case "expression": {
-      const expressions = (d.expressions as any[]) ?? [];
+      type ExpressionUpdate = { transition?: unknown; characterName?: unknown; expression?: unknown };
+      const expressions = (d.expressions as ExpressionUpdate[] | undefined) ?? [];
       if (!expressions.length) return null;
       return expressions
-        .map((e: any) => {
+        .map((e) => {
           const t = e.transition && e.transition !== "crossfade" ? ` (${e.transition})` : "";
           return `🎭 ${e.characterName}: ${e.expression}${t}`;
         })
@@ -2148,10 +2186,11 @@ function formatAgentBubble(agentType: string, agentName: string, data: unknown):
     }
 
     case "character-tracker": {
-      const chars = (d.presentCharacters as any[]) ?? [];
+      type PresentCharLite = { emoji?: unknown; name?: unknown };
+      const chars = (d.presentCharacters as PresentCharLite[] | undefined) ?? [];
       if (!chars.length) return null;
       return chars
-        .map((c: any) => {
+        .map((c) => {
           const emoji = c.emoji ? `${c.emoji} ` : "👤 ";
           return `${emoji}${c.name}`;
         })
@@ -2165,9 +2204,10 @@ function formatAgentBubble(agentType: string, agentName: string, data: unknown):
     }
 
     case "echo-chamber": {
-      const reactions = (d.reactions as any[]) ?? [];
+      type EchoReaction = { characterName?: unknown; reaction?: unknown };
+      const reactions = (d.reactions as EchoReaction[] | undefined) ?? [];
       if (!reactions.length) return null;
-      return reactions.map((r: any) => `💬 ${r.characterName}: ${r.reaction}`).join("\n");
+      return reactions.map((r) => `💬 ${r.characterName}: ${r.reaction}`).join("\n");
     }
 
     case "spotify": {
@@ -2215,7 +2255,8 @@ function formatAgentBubble(agentType: string, agentName: string, data: unknown):
     }
 
     case "persona-stats": {
-      const stats = (d.stats as any[]) ?? [];
+      type PersonaStat = { name?: unknown; value?: unknown; max?: unknown };
+      const stats = (d.stats as PersonaStat[] | undefined) ?? [];
       const status = d.status as string;
       if (!stats.length && !status) return null;
       const parts: string[] = [];
@@ -2235,15 +2276,17 @@ function formatAgentBubble(agentType: string, agentName: string, data: unknown):
     }
 
     case "lorebook-keeper": {
-      const updates = (d.updates as any[]) ?? [];
+      type LorebookUpdate = { action?: unknown; entryName?: unknown };
+      const updates = (d.updates as LorebookUpdate[] | undefined) ?? [];
       if (!updates.length) return null;
-      return updates.map((u: any) => `📖 ${u.action === "create" ? "New" : "Updated"}: ${u.entryName}`).join("\n");
+      return updates.map((u) => `📖 ${u.action === "create" ? "New" : "Updated"}: ${u.entryName}`).join("\n");
     }
 
     case "editor": {
-      const changes = (d.changes as any[]) ?? [];
+      type EditorChange = { description?: unknown };
+      const changes = (d.changes as EditorChange[] | undefined) ?? [];
       if (!changes.length) return `✅ No edits needed`;
-      return changes.map((c: any) => `✏️ ${c.description}`).join("\n");
+      return changes.map((c) => `✏️ ${c.description}`).join("\n");
     }
 
     case "html": {
