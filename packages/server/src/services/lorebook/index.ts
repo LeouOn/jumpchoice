@@ -24,11 +24,19 @@ import {
   updateTimingStatesForScan,
 } from "./keyword-scanner.js";
 import { applyTokenBudget, processActivatedEntries } from "./prompt-injector.js";
+import type { LorebookEntryForInjection } from "./decorator-injector.js";
 
 export interface LorebookScanResult {
   worldInfoBefore: string;
   worldInfoAfter: string;
   depthEntries: Array<{ content: string; role: "system" | "user" | "assistant"; depth: number; order: number }>;
+  /**
+   * Entries whose content carries `@@depth` / `@@position` decorators. Callers
+   * that build the final message array should route these through
+   * `applyLorebookDecorators`; they are excluded from worldInfoBefore/After and
+   * depthEntries so they are never injected twice.
+   */
+  decoratedEntries: LorebookEntryForInjection[];
   totalEntries: number;
   totalTokensEstimate: number;
   activatedEntryIds: string[];
@@ -798,6 +806,7 @@ export async function processLorebooks(
       worldInfoBefore: "",
       worldInfoAfter: "",
       depthEntries: [],
+      decoratedEntries: [],
       totalEntries: 0,
       totalTokensEstimate: 0,
       activatedEntryIds: [],

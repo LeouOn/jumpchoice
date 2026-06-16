@@ -4,8 +4,10 @@
 // them into the prompt at the correct positions
 // (WORLD_INFO_BEFORE / WORLD_INFO_AFTER / depth).
 // ──────────────────────────────────────────────
+import { findDecorator, parseDecorators } from "@jumpchoice/shared";
 import type { LorebookEntry, LorebookRole } from "@jumpchoice/shared";
 import type { ActivatedEntry } from "./keyword-scanner.js";
+import type { LorebookEntryForInjection } from "./decorator-injector.js";
 
 /** A prompt message ready for injection. */
 export interface PromptMessage {
@@ -158,7 +160,56 @@ export function applyTokenBudget(activatedEntries: ActivatedEntry[], tokenBudget
 }
 
 /**
+ * Split activated entries into decorator-driven and default-path groups.
+ *
+ * Entries whose content carries a `@@depth` or `@@position` decorator are routed
+ * to the decorator injector (`applyLorebookDecorators`). All other entries keep
+ * using the existing before/after/depth injection path. In both cases the
+ * decorator lines are stripped so they never leak into the prompt as text.
+ */
+function splitByDecorators(activatedEntries: ActivatedEntry[]): {
+  decorated: LorebookEntryForInjection[];
+  normal: ActivatedEntry[];
+} {
+  const decorated: LorebookEntryForInjection[] = [];
+  const normal: ActivatedEntry[] = [];
+
+  for (const a of activatedEntries) {
+    const parsed = parseDecorators(a.entry.content);
+    const hasInjectionDecorator =
+      !!findDecorator(parsed.directives, "depth") ||
+      !!findDecorator(parsed.directives, "position");
+
+    // Always strip decorator lines from the content that reaches the prompt.
+    const cleanContent = parsed.cleanContent || a.entry.content;
+    const strippedEntry: ActivatedEntry = {
+      ...a,
+      entry: { ...a.entry, content: cleanContent },
+    };
+
+    if (hasInjectionDecorator) {
+      decorated.push({
+        rawContent: a.entry.content,
+        cleanContent,
+        directives: parsed.directives,
+        insertionOrder: a.injectionOrder,
+      });
+    } else {
+      normal.push(strippedEntry);
+    }
+  }
+
+  return { decorated, normal };
+}
+
+/**
  * Full pipeline: process activated entries into injectable content.
+ *
+ * Entries with `@@depth`/`@@position` content decorators are returned in
+ * `decoratedEntries` for downstream injection via `applyLorebookDecorators`;
+ * they are excluded from `worldInfoBefore` / `worldInfoAfter` / `depthEntries`
+ * so they are never injected twice. Entries without those decorators use the
+ * existing injection path unchanged.
  */
 export function processActivatedEntries(
   activatedEntries: ActivatedEntry[],
@@ -167,26 +218,32 @@ export function processActivatedEntries(
   worldInfoBefore: string;
   worldInfoAfter: string;
   depthEntries: Array<{ content: string; role: LorebookRole; depth: number; order: number }>;
+  decoratedEntries: LorebookEntryForInjection[];
   totalEntries: number;
   totalTokensEstimate: number;
 } {
   // Apply budget
   const budgeted = applyTokenBudget(activatedEntries, tokenBudget);
 
+  // Split decorator-driven entries from the default injection path.
+  const { decorated, normal } = splitByDecorators(budgeted);
+
   // Build blocks
-  const { before, after } = buildWorldInfoBlocks(budgeted);
+  const { before, after } = buildWorldInfoBlocks(normal);
 
   // Get depth entries
-  const depthEntries = getDepthInjectedEntries(budgeted);
+  const depthEntries = getDepthInjectedEntries(normal);
 
-  // Estimate tokens
-  const totalChars = budgeted.reduce((sum, a) => sum + a.entry.content.length, 0);
+  // Estimate tokens (decorator-stripped content for both paths)
+  const normalChars = normal.reduce((sum, a) => sum + a.entry.content.length, 0);
+  const decoratedChars = decorated.reduce((sum, d) => sum + d.cleanContent.length, 0);
 
   return {
     worldInfoBefore: before,
     worldInfoAfter: after,
     depthEntries,
+    decoratedEntries: decorated,
     totalEntries: budgeted.length,
-    totalTokensEstimate: Math.ceil(totalChars / 4),
+    totalTokensEstimate: Math.ceil((normalChars + decoratedChars) / 4),
   };
 }

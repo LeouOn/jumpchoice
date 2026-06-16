@@ -147,6 +147,7 @@ export const SUPPORTED_MACROS: readonly SupportedMacroDefinition[] = [
     syntax: "{{random::A@2::B@0.5}}",
     description: "Weighted random choice; weights are relative and may be decimals",
   },
+  { category: "Random", syntax: "{{pick::A::B::C}}", description: "Stable random choice — same value per prompt" },
   { category: "Random", syntax: "{{roll:XdY}}", description: "Dice roll total such as 2d6" },
   { category: "Variables", syntax: "{{getvar::name}}", description: "Read a dynamic variable" },
   { category: "Variables", syntax: "{{setvar::name::value}}", description: "Set a dynamic variable" },
@@ -157,6 +158,11 @@ export const SUPPORTED_MACROS: readonly SupportedMacroDefinition[] = [
     description: "Increment or decrement a numeric variable",
   },
   { category: "Variables", syntax: "{{NAME}}", description: "Resolve a preset variable named NAME" },
+  {
+    category: "Lorebook",
+    syntax: "{{hidden_key:A}}",
+    description: "Stripped from output; used for recursive lorebook matching",
+  },
   { category: "Formatting", syntax: "{{newline}} / {{\\n}}", description: "Insert a literal newline" },
   { category: "Formatting", syntax: "{{trim}}", description: "Trim the final output" },
   {
@@ -174,6 +180,7 @@ export const SUPPORTED_MACROS: readonly SupportedMacroDefinition[] = [
     syntax: "{{lowercase}}...{{/lowercase}}",
     description: "Lowercase a wrapped block",
   },
+  { category: "Formatting", syntax: "{{reverse:A}}", description: "Reverse the string A" },
   {
     category: "Formatting",
     syntax: '{{#if char == "Name"}}...{{else}}...{{/if}}',
@@ -713,6 +720,16 @@ function pickWeightedRandomChoice(choices: string[]): string {
   return weightedChoices.at(-1)?.text ?? "";
 }
 
+/** Simple deterministic string hash (FNV-1a variant). */
+function simpleHash(str: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    hash ^= str.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return Math.abs(hash | 0);
+}
+
 /**
  * Replace macros in a prompt string with their values.
  *
@@ -732,6 +749,7 @@ function pickWeightedRandomChoice(choices: string[]): string {
  *  - {{random:X:Y}} — random number X-Y
  *  - {{random::A::B::C}} — random choice from A, B, C
  *  - {{random::A@2::B@0.5}} — weighted random choice; weights are relative
+ *  - {{pick::A::B::C}} — stable random choice (deterministic per prompt)
  *  - {{roll:XdY}} — dice roll (e.g. {{roll:2d6}})
  *  - {{getvar::name}} — read a dynamic variable
  *  - {{setvar::name::value}} — set a variable
@@ -742,6 +760,7 @@ function pickWeightedRandomChoice(choices: string[]): string {
  *  - {{model}} — current model name
  *  - {{chatId}} — current chat ID
  *  - {{// comment}} — removed (author comments)
+ *  - {{hidden_key:A}} — stripped from output; used for lorebook recursive matching
  *  - {{trim}} — remove surrounding whitespace
  *  - {{trimStart}} / {{trimEnd}} — directional trim markers
  *  - {{newline}} / {{\n}} — literal newline
@@ -749,6 +768,7 @@ function pickWeightedRandomChoice(choices: string[]): string {
  *  - {{banned "text"}} — content filter (removed for now)
  *  - {{uppercase}}...{{/uppercase}} — convert to uppercase
  *  - {{lowercase}}...{{/lowercase}} — convert to lowercase
+ *  - {{reverse:A}} — reverse string
  *  - {{#if char == "Name"}}...{{else}}...{{/if}} — conditional block
  */
 export function resolveMacros(template: string, ctx: MacroContext, options: ResolveMacroOptions = {}): string {
@@ -774,6 +794,11 @@ export function resolveMacros(template: string, ctx: MacroContext, options: Reso
 
   // ── Comments — strip first so they don't interfere ──
   result = stripMacroComments(result);
+
+  // ── {{hidden_key:...}} — strip from output, like comments.
+  // (The text IS used for lorebook recursive matching, but that integration
+  // happens in the lorebook scanner, not here.) ──
+  result = result.replace(/\{\{hidden_key:([^}]*)\}\}/gi, "");
 
   // ── Multi-character bracket blocks — expand before global substitutions ──
   result = expandBracketedCharacterBlocks(result, ctx);
@@ -828,6 +853,21 @@ export function resolveMacros(template: string, ctx: MacroContext, options: Reso
     const choice = pickWeightedRandomChoice(choices);
     return resolveMacros(choice, ctx, { ...options, trimResult: false });
   });
+  // {{pick::A::B::C}} — stable random choice (deterministic per prompt).
+  // Unlike {{random::...}} which uses Math.random(), pick hashes the full
+  // template + choices so the same prompt always selects the same option.
+  result = replaceBalancedMacros(result, (body) => {
+    const match = body.match(/^pick::([\s\S]*)$/i);
+    if (!match) return undefined;
+    const choices = splitTopLevelDoubleColon(match[1] ?? "")
+      .map((c) => c.trim())
+      .filter(Boolean);
+    if (choices.length === 0) return "";
+    // Deterministic: hash the full template string + choices to pick one.
+    // This ensures the same prompt always picks the same option.
+    const hash = simpleHash(template + choices.join("|"));
+    return resolveMacros(choices[hash % choices.length] ?? choices[0] ?? "", ctx, { ...options, trimResult: false });
+  });
   result = result.replace(/\{\{random:(\d+):(\d+)\}\}/gi, (_, min, max) => {
     const lo = parseInt(min, 10);
     const hi = parseInt(max, 10);
@@ -879,6 +919,14 @@ export function resolveMacros(template: string, ctx: MacroContext, options: Reso
   result = result.replace(/\{\{lowercase\}\}([\s\S]*?)\{\{\/lowercase\}\}/gi, (_, inner) =>
     (inner as string).toLowerCase(),
   );
+
+  // ── {{reverse:A}} — reverse the string ──
+  result = replaceBalancedMacros(result, (body) => {
+    const match = body.match(/^reverse:([\s\S]*)$/i);
+    if (!match) return undefined;
+    const text = resolveMacros(match[1] ?? "", ctx, { ...options, trimResult: false });
+    return text.split("").reverse().join("");
+  });
 
   // ── Newlines ──
   result = result.replace(/\{\{newline\}\}/gi, "\n");

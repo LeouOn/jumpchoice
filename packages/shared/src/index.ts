@@ -73,3 +73,4 @@ export * from "./utils/chat-summary-entries.js";
 export * from "./utils/quest-state.js";
 export * from "./utils/quote-format.js";
 export * from "./utils/png-card.js";
+export * from "./utils/decorator-parser.js";
