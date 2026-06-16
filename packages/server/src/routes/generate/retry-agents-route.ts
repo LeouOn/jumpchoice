@@ -100,6 +100,36 @@ type ResolvedRetryAgents = {
   warnings: AgentConnectionWarning[];
 };
 
+/** Per-entry Spotify private state tracked across retry phases. */
+interface SpotifyEntryState {
+  toolCalls: Set<string>;
+  playApplied: boolean;
+  playError: string | null;
+  playUris?: string[];
+  currentBeforePlayUri?: string | null;
+  currentAfterPlayUri?: string | null;
+  repeatAfterPlayState?: unknown;
+}
+
+/**
+ * Per-entryId Spotify side state. Replaces the previous
+ * `(entry.resolved as any).__spotify*` monkey-patched fields with a typed map.
+ */
+const spotifyEntryStates = new Map<string, SpotifyEntryState>();
+
+function getSpotifyState(entryId: string): SpotifyEntryState {
+  let state = spotifyEntryStates.get(entryId);
+  if (!state) {
+    state = {
+      toolCalls: new Set<string>(),
+      playApplied: false,
+      playError: null,
+    };
+    spotifyEntryStates.set(entryId, state);
+  }
+  return state;
+}
+
 function parseJsonIfString<T>(value: T | string): T {
   return (typeof value === "string" ? JSON.parse(value) : value) as T;
 }
@@ -808,26 +838,17 @@ async function attachRetrySpotifyToolContexts(args: {
         enabledTools: spotifyEnabledNames,
       };
       // ──────────────────────────────────────────────
-      // TODO(spotify-state-architecture): The __spotifyToolCalls / __spotifyPlay* /
-      // __spotifyCurrent* / __spotifyRepeat* private-state fields are monkey-patched onto
-      // agent result entries as a side-channel for state propagation between retry phases.
-      // This is a known architectural smell with ~12 `as any` casts (lines 810-1108).
-      //
-      // The proper fix is to refactor agent results to carry a typed `privateState` field
-      // (or use a WeakMap keyed by entry ID). Until then, these casts remain. Do NOT add
-      // more `as any` to extend this pattern — use a separate `Map<entryId, SpotifyState>`
-      // instead.
+      // Spotify per-entry private state. Tracked across retry phases via a typed
+      // Map keyed by entry id (see spotifyEntryStates / getSpotifyState above).
       // ──────────────────────────────────────────────
-      (entry.resolved as any).__spotifyToolCalls = new Set<string>();
-      (entry.resolved as any).__spotifyPlayApplied = false;
-      (entry.resolved as any).__spotifyPlayError = null;
+      getSpotifyState(entry.resolved.id);
     }
     entry.resolved.toolContext = {
       tools,
       executeToolCall: async (call) => {
-        const spotifyToolCalls = (entry.resolved as any).__spotifyToolCalls;
-        if (spotifyToolCalls instanceof Set) {
-          spotifyToolCalls.add(call.function.name);
+        const spotifyState = spotifyEntryStates.get(entry.resolved.id);
+        if (spotifyState) {
+          spotifyState.toolCalls.add(call.function.name);
         }
         if (!allowedToolNames.has(call.function.name)) {
           return JSON.stringify({
@@ -851,11 +872,12 @@ async function attachRetrySpotifyToolContexts(args: {
             ],
             { spotify: { accessToken: spotifyAccessToken } },
           );
+          const stateForBefore = spotifyState ?? getSpotifyState(entry.resolved.id);
           try {
             const before = JSON.parse(beforeResults[0]?.result ?? "{}");
-            (entry.resolved as any).__spotifyCurrentBeforePlayUri = getSpotifyPlaybackTrackUri(before);
+            stateForBefore.currentBeforePlayUri = getSpotifyPlaybackTrackUri(before);
           } catch {
-            (entry.resolved as any).__spotifyCurrentBeforePlayUri = null;
+            stateForBefore.currentBeforePlayUri = null;
           }
         }
         const results = await executeToolCalls([call], {
@@ -866,15 +888,16 @@ async function attachRetrySpotifyToolContexts(args: {
         if (call.function.name === "spotify_play") {
           try {
             const parsed = JSON.parse(result) as Record<string, unknown>;
+            const stateForPlay = spotifyState ?? getSpotifyState(entry.resolved.id);
             if (parsed.applied === true) {
-              (entry.resolved as any).__spotifyPlayApplied = true;
-              (entry.resolved as any).__spotifyPlayError = null;
-              (entry.resolved as any).__spotifyPlayUris = getSpotifyTrackUris(parsed);
-              (entry.resolved as any).__spotifyCurrentAfterPlayUri = getSpotifyPlaybackTrackUri(parsed);
-              (entry.resolved as any).__spotifyRepeatAfterPlayState =
+              stateForPlay.playApplied = true;
+              stateForPlay.playError = null;
+              stateForPlay.playUris = getSpotifyTrackUris(parsed);
+              stateForPlay.currentAfterPlayUri = getSpotifyPlaybackTrackUri(parsed);
+              stateForPlay.repeatAfterPlayState =
                 getStringField(parsed, "repeatState") || getStringField(parsed, "repeat");
             } else if (typeof parsed.error === "string") {
-              (entry.resolved as any).__spotifyPlayError = parsed.error;
+              stateForPlay.playError = parsed.error;
             }
           } catch {
             // Keep the raw tool result for the model; validation below handles missing playback.
@@ -1072,18 +1095,17 @@ async function validateSpotifyRetryPlayback(
   const forceFreshPick = constraints.manualRetry === true || constraints.forceFreshPick === true;
   if (!forceFreshPick || constraints.mode !== "game") return result;
 
-  const toolCalls = (entry.resolved as any).__spotifyToolCalls;
+  const spotifyState = spotifyEntryStates.get(entry.resolved.id);
+  const toolCalls = spotifyState?.toolCalls;
   const spotifyPlayCalled = toolCalls instanceof Set && toolCalls.has("spotify_play");
-  const spotifyPlayApplied = (entry.resolved as any).__spotifyPlayApplied === true;
-  const spotifyPlayError = (entry.resolved as any).__spotifyPlayError;
-  const spotifyPlayUris = Array.isArray((entry.resolved as any).__spotifyPlayUris)
-    ? ((entry.resolved as any).__spotifyPlayUris as string[])
-    : [];
+  const spotifyPlayApplied = spotifyState?.playApplied === true;
+  const spotifyPlayError = spotifyState?.playError;
+  const spotifyPlayUris = spotifyState?.playUris ?? [];
   const spotifyPlayUri = spotifyPlayUris.length === 1 ? spotifyPlayUris[0] : null;
   const spotifyPlayIsSingleTrack = !!spotifyPlayUri && spotifyPlayUri.startsWith("spotify:track:");
-  const currentBeforePlay = (entry.resolved as any).__spotifyCurrentBeforePlayUri;
-  const currentAfterPlay = (entry.resolved as any).__spotifyCurrentAfterPlayUri;
-  const repeatAfterPlay = (entry.resolved as any).__spotifyRepeatAfterPlayState;
+  const currentBeforePlay = spotifyState?.currentBeforePlayUri;
+  const currentAfterPlay = spotifyState?.currentAfterPlayUri;
+  const repeatAfterPlay = spotifyState?.repeatAfterPlayState;
   if (
     spotifyPlayCalled &&
     spotifyPlayApplied &&
@@ -1116,7 +1138,7 @@ async function validateSpotifyRetryPlayback(
     try {
       const parsed = JSON.parse(fallbackResult) as Record<string, unknown>;
       if (parsed.applied === true) {
-        const fallbackCurrentBefore = (entry.resolved as any).__spotifyCurrentBeforePlayUri;
+        const fallbackCurrentBefore = spotifyEntryStates.get(entry.resolved.id)?.currentBeforePlayUri;
         const fallbackPlayedUri = getSpotifyPlaybackTrackUri(parsed);
         const fallbackRepeatState = getStringField(parsed, "repeatState") || getStringField(parsed, "repeat");
         if (
