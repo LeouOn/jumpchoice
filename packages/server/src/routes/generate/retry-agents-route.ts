@@ -10,6 +10,7 @@ import {
   type AgentContext,
   type AgentResult,
   type GameMap,
+  type GameState,
 } from "@jumpchoice/shared";
 import { eq } from "drizzle-orm";
 import { listCharacterSprites } from "../../services/game/sprite.service.js";
@@ -117,7 +118,7 @@ function parseSettingsRecord(value: unknown): Record<string, unknown> {
 }
 
 function getGameImageStylePrompt(chat: any, chatMeta: Record<string, unknown>): string {
-  if (((chat as any).mode ?? "conversation") !== "game") return "";
+  if ((chat.mode ?? "conversation") !== "game") return "";
   const setupConfig = parseSettingsRecord(chatMeta.gameSetupConfig);
   return typeof setupConfig.artStylePrompt === "string" ? setupConfig.artStylePrompt.trim() : "";
 }
@@ -243,7 +244,7 @@ async function buildRetryAgentContext(args: {
   const allCharacterIds: string[] =
     typeof chat.characterIds === "string" ? JSON.parse(chat.characterIds) : (chat.characterIds ?? []);
   const characterIds = resolveActiveCharacterIds(allCharacterIds, chatMeta, {
-    mode: (chat as any).mode ?? "conversation",
+    mode: chat.mode ?? "conversation",
     allowEmpty: true,
   });
   const activeLorebookIds: string[] = Array.isArray(chatMeta.activeLorebookIds)
@@ -280,7 +281,7 @@ async function buildRetryAgentContext(args: {
 
   const agentContext: AgentContext = {
     chatId,
-    chatMode: (chat as any).mode ?? "conversation",
+    chatMode: chat.mode ?? "conversation",
     recentMessages: agentSlice.map((message: any) => {
       const nextMessage: AgentContext["recentMessages"][number] = {
         role: message.role,
@@ -372,7 +373,7 @@ async function buildRetryAgentContext(args: {
   // meaningfully different set instead of repeating the last batch. Mirrors
   // the same injection in the main generate route.
   if (cyoaAgentWillRun && lastAssistant) {
-    const lastExtra = parseExtra((lastAssistant as any).extra);
+    const lastExtra = parseExtra(lastAssistant.extra);
     if (lastExtra.cyoaChoices) {
       agentContext.memory._lastCyoaChoices = lastExtra.cyoaChoices;
     }
@@ -472,7 +473,7 @@ async function buildRetryAgentContext(args: {
   }
 
   if (resolvedAgentTypes.has("spotify")) {
-    const mode = ((chat as any).mode ?? "conversation") as string;
+    const mode = (chat.mode ?? "conversation") as string;
     agentContext.memory._spotifyDjConstraints = {
       ...buildSpotifyDjConstraints({
         chatMode: mode,
@@ -497,7 +498,7 @@ async function resolveRetryAgents(args: {
   agentsStore: ReturnType<typeof createAgentsStorage>;
 }): Promise<ResolvedRetryAgents> {
   const { agentTypes, chat, conns, agentsStore } = args;
-  const agentTypeSet = new Set(filterGameInternalAgentIds((chat as any).mode, agentTypes));
+  const agentTypeSet = new Set(filterGameInternalAgentIds(chat.mode, agentTypes));
   const configs = await agentsStore.list();
   const enabledConfigs = configs.filter((config: any) => agentTypeSet.has(config.type));
   const resolvedTypeSet = new Set(enabledConfigs.map((config: any) => config.type));
@@ -642,7 +643,7 @@ async function resolveRetryAgents(args: {
     }
 
     resolvedAgents.push({
-      cfg: { id: `builtin:${builtIn.id}`, type: builtIn.id, name: builtIn.name } as any,
+      cfg: { id: `builtin:${builtIn.id}`, type: builtIn.id, name: builtIn.name },
       resolved: {
         id: `builtin:${builtIn.id}`,
         type: builtIn.id,
@@ -806,6 +807,17 @@ async function attachRetrySpotifyToolContexts(args: {
         ...settings,
         enabledTools: spotifyEnabledNames,
       };
+      // ──────────────────────────────────────────────
+      // TODO(spotify-state-architecture): The __spotifyToolCalls / __spotifyPlay* /
+      // __spotifyCurrent* / __spotifyRepeat* private-state fields are monkey-patched onto
+      // agent result entries as a side-channel for state propagation between retry phases.
+      // This is a known architectural smell with ~12 `as any` casts (lines 810-1108).
+      //
+      // The proper fix is to refactor agent results to carry a typed `privateState` field
+      // (or use a WeakMap keyed by entry ID). Until then, these casts remain. Do NOT add
+      // more `as any` to extend this pattern — use a separate `Map<entryId, SpotifyState>`
+      // instead.
+      // ──────────────────────────────────────────────
       (entry.resolved as any).__spotifyToolCalls = new Set<string>();
       (entry.resolved as any).__spotifyPlayApplied = false;
       (entry.resolved as any).__spotifyPlayError = null;
@@ -1418,7 +1430,9 @@ async function applyRetryResultEffects(args: {
     if (result.success && result.type === "game_state_update" && result.data && typeof result.data === "object") {
       try {
         const gs = result.data as Record<string, unknown>;
-        const worldStatePatch: Record<string, unknown> = {};
+        const worldStatePatch: Partial<
+          Pick<GameState, "date" | "time" | "location" | "weather" | "temperature">
+        > = {};
         if (gs.date != null) worldStatePatch.date = gs.date as string;
         if (gs.time != null) worldStatePatch.time = gs.time as string;
         if (gs.location != null) worldStatePatch.location = gs.location as string;
@@ -1429,7 +1443,7 @@ async function applyRetryResultEffects(args: {
             retryMessageId,
             retrySwipeIndex,
             chatId,
-            worldStatePatch as any,
+            worldStatePatch,
             undefined,
             { baseSnapshot: await loadRetryBaseGameStateSnapshot() },
           );
@@ -1497,7 +1511,7 @@ async function applyRetryResultEffects(args: {
     ) {
       try {
         const ctData = result.data as Record<string, unknown>;
-        const presentCharacters = (ctData.presentCharacters as any[]) ?? [];
+        const presentCharacters = (ctData.presentCharacters as Array<Record<string, unknown>>) ?? [];
         const previousSnapshot = await loadRetryTargetGameStateSnapshot();
         let previousCharacters: any[] = [];
         if (previousSnapshot?.presentCharacters) {
@@ -1517,7 +1531,7 @@ async function applyRetryResultEffects(args: {
           retrySwipeIndex,
           chatId,
           {
-            presentCharacters,
+            presentCharacters: presentCharacters as unknown as GameState["presentCharacters"],
           },
           undefined,
           { baseSnapshot: await loadRetryBaseGameStateSnapshot() },
@@ -1768,7 +1782,7 @@ async function applyRetryResultEffects(args: {
               const imageSettings = await loadImageGenerationUserSettings(app.db);
 
               const chatMeta = typeof chat.metadata === "string" ? JSON.parse(chat.metadata) : (chat.metadata ?? {});
-              const isGameIllustration = ((chat as any).mode ?? "conversation") === "game";
+              const isGameIllustration = (chat.mode ?? "conversation") === "game";
               const selfieRes = isGameIllustration ? "" : ((chatMeta.selfieResolution as string) ?? "");
               const resParts = selfieRes.split("x").map(Number);
               const parsedW = resParts[0] ?? 0;
