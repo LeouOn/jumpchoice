@@ -100,7 +100,7 @@ async function resolveAvatarGenerationConnection(app: FastifyInstance, body: Ava
   return { conn };
 }
 
-type ExportFormat = "native" | "compatible";
+type ExportFormat = "native" | "compatible" | "v3";
 
 // Read an image file and return it as a base64 data URL, or null if the file
 // is missing, outside the expected dir, or not a recognized image type. Used
@@ -515,6 +515,18 @@ export async function charactersRoutes(app: FastifyInstance) {
     const char = await storage.getById(req.params.id);
     if (!char) return reply.status(404).send({ error: "Character not found" });
     const charData = JSON.parse(char.data);
+
+    // V3 JSON envelope: { spec: "chara_card_v3", spec_version: "3.0", data: charData }
+    if (req.query.format === "v3") {
+      const v3Envelope = { spec: "chara_card_v3", spec_version: "3.0", data: charData };
+      return reply
+        .header(
+          "Content-Disposition",
+          `attachment; filename="${encodeURIComponent(charData.name || "character")}.v3.json"`,
+        )
+        .send(v3Envelope);
+    }
+
     const compatible = req.query.format === "compatible";
     const payload = compatible
       ? buildCompatibleCharacterExport(charData)
@@ -629,13 +641,12 @@ export async function charactersRoutes(app: FastifyInstance) {
 
   // ── Export as PNG ──
 
-  app.get<{ Params: { id: string } }>("/:id/export-png", async (req, reply) => {
+  app.get<{ Params: { id: string }; Querystring: { format?: string } }>("/:id/export-png", async (req, reply) => {
     const char = await storage.getById(req.params.id);
     if (!char) return reply.status(404).send({ error: "Character not found" });
 
     const charData = JSON.parse(char.data);
-    const v2Envelope = { spec: "chara_card_v2", spec_version: "2.0", data: charData };
-    const charaBase64 = Buffer.from(JSON.stringify(v2Envelope), "utf-8").toString("base64");
+    const isV3 = req.query.format === "v3";
 
     // Read avatar image or create a minimal 1x1 transparent PNG fallback
     let pngBuffer: Buffer;
@@ -658,14 +669,99 @@ export async function charactersRoutes(app: FastifyInstance) {
       pngBuffer = createMinimalPng();
     }
 
-    // Inject "chara" tEXt chunk into the PNG
-    const resultPng = injectTextChunk(pngBuffer, "chara", charaBase64);
+    let resultPng: Buffer;
+    if (isV3) {
+      // V3 dual-write: emit BOTH ccv3 (full V3 data) and chara (V2 backfill with warning).
+      // Per CCv3 spec, the V2 backfill should warn that the card is actually V3.
+      const v3Envelope = { spec: "chara_card_v3", spec_version: "3.0", data: charData };
+      const v3Base64 = Buffer.from(JSON.stringify(v3Envelope), "utf-8").toString("base64");
+
+      // Build V2 backfill by stripping V3-only fields.
+      const {
+        nickname,
+        assets,
+        creator_notes_multilingual,
+        source,
+        group_only_greetings,
+        creation_date,
+        modification_date,
+        ...v2OnlyData
+      } = charData as Record<string, unknown>;
+      void nickname;
+      void assets;
+      void creator_notes_multilingual;
+      void source;
+      void group_only_greetings;
+      void creation_date;
+      void modification_date;
+
+      const existingCreatorNotes =
+        typeof v2OnlyData.creator_notes === "string" && v2OnlyData.creator_notes.length > 0
+          ? v2OnlyData.creator_notes
+          : "This character card is Character Card V3.";
+      const v2Envelope = {
+        spec: "chara_card_v2",
+        spec_version: "2.0",
+        data: {
+          ...v2OnlyData,
+          creator_notes: `[Backfilled from V3] ${existingCreatorNotes}`,
+        },
+      };
+      const charaBase64 = Buffer.from(JSON.stringify(v2Envelope), "utf-8").toString("base64");
+
+      // injectTextChunk strips ALL card keywords on each call, so we cannot call
+      // it twice (the second call would strip the ccv3 chunk from the first).
+      // Use injectCardTextChunks to strip once and inject both before IDAT.
+      resultPng = injectCardTextChunks(pngBuffer, [
+        { keyword: "ccv3", text: v3Base64 },
+        { keyword: "chara", text: charaBase64 },
+      ]);
+    } else {
+      // Existing V2-only behavior (unchanged)
+      const v2Envelope = { spec: "chara_card_v2", spec_version: "2.0", data: charData };
+      const charaBase64 = Buffer.from(JSON.stringify(v2Envelope), "utf-8").toString("base64");
+      resultPng = injectTextChunk(pngBuffer, "chara", charaBase64);
+    }
 
     const safeName = encodeURIComponent(charData.name || "character");
     return reply
       .header("Content-Type", "image/png")
       .header("Content-Disposition", `attachment; filename="${safeName}.png"`)
       .send(Buffer.from(resultPng));
+  });
+
+  // ── Export as CHARX (Character Card V3 zip) ──
+
+  app.get<{ Params: { id: string } }>("/:id/export-charx", async (req, reply) => {
+    const char = await storage.getById(req.params.id);
+    if (!char) return reply.status(404).send({ error: "Character not found" });
+
+    const charData = JSON.parse(char.data);
+    const v3Envelope = { spec: "chara_card_v3", spec_version: "3.0", data: charData };
+
+    const zip = new AdmZip();
+    zip.addFile("card.json", Buffer.from(JSON.stringify(v3Envelope, null, 2), "utf-8"));
+
+    // If character has an avatar, add it as the main icon asset.
+    if (char.avatarPath) {
+      const filename = char.avatarPath.split("?")[0]!.split("/").pop()!;
+      const avatarFile = join(DATA_DIR, "avatars", filename);
+      if (existsSync(avatarFile)) {
+        try {
+          const avatarBuffer = await readFile(avatarFile);
+          const ext = extname(filename).slice(1) || "png";
+          zip.addFile(`assets/icon/images/main.${ext}`, avatarBuffer);
+        } catch {
+          // Non-fatal — card.json is still a valid CHARX without the icon
+        }
+      }
+    }
+
+    const safeName = encodeURIComponent(charData.name || "character");
+    return reply
+      .header("Content-Type", "application/zip")
+      .header("Content-Disposition", `attachment; filename="${safeName}.charx"`)
+      .send(zip.toBuffer());
   });
 
   // ── Avatar Upload ──
@@ -994,6 +1090,70 @@ export function injectTextChunk(png: Buffer, keyword: string, text: string): Buf
   // If no IDAT found (shouldn't happen), append before end
   if (!inserted) {
     parts.splice(parts.length - 1, 0, textChunk);
+  }
+
+  return Buffer.concat(parts);
+}
+
+/**
+ * Inject multiple tEXt chunks into an existing PNG buffer in a single pass,
+ * stripping existing card-keyword chunks once and inserting all new entries
+ * before the first IDAT. Use this when emitting both ccv3 and chara chunks
+ * (injectTextChunk would strip the ccv3 chunk on a second call).
+ */
+function injectCardTextChunks(
+  png: Buffer,
+  entries: Array<{ keyword: string; text: string }>,
+): Buffer {
+  // Validate PNG signature
+  if (png.subarray(0, 8).compare(PNG_SIGNATURE) !== 0) {
+    throw new Error("Invalid PNG signature");
+  }
+
+  const parts: Buffer[] = [PNG_SIGNATURE];
+  let offset = 8;
+  let inserted = false;
+
+  while (offset < png.length) {
+    const chunkLen = png.readUInt32BE(offset);
+    const chunkType = png.subarray(offset + 4, offset + 8).toString("ascii");
+    const totalChunkSize = 4 + 4 + chunkLen + 4; // length + type + data + crc
+    const chunkBuf = png.subarray(offset, offset + totalChunkSize);
+    const chunkData = png.subarray(offset + 8, offset + 8 + chunkLen);
+    const embeddedKeyword = readPngTextKeyword(chunkType, chunkData);
+
+    // Skip existing card chunks (strip them once, up front)
+    if (embeddedKeyword && CHARACTER_CARD_PNG_KEYWORDS.has(embeddedKeyword)) {
+      offset += totalChunkSize;
+      continue;
+    }
+
+    // Insert all card chunks right before the first IDAT
+    if (chunkType === "IDAT" && !inserted) {
+      for (const entry of entries) {
+        const textData = Buffer.concat([
+          Buffer.from(entry.keyword, "latin1"),
+          Buffer.from([0]),
+          Buffer.from(entry.text, "latin1"),
+        ]);
+        parts.push(buildChunk("tEXt", textData));
+      }
+      inserted = true;
+    }
+    parts.push(chunkBuf);
+    offset += totalChunkSize;
+  }
+
+  // If no IDAT found (shouldn't happen), insert before the final chunk (IEND)
+  if (!inserted) {
+    for (const entry of entries) {
+      const textData = Buffer.concat([
+        Buffer.from(entry.keyword, "latin1"),
+        Buffer.from([0]),
+        Buffer.from(entry.text, "latin1"),
+      ]);
+      parts.splice(parts.length - 1, 0, buildChunk("tEXt", textData));
+    }
   }
 
   return Buffer.concat(parts);
