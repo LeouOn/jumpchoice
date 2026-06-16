@@ -22,6 +22,7 @@ import {
 } from "@jumpchoice/shared";
 import type {
   CharacterData,
+  CharacterStat,
   ChatMemoryChunk,
   ChatMemoryRecallExportChunk,
   ChatMemoryRecallExportPayload,
@@ -29,7 +30,10 @@ import type {
   ChatSummaryEntry,
   ExportEnvelope,
   GameNpc,
+  GameState,
   LorebookEntryTimingState,
+  PlayerStats,
+  PresentCharacter,
 } from "@jumpchoice/shared";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";
@@ -1248,24 +1252,28 @@ export async function chatsRoutes(app: FastifyInstance) {
         ? body.swipeIndex
         : null;
     const hasExplicitTarget = targetMessageId !== null && targetSwipeIndex !== null;
-    const fields: Partial<{
-      date: string | null;
-      time: string | null;
-      location: string | null;
-      weather: string | null;
-      temperature: string | null;
-      presentCharacters: any[];
-      playerStats: any;
-      personaStats: any[];
-    }> = {};
+    const fields: Partial<
+      Pick<
+        GameState,
+        | "date"
+        | "time"
+        | "location"
+        | "weather"
+        | "temperature"
+        | "presentCharacters"
+        | "playerStats"
+        | "personaStats"
+      >
+    > = {};
     if (body.date !== undefined) fields.date = coerceGameStateTextValue(body.date);
     if (body.time !== undefined) fields.time = coerceGameStateTextValue(body.time);
     if (body.location !== undefined) fields.location = coerceGameStateTextValue(body.location);
     if (body.weather !== undefined) fields.weather = coerceGameStateTextValue(body.weather);
     if (body.temperature !== undefined) fields.temperature = coerceGameStateTextValue(body.temperature);
-    if (body.presentCharacters !== undefined) fields.presentCharacters = body.presentCharacters as any[];
-    if (body.playerStats !== undefined) fields.playerStats = body.playerStats;
-    if (body.personaStats !== undefined) fields.personaStats = body.personaStats as any[];
+    if (body.presentCharacters !== undefined)
+      fields.presentCharacters = body.presentCharacters as PresentCharacter[];
+    if (body.playerStats !== undefined) fields.playerStats = body.playerStats as PlayerStats;
+    if (body.personaStats !== undefined) fields.personaStats = body.personaStats as CharacterStat[];
     // Target the same snapshot the GET endpoint returns — the one for the last
     // assistant message's active swipe — so edits persist to the row the user
     // actually sees. Falls back to updateLatest when no messages exist yet.
@@ -1302,7 +1310,7 @@ export async function chatsRoutes(app: FastifyInstance) {
       await app.db
         .update(gameStateSnapshots)
         .set({ manualOverrides: null })
-        .where(eq(gameStateSnapshots.id, (updated as any).id));
+        .where(eq(gameStateSnapshots.id, updated.id));
       updated = { ...updated, manualOverrides: null };
     }
     // If no snapshot exists yet, create one so manual edits aren't lost
@@ -1323,10 +1331,10 @@ export async function chatsRoutes(app: FastifyInstance) {
           location: (fields.location as string) ?? null,
           weather: (fields.weather as string) ?? null,
           temperature: (fields.temperature as string) ?? null,
-          presentCharacters: (fields.presentCharacters as any[]) ?? [],
+          presentCharacters: fields.presentCharacters ?? [],
           recentEvents: [],
-          playerStats: (fields.playerStats as any) ?? null,
-          personaStats: (fields.personaStats as any) ?? null,
+          playerStats: fields.playerStats ?? null,
+          personaStats: fields.personaStats ?? null,
         },
         Object.keys(manualOverrides).length > 0 ? manualOverrides : null,
       );
@@ -1394,7 +1402,7 @@ export async function chatsRoutes(app: FastifyInstance) {
       for (let i = chatMessages.length - 1; i >= 0; i--) {
         const message = chatMessages[i]!;
         if (supportsHiddenFromAI && isMessageHiddenFromAI(message)) continue;
-        return message as any;
+        return message;
       }
       return null;
     })();
@@ -1574,10 +1582,10 @@ export async function chatsRoutes(app: FastifyInstance) {
 
           const assembled = await assemblePrompt({
             db: app.db,
-            preset: preset as any,
-            sections: sections as any,
-            groups: groups as any,
-            choiceBlocks: choiceBlocks as any,
+            preset: preset,
+            sections: sections,
+            groups: groups,
+            choiceBlocks: choiceBlocks,
             chatChoices,
             chatId: req.params.id,
             characterIds,
@@ -1661,7 +1669,7 @@ export async function chatsRoutes(app: FastifyInstance) {
               }
             }
             const speakerInstruction = `- Since this is a group chat, wrap each character's dialogue in <speaker="name"> tags. Tags can appear inline with narration, they don't need to be on separate lines. Example: <speaker="${charNames[0] ?? "John"}">"Hello there,"</speaker> [action beat/dialogue tag].`;
-            const wrapFmt = (preset as any).wrapFormat || "xml";
+            const wrapFmt = preset.wrapFormat || "xml";
             const instructionBlock =
               wrapFmt === "markdown" ? `\n## Group Chat\n${speakerInstruction}` : speakerInstruction;
 
@@ -1706,7 +1714,7 @@ export async function chatsRoutes(app: FastifyInstance) {
             // Per-chat activeAgentIds overrides the global enabled flag (matches generation flow)
             const htmlPrompt = ((htmlCfg?.promptTemplate as string) || getDefaultAgentPrompt("html")).trim();
             if (htmlPrompt) {
-              const wrapFmt = (preset as any).wrapFormat || "xml";
+              const wrapFmt = preset.wrapFormat || "xml";
               const htmlBlock = wrapFmt === "markdown" ? `\n## Immersive HTML\n${htmlPrompt}` : htmlPrompt;
               let injected = false;
               for (let i = 0; i < assembled.messages.length; i++) {
@@ -1742,7 +1750,7 @@ export async function chatsRoutes(app: FastifyInstance) {
           }
 
           // ── Fallback: inject character & persona info if the preset didn't include them ──
-          const wrapFormat = ((preset as any).wrapFormat as "xml" | "markdown" | "none") || "xml";
+          const wrapFormat = (preset.wrapFormat as TrackerWrapFormat) || "xml";
           const allContent = assembled.messages.map((m) => m.content).join("\n");
 
           // Character info fallback
@@ -2363,8 +2371,8 @@ export async function chatsRoutes(app: FastifyInstance) {
                   : typeof snapshot.personaStats === "string"
                     ? JSON.parse(snapshot.personaStats)
                     : snapshot.personaStats,
-              committed: (snapshot.committed as any) === 1,
-            } as any,
+              committed: snapshot.committed === 1,
+            },
             overrides,
           );
         } catch {
