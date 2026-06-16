@@ -27,6 +27,7 @@ import { normalizeTimestampOverrides } from "../services/import/import-timestamp
 import { getImportAllowedRoots } from "../config/runtime-config.js";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 import { assertInsideDir, safeCompareString, tokenForPath } from "../utils/security.js";
+import { extractCardFromPng } from "@jumpchoice/shared";
 
 const PICK_FOLDER_TIMEOUT_MS = 60_000; // 60s — prevents infinite hang on headless servers
 const FOLDER_TOKEN_TTL_MS = 15 * 60_000;
@@ -188,74 +189,6 @@ function pickFolder(): Promise<string | null> {
   });
 }
 
-/** Read PNG tEXt chunk with keyword "chara" → base64-encoded JSON character data */
-const CHARA_KEYWORDS = new Set(["ccv3", "chara"]);
-
-/** Extract character JSON from a PNG buffer, checking tEXt and iTXt chunks for "ccv3" (V3) or "chara" (V2) keywords. */
-function extractCharaFromPng(buf: Buffer): Record<string, unknown> | null {
-  if (buf.length < 8) return null;
-  const found = new Map<string, Record<string, unknown>>();
-  let offset = 8; // skip PNG signature
-
-  while (offset < buf.length - 8) {
-    const length = buf.readUInt32BE(offset);
-    const type = buf.subarray(offset + 4, offset + 8).toString("ascii");
-    const payload = buf.subarray(offset + 8, offset + 8 + length);
-
-    if (type === "tEXt") {
-      const nullIdx = payload.indexOf(0);
-      if (nullIdx >= 0) {
-        const keyword = payload.subarray(0, nullIdx).toString("ascii");
-        if (CHARA_KEYWORDS.has(keyword) && !found.has(keyword)) {
-          const b64 = payload.subarray(nullIdx + 1).toString("ascii");
-          try {
-            const json = Buffer.from(b64, "base64").toString("utf-8");
-            found.set(keyword, JSON.parse(json));
-          } catch {
-            /* skip malformed */
-          }
-        }
-      }
-    } else if (type === "iTXt") {
-      const nullIdx = payload.indexOf(0);
-      if (nullIdx >= 0) {
-        const keyword = payload.subarray(0, nullIdx).toString("ascii");
-        if (CHARA_KEYWORDS.has(keyword) && !found.has(keyword)) {
-          const compressionFlag = payload[nullIdx + 1];
-          // Skip compressionMethod, then find languageTag\0 and translatedKeyword\0
-          const langEnd = payload.indexOf(0, nullIdx + 3);
-          if (langEnd >= 0) {
-            const transEnd = payload.indexOf(0, langEnd + 1);
-            if (transEnd >= 0) {
-              const textBuf = payload.subarray(transEnd + 1);
-              if (compressionFlag === 0) {
-                const text = textBuf.toString("utf-8");
-                try {
-                  // iTXt may be raw JSON or base64-encoded
-                  found.set(keyword, JSON.parse(text));
-                } catch {
-                  try {
-                    const decoded = Buffer.from(text, "base64").toString("utf-8");
-                    found.set(keyword, JSON.parse(decoded));
-                  } catch {
-                    /* skip */
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    offset += 12 + length;
-    if (type === "IEND") break;
-  }
-
-  // Prefer ccv3 (V3 full data) over chara (V2 / backward-compat)
-  return found.get("ccv3") ?? found.get("chara") ?? null;
-}
-
 function readTimestampOverridesValue(value: unknown) {
   if (typeof value === "string") {
     try {
@@ -353,7 +286,7 @@ async function importCharacterBuffer(
   existingTagKeys?: ReadonlySet<string>,
 ) {
   if (fileName.toLowerCase().endsWith(".png")) {
-    const charData = extractCharaFromPng(buffer);
+    const charData = extractCardFromPng(buffer);
     if (!charData) {
       return {
         success: false,
@@ -389,7 +322,7 @@ async function importCharacterBuffer(
 
 async function inspectCharacterBuffer(fileName: string, buffer: Buffer) {
   if (fileName.toLowerCase().endsWith(".png")) {
-    const charData = extractCharaFromPng(buffer);
+    const charData = extractCardFromPng(buffer);
     if (!charData) {
       return {
         success: false,

@@ -18,74 +18,12 @@ import { characters as charactersTable, personas as personasTable } from "../../
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { DATA_DIR } from "../../utils/data-dir.js";
 import { getFileTimestampOverrides, parseTrustedTimestamp } from "./import-timestamps.js";
+import { extractCardFromPng } from "@jumpchoice/shared";
 
 const BG_DIR = join(DATA_DIR, "backgrounds");
 const BG_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]);
 
 // ─── Helpers ───
-
-const CHARA_KEYWORDS = new Set(["ccv3", "chara"]);
-
-/** Read PNG tEXt/iTXt chunks with keyword "ccv3" or "chara" → base64 JSON. Prefers ccv3 (V3). */
-function extractCharaFromPng(buf: Buffer): Record<string, unknown> | null {
-  // PNG signature: 8 bytes
-  if (buf.length < 8) return null;
-  const found = new Map<string, Record<string, unknown>>();
-  let offset = 8; // skip signature
-
-  while (offset < buf.length - 8) {
-    const length = buf.readUInt32BE(offset);
-    const type = buf.subarray(offset + 4, offset + 8).toString("ascii");
-    const payload = buf.subarray(offset + 8, offset + 8 + length);
-
-    if (type === "tEXt") {
-      const nullIdx = payload.indexOf(0);
-      if (nullIdx >= 0) {
-        const keyword = payload.subarray(0, nullIdx).toString("ascii");
-        if (CHARA_KEYWORDS.has(keyword) && !found.has(keyword)) {
-          const b64 = payload.subarray(nullIdx + 1).toString("ascii");
-          try {
-            const json = Buffer.from(b64, "base64").toString("utf-8");
-            found.set(keyword, JSON.parse(json));
-          } catch {
-            /* skip malformed */
-          }
-        }
-      }
-    } else if (type === "iTXt") {
-      const nullIdx = payload.indexOf(0);
-      if (nullIdx >= 0) {
-        const keyword = payload.subarray(0, nullIdx).toString("ascii");
-        if (CHARA_KEYWORDS.has(keyword) && !found.has(keyword)) {
-          const compressionFlag = payload[nullIdx + 1];
-          const langEnd = payload.indexOf(0, nullIdx + 3);
-          if (langEnd >= 0) {
-            const transEnd = payload.indexOf(0, langEnd + 1);
-            if (transEnd >= 0 && compressionFlag === 0) {
-              const text = payload.subarray(transEnd + 1).toString("utf-8");
-              try {
-                found.set(keyword, JSON.parse(text));
-              } catch {
-                try {
-                  const decoded = Buffer.from(text, "base64").toString("utf-8");
-                  found.set(keyword, JSON.parse(decoded));
-                } catch {
-                  /* skip */
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // Move past length(4) + type(4) + data(length) + crc(4)
-    offset += 12 + length;
-    if (type === "IEND") break;
-  }
-
-  return found.get("ccv3") ?? found.get("chara") ?? null;
-}
 
 /** Try multiple possible ST data folder layouts */
 function resolveSTDataDir(rootPath: string): string | null {
@@ -249,7 +187,7 @@ export async function scanSTFolder(rootPath: string): Promise<STBulkScanResult> 
       } else if (ext === ".png") {
         try {
           const buf = await readFile(fullPath);
-          const card = extractCharaFromPng(buf);
+          const card = extractCardFromPng(buf);
           if (card) {
             const d = card.data as Record<string, unknown> | undefined;
             const name = d?.name ?? card.char_name ?? card.name ?? basename(e.name, ".png");
@@ -582,7 +520,7 @@ export async function runSTBulkImport(
         const timestampOverrides = getFileTimestampOverrides(fileInfo);
         if (ch.format === "png") {
           const buf = await readFile(ch.path);
-          const card = extractCharaFromPng(buf);
+          const card = extractCardFromPng(buf);
           if (card) {
             // Attach avatar as data URL
             const b64 = buf.toString("base64");

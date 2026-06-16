@@ -483,6 +483,20 @@ function normalizeV2(raw: Record<string, unknown>): CharacterData {
       altDescriptions: normalizeAltDescriptions(rawExtensions.altDescriptions ?? rawExtensions.descriptionExtensions),
     },
     character_book: normalizeCharacterBook(raw.character_book),
+    // ── V3 field preservation (pass through if present) ──
+    ...(raw.nickname != null ? { nickname: String(raw.nickname) } : {}),
+    ...(raw.assets != null && Array.isArray(raw.assets)
+      ? { assets: raw.assets as CharacterData["assets"] }
+      : {}),
+    ...(raw.creator_notes_multilingual != null && typeof raw.creator_notes_multilingual === "object"
+      ? { creator_notes_multilingual: raw.creator_notes_multilingual as Record<string, string> }
+      : {}),
+    ...(raw.source != null && Array.isArray(raw.source) ? { source: raw.source.map(String) } : {}),
+    ...(raw.group_only_greetings != null && Array.isArray(raw.group_only_greetings)
+      ? { group_only_greetings: raw.group_only_greetings.map(String) }
+      : {}),
+    ...(raw.creation_date != null ? { creation_date: Number(raw.creation_date) } : {}),
+    ...(raw.modification_date != null ? { modification_date: Number(raw.modification_date) } : {}),
   };
 }
 
@@ -533,6 +547,22 @@ function normalizeCharacterBook(raw: unknown): CharacterData["character_book"] {
       selective: Boolean(e.selective ?? false),
       constant: Boolean(e.constant ?? false),
       position,
+      // ── V3 lorebook entry fields (pass through if present) ──
+      ...(e.probability != null ? { probability: Number(e.probability) } : {}),
+      ...(e.use_regex != null ? { use_regex: Boolean(e.use_regex) } : {}),
+      ...(typeof e.position === "number" ? { position_numeric: e.position } : {}),
+      ...(e.group != null ? { group: String(e.group) } : {}),
+      ...(e.group_weight != null ? { group_weight: Number(e.group_weight) } : {}),
+      ...(e.sticky != null ? { sticky: Number(e.sticky) } : {}),
+      ...(e.cooldown != null ? { cooldown: Number(e.cooldown) } : {}),
+      ...(e.delay != null ? { delay: Number(e.delay) } : {}),
+      ...(e.ephemeral != null ? { ephemeral: Boolean(e.ephemeral) } : {}),
+      ...(e.selective_logic != null ? { selective_logic: Number(e.selective_logic) } : {}),
+      ...(e.match_whole_words != null ? { match_whole_words: Boolean(e.match_whole_words) } : {}),
+      ...(e.prevent_recursion != null ? { prevent_recursion: Boolean(e.prevent_recursion) } : {}),
+      ...(e.exclude_from_vectorization != null
+        ? { exclude_from_vectorization: Boolean(e.exclude_from_vectorization) }
+        : {}),
     };
   });
 
