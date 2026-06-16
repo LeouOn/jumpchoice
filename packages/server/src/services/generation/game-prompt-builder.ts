@@ -18,6 +18,7 @@ import { listPartySprites } from "../game/sprite.service.js";
 import { buildPartyNpcId, isPartyNpcId } from "./helpers.js";
 import { processLorebooks } from "../lorebook/index.js";
 import { injectAtDepth } from "../lorebook/prompt-injector.js";
+import { applyLorebookDecorators } from "../lorebook/decorator-injector.js";
 import {
   resolveLorebookTokenBudget,
   persistLorebookRuntimeState,
@@ -450,6 +451,9 @@ export async function buildGamePrompt(
     }
     if (lorebookResult.depthEntries.length > 0) {
       finalMessages = injectAtDepth(finalMessages, lorebookResult.depthEntries);
+    }
+    if (lorebookResult.decoratedEntries && lorebookResult.decoratedEntries.length > 0) {
+      finalMessages = applyLorebookDecorators(finalMessages, lorebookResult.decoratedEntries);
     }
   }
 

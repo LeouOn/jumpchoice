@@ -18,6 +18,7 @@ import { buildImpersonateInstruction } from "../../services/conversation/imperso
 import { processLorebooks } from "../../services/lorebook/index.js";
 import { resolveGameLorebookScopeExclusions } from "../../services/lorebook/game-lorebook-scope.js";
 import { injectAtDepth } from "../../services/lorebook/prompt-injector.js";
+import { applyLorebookDecorators } from "../../services/lorebook/decorator-injector.js";
 import { createLLMProvider } from "../../services/llm/provider-registry.js";
 import { getLocalSidecarProvider } from "../../services/llm/local-sidecar.js";
 import {
@@ -1080,9 +1081,13 @@ export async function registerDryRunRoute(app: FastifyInstance) {
               .filter((content): content is string => typeof content === "string" && content.length > 0)
               .join("\n");
             const loreBlock = loreContent ? `<lore>\n${loreContent}\n</lore>` : "";
-            return { loreBlock, depthEntries: lorebookResult.depthEntries };
+            return {
+              loreBlock,
+              depthEntries: lorebookResult.depthEntries,
+              decoratedEntries: lorebookResult.decoratedEntries ?? [],
+            };
           })()
-        : { loreBlock: "", depthEntries: [] as any[] };
+        : { loreBlock: "", depthEntries: [] as any[], decoratedEntries: [] as any[] };
 
       const historyMessages = includeHistory
         ? (mappedMessages.map((m: any) => ({
@@ -1197,6 +1202,12 @@ export async function registerDryRunRoute(app: FastifyInstance) {
             finalMessages.some((m) => m.role === "user" || m.role === "assistant")
           ) {
             finalMessages = injectAtDepth(finalMessages as any, lorebookPayload.depthEntries) as any;
+          }
+          if (lorebookPayload.decoratedEntries && lorebookPayload.decoratedEntries.length > 0) {
+            finalMessages = applyLorebookDecorators(
+              finalMessages as any,
+              lorebookPayload.decoratedEntries,
+            ) as any;
           }
           continue;
         }
@@ -1381,6 +1392,12 @@ export async function registerDryRunRoute(app: FastifyInstance) {
       }
       if (lorebookResult.depthEntries.length > 0) {
         finalMessages = injectAtDepth(finalMessages as any, lorebookResult.depthEntries) as any;
+      }
+      if (lorebookResult.decoratedEntries && lorebookResult.decoratedEntries.length > 0) {
+        finalMessages = applyLorebookDecorators(
+          finalMessages as any,
+          lorebookResult.decoratedEntries,
+        ) as any;
       }
     }
 

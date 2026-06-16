@@ -2,6 +2,7 @@ import type { LorebookEntryTimingState } from "@jumpchoice/shared";
 import { nameToXmlTag, resolveMacros } from "@jumpchoice/shared";
 import { processLorebooks } from "../lorebook/index.js";
 import { injectAtDepth } from "../lorebook/prompt-injector.js";
+import { applyLorebookDecorators } from "../lorebook/decorator-injector.js";
 import { collectCharacterDepthPromptEntries } from "../prompt/index.js";
 import {
   resolveLorebookTokenBudget,
@@ -205,6 +206,9 @@ export async function injectContext(
     }
     if (lorebookResult.depthEntries.length > 0) {
       finalMessages = injectAtDepth(finalMessages, lorebookResult.depthEntries);
+    }
+    if (lorebookResult.decoratedEntries && lorebookResult.decoratedEntries.length > 0) {
+      finalMessages = applyLorebookDecorators(finalMessages, lorebookResult.decoratedEntries);
     }
   }
 

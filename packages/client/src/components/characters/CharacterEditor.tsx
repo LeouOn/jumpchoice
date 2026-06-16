@@ -1418,6 +1418,41 @@ function MetadataTab({
         />
       </label>
 
+      {/* Creator Notes Multilingual (V3) */}
+      <label className="block space-y-1.5">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)]">
+          Creator Notes Multilingual (V3){" "}
+          <HelpTooltip text="V3-only. Localized creator notes keyed by ISO 639-1 language code. One entry per line as code:text (e.g. en:Hello, ja:こんにちは). Empty lines and lines without a colon are ignored." />
+        </span>
+        <textarea
+          value={Object.entries(formData.creator_notes_multilingual ?? {})
+            .map(([code, text]) => `${code}:${text}`)
+            .join("\n")}
+          onChange={(e) => {
+            const records = Object.fromEntries(
+              e.target.value
+                .split("\n")
+                .map((line) => {
+                  const idx = line.indexOf(":");
+                  if (idx === -1) return null;
+                  const code = line.slice(0, idx).trim();
+                  const text = line.slice(idx + 1);
+                  if (!code) return null;
+                  return [code, text] as const;
+                })
+                .filter((entry): entry is readonly [string, string] => entry !== null),
+            );
+            updateField(
+              "creator_notes_multilingual",
+              Object.keys(records).length > 0 ? records : undefined,
+            );
+          }}
+          rows={3}
+          className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--secondary)] p-3 text-sm outline-none placeholder:text-[var(--muted-foreground)]/40 focus:border-[var(--primary)]/40 focus:ring-1 focus:ring-[var(--primary)]/20"
+          placeholder={"One per line as code:text, e.g.\nen:Hello world\nja:こんにちは\nfr:Bonjour"}
+        />
+      </label>
+
       {/* V3 timestamps (read-only) */}
       {Boolean(formData.creation_date ?? formData.modification_date) && (
         <div className="rounded-xl border border-[var(--border)] bg-[var(--secondary)]/40 p-3">
