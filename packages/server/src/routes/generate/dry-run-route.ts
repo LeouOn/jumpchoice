@@ -5,6 +5,8 @@ import {
   resolveMacros,
   stripMacroComments,
   type APIProvider,
+  type CharacterData,
+  type ChatMLMessage,
   type LorebookEntryTimingState,
 } from "@jumpchoice/shared";
 import { randomUUID } from "crypto";
@@ -15,10 +17,10 @@ import { createCharactersStorage } from "../../services/storage/characters.stora
 import { createLorebooksStorage } from "../../services/storage/lorebooks.storage.js";
 import { createRegexScriptsStorage } from "../../services/storage/regex-scripts.storage.js";
 import { buildImpersonateInstruction } from "../../services/conversation/impersonate-prompt.js";
-import { processLorebooks } from "../../services/lorebook/index.js";
+import { processLorebooks, type LorebookScanResult } from "../../services/lorebook/index.js";
 import { resolveGameLorebookScopeExclusions } from "../../services/lorebook/game-lorebook-scope.js";
 import { injectAtDepth } from "../../services/lorebook/prompt-injector.js";
-import { applyLorebookDecorators } from "../../services/lorebook/decorator-injector.js";
+import { applyLorebookDecorators, type LorebookEntryForInjection } from "../../services/lorebook/decorator-injector.js";
 import { createLLMProvider } from "../../services/llm/provider-registry.js";
 import { getLocalSidecarProvider } from "../../services/llm/local-sidecar.js";
 import {
@@ -51,6 +53,7 @@ import {
   resolveVisibleGameStateAnchor,
   resolveBaseUrl,
   type PromptAttachment,
+  type SimpleMessage,
 } from "../generate/generate-route-utils.js";
 import { buildGenerationPromptPresetCandidates, type PromptPresetCandidateSource } from "./prompt-preset-selection.js";
 import { createGameStateStorage, type GameStateVisibleAnchor } from "../../services/storage/game-state.storage.js";
@@ -65,6 +68,17 @@ type WrapFormat = "xml" | "markdown" | "none";
 
 function cardPromptText(value: unknown): string {
   return typeof value === "string" ? stripMacroComments(value).trim() : "";
+}
+
+/**
+ * Narrow an unknown caught value to a DOMException/Error flagged "AbortError".
+ * Covers AbortController-triggered rejections from fetch, providers, and streams.
+ */
+function isAbortError(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  if (err instanceof Error && err.name === "AbortError") return true;
+  const name = (err as { name?: unknown }).name;
+  return typeof name === "string" && name === "AbortError";
 }
 
 function resolveDryRunLorebookGenerationTriggers(
@@ -217,16 +231,16 @@ function formatTrackersContextBlock(args: {
 }
 
 function injectTrackerContext(
-  finalMessages: Array<{ role: "system" | "user" | "assistant"; content: string; images?: string[] }>,
+  finalMessages: SimpleMessage[],
   contextBlock: string,
   placement: "append" | "beforeLastUser",
-): Array<{ role: "system" | "user" | "assistant"; content: string; images?: string[] }> {
+): SimpleMessage[] {
   if (placement === "append") {
     finalMessages.push({ role: "system", content: contextBlock });
     return finalMessages;
   }
 
-  const lastUserIdx = findLastIndex(finalMessages as any, "user");
+  const lastUserIdx = findLastIndex(finalMessages, "user");
   if (lastUserIdx >= 0) {
     finalMessages.splice(lastUserIdx, 0, { role: "system", content: contextBlock });
     return finalMessages;
@@ -607,12 +621,12 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     const knownModelContext = normalizeMaxContext(findKnownModel(conn.provider as APIProvider, conn.model)?.context);
 
     // Minimal, safe parameter defaults (still allow chat-level overrides)
-    let temperature = 1;
-    let maxTokens = 2048;
-    let topP = 1;
-    let topK = 0;
-    let frequencyPenalty = 0;
-    let presencePenalty = 0;
+let temperature = 1;
+let maxTokens = 2048;
+let topP: number | undefined = 1;
+let topK = 0;
+let frequencyPenalty = 0;
+let presencePenalty = 0;
     let showThoughts = true;
     let reasoningEffort: "low" | "medium" | "high" | "maximum" | null = null;
     let verbosity: "low" | "medium" | "high" | null = null;
@@ -692,11 +706,12 @@ export async function registerDryRunRoute(app: FastifyInstance) {
           role: "user",
           characterId: null,
           content: userMessage,
-          extra: null,
+          extra: "{}",
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
           activeSwipeIndex: 0,
-        } as any,
+          rowid: chatMessages.length + 1,
+          swipeCount: 0,
+        },
       ];
     }
 
@@ -735,7 +750,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
 
     const allCharacterIds: string[] = (() => {
       try {
-        return JSON.parse((chat as any).characterIds as string);
+        return JSON.parse(chat.characterIds as string);
       } catch {
         return [];
       }
@@ -758,7 +773,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     try {
       const allPersonas = await chars.listPersonas();
       persona =
-        ((chat as any).personaId ? allPersonas.find((p: any) => p.id === (chat as any).personaId) : null) ??
+        (chat.personaId ? allPersonas.find((p: any) => p.id === chat.personaId) : null) ??
         allPersonas.find((p: any) => p.isActive === "true");
       if (persona) {
         personaId = persona.id as string;
@@ -834,7 +849,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     // - Else if the effective preset differs from the chat's promptPresetId,
     //   start with empty choices so the assembler falls back to the preset's default/first options.
     // - Else fall back to the chat's stored selections.
-    const requestChoices = parsePresetChoices((body as any).presetChoices);
+    const requestChoices = parsePresetChoices(body.presetChoices);
 
     const chatChoicesFromMeta = (chatMeta.presetChoices ?? {}) as Record<string, string | string[]>;
     const isDifferentPresetOverride =
@@ -997,7 +1012,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
               data.extensions && typeof data.extensions === "object"
                 ? (data.extensions as Record<string, unknown>)
                 : {};
-            const desc = cardPromptText(getCharacterDescriptionWithExtensions({ ...data, extensions } as any));
+            const desc = cardPromptText(getCharacterDescriptionWithExtensions({ ...data, extensions } as CharacterData));
             const characterMacroContext = {
               ...promptMacroContext,
               char: name,
@@ -1087,7 +1102,11 @@ export async function registerDryRunRoute(app: FastifyInstance) {
               decoratedEntries: lorebookResult.decoratedEntries ?? [],
             };
           })()
-        : { loreBlock: "", depthEntries: [] as any[], decoratedEntries: [] as any[] };
+        : {
+            loreBlock: "",
+            depthEntries: [] as LorebookScanResult["depthEntries"],
+            decoratedEntries: [] as LorebookEntryForInjection[],
+          };
 
       const historyMessages = includeHistory
         ? (mappedMessages.map((m: any) => ({
@@ -1201,13 +1220,13 @@ export async function registerDryRunRoute(app: FastifyInstance) {
             lorebookPayload.depthEntries.length > 0 &&
             finalMessages.some((m) => m.role === "user" || m.role === "assistant")
           ) {
-            finalMessages = injectAtDepth(finalMessages as any, lorebookPayload.depthEntries) as any;
+            finalMessages = injectAtDepth(finalMessages, lorebookPayload.depthEntries);
           }
           if (lorebookPayload.decoratedEntries && lorebookPayload.decoratedEntries.length > 0) {
             finalMessages = applyLorebookDecorators(
-              finalMessages as any,
+              finalMessages,
               lorebookPayload.decoratedEntries,
-            ) as any;
+            );
           }
           continue;
         }
@@ -1230,10 +1249,10 @@ export async function registerDryRunRoute(app: FastifyInstance) {
 
       const assemblerInput: AssemblerInput = {
         db: app.db,
-        preset: preset as any,
-        sections: sections as any,
-        groups: groups as any,
-        choiceBlocks: choiceBlocks as any,
+        preset,
+        sections,
+        groups,
+        choiceBlocks,
         chatChoices,
         chatId,
         characterIds: promptCharacterIds,
@@ -1391,13 +1410,13 @@ export async function registerDryRunRoute(app: FastifyInstance) {
         finalMessages.splice(insertAt, 0, { role: "system", content: loreBlock });
       }
       if (lorebookResult.depthEntries.length > 0) {
-        finalMessages = injectAtDepth(finalMessages as any, lorebookResult.depthEntries) as any;
+        finalMessages = injectAtDepth(finalMessages, lorebookResult.depthEntries);
       }
       if (lorebookResult.decoratedEntries && lorebookResult.decoratedEntries.length > 0) {
         finalMessages = applyLorebookDecorators(
-          finalMessages as any,
+          finalMessages,
           lorebookResult.decoratedEntries,
-        ) as any;
+        );
       }
     }
 
@@ -1408,7 +1427,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
         promptMacroContext,
       );
       if (characterDepthEntries.length > 0) {
-        finalMessages = injectAtDepth(finalMessages as any, characterDepthEntries) as any;
+        finalMessages = injectAtDepth(finalMessages, characterDepthEntries);
       }
     }
 
@@ -1519,7 +1538,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     // Claude Opus 4.7+: ALL sampling params removed except max_tokens (provider returns 400 otherwise).
     const isClaudeNoSampling = /claude-opus-4-(?:[7-9]|\d{2,})/.test(modelLc);
     if (isClaudeNoSampling) {
-      topP = undefined as any;
+      topP = undefined;
       topK = 0;
       frequencyPenalty = 0;
       presencePenalty = 0;
@@ -1530,7 +1549,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
       !isClaudeNoSampling &&
       (/claude-(opus|sonnet)-4-[56]/.test(modelLc) || /claude-(opus|sonnet)-4\.[56]/.test(modelLc));
     if (isClaudeTemperatureOnly) {
-      topP = undefined as any;
+      topP = undefined;
       topK = 0;
       frequencyPenalty = 0;
       presencePenalty = 0;
@@ -1539,7 +1558,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
 
     const provider: BaseLLMProvider =
       connId === LOCAL_SIDECAR_CONNECTION_ID
-        ? (getLocalSidecarProvider() as any)
+        ? getLocalSidecarProvider()
         : createLLMProvider(
             conn.provider,
             baseUrl,
@@ -1586,11 +1605,11 @@ export async function registerDryRunRoute(app: FastifyInstance) {
         if (m.role === "system") return { ...m, role: "user" as const };
         return m;
       });
-      return mergeAdjacentMessages(converted as any) as ChatMessage[];
+      return mergeAdjacentMessages(converted as ChatMLMessage[]) as ChatMessage[];
     };
 
     const fit = fitMessagesToContext(
-      toProviderMessages(finalMessages as any),
+      toProviderMessages(finalMessages),
       { maxContext: effectiveMaxContext, maxTokens },
       connectionMaxContext,
     );
@@ -1668,7 +1687,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
       };
 
       try {
-        const result = await provider.chatComplete(providerMessages as any, {
+        const result = await provider.chatComplete(providerMessages, {
           model: conn.model,
           temperature,
           maxTokens: maxTokensForSend,
@@ -1693,7 +1712,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
         sendSseEvent(reply, { type: "result", data: { content: full || result.content || "" } });
         sendSseEvent(reply, { type: "done", data: "" });
       } catch (err) {
-        if (abortController.signal.aborted || (err && typeof err === "object" && (err as any).name === "AbortError")) {
+        if (abortController.signal.aborted || isAbortError(err)) {
           sendSseEvent(reply, { type: "aborted", data: "" });
           sendSseEvent(reply, { type: "done", data: "" });
           return;
@@ -1716,7 +1735,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     // - Provide `runId` in the request body, or
     // - Read it from the `x-dryrun-runid` response header and then call /dryRun/abort.
     const abortController = new AbortController();
-    const providedRunId = typeof (body as any).runId === "string" ? ((body as any).runId as string).trim() : "";
+    const providedRunId = typeof body.runId === "string" ? body.runId.trim() : "";
     const runId = providedRunId || randomUUID();
     activeDryRuns.set(runId, { abortController, chatId });
 
@@ -1729,7 +1748,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     reply.header("x-dryrun-runid", runId);
 
     try {
-      const result = await provider.chatComplete(providerMessages as any, {
+      const result = await provider.chatComplete(providerMessages, {
         model: conn.model,
         temperature,
         maxTokens: maxTokensForSend,
@@ -1751,7 +1770,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
         runId,
       });
     } catch (err) {
-      if (abortController.signal.aborted || (err && typeof err === "object" && (err as any).name === "AbortError")) {
+      if (abortController.signal.aborted || isAbortError(err)) {
         return reply.send({ aborted: true, runId });
       }
       logger.error(err, "[dryRun] Generation failed");
