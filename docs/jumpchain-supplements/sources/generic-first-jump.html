@@ -1,0 +1,669 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Generic First Jump</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="5939378a-c43c-4386-8cae-07311581a48a" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">📁</span></div><h1 class="page-title">Generic First Jump</h1></header><div class="page-body"><hr id="1f2acab1-0043-460a-817a-29755b1c0994"/><h2 id="21ba2a7a-b026-458b-b314-863f6a9e4997" class=""><details open=""><summary>Jump Doc</summary></details></h2><div class="indented"><figure id="bba7b812-6449-49d7-b521-df4da4286b46"><div class="source"><a href="https://drive.google.com/file/d/1R6vX3Kut68U5UfSdxdUGSexYq-ISvQ4o/preview">https://drive.google.com/file/d/1R6vX3Kut68U5UfSdxdUGSexYq-ISvQ4o/preview</a></div></figure></div><h2 id="306e635d-2c91-415d-abcb-3941db795c38" class=""><strong>Starting CP: 1000</strong></h2><h2 id="b6a8e98d-37e6-4e4f-8037-47e827b82924" class=""><details open=""><summary><strong>Level Selection</strong></summary></details></h2><div class="indented"><ul id="e423db1b-bfe2-4b07-b027-12b1a07eb8e0" class="bulleted-list"><li style="list-style-type:disc">These are the ten different Levels you will visit in the course of this Jump. If you choose, you can go to a specific setting that matches the theme or genre of a Level rather than a generic version. If that specific setting has a Jump, you do not use that Jump document, and nothing done in this Jump will carry over to the actual Jump for that setting.</li></ul><ul id="2f147614-121e-4c96-bb9a-e39b360f052a" class="bulleted-list"><li style="list-style-type:disc">You can do these Levels in any order you choose. A specific setting may fit more than one Level, but it only counts for one of them. In each Level, you acquire an identity that fits the setting, with all appropriate memories.</li></ul><ul id="45e46452-667d-4a73-9406-949af6cca48a" class="bulleted-list"><li style="list-style-type:disc">Decided By Roll of 1d10<ol type="1" id="7382a4a1-39dd-40cb-b504-f714704e8c98" class="numbered-list" start="1"><li><strong>Modern Occult</strong></li></ol><ol type="1" id="807a56d3-1d08-4f4c-8017-f4c50a449470" class="numbered-list" start="2"><li><strong>Military</strong></li></ol><ol type="1" id="cb6a3662-777d-454e-8838-9c6aa0543630" class="numbered-list" start="3"><li><strong>Science Fiction</strong></li></ol><ol type="1" id="941e2dc3-4cda-4322-ae51-d04594d09da8" class="numbered-list" start="4"><li><strong>Fantasy</strong></li></ol><ol type="1" id="6ce416b3-eeb9-4b4c-82e0-58394751832b" class="numbered-list" start="5"><li><strong>Historical/Alt-Historical/Lost World</strong></li></ol><ol type="1" id="5ef2815a-8cab-4325-82d6-f61c36e35c6e" class="numbered-list" start="6"><li><strong>Slice of Life</strong></li></ol><ol type="1" id="07b1d1fd-6115-4020-aeb1-f7e998c88133" class="numbered-list" start="7"><li><strong>Super Hero</strong></li></ol><ol type="1" id="885709d4-ec70-4b4e-b3d5-811e1823ca2a" class="numbered-list" start="8"><li>Modern Adventure</li></ol><ol type="1" id="d1da5375-1d82-48ce-a79c-6c78c2e63c91" class="numbered-list" start="9"><li><strong>Survival</strong></li></ol><ol type="1" id="e3c9b395-e0cc-4bd8-9d9c-685af1a75312" class="numbered-list" start="10"><li><strong>Horror</strong></li></ol></li></ul></div><h2 id="f93099f7-6602-4140-8e37-643a25861e93" class=""><details open=""><summary>Age and Gender</summary></details></h2><div class="indented"><ul id="cfe4aeef-b016-46a3-8afc-4d7a8843d17e" class="bulleted-list"><li style="list-style-type:disc">This category seems a little personal to me. Does it really matter, in terms of being a Jumper? You are whatever gender you want to be, and whatever age you want to be, though your age may be altered to fit the identity granted by the specific Level you are in.</li></ul><ul id="bc722eae-a48d-45b3-b383-146abd6bdfec" class="bulleted-list"><li style="list-style-type:disc"><strong>Gender: Male</strong></li></ul></div><h2 id="0c4840fe-a2ad-4d3b-a573-4dc213cc15bc" class=""><details open=""><summary>Origin</summary></details></h2><div class="indented"><ul id="373a4918-a542-4142-aa2b-ccf383c9fef0" class="bulleted-list"><li style="list-style-type:disc">What kind of Jumper are you? Well, you don’t really know yet, so instead, what kind of Jumper do you think you are going to be? Obviously most Jumpers will have aspects from all of these categories, but what is your focus?</li></ul><ul id="b25fa86e-ec69-4b9e-b51e-230243915d5b" class="bulleted-list"><li style="list-style-type:disc"><strong>The Tourist - </strong>These types of Jumpers are in it for the experience. They want to visit their favorite settings, meet their favorite characters, maybe fix a few things the original author got wrong in their opinion. For them, it is all about the world they are visiting.</li></ul></div><h2 id="b8821f28-3fb1-4a6f-897a-3054cc2faa9f" class=""><details open=""><summary>Perks</summary></details></h2><div class="indented"><ul id="1719b16b-31a6-4e7b-8e15-abbdeddbbae9" class="bulleted-list"><li style="list-style-type:disc">What kind of skills and advantages do you possess? Perks are discounted by 50% for their Origin, and 100cp perks are free for their Origin.</li></ul><h3 id="2c708157-48f6-4e91-862c-8d7aacf1f68c" class=""><details open=""><summary>General</summary></details></h3><div class="indented"><ul id="aa4c32e3-b405-4c54-ac64-4a9fab9d3fc7" class="bulleted-list"><li style="list-style-type:disc"><strong>Basic Requirements (</strong><span style="border-bottom:0.05em solid"><strong>Free to All</strong></span><strong>) -</strong> You will receive whatever special abilities, traits, backgrounds, and skills that are required for basic participation in the Level you are in. For example, if you are going to a Modern Occult setting focused on psychics tracking down ghosts, you would receive general knowledge of the supernatural in that world and enough psychic abilities to match the average in the setting. A Military setting based on the Vietnam War would give you a decent level of fitness and basic training for the military organization you were a part of. A superhero setting would provide powers or abilities to match the average ability of the featured characters of the world. This also provides in-universe backgrounds, histories, and memories that fit the identity you acquire in that Jump.<p id="d4b205ec-8a2c-4f10-9a3f-1efcf49ca5a1" class=""><span style="border-bottom:0.05em solid">These abilities go away when you leave that Level and this perk goes away when you finish this jump. Nothing can be done to retain these abilities, but you do benefit from any practice, training, study, or actual use in the Level itself of any mundane skills.</span></p></li></ul><ul id="0b6dd24e-7307-4b1d-9b29-ef5de143a9f6" class="bulleted-list"><li style="list-style-type:disc"><strong>Body Like A Jumper (</strong><span style="border-bottom:0.05em solid"><strong>Free for All</strong></span><strong>) -</strong> You are cured of any physical ailments or disabilities you may have entered this Jump with. You become as physically fit as an average healthy athletic person would be. Your fitness will never deteriorate below this level, or any higher level that you have reached by actual training, unless you wish it to do so, as long as you have sufficient food and water to survive. You can also render yourself fertile or infertile at will and can stop or start any menstrual or breeding cycle at will.</li></ul><ul id="81c0e758-9e8f-48b2-b7f0-52af1e811964" class="bulleted-list"><li style="list-style-type:disc"><strong>Mind Like A Jumper (</strong><span style="border-bottom:0.05em solid"><strong>Free for All</strong></span><strong>) -</strong> You are aware of any mental illness, disorders, disabilities, or other conditions you may be suffering from as you enter this jump, and may choose to have any or all of them removed. This does not make you immune to these things, it just removes pre-existing conditions.</li></ul><ul id="c3f8a782-e7f8-4a91-ad00-983d92412d2a" class="bulleted-list"><li style="list-style-type:disc"><strong>Sexy and I Know It (50cp) - </strong>Jumpers tend to be rather vain. Almost all of them eventually take some sort of appearance-boosting perk, so let’s just deal with that now.<p id="f8fc97a9-83bc-4e60-b366-53a0a0be371a" class="">You are incredibly good-looking. On a scale of one to ten, you are a perfect ten. The exact details of your appearance, build, and “endowments” are up to you, but you look as good as it is possible for a human being to look and you stay that way no matter what your condition or the circumstances might be. Anything that happens to alter your appearance, such as scarring, amputation, cybernetic implants, or genetic mutation, will always leave you somehow still looking incredible. You may become a rotting zombie, but you will be the sexiest rotting zombie to ever crave brains.</p><p id="c246c017-1319-416e-a652-b37b8e2c7d4a" class="">You will retain your fit and attractive appearance, even without exercise or a proper diet, as long as you consume enough calories to avoid starvation. You will either heal perfectly, without any form of scarring, or your scars will enhance your appearance in some way. Even if your current appearance is inhuman in part or completely, you still remain this attractive.</p><p id="9b5032bf-bcfb-4360-9a8a-7e359d4d501b" class="">You never actually get dirty, always staying as pristine and perfect as you could be, unless you choose otherwise. In which case the sweat, dirt, blood, or whatever else will somehow complement your looks perfectly. You also instinctively present yourself as well as you possibly can at all times. Your posture and movements never make you seem awkward or unattractive, always showing you in your best possible light and making anything you wear look amazing. Supermodels train for years to stand and move like you, and never quite make it. You never need to brush or floss, have perfect teeth and a great smile, your hair is always perfectly done up in whatever style you want it in, and if you don’t want to shave you simply won’t need to, facial or body hair simply not growing until and unless you want it to.</p><p id="f1869a1b-d792-4e22-a8e2-53007679982f" class="">Furthermore, you have perfect control over your fertility and menstrual cycle in the case of females. Any sexual partners will believe you when you tell them you are protected, as long as you are telling the truth. Your voice is equally incredible in some way, whether it be sexy, commanding, soothing, or just pleasant. Your body scent is either extremely pleasant or you have no scent at all, and you can switch this at will.</p></li></ul><ul id="9b8baa3e-e12c-48c3-9c94-a9e483d8c5a3" class="bulleted-list"><li style="list-style-type:disc"><strong>Common Sense (50cp) - </strong>The least common advantage of all. You can tell when something you are about to do is contrary to basic common sense and rationality, or when you are about to do something your Benefactor will punish you for. You can also tell when your emotions are clouding your judgment.</li></ul><ul id="865e6da2-3390-4406-a1a9-d208079d81ce" class="bulleted-list"><li style="list-style-type:disc"><strong>Self-Motivation (50cp) - </strong>You have no difficulty motivating yourself, easily putting your full effort into any task, training, or activity.</li></ul><ul id="dc351765-b02d-4ca9-ab85-9b88ed2ef1c6" class="bulleted-list"><li style="list-style-type:disc"><strong>Life Skills (50cp) - </strong>You have the basic life skills that everyone really should possess. You can cook, clean, do laundry, drive, perform basic maintenance, balance finances and perform other tasks that are needed by the average person.</li></ul><ul id="e36af411-3222-47b9-8fd3-566eff1a0d43" class="bulleted-list"><li style="list-style-type:disc"><strong>General Knowledge (50cp or </strong><span style="border-bottom:0.05em solid"><strong>100cp</strong></span><strong>) - </strong>When you enter a new Jump, you gain knowledge of the location and culture you start in that is equivalent to what the average citizen would know. You also gain fluency in the local language or languages. For an additional 50cp, all of your knowledge will have the local equivalent added, such as a student of history knowing as much as an equivalently educated student of history in the new setting. This added information never goes away, but is never confusing and does not impair you in any way.</li></ul><ul id="d8f2919c-cdcd-465f-94e1-0e5d6a9f4661" class="bulleted-list"><li style="list-style-type:disc"><strong>Friendly Sort (100cp) - </strong>People like you, you have charisma and charm. Nothing supernatural or superhuman, but you are a very likable person. This also removes any shyness, social anxiety, or similar problems that you possess.</li></ul><ul id="256a829d-e66b-476d-8ace-ce8cf2891728" class="bulleted-list"><li style="list-style-type:disc"><strong>Boredom Immunity (100cp) - </strong>You are completely immune to boredom. When engaged in a simple repetitive task, you can choose to fast-forward through it, remembering performing the task without having to experience it fully. This fast-forward ends instantly if something changes that require your attention.</li></ul><ul id="7ac738d6-7d21-4a4e-8816-73e7bfe3e0ac" class="bulleted-list"><li style="list-style-type:disc"><strong>No Matter Where You Go, There You Are (100cp) - </strong>Your priorities, sense of morality and beliefs only change how you desire them to. You will instantly process and deal with any trauma in the best possible way for you, making you immune to PTSD and similar issues.</li></ul><ul id="d6676d99-2cc9-4469-a7d6-27fde21a47a5" class="bulleted-list"><li style="list-style-type:disc"><strong>Veteran (100cp) - </strong>You never lose your cool, keeping your head no matter what the situation you are in. This does not mean you don’t feel emotions, just that you can control them.</li></ul><ul id="91a63644-0cfb-4b24-9727-f25fd61626a0" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: 1000 - 700 = 300</strong></li></ul></div><h3 id="846f2d27-a7d1-4fcf-94c4-f2e745d4f9a4" class=""><details open=""><summary>The Tourist</summary></details></h3><div class="indented"><ul id="d9e2fe56-ba76-477f-bb85-061806efb3a6" class="bulleted-list"><li style="list-style-type:disc"><strong>The Road Goes Ever On And On (100cp, </strong><span style="border-bottom:0.05em solid"><strong>Free for The Tourist</strong></span><strong>) - </strong>Your mind is well-prepared for dealing with eternity. You can find joy and satisfaction in everyday life no matter how long you have been alive, you can adapt to new cultures with ease, and you will never find your emotions blunted by the passage of time and ennui.</li></ul><ul id="6c7a3b49-9916-4eda-bec5-5633128491b3" class="bulleted-list"><li style="list-style-type:disc"><strong>Seeing The Sights, All The Sights (200cp, </strong><span style="border-bottom:0.05em solid"><strong>Discount for The Tourist</strong></span><strong>) -</strong> When your primary focus is the experiences you acquire and the stories you could tell, forgetting them is a tragedy. You will never have to worry about that. You have a perfect memory, with instant recall, unlimited storage, tamper-proofing, perfect indexing, and protection from any form of harmful memory. This perfect memory is fully retroactive. You can choose to erase memories, leaving the knowledge that something was erased and a basic description of what that memory was, and can restore that erased memory later. Nothing can detect these erased memories or force you to restore them. Your memories can only be read by an outside force with your permission.</li></ul><ul id="ac503569-66b3-407b-a4e3-c959c842480a" class="bulleted-list"><li style="list-style-type:disc"><strong>Ride The Rails To See The Sights (400cp, </strong><span style="border-bottom:0.05em solid"><strong>Discount for The Tourist</strong></span><strong>) - </strong>Maybe you want to help blow up the Death Star, fight on the walls of Gondor, or fight off the Agent Smith virus. For those events to happen, events before them kind of have to go a certain way. This is your guarantee of that.<p id="e7199688-8771-4cd9-ae05-2c8f17093f49" class="">Now, as long as you do not deliberately cause large-scale changes, the canon plot of a Jump’s setting will proceed as expected, adjusting for minor alterations you might have caused. This can be toggled on or off, but once turned off, the butterfly effect may make a return to canon events impossible.</p></li></ul><ul id="730d9198-ba36-4e27-807e-7e11bf9d5a85" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: 300 - 300 = 0</strong></li></ul></div><h3 id="c7a9f4fd-e06a-42b9-b0db-1c54a9b186d7" class=""><details open=""><summary>Slice of Life</summary></details></h3><div class="indented"><ul id="35cf385f-4809-4272-9c01-1bcc56b051f3" class="bulleted-list"><li style="list-style-type:disc"><strong>Expertise (100cp) - </strong>You are at an expert level of skill and ability in one real-world profession of your choice. This level of skill does not make you one of the best in the world, but it does make you a top-notch professional. This can be taken multiple times, for a different profession each time.<ul id="af7db503-2188-41d6-8fa5-d816cdd0bbbb" class="bulleted-list"><li style="list-style-type:circle"><strong>Psychiatrist</strong></li></ul></li></ul><ul id="cfd6efc7-843a-4daa-b628-f8a02653c306" class="bulleted-list"><li style="list-style-type:disc"><strong>Friendly Friends (100cp) - </strong>No matter what you have experienced or where you have been, you have no difficulty in connecting emotionally with other people. You are also a good listener and all around good friend, when you want to be.</li></ul><ul id="576900de-a7f1-4ce8-81ac-0bc0e524e7b9" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: 0 - 200 = -200</strong></li></ul></div><h3 id="74828baf-b4d6-4b4f-9b12-0d8897822453" class=""><details open=""><summary>Survival</summary></details></h3><div class="indented"><ul id="0f62244d-05a7-406f-accc-b49c971c5ef7" class="bulleted-list"><li style="list-style-type:disc"><strong>Eagle Scout (100cp) - </strong>You are an expert when it comes to survival, both wilderness and urban. You are both talented and lucky at finding the materials and resources you need, in any environment, they could exist.</li></ul><ul id="c436579b-c8f5-4889-9913-3ac1d09b2ccc" class="bulleted-list"><li style="list-style-type:disc"><strong>Lone Survivor (100cp) - </strong>You do not suffer any difficulty resulting from isolation or loneliness. Your social skills do not degrade, and you are guaranteed not to start having conversations with a volleyball.</li></ul><ul id="93167eb9-9aa8-4e12-84df-6098325acc52" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -200 - 200 = -400</strong></li></ul></div><h3 id="80165656-2293-4138-aa70-c7aa793037d7" class=""><details open=""><summary>Horror</summary></details></h3><div class="indented"><ul id="3af3594e-f1bc-4b67-96e6-24bd30984968" class="bulleted-list"><li style="list-style-type:disc"><strong>Run Like Hell (100cp - </strong>You have a talent for running from trouble. You tend to choose the best path to lead to safety, you are a bit faster than would be expected, your endurance is extraordinary, and you are extremely sure-footed and agile.</li></ul><ul id="99075c72-60e8-4da6-958d-2c596a17fbbe" class="bulleted-list"><li style="list-style-type:disc"><strong>Be Not Afraid (100cp) - </strong>You are immune to the mind-bending or destroying effects of eldritch abominations, are never impaired or disabled by fear, and are also immune to any form of spiritual corruption.</li></ul><ul id="4f7363f8-6981-4587-9924-021238997ecb" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -400 - 200 = -600</strong></li></ul></div><h3 id="2cb0dd54-7b96-4099-8eb4-46e0cfda5dbc" class=""><details open=""><summary>Military</summary></details></h3><div class="indented"><ul id="57ee10fc-131b-49e6-8f03-8e0f6cca8c06" class="bulleted-list"><li style="list-style-type:disc"><strong>Advanced Infantry Training (100cp) - </strong>While you are no Special Forces operator, you have been through Basic Training and Advanced Infantry School, or the equivalent for the setting, and are a highly trained and conditioned soldier.</li></ul><ul id="7415171c-8493-4cf0-8918-87c4b613e497" class="bulleted-list"><li style="list-style-type:disc"><strong>Military Occupational Specialty (100cp) - </strong>You have been fully trained in an M.O.S. of some sort. This could be truck driving, vehicle maintenance, cryptography, law enforcement, cooking, or any other non-combat skill set commonly taught by the military in the setting. This can be taken multiple times, for a different M.O.S. each time.</li></ul><ul id="4f092777-e501-4968-9bd6-7a46561e12b1" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -600 - 200 = -800</strong></li></ul></div><h3 id="2419eac6-b94d-4bd2-a24f-3d155e0e3f04" class=""><details open=""><summary>Modern Adventure</summary></details></h3><div class="indented"><ul id="838870a0-5c80-48e4-8ab3-59fa81f051c9" class="bulleted-list"><li style="list-style-type:disc"><strong>The Quick and the Dead (100cp) - </strong>You think fast, react fast, and move fast. Your reaction speed is peak human, and your thought processes are three times as fast as they otherwise would be.</li></ul><ul id="8522c553-b4a7-43b0-b8b0-91f3e7aaa53b" class="bulleted-list"><li style="list-style-type:disc"><strong>Sherlock Scan (100cp) -</strong> When examining a location, object or situation, the parts of it that are important or relevant to you in some way will stand out, calling your attention to them, without distracting you from your surroundings.</li></ul><ul id="2792e66c-74b9-4a3c-aa40-ab2076329ea3" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -800 - 200 = -1000</strong></li></ul></div><h3 id="dd404bd6-e12e-44a7-8ff3-9edf31d50976" class=""><details open=""><summary>Super Hero</summary></details></h3><div class="indented"><ul id="d0c333fe-6403-43b8-b41b-6e526d481578" class="bulleted-list"><li style="list-style-type:disc"><strong>Fists of Justice (100cp) - </strong>Pick a martial art. Kung Fu, Judo, Jeet Kune Do, Savate, whatever. You are an expert at this form of fighting. It won’t let you fight Superman, but it will give you a handy advantage against someone your level.<ul id="d823ba98-54f3-4036-8d4a-5c42e9b11c34" class="bulleted-list"><li style="list-style-type:circle"><strong>Krav Maga</strong></li></ul></li></ul><ul id="a3226c4b-ddf2-4f6d-af9a-49f15b5f8e7c" class="bulleted-list"><li style="list-style-type:disc"><strong>Secondary Superpowers (100cp) - </strong>Any power or ability that you acquire, no matter where or how you acquired it, you also receive the necessary secondary superpowers to make it function properly. You also have the ability to shut off any of your abilities, or to weaken them to any level between off and full power, at will.</li></ul><ul id="f1995d29-a20f-4913-849d-b73f8f38f612" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1000 - 200 = -1200</strong></li></ul></div><h3 id="75af6b23-60d6-4d98-937d-8c6511009e64" class=""><details open=""><summary>Modern Occult</summary></details></h3><div class="indented"><ul id="adbc51e4-9443-4fd6-a3b6-ef55de7d5193" class="bulleted-list"><li style="list-style-type:disc"><strong>Screw the Devil (100cp) - </strong>You are completely immune to any form of possession. Outside control might still work on you, but you are the only actual occupant of your body, mind and soul, and you are going to stay that way. If you allow something else to possess you, you can resume control and kick them out at will. Nothing can stop you from doing so, if that is what you want to do.</li></ul><ul id="b38d9c29-5fb0-422f-a089-e4dafa47c499" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1200 - 100 = -1300</strong></li></ul></div><h3 id="7c006c32-b91f-4d9c-b82f-d757d315fe45" class=""><details open=""><summary>Historical/Alt-Historical/Lost World</summary></details></h3><div class="indented"><ul id="f644f489-2714-4d12-93dd-f98a0047d052" class="bulleted-list"><li style="list-style-type:disc"><strong>Student of War (100cp) - </strong>The study of history is often the study of war, and you have become an expert at it. You are not only an expert strategist and tactician, you are also an expert at logistics and organization, the unsung heroes of any military campaign.</li></ul><ul id="414bd7d4-f350-4375-ba39-2c22d2c13d77" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1300 - 100 = -1400</strong></li></ul></div><h3 id="464d747d-adc6-4b7e-b8a7-59bae3d1f179" class=""><details open=""><summary>Fantasy</summary></details></h3><div class="indented"><ul id="2f0eecf7-bb5d-49e4-8871-998b4b23bb21" class="bulleted-list"><li style="list-style-type:disc"><strong>Cantrips (100cp) - </strong>You have minor magical abilities that you can use at will. These abilities are of the same scale as D&amp;D 3.5ed cantrips, useful tricks like cleaning your clothing or creating a small temporary floating ball of light.</li></ul><ul id="e3a3f761-745c-4e19-9f4a-ec4b1141415c" class="bulleted-list"><li style="list-style-type:disc"><strong>Class Skills (100cp) - </strong>You have the specialized skills set that best fits an occupation or “class” of your choice, appropriate to a fantasy setting. This does not provide any magical abilities but can include lore or theoretical knowledge of magic, which will update to your current setting. This can be taken multiple times, for a different “class” each time.</li></ul><ul id="eec77484-94fc-4081-a777-70a007bbc813" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1400 - 200 = -1600</strong></li></ul></div><h3 id="69ca310a-d468-4bed-8fd1-334cedac6548" class=""><details open=""><summary>Science Fiction</summary></details></h3><div class="indented"><ul id="61a6b947-0c0b-4d06-8aef-c6126e351961" class="bulleted-list"><li style="list-style-type:disc"><strong>Universal Translation (100cp) - </strong>You can understand, speak, read, write, and think any language you have ever encountered, as long as you have the necessary anatomy. This is retroactive to any languages you might have been exposed to in the past.</li></ul><ul id="26a4b638-2400-4c32-82ef-3c3c2df65731" class="bulleted-list"><li style="list-style-type:disc"><strong>Engineer (100cp) - </strong>Once you know how to use a piece of technology, you can figure out how to fix it. This does not provide tools or materials, just the know-how.</li></ul><ul id="d8eb6cf4-1252-4bb5-9f2b-320517e16bc6" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1600 - 200 = -1800</strong></li></ul></div></div><h2 id="e7a61d72-2096-4ac7-adde-0a3be67f445b" class=""><details open=""><summary>Items</summary></details></h2><div class="indented"><ul id="91c7d0a0-2266-4a47-b7f0-7cdee6fce10e" class="bulleted-list"><li style="list-style-type:disc">Each Origin gets one of its 100cp items for free, and a discount on its other item. You can combine similar items purchased from this Jump at no additional cost. Any item can be taken multiple times, but 100cp Origin items are discounted instead of free after the first purchase. If these items are lost, stolen, or destroyed, new ones will be in the Warehouse 24 hours later. You receive a +200cp stipend for this section.</li></ul><ul id="209bde09-54ea-454e-b4cf-c2b642b3d931" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1800 + 200 = -1600</strong></li></ul><h3 id="9f7a5f77-dadc-4952-ae01-b3e813ed1f78" class=""><details open=""><summary>General</summary></details></h3><div class="indented"><ul id="90cf730d-b5d5-4dd6-a196-e49a3148f366" class="bulleted-list"><li style="list-style-type:disc"><strong>Bare Necessities (Free to All Origins or </strong><span style="border-bottom:0.05em solid"><strong>100cp</strong></span><strong>) - </strong>You have a job that pays enough for you to live on, assuming you live simply. You also have a home of some sort, a cheap but decent vehicle of an appropriate type, and the various basic sundries needed to live. Basically, you have a life, set up and waiting for you. The job will be something you are capable of performing, and that works with your background, and the schedule will be flexible enough that it will not interfere in your normal jump activities.<p id="be2f41d9-691a-41be-8a19-040e6198c766" class="">For 100cp, you have a trust fund that pays in whatever the local currency is, equivalent to two hundred thousand dollars ($200,000.00) per year. Your home, vehicle, and other possessions are upgraded to be appropriate for this level of income. This money is legal, with all taxes paid and all documentation needed. No one will question where it comes from.</p><p id="46c5d2af-4b06-4292-a5ef-25b459c2ab60" class="">Each time you purchase the upgrade, move the decimal point one space to the right. This item follows you to all future jumps, adapting as needed, and can be toggled off for a jump. Any other form of income you receive, including from other perks or items, can be added to the trust fund, and will also be completely legal with all taxes paid and documentation needed.</p></li></ul><ul id="ccd5070a-cbb3-4c97-a2f6-7e969fbebdc7" class="bulleted-list"><li style="list-style-type:disc"><strong>Franchise (100cp) - </strong>After this jump, you will receive something like a comic or cartoon, or even a series of blockbuster-style movies, that tell stylized versions of your adventures. These update at the end of each Jump to include the events of it, and no one can view these without your permission. You may have this in multiple media styles. Pick as many as you would like. And you may pick additional ones at a later date if you choose to.</li></ul><ul id="e3dc1a13-ef3e-469c-b120-4da1b5f3f2eb" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1600 - 200 = -1800</strong></li></ul></div><h3 id="4e69f9d7-754d-44bf-9a0f-9c2c9fb4f5f3" class=""><details open=""><summary>The Tourist</summary></details></h3><div class="indented"><ul id="2df2fbf2-b51a-4c70-b058-6f375402f5a1" class="bulleted-list"><li style="list-style-type:disc"><strong>Camera (100cp, </strong><span style="border-bottom:0.05em solid"><strong>Free or Discount for The Tourist</strong></span><strong>) - </strong>Oh! That picture reminds you of the time you challenged the devil to a game of tiddlywinks! And that one reminds you of the time you put Gabriel in a Cobra Clutch for a full day! You don’t actually get a camera. Instead, every time you do something memorable, noteworthy, or just wish to remember a moment in the future, you will receive a snapshot of the moment, framed at just the right size and from just the right angle, you can always get more copies from different angles if you wish, or receive digital copies on any of your devices.</li></ul></div></div><h2 id="57abf0c5-04e1-4ba4-84bd-83d74fa1f748" class=""><details open=""><summary>Drawbacks</summary></details></h2><div class="indented"><ul id="b046b08a-2f49-438d-b446-0c3a43ac154d" class="bulleted-list"><li style="list-style-type:disc">You can take as many Drawbacks as you want, without limit on cp gained. If you can handle the Drawbacks, you can have the reward. Also, the drawbacks that change the world are altering its condition at the start of the Jump. If you are genuinely capable of changing the nature of the world, fiat will not kick in to change it back. Drawbacks specific to a particular Level only function in that Level.</li></ul><h3 id="ca4d801d-559e-456c-849c-89bbb319d332" class=""><details open=""><summary>General</summary></details></h3><div class="indented"><ul id="0a94277c-b544-47e3-9dbd-732acb987d60" class="bulleted-list"><li style="list-style-type:disc"><strong>Randomized (+100cp) - </strong>Your level choice is out of your hands. Roll a d10. Check the list to see which level that number corresponds to. That’s your first level. Survived it? Good. Keep rolling and completing levels until all 10 are completed. You re-roll if you roll a level you have already faced.<ul id="f3fe1888-d84b-4446-aba1-bd37eb9bdc7f" class="bulleted-list"><li style="list-style-type:circle"><strong>Roll: 7, 4, 10, 9, 8, 1, 6, 5, 2, 3</strong></li></ul></li></ul><ul id="95b1e18c-b637-4d34-b7a2-4e7828d77bee" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1800 + 100 = -1700</strong></li></ul></div><h3 id="7a331fe2-6623-4f78-9329-58a0d4e056d2" class=""><details open=""><summary>Slice of Life</summary></details></h3><div class="indented"><ul id="dfc7d32a-1b24-4419-9d59-02d5737628e5" class="bulleted-list"><li style="list-style-type:disc"><strong>Homeless (+100cp) -</strong> Regardless of what you’d otherwise have imported into, instead you start out in a homeless shelter with just the clothes on your back and without a dime to your name. The shelter will kindly give you a few days’ worth of room and board but soon enough you’ll have to leave to make room for others. From this point on it’s all up to you.</li></ul><ul id="6eed11b9-a5f5-4712-8677-7f5e324fb261" class="bulleted-list"><li style="list-style-type:disc"><strong>Accident Prone (+100cp) - </strong>You are prone to minor accidents that tend to be inconvenient, painful, or embarrassing, but will not likely kill you. Expect bad luck to adversely affect any plans you might make.</li></ul><ul id="14be13ce-5c6e-44ca-ada1-341dbd55d1e7" class="bulleted-list"><li style="list-style-type:disc"><strong>Odd Jobs (+100cp) - </strong>You’ll constantly be gaining and losing your job, having to learn a new minimum wage task every few weeks. Sometimes you’ll be qualified, others much less so. Still, you’ve got to try your hardest.</li></ul><ul id="76c5718d-89c7-47f8-8aec-e30790e70f74" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1700 + 300 = -1400</strong></li></ul></div><h3 id="d1d457f8-ceb0-4b9f-9fa9-54789adc3ef7" class=""><details open=""><summary>Survival</summary></details></h3><div class="indented"><ul id="3050f755-ded0-4d97-a3a9-dd45814a58f2" class="bulleted-list"><li style="list-style-type:disc"><strong>Resource Shortage (+100cp) -</strong> Food, water, and other staples are scarce. You will find it more difficult to acquire enough resources to live</li></ul><ul id="fe996f72-80b9-477b-aff1-8014b1eba5f0" class="bulleted-list"><li style="list-style-type:disc"><strong>Horrific Weather (+100cp) - </strong>For the duration of your stay in this Level, you will be plagued with bad weather. It will be drought when you need rain, rain when you need clear skies, and alternate between blistering heat and freezing cold.</li></ul><ul id="3f7b155c-e7f4-4f0a-aaf6-d136c632c22d" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1400 + 200 = -1200</strong></li></ul></div><h3 id="384a7e3f-fd76-40f7-ac57-9f44ef1562b4" class=""><details open=""><summary>Horror</summary></details></h3><div class="indented"><ul id="45a355ff-6aa5-4458-ad6a-55dc7b14e446" class="bulleted-list"><li style="list-style-type:disc"><strong>Scripted Encounters (+100cp) - </strong>You’ll run into whatever threat you’re dealing with more often. You will not automatically become a priority target, but sheer proximity is likely to put you at risk.</li></ul><ul id="78d8f35a-6036-4b76-b7c7-74caf69ae512" class="bulleted-list"><li style="list-style-type:disc"><strong>Monster Bait (+100cp) - </strong>They may or may not be supernatural in nature, but there are monsters here, and they seem to like you an awful lot. Any monster, no matter what its type, will consider you the perfect prey, and will target you over any other person.</li></ul><ul id="1ff2e052-41e7-4600-893e-ef763cae3587" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1200 + 200 = -1000</strong></li></ul></div><h3 id="74f1245f-f366-48a2-995b-42221ee7d644" class=""><details open=""><summary>Military</summary></details></h3><div class="indented"><ul id="833a2bf1-c83e-4857-9b4c-c908bbea8329" class="bulleted-list"><li style="list-style-type:disc"><strong>I Have Truly Found Paradise (+100cp) - </strong>Your chain of command is... sub-optimal. Expect vague orders that are of little help in letting you or your unit know what you’re supposed to be doing but still stick you with the blame if anything goes wrong, reinforcements or resupply to be inconveniently scheduled or diverted at the last minute, a stupid emphasis on spit-and-polish at the expense of combat readiness, or whatever else would be inconvenient. This will never be to an outright suicidal extent but it will be damned annoying. Whether you’re on the front line or in the rear with the gear, during wartime or peacetime, one way or another you’re going to need to game the system and make things happen despite the best that “channels” can do to fuck things up, or your military service will not be the thing that recruiting videos are made out of.</li></ul><ul id="56feb854-33e8-43d9-b059-5075107fdf1b" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -1000 + 100 = -900</strong></li></ul></div><h3 id="7a20a954-d4d7-4de9-a608-4a7ffcf983e6" class=""><details open=""><summary>Modern Adventure</summary></details></h3><div class="indented"><ul id="cc53d73c-4469-451d-a303-49e55637100d" class="bulleted-list"><li style="list-style-type:disc"><strong>Bad Comic Relief (+100cp) -</strong> You have a friend, or comrade, or student, or whatever other reason you might have a person following you around. The thing is that no matter how much you might like this person, they are really more trouble than they are worth. They say or do the wrong thing almost constantly, need rescuing on a regular basis, and seem to be a lot more likely to get you killed than any of your actual enemies are. Unfortunately, there is just no getting rid of this person.</li></ul><ul id="75246b0f-a7b6-48ab-902c-c08961b96908" class="bulleted-list"><li style="list-style-type:disc"><strong>Secret Society (+100cp) - </strong>You are being opposed by a powerful and well-entrenched secret society of some sort. They may be religious, political, corporate, or any other type of group, but they do not like you at all, and they have a lot of resources to throw against you.</li></ul><ul id="25cebe28-1167-4741-8742-9eb28afbde92" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -900 + 200 = -700</strong></li></ul></div><h3 id="50a73912-9c0d-42ea-818f-86b8f7272ce4" class=""><details open=""><summary>Super Hero</summary></details></h3><div class="indented"><ul id="485f91ca-0396-42a5-9282-de12d3458aba" class="bulleted-list"><li style="list-style-type:disc"><strong>Nemesis (+100cp) - </strong>There is this one enemy that you can never seem to get rid of. No matter what, this enemy, who is dangerous enough in some way to at least require effort to beat, will always survive or escape anything you do to stop him. You will be dealing with him repeatedly.</li></ul><ul id="5af8979c-8ac0-4cd5-8bd1-60f135a70f51" class="bulleted-list"><li style="list-style-type:disc"><strong>Massive Collateral (+100cp) - </strong>No matter how careful you are, you somehow seem to always end up destroying everything around you when you fight.</li></ul><ul id="4a833881-b0ec-4929-b797-9e712aec1b0a" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -700 + 200 = -500</strong></li></ul></div><h3 id="99fbaace-fca2-43da-9dca-30447061a0c5" class=""><details open=""><summary>Modern Occult</summary></details></h3><div class="indented"><ul id="edde8aa4-af5f-46eb-9262-3b734fe4bc9e" class="bulleted-list"><li style="list-style-type:disc"><strong>Masquerade (+100cp) - </strong>The public is not ready to discover the existence of the supernatural, and part of your job is ensuring that they don’t. This could be limited to making sure you don’t reveal anything to the public, or it could extend to having to put down other people attempting to reveal the supernatural world.</li></ul><ul id="efda83a3-67f2-4a81-98ec-184fb458da7e" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -500 + 100 = -400</strong></li></ul></div><h3 id="e00708a3-6833-43ec-9618-6182c20100e6" class=""><details open=""><summary>Historical/Alt-Historical/Lost World</summary></details></h3><div class="indented"><ul id="a90b2716-bace-4902-aef3-2bfb1b0078db" class="bulleted-list"><li style="list-style-type:disc"><strong>Modern Sensibilities (+100cp) - </strong>You will never adapt culturally to this setting. You will always be surprised and shocked at the ways your current home differs from what you grew up in. This is going to cause social problems, and could make you underestimate opponents that you assume are less sophisticated than you are.</li></ul><ul id="ba14bccf-9563-4bcb-9e1c-ef5bc7faf93c" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -400 + 100 = -300</strong></li></ul></div><h3 id="5f081fde-3db7-4866-be75-6cafb7823047" class=""><details open=""><summary>Fantasy</summary></details></h3><div class="indented"><ul id="143f5c87-2a8c-4656-9e50-a34a2bc65abd" class="bulleted-list"><li style="list-style-type:disc"><strong>Bandits (+100cp) - </strong>No matter where you are going, you will be accosted by bandits, muggers, bullies, or someone else that wants to beat you down and take your stuff at least once a week. They may not be powerful, but they will be persistent, and probably ugly.</li></ul><ul id="c31f4a23-3a37-4c83-8404-7ac8f3cecdce" class="bulleted-list"><li style="list-style-type:disc"><strong>Siege At Jumper Fortress (+100cp) - </strong>At some point in your time in this Level, you will be forced to participate in the kind of large set battle that fantasy blockbuster movies love. It will be bloody and dangerous, and you will be there.</li></ul><ul id="cab4400a-3056-4386-979c-e63ad23aefa2" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -300 + 200 = -100</strong></li></ul></div><h3 id="b8c0575d-7c9a-42fe-b71f-fd31c46acc76" class=""><details open=""><summary>Science Fiction</summary></details></h3><div class="indented"><ul id="35bb5543-cd49-4291-b71b-74ff43910f92" class="bulleted-list"><li style="list-style-type:disc"><strong>Three Sea Shells (+100cp) - </strong>The future is full of amazing new technology designed to improve every aspect of life. The problem is that you have no clue how to use most of it, cannot figure it out for yourself, and for some reason have difficulty getting anyone to teach you how to use it. This is a quality of life issue that applies mostly to everyday convenience technology. If your life depends on it, you have as good a chance to figure it out as you normally would.</li></ul><ul id="a5855588-c1e6-4388-85ca-bb7c8380a7dd" class="bulleted-list"><li style="list-style-type:disc"><strong>Current CP: -100 + 100 = 0</strong></li></ul></div></div><h2 id="2865e2d8-abd4-4f9b-8c42-a579790b8976" class=""><details open=""><summary><strong>End Choices</strong></summary></details></h2><div class="indented"><ul id="56c7317a-dec9-4cae-aac1-170e099add96" class="bulleted-list"><li style="list-style-type:disc">You have completed all ten Levels. Congratulations! Now you can choose to Go Home, or Continue On. There is no staying here option. <ul id="bf3e88c5-144e-4ca0-b475-a5e992d56cfe" class="bulleted-list"><li style="list-style-type:circle"><strong>Continue On</strong></li></ul></li></ul><ul id="40aa9c43-2292-4987-b7b5-89bf78a3e0be" class="bulleted-list"><li style="list-style-type:disc">As one final reward, you receive these:<ul id="b8c00a0f-9ead-43e2-9487-3df9c653c56e" class="bulleted-list"><li style="list-style-type:circle"><strong>Instant Access (Free for All) - </strong>You can now summon any of your possessions from your Warehouse to you, or send objects directly to the Warehouse. Objects cannot be heavier than you can lift, and will be properly and safely stored, assuming you have the facilities to store them safely. You always know what is in the Warehouse and where it is located.</li></ul><ul id="a7c08858-8c90-4bdd-9b2e-c4c5fc0cd89e" class="bulleted-list"><li style="list-style-type:circle"><strong>Body Mod Reward (Free for All) - </strong>All perks and items from this jump (with the exception of Basic Requirements) are now considered part of your Body Mod. You will still have them, even in Gauntlets or if you take a Power Loss Drawback.</li></ul></li></ul></div><h2 id="6134295f-488a-4b29-abc0-aa28257bd34a" class=""><strong>Ending CP: 0</strong></h2></div></article></body></html>

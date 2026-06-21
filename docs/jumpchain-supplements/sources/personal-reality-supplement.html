@@ -1,0 +1,669 @@
+﻿<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Personal Reality Supplement</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="789bcd90-8cd3-4ee3-891b-dc4ed4799427" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">📁</span></div><h1 class="page-title">Personal Reality Supplement</h1></header><div class="page-body"><hr id="d11702c2-4701-4186-953a-5ff5574fee48"/><h2 id="3fde370d-a0bf-4060-baa4-0257d493270f" class=""><details open=""><summary>DOC</summary></details></h2><div class="indented"><figure id="6340b49f-fcda-49ec-b91a-e481f7ebfa63"><div class="source"><a href="https://drive.google.com/file/d/15Gm5dEvbMHfnmdAyPuai9fyvh5zbs3Ql/preview">https://drive.google.com/file/d/15Gm5dEvbMHfnmdAyPuai9fyvh5zbs3Ql/preview</a></div></figure></div><p id="3774572a-6119-4050-81b8-7fe53b56fa02" class=""><span style="border-bottom:0.05em solid"><em><strong>This replaces the following Supplements: Warehouse, Housing System, Companion Housing Complex, and The Bay. It is not compatible with any of the alternatives that replace one of these, for example, Fortress of Jumper, but is compatible with all Warehouse modification options that can be found in various jumps, and fully integrates with the Biosphere Supplement from the Fountain.</strong></em></span></p><h3 id="8994f861-352d-4886-ba55-745c8be6337b" class="">Universal Drawbacks Supplement (UDS) Notes</h3><p id="b611a618-395f-425e-887d-fdee93f0f880" class="">There are a small number of drawbacks in the UDS that grant Warehouse Points if you make them Chain-Drawbacks. The points given are those from the original 150 Warehouse Supplement created by RT / Quicksilver. They may be applied to this Supplement as well by multiplying the points they grant by a factor of 10. Certain elements were copied or adapted from original documents; all credit to their original authors.</p><h3 id="a51fcb72-da3a-48f8-bbe7-83b7f499088f" class="">WP &amp; CP</h3><p id="2a9149e2-237a-4fca-9bce-7cd9b6531592" class="">CP can be spent to buy WP at the cost of 50 CP to 2 WP. WP cannot be converted into CP.</p><p id="917f4b2a-d4db-4e0e-9eba-f12922febbb0" class="">Some options below give you a much better rate of return.</p><p id="2713428f-b384-4953-86ee-c151c0973195" class="">Anything purchasable here with CP can be paid for across multiple jumps, but you don’t get it until you’re fully paid off. Companions cannot spend their CP on Personal Reality.</p><h2 id="266c58d3-e555-48b8-a383-74b1b0010ac9" class=""><details open=""><summary>CURRENT DETAILS</summary></details></h2><div class="indented"><ul id="26cff016-79fb-4126-9b00-0f8c0e097dfa" class="bulleted-list"><li style="list-style-type:disc"><strong>SPACE: 80 x 80 x 10 meters</strong></li></ul><ul id="8af528e5-ad59-489a-8258-ace1bdf33a2d" class="bulleted-list"><li style="list-style-type:disc"><strong>ACCESS: KEY</strong></li></ul><ul id="143afa87-c385-44be-87a0-2bc0a2545d77" class="bulleted-list"><li style="list-style-type:disc"><strong>ENVIRONMENT: NEUTRAL</strong></li></ul><ul id="9ca32910-f66d-4ef8-b95b-0ef3715b236c" class="bulleted-list"><li style="list-style-type:disc"><strong>ELECTRICITY</strong>:  <strong>Power a city the size of New York City or London, forever</strong></li></ul><ul id="efca2515-e6f8-4b72-8c2a-c4d67dfef010" class="bulleted-list"><li style="list-style-type:disc"><strong>LIGHTING: NEUTRAL</strong></li></ul><ul id="173ebc94-ac52-4faf-a775-fbd5d621e13c" class="bulleted-list"><li style="list-style-type:disc"><strong>END OF EACH JUMP DAYS OFF: 7 Standard Earth Days</strong></li></ul><ul id="2517bfc5-0de2-4c16-9045-962b9ba94d44" class="bulleted-list"><li style="list-style-type:disc"><strong>ACCOMMODATIONS: BASIC</strong></li></ul><ul id="5d8a9b4b-2e1c-4d48-adde-0ee313828c20" class="bulleted-list"><li style="list-style-type:disc"><strong>HAS CONTROL CENTER: YES</strong></li></ul><ul id="d3e69782-3550-4a21-83e0-a2586adb61b8" class="bulleted-list"><li style="list-style-type:disc"><strong>ENTRANCE HALL: 1</strong></li></ul><ul id="22573414-5773-416d-baf8-6a890e57dfff" class="bulleted-list"><li style="list-style-type:disc"><strong>THE MEDICAL BAY: BASIC</strong></li></ul><ul id="d9abab2d-fdaa-40be-9f1f-42520265fc86" class="bulleted-list"><li style="list-style-type:disc"><strong>HAS CLEANING SUPPLIES: YES</strong></li></ul></div><h2 id="35bdcd12-4c37-4a80-bd0e-ec4fd43b2fe8" class=""><details open=""><summary>MODES</summary></details></h2><div class="indented"><ul id="0d4b9812-32d5-494b-bddd-e351db87989f" class="bulleted-list"><li style="list-style-type:disc">You must select one (and only one) of the Core Modes. Extra-Modes apply over Core modes, and there is no limit on how many of them can be picked. Note: WP can be banked for later usage, it is not wasted if not spent immediately. Although not mandatory, this document does assume you get your PR after your first jump, as was traditional when Pokemon Trainer was the default first jump. Feel free to ignore that.</li></ul><ul id="762f8846-56e4-4fbe-82f4-ca8e0e65ee1d" class="bulleted-list"><li style="list-style-type:disc"><strong>INCREMENTAL CORE MODE</strong><ul id="83b3a4f4-4df8-4033-9746-15099ac68e4f" class="bulleted-list"><li style="list-style-type:circle"><span style="border-bottom:0.05em solid"><em><strong>You start with 500 WP and gain 50 WP per completed jump or gauntlet. Any method of combining jumps means that those jumps count as a single jump for this.</strong></em></span></li></ul></li></ul></div><h2 id="4e8b417f-6ec1-4a19-9cee-bd87fca177f8" class=""><details open=""><summary>BANK</summary></details></h2><div class="indented"><ul id="19503038-0f09-4ddf-8ab0-c632295e8451" class="bulleted-list"><li style="list-style-type:disc"><strong>STARTING WP: 500</strong></li></ul><ul id="49346782-cd85-4799-b264-779c4214fc04" class="bulleted-list"><li style="list-style-type:disc"><strong>CURRENT WP: 50</strong></li></ul></div><h2 id="e61b8a9e-cc70-4e4e-92ff-00bd46bcc650" class=""><details open=""><summary>BASICS</summary></details></h2><div class="indented"><ul id="6869af25-45b7-4119-a128-be4f8a660f85" class="bulleted-list"><li style="list-style-type:disc"><strong>COSMIC WAREHOUSE =Free= </strong>Over the course of your adventures you’re probably going to collect a metric fuckton of stuff. Weapons, armor, technology, cars, big evil laser beams, everything and anything including several kitchen sinks. Why? Because you can. Now, normally you’d have trouble storing it all, and that’s no fun, so here’s your very own Cosmic Warehouse to give you a place to stick all your stuff. It is contained within its own reality that contains absolutely nothing else (guaranteed) and no matter where you go (unless blocked by a drawback or gauntlet) you’ll always be able to access it. Before you do anything with it, it looks like a fairly dimly lit and very empty room.<p id="7bab131c-2060-4612-a232-bf7576de1d52" class="">Your Warehouse forms the base of your Personal Reality, with any additions you buy or make expanding it through various means. Anything added to the Warehouse via CP purchase is guaranteed to work flawlessly with anything and everything else attached to the Warehouse. Anything added by the use of fiat-backed powers or abilities is likewise guaranteed to seamlessly integrate. This means that, although you can’t just buy a house with cash in a jump and integrate it into your warehouse, you could enchant a closet already in your Warehouse with Harry Potter brand ‘bigger on the inside’ magic if you’ve been to a Harry Potter jump. Essentially, you’ll get a complete set of manuals on how each thing you buy functions and listing how various techs and magic that you have already purchased can be integrated with what you have already. It won’t make suggestions, but it will tell you how to accomplish something if you’ve already got the power and know-how needed to pull it off.</p></li></ul><ul id="d18b8702-4b86-4acd-b213-c96d56a22b18" class="bulleted-list"><li style="list-style-type:disc"><strong>BOXES AND BOXES AND BOXES =Free= </strong>Would you like some boxes? Have as many as you need. Crates? Those too. Bags? Absolutely. Kegs? Barrels? Vats? Plastic toes? As long as it’s a completely mundane and fairly generic storage container, you can have as many as you need... but only for storage containers, and you’re not allowed to sell them or use them as raw materials... unless you’re making a cool cardboard fort. That’s totally allowed. To access this supply, simply go to the door in the back corner of your PR marked “Box Office” and fill out a request form. Your storage container will arrive within 30 minutes at your Entry Hall. These containers are in no way fiat-backed. They are completely normal.</li></ul></div><h2 id="a855667c-710b-4de6-99aa-b5f59480da83" class=""><details open=""><summary>UTILITIES AND STRUCTURES</summary></details></h2><div class="indented"><ul id="4a902688-c71a-4c80-a351-73999f8e041d" class="bulleted-list"><li style="list-style-type:disc">All purchases in this section apply to all other sections and additions without the need for additional purchases.</li></ul><ul id="e63e027f-820e-49e4-aae8-5eaee3e5799e" class="bulleted-list"><li style="list-style-type:disc"><strong>STARTING SPACE =Free= </strong>Your Personal Reality starts out with a volume of 80 x 80 x 10 meters, so 6,400 square meters of floor space or 64,000 cubic meters of storage volume. In the archaic and silly ‘Imperial&#x27; measuring system this is 262.5 x 262.5 x 32.8 feet, so 68,889 square feet or 2,260,138 cubic feet.</li></ul><ul id="416ba40a-723b-4175-b8f3-f1ed6a275b5a" class="bulleted-list"><li style="list-style-type:disc"><strong>ANTIBIOTIC FIELD =Free=</strong> See, every biological lifeform carries its own microbiome and something called a virome (the viral version of biome) inside us. They’re harmless to us... often helpful in fact. But expose someone to bacteria, protozoa, or virus particles that they’re not used to and you’ve just given them the plague. This stops this from happening. The microbiome of everyone who enters or exits your PR is scrubbed to be harmless to everyone in each jump you visit. This doesn’t kill your virome/biome, just keeps it from being harmful... to anyone. All viruses, parasites, and bacteria not native to your current jump and not in specifically designed storage containers (or fiat-backed) are destroyed at the end of each jump or passage to a new reality if you’re post chain. The biomes/viromes of companions and jumpers inside the PR at jump transition are converted to local versions at the start of the next jump. No one likes a plague carrier. This will not cure current infections except at the ends of jumps. But if you need that, there’s a medbay later on. You probably want that.</li></ul><ul id="2bbe673e-de68-40ea-8bd6-7d760b3f9604" class="bulleted-list"><li style="list-style-type:disc"><strong>ACCESS KEY =Free=</strong> This is a special key that lets you access your Personal Reality and its contents. When inserted into any lock on any door, the door opens to reveal a gateway into your Reality at a predetermined location within it. You are the only person who can take the key from the lock, the gateway remains open as long as the key is in the lock, and if the key is ever lost or stolen you will find it in your pocket a few minutes later. You cannot close the door as long as you are inside the Personal Reality.<ul id="76cc5c7a-1d72-4518-96eb-fc33e8f0cd29" class="bulleted-list"><li style="list-style-type:circle"><strong>Key Link =50 WP, Requires Access Key, Multiple Purchases Allowed= </strong>With this, you can now close the door while you are in the Personal Reality and use your key in a special podium in the entryway to link your Personal Reality Door to any door in your current Host Reality that you’ve previously used your Access Key on. If you have extra keys, any door opened by any of them can be accessed. You may also use a recall function to bring up a list of all the doors that have been accessed by any key, thus allowing you to follow a Companion should you so desire. Only your main Entry Hall has this podium. To install a second Key Link Podium you’ll have to buy this a second time, though each subsequent purchase comes with two more podiums.</li></ul></li></ul><ul id="3c04bfee-90e7-492c-8400-bfc713d5091b" class="bulleted-list"><li style="list-style-type:disc"><strong>THE LOFT =Free </strong>What’s the point of having a room 10 meters tall if you can’t build upwards? Feel free to stack things up to the ceiling if you like.</li></ul><ul id="c2d7937b-cf1a-43f6-8fe8-b422523ee61b" class="bulleted-list"><li style="list-style-type:disc"><strong>SECURITY SYSTEM =Free= </strong>Anybody coming in and out of your Personal Reality is now checked for any authorization you&#x27;ve given them to access it; and should anything about said authorization (or a lack of it) raise any flags in the system, then you will receive a warning about it. This allows you to define just what sorts of authorization different individuals can have to access your Personality Reality, anything from No Access through Temporary Access and Limited Access to Unlimited Access is possible. All this does is notify you. It does not stop them on its own. A Key holder&#x27;s Access cannot be limited by the Security System. Only hand out Keys to those you trust implicitly.</li></ul><ul id="f868191c-70cc-420b-82c1-0dc78a6f346b" class="bulleted-list"><li style="list-style-type:disc"><strong>ENVIRONMENTALLY NEUTRAL =Free= </strong>By default, the temperature in your Personal Reality is never too hot nor too cold, the air will always smell faintly musty but scent neutral, and the air will always be breathable... even if two different species with different atmospheric requirements are present in it at the same time.... well, as long as both species are there with permission. This won’t protect breathing invaders. Earth Standard Gravity will be maintained in all areas, and the air will be just humid enough. This also ensures that there will be minimal dust build-up over the centuries, though there will be some.</li></ul><ul id="392cec21-8365-4f85-8503-518f6985c100" class="bulleted-list"><li style="list-style-type:disc"><strong>THE QUESTION OF SHELVING =Free= </strong>Basic metal shelves to keep your goods on, the kind you find in industrial big box stores, sized for pallets and numbered for sorting. You’ll get up to as many as will suit your initial space allotment, but if you don’t take all of them, you’ll need to buy more on your own... They sell them at most business supply warehouses, ironically enough.</li></ul><ul id="93588a47-c142-4376-9704-0a87501872b3" class="bulleted-list"><li style="list-style-type:disc"><strong>WHO’S GOT THE POWA =100 WP= </strong>This provides enough electricity to power a city the size of New York City or London, forever, with nary a brown out or power fluctuation ever. It also comes with all the basic wiring hookups, surge protectors, outlets, circuit-breakers, routers, etc you might need... but you’ll probably want to get a qualified electrician in at some point... or pick up a companion who does that kind of thing. Purchase of this supplies all facilities inside your Personal Reality with electrical hookups.</li></ul><ul id="7c89da8f-aae1-4b60-b3ca-c2b055f32df5" class="bulleted-list"><li style="list-style-type:disc"><strong>NEUTRAL LIGHTING =Free= </strong>These lights are nothing special, It’s a color-neutral, source-neutral ambient lighting system. It’s not really that bright... think early twilight gloom, but if you want better, install it.</li></ul><ul id="32f0b948-2172-4d72-8160-a4b3c9266197" class="bulleted-list"><li style="list-style-type:disc"><strong>A WEEK &amp; A BUTTON =Free= </strong>You may, at the end of each jump, take 7 Standard Earth Days off before entering your next jump. A button is provided so you can end this downtime whenever you so desire. Dying in this period is still dying and will burn a 1-up from the jump you just finished if possible, then from the next jump if available.</li></ul><ul id="b0e90a9d-489d-4d01-b2b3-d2fd5f205f85" class="bulleted-list"><li style="list-style-type:disc"><strong>BASIC ACCOMMODATIONS =50 WP= </strong>This provides minimalist accommodations for you and each companion. Essentially the same thing you’d get in Basic Training in the military. A barracks with a bunk and a locker and a camp toilet. If you bought Pipes Pipes Pipes, this improves to include a communal shower and toilets. In fact, someone need not be a companion for this to work. Anyone you allow into your Personal Reality will be allotted a similar level of basic living quarters, thus allowing you to turn your Personal Reality into a refugee center if you like. If you have Basic Nutrition, this will provide any such guests as you may invite into your Personal Reality with very basic food equal to 2000 Kcal a day, totally vegetarian. This can support up to a maximum of one person per day for every 4 cubic meters of space in your warehouse. Camp toilets must be emptied manually. No extra space is added to your Personal Reality by this. It simply provides food and bed and toilets for as many people/beings as you have in your Personal Reality at any given time.</li></ul><ul id="f7961cb5-9360-462a-b311-14c1e0589ded" class="bulleted-list"><li style="list-style-type:disc"><strong>BASIC NUTRITION =50 WP= </strong>This option provides a basic (if minimalist) food delivery for you and all companions (metered for a normal human dietary requirement). This delivery comes once a week and is the kind of thing you’d buy on a very strict budget; Ramen, Peanut Butter, Generic Cereal, Dry Beans, Eggs, Tofu, Fresh Common Fruits &amp; Veggies, Canned Fruits &amp; Veggies, Dry Pasta, Salt, Pepper, Milk, Bottled Water, Rice, Flour, Butter, Barley, etc. Essentially the purchasing power of 50 dollars US a week per person. (Note, you cannot sell these supplies for money.)</li></ul><ul id="4ff029a0-70b7-4845-8b81-fdd8a087e893" class="bulleted-list"><li style="list-style-type:disc"><strong>CENTRAL CONTROL =100 WP= </strong>This hooks your Personal Reality up with a Smart Pseudo-Intelligent Computer System that tracks the location and condition of all items brought into the Personal Reality. It will share that information with you or anyone you authorize to use the system. They do not have to have a key and you can set up varying levels of access. Central Control can also recall your companions to the Personal Reality if you have Portal and command it to or they are killed and you’ve set up automated recall. It can open your Personal Reality Door from the inside if you’ve given it permission to do so, but will only admit those it believes will assist you. It can only open doors on which Access Key has been used on, but the key need not be still in that door for the door to be opened.</li></ul><ul id="032c95a1-806b-4f35-895f-698a779b0c58" class="bulleted-list"><li style="list-style-type:disc"><strong>WP Spent: 350</strong></li></ul></div><h2 id="70c99c2f-96a6-4d3e-bfc3-734891ddf7bb" class=""><details open=""><summary>PERSONAL REALITY FACILITIES</summary></details></h2><div class="indented"><ul id="08614f9f-fc98-4bd7-b195-9a1b1cfe0a1f" class="bulleted-list"><li style="list-style-type:disc">These are all placed into your Personal Reality and require you to have enough space to be placed.</li></ul><ul id="ff10ac54-77b6-420e-97af-1932cc4021fe" class="bulleted-list"><li style="list-style-type:disc"><strong>ENTRANCE HALL =First Free, Additional Halls are 20 WP each= </strong>This is the room your Access Key opens a door to. It starts off as a 5 meter cube with blank white walls, floor, and ceiling, and some doors, one leading to the current Host Reality, the other into your Cosmic Warehouse, with additional doors leading to other extensions as these get added to your Personal Reality. Feel free to customize this Entrance Hall as you see fit. Additional Halls can, at your discretion, be linked only to certain keys or only to certain extensions. This allows you to have an entry hall just for skiing if you want. If you have the Force Field Utility, the Field does not block access from the outside world into the Entrance Hall, but rather from the Entrance Hall into the rest of your Personal Reality.</li></ul><ul id="01ac1c72-a4ab-4dfa-97bc-2f5c74bd56c1" class="bulleted-list"><li style="list-style-type:disc"><strong>THE MEDICAL BAY =100 WP= </strong>This can treat all medical or dental issues on anyone that still has a pulse or equivalent. Provides detailed accounting of a person’s medical history. Will not repair genetic defects or replace / repair cybernetics and cannot differentiate between beneficial and harmful nanites or implants on its own. Works on animals as well. Being fixed up takes anywhere from one hour to a solid week depending on the degree of damage, and you’ll still need physical therapy, have scars, and be all achey.</li></ul><ul id="46b4f2a4-a4c8-441d-8549-900a1b44a3f1" class="bulleted-list"><li style="list-style-type:disc"><strong>WP Spent: 100</strong></li></ul></div><h2 id="fe58afe1-2557-4f54-823e-05c610ed3a7a" class=""><details open=""><summary>ITEMS &amp; EQUIPMENT</summary></details></h2><div class="indented"><ul id="cb0f8551-8953-4420-8d3e-f4c6c4180abe" class="bulleted-list"><li style="list-style-type:disc"><strong>CLEANING SUPPLIES =Free= </strong>Have an infinite supply of any cleaning supplies you might need for cleaning your Personal Reality. By default, this supply is placed into a specific closet near the Entry Hall to your Personal Reality, but the closet can be moved anywhere you like inside the Personal Reality... and can, in fact, be summoned by anyone allowed to reside in your Personal Reality by any Key Holder. These supplies have no actual chemical properties and you cannot use this to get an endless supply of brooms or bleach. Completely safe for all complex lifeforms. Very not safe for viruses, bacteria, amoeba, or household pests.</li></ul></div><h2 id="aa14f4ef-6778-43fa-a56c-830393e9d0de" class=""><details open=""><summary>GAINED FROM JUMP</summary></details></h2><div class="indented"><h3 id="2d2ca364-1525-40d3-88e6-5f784787e585" class=""><details open=""><summary>GENERIC FIRST JUMP</summary></details></h3><div class="indented"><ul id="89cbb0fe-fcf8-4b56-8247-31d70e012f1e" class="bulleted-list"><li style="list-style-type:disc"><strong>Bare Necessities - </strong>You have a job that pays enough for you to live on, assuming you live simply. You also have a home of some sort, a cheap but decent vehicle of an appropriate type, and the various basic sundries needed to live. Basically, you have a life, set up and waiting for you. The job will be something you are capable of performing, and that works with your background, and the schedule will be flexible enough that it will not interfere with your normal jump activities.<p id="16320673-4a8b-4b50-81ff-d1b60c727ab9" class="">you have a trust fund that pays in whatever the local currency is, equivalent to two hundred thousand dollars ($200,000.00) per year. Your home, vehicle, and other possessions are upgraded to be appropriate for this level of income. This money is legal, with all taxes paid and all documentation needed. No one will question where it comes from.</p><p id="4201c98f-c756-48a5-a03c-d783cf4f6d3e" class="">This item follows you to all future jumps, adapting as needed, and can be toggled off for a jump. Any other form of income you receive, including from other perks or items, can be added to the trust fund, and will also be completely legal with all taxes paid and documentation needed.</p></li></ul><ul id="aa411fe2-4c7a-4e0d-a2b0-56c604434906" class="bulleted-list"><li style="list-style-type:disc"><strong>Franchise - </strong>After this jump, you will receive something like a comic or cartoon, or even a series of blockbuster-style movies, that tells stylized versions of your adventures. These update at the end of each Jump to include the events of it, and no one can view these without your permission. You may have this in multiple media styles. Pick as many as you would like. And you may pick additional ones at a later date if you choose to.</li></ul><ul id="613cea3c-5ec5-4202-a0b8-8a6635aac735" class="bulleted-list"><li style="list-style-type:disc"><strong>Camera - </strong>Oh! That picture reminds you of the time you challenged the devil to a game of tiddlywinks! And that one reminds you of the time you put Gabriel in a Cobra Clutch for a full day! You don’t actually get a camera. Instead, every time you do something memorable, noteworthy, or just wish to remember a moment in the future, you will receive a snapshot of the moment, framed at just the right size and from just the right angle, you can always get more copies from different angles if you wish, or receive digital copies on any of your devices.</li></ul></div></div></div></article></body></html>

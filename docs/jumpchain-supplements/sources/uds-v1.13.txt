@@ -1,0 +1,183 @@
+UNIVERSAL DRAWBACKS SUPPLEMENT
+(A Jumpchain Supplement)
+By SJ-Chan
+V.1.13 (unreleased)
+
+> NOTE: This is a partial extraction of the UDS v1.13. The first ~30 drawbacks (Chain Drawbacks + Jumper Drawbacks) plus the full rules framework are included. The remaining categories (Warehouse Drawbacks, Companion Drawbacks, Power Drawbacks, Thematic Drawbacks, Challenge Mode Drawbacks, Origin Drawbacks, Questionable Drawbacks, HQ Drawbacks, Dietary Drawbacks) exist in the source document but were truncated by the webfetch tool's context window. The Google Doc v1.13 (unreleased) is the most current version, ahead of the published v1.10.
+
+This is the Universal Drawbacks Supplement, a tool designed to allow you, either as Writer or Jumper (or even Benefactor) to shape a Jumpchain by fiddling with some or all of the basic assumptions that define Jumpchain. This plug-and-play system relies upon adding Drawbacks to a chain, either in the form of Drawbacks that affect the entire chain (Chain Drawbacks) or by giving greater flexibility to the Drawback selection native to a jump (Single Jump Drawbacks). Almost all the Drawbacks in this supplement are designed to be usable as Chain Drawbacks, though not all of them are suitable for use as Single Jump Drawbacks.
+
+Chain Drawbacks can be added to a chain at the start of any jump, even the first one, and (from then on) are always active (unless Hiatused) and affect your entire chain until Revoked. Chain Drawbacks add to the Starting CP of every jump, including jumps that have been combined by any means. As long as the component jumps could be taken separately, each jump gets the full value of all active Chain Drawbacks.
+
+On the other hand, a Single Jump Drawback lasts only the length of a single jump, and the amount of them you can take is bound by the Jump's Drawback Cap. Single Jump Drawbacks from the UDS are overridden by Jump Specific Drawbacks. Once again, Jump Native Drawbacks always trump Universal Drawbacks.
+
+The idea here is to apply drawbacks to your entire chain, thus changing the difficulty curve and your starting CP in each jump. You could also, in theory, apply one or more of these to a jump if you just didn't like what was on offer in that jump. Yes, this messes with the balance of other jumps. But this is a single player experience and sometimes you just want a few more tools in the toolchest. I've tried to make these as generic as possible and keep the pricing reasonable. Please try not to cheese Universal Drawbacks just for points; they don't like that. Use them to build your story, and assume that, by and large, anything you take here will have some CP-proportional effect on your chain. If a Drawback would have effectively no impact on you, you can't get points for it. It has to, in some way, limit your options or provide some negative value. You liking the Drawback does not devalue it.
+
+
+________________
+
+
+Changelog 1.13
+* Revamped the introduction, Added rules for handing off a chain to a Companion, Added "Safety Dance" gift perk.
+* Added "New Warehouse, Who's This", "No Inventory",  "Timelapse" and "Threadripper" Warehouse Drawbacks.
+* Added "Abandoned by the Chain" and "Historical Accuracy Be Damned" Alternative Event Drawback
+* Added "Old Companion Lockout", "Importation Lottery", "One Jump Charlie" & "One Jump Charlie Foxtrot", "Wedding Bell Blues" Companion Drawbacks.
+* Added "Supplemental Energy" and "Maintenance Dose" to Dietary Drawbacks.
+* Added "Jonesin' for the Joe", "Oh God! The Monkeys!", "Creepy Cats", "Of No Consequence", "Of Limited Scale", "Annoying Goose", and "Horrible Swan" to HQ Drawbacks.
+* Added "Stop Showing Off!", "Wrong Genre Savant", and "Menu-Sama"  to Power Drawbacks.
+* Added "Slow Travel" to Jumper Drawbacks.
+* Added "Walking in London" and "Street Tier" to Thematic Drawbacks. Slightly clarified "Jumpchain is Magic"
+* 'Alt-Form Lockdown' no longer requires 'Do You Need a Moment?'
+* Important Note added to Bitch of Destiny.
+* Added "All In Your Head" to Challenge Mode Drawbacks
+* The Hub has been clarified and expanded.
+* Added a note about Companion CP and Non-Imported Jump Origins.
+* Added "Jumper Who" and "Awakening From A Dream" Origin Drawback.
+* Added "Playing Catchup! To Starting Drawbacks.
+* Clarified how Changing Room, Alt-Form Lockdown, Sleep Changer, and You Need a Minute interact with Shapeshifting and Alt-Form Blenders
+* Added "Big Eater" and "Ferr & Balanced" to Questionable Drawbacks
+* Clarified how CID interacts with Gauntlet-Kun and Retail Rocker.
+________________
+
+HIATUS
+A Chain Drawback can be put on Hiatus (i.e. completely ignored for one jump) by paying thrice its CP value (e.g. A +100 Drawback would end up costing a total of 300 CP to put on Hiatus). This can happen no more than once per 4 jumps and after that jump the Drawback resumes right where it left off. Chain Drawbacks with a value that changes every jump or that have a Special Value cost 400 CP to put on Hiatus, though not all can be put on Hiatus.
+
+
+REVOKE
+If ever you decide to permanently cancel (Revoke) a Chain-Drawback it ends with your next jump and cannot be activated again until at least 16 jumps have passed. Revoking costs the same as Hiatus. A Chain Drawback must have been active for at least 8 jumps to be eligible for Revoking and cannot have granted Warehouse Points or Body-Mod Points at all. Again, to be clear, A Revoked Chain-Drawback is active during the Jump the Revocation Fee is paid. Its effect is terminated at the end of that jump.
+Example of Revocation
+Jumps 1-8 (with Without Why & Other Chain Drawbacks) Jumper gets +800 CP.
+Jump 9 (revoking Without Why) Jumper gets +200 CP, since they lose the 200 granted by Without Why and must pay the 400 CP Revocation Fee. Without Why is still active.
+Jump 10+ (without Without Why) Jumper gets +600 CP.  Without Why is no longer active.
+
+
+UDS & GAUNTLETS
+If the Jumper enters a Gauntlet (or a Jump that grants 0 starting CP), one of two things happens; either the Chain Drawbacks are halved in value and still applied to the Gauntlet, or put on Hiatus for no points, but it must be consistent across all such jumps for you. If a Chain-Drawback would duplicate a Jump Specific Drawback, you cannot gain points for the Jump Specific Drawback, though if the specific one is more onerous and more expensive, you can gain the difference by upgrading to that Drawback for this jump, though it counts against the Jump's Drawback Limit. If the specific one is more onerous and less expensive, it is my belief you should use the specific one's limits for that jump (though you keep the Chain Drawback's value and it doesn't count against the jump's Drawback Limit)… but that's up to your sense of fair play.
+
+
+A Note on Single Jump Drawbacks
+If you try to use a Single Jump Drawback from the UDS instead of an identical (or extremely similar one) from the jump document itself in order to get more points, Jump-Chan will hit you with a brick. For example, if you try to take a Companion Blocker Drawback from the UDS (worth +200 here) but the Jump you're going to has a Companion Blocker Drawback worth only +100, it's brick time. Jump-Chan's bricks punch right through fiat and leave really nasty bruises.
+
+
+A Note on Other Supplements
+You cannot use these points on other stand-alone supplements… though the Warehouse Drawbacks do grant one-time boosts to the Warehouse if you make them Chain Drawbacks since they limit the utility of the Warehouse. If you want, you can take a Chain Drawback to add half its value to the Body Mod Supplement… but doing so means you only get half its value in all jumps. (e.g. a 200 CP Chain Drawback would give 100 CP to the Body Mod Supplement and 100 CP each jump).  Such a Chain Drawback cannot be put on Hiatus nor Revoked. This does not apply to jumps in 'Supplement Mode' or jump specific supplements.
+
+
+
+
+A Note on Combined Jumps / Supplement Modes
+If you apply any method to combine two or more jump documents into a single jump, UDS Drawbacks are applied to all documents without being divided… but all drawbacks in that combined jump become much much harder to nerf or cheese while in that state. The reason for this is that you could just take the two (or more) jumps separately and get full points, so there isn't really any reason to ban double-dipping… but you do pay a little for the efficiency upgrade or whatever.
+
+
+A Note on Renegade Supplement
+If you choose to combine the Renegade Supplement with the UDS, any drawback you force the Renegade to Chain, you must also Chain. Until you face the Renegade, you may not Revoke or Hiatus any UDS Chain-Drawbacks, but the Renegade may. They don't play by the rules, after all.
+
+
+A Note on Companion CP Gained from UDS Drawbacks
+If a Companion gains from a UDS Drawback in a given jump, but is not imported by some mechanism, they do not gain the opportunity to take any Origin. Not even the Free Drop-In or a negative cost "Drawback" Origin.
+
+
+DECLARATION
+THE UDS CONTAINS NO TRAP OPTIONS. EVERYTHING IS AS FAIR AS IT IS POSSIBLE TO BE AND THERE IS NO HIDDEN TEXT. Word of honor. If something screws you it will be because you signed up for it. If it seems like a trap, assume that's because of limitations in the written format. The same applies to apparent loopholes. What you see is what you get. Assume Rules as Intended if there are any questions.
+
+
+THANK YOU FOR YOUR PATRONAGE
+
+Safety Dance
+This perk is free just for being a fan of the UDS
+It guarantees that you  and your companions will not transmit non-fiatbacked diseases, microbiotics, or memetics unwillingly / unwittingly between settings. This only works as long as you have at least 1 chain drawback active.
+
+
+ESSJAY'S LAW OF AEIOU [Optional / No Points]
+Absolute, Eternal, Infinite Ontological Uniqueness is now yours. This is a bedrock rule. It cannot be toggled, cannot be drawbacked away (it is a drawback), cannot be Hiatused, cannot be Revoked, cannot be touched by a Gauntlet. If you toggle this on, it doesn't come off. But what, I hear you ask, does it do? It makes you utterly, completely, and irrevocably unique. There will be no evil twins, no cross-dimensional mirror-selves, no clones (physical or digital) with your memories. Ever. No one can create them. Not a Drawback, not a Perk, not a Scenario, not a Benefactor, not You… no one and nothing. Any attempt will create something that approximates but does not duplicate you. Thus, in the Mirror Universe, there will be someone who could be you if you squint, but isn't played by the same actor. Any clone will be a caricature or character study of you (essentially an actor playing the role of you, even if they don't know that's what they are). This means they can't be used against you… but it also means you can't scoop up your alternate selves as back-ups or Companions. Even self-duplication (as long as it's not some kind of one mind, many bodies) doesn't work the normal way. Exactly how it works depends entirely on how it functions, but Multiple Man / Naruto style will create what are largely drones with just enough 'youness' to function.
+
+
+CHAIN DRAWBACKS
+
+Random-Chan [+200]: Her full name is RNG-Chan… but that's not as cute. You (as either the jumper or author) cannot dictate the order of your jumps. You, the Author, must generate a jump list (using at least 250 different jumps). You, the jumper, never get to dictate which jumps are included on your chain. It is permissible to randomly generate 2 jumps and pick 1, but this locks out the other.  Chain Only. No Revoke.
+Pseudo-Random-Chan [+50]: The Jumper has no control over where they go or when they go there. You, the Author, do. Same restrictions as Random-Chan. This is a Variant of Random-Chan, they cannot be combined.
+
+
+Sadist-Chan [+150]: Sadist-Chan has replaced the friendly Jump-Chan. She insists you always take whatever jump specific drawback you'd least like to take in each jump. She isn't evil though, so you don't have to take any Drawback that would include a scaling enemy, no win scenario, amnesia/powerlessness, or chain ender. You still can if you choose to and it still counts for this as long as you legitimately dislike the Drawback you're taking. Sadist-Chan is worth a total of +200 if one of these two things are true; If the jump has nothing priced so you'd waste 50 CP or if the Drawback you must take is valued at 300 CP or more. If the Drawback you must take is valued at 600 or more, you gain a total of +300 CP from Sadist-Chan. Chain Only.
+        Variant Sadist-Chan [+100]: This is a slightly milder version that merely demands you take at least one jump specific drawback that you really would rather not take (and which you cannot cheese) every jump. If you choose to take anything from the banned list (scaling, no win, amnesia, powerless, or potential chain-ender), you gain another +100 CP, +50 more for each banned item after the second in a single jump. Chain Only.
+
+
+Bitch-Chan [+200]: Bitch-Chan has replaced the friendly Jump-Chan. She insists you always take a full slate of native Drawbacks in every jump. If there isn't a limit, this means at least 600 CP worth of drawbacks. Bitch-Chan doesn't like it when you cheese drawbacks, so she'll make them harder (but not impossible) to nerf. Expect some suffering from each Drawback you take. UDS drawbacks become much harder to cheese. Chain Only.
+
+
+No Drawbacks for You!-San [+200]: The Drawback Man says you cannot gain CP for non-toggle drawbacks in any individual jump and every drawback you take from this supplement must be chain long. Does not apply to Companions in those rare jumps where they are allowed to take drawbacks. Mandatory drawbacks or drawbacks that are included with individual purchases may be taken, but award no CP if they normally would. Origins or perks that award extra CP for taking them but that are not drawbacks are fine. This does not block taking Scenarios, but you don't get any CP for taking them unless that CP is the prize. Chain Only.
+And Only You! [Special]: You can, alternatively, take any number of in jump drawbacks but receive no extra CP for them. Instead, your Companions individually gain one half the value of the Drawbacks you took in any given jump. Requires No Drawbacks for You!-San.  Chain-Only. Hiatus / Revoke Fee = 400CP.
+
+
+Gauntlet-Kun [Special]: Jump-chan's hardcore brother has decided to get into the game and sponsor you as a Jumper. All your Universal Drawbacks are worth twice as much… but you start every jump with Zero CP and must get all your CP from Drawbacks. HARDCORE!!! Also, he thinks it's funny if you die, so he won't send you home. Instead, he'll take all the perks and items you got from any jump you fail and hold onto them until you Spark, but he'll send you into the next jump as normal. This applies to all the perks and items your Companions bought as well. You do get to keep Companions from jumps you failed. Halves all non-CP stipends from jumps. Does not increase Companion CP Stipends / Item Stipends / Supplement Bonus points from Drawbacks. Warning, Gauntlet-Kun thinks Cheesing Drawbacks is Lame. He will guarantee you deal with the full force of every Drawback you take… because you failing is funny to him. Gauntlet-Kun does not double the value of 'What Are Drawbacks' nor 'Retail Rocker'. Gauntlet-Kun has no effect in real Gauntlets. Chain Only. No Hiatus. No Revoke.
+
+The Thomas Wolfe Rule [+100 for a maximum of 8 jumps, then +50 for up to another 8 jumps]: You can't ever go home again. You can never take the Go Home option. If you chainfail, you'll be given your choice of any existing reality that you're not native to to settle down in. This drawback persists even if you Spark out. This drawback is time limited. Chain Only. No Hiatus. No Revoke.
+
+The River Corollary [+100 More]: You can never return to any jump you've left. Ever. Requires The Thomas Wolfe Rule. Chain Only. No Hiatus. No Revoke.
+
+
+Retail Rocker [Special]: Discounts are for poor people. You're a Jumper of Quality. You always pay full price. Always. But in exchange, you now get double the CP from all drawbacks you take. You get +100 JP per jump for Slot-O-Matic.
+
+Old Home Week [+100]: Your Warehouse, or equivalent, is now connected to your home back on your homeworld. Your family members and friends can and will drop by regularly. Chain Only. No Hiatus. No Revoke.
+        Benefits Package [Costs 300 CP every Jump]: Requires Old Home Week.
+
+Refresher Course [+100]: At the end of every jump, your personality will reset to what it was when you left your homeworld.
+
+Sadistic Bitch-Chan [Double Value for Jump-Specific Drawbacks]: Replaces Sadist-Chan and Bitch-Chan. Taking this means that you no longer fully control what drawbacks you get. You will always get at least 400 CP (before price adjustment) worth of Drawbacks. If a jump has no native Drawbacks, you will get at least 400 CP worth of UDS drawbacks that could be Jump Drawbacks. You will never get more than 1000 CP worth of Drawbacks (before price adjustment), and Sadistic Bitch-Chan will never pick the most expensive Drawback in a jump (or anything tied for most expensive) unless she believes it is both survivable and fun to watch.
+
+
+JUMPER DRAWBACKS
+
+Cyclopes Psi-Ops [+100 if Single Jump or +50 if Chain]: You have only one eye.
+
+Shut Up Jumper! [+200 if Single Jump or +100 if Chain]: You cannot speak.
+
+Age of Descent [+50 to +200]: You are agelocked. From a physical standpoint, you have the size and physical development of a human of 10/8/6/4 years of age. Starts at 50 CP for 10 years old, +50 per two-year drop.
+
+We See You [+200]: You are baaaaad at stealth.
+
+A Giant Adventure! [+100 if Single Jump or +50 if Chain]: You are 60% taller, wider, and thicker than the average individual of your species.
+        A Little Drawback [Variant of A Giant Adventure!]: exactly the same as the above, except that you're now only 60% of the size.
+A Giant Among Jumpers [twice the value of A Giant Adventure]: Increases your size to roughly 210% normal.
+A Petite Problem [Variant of A Giant Among Jumpers]: You're now only 20% the size.
+Stochastic Scalar Suckage [+200]: Your size changes at random, at least 2x/week and at most 3x/day. Chain Only.
+
+Ferret Lady [+108]: You're just plain weird. Everyone notices.
+        Un-Bearable [An Additional +57]: You're a Bear. Requires Ferret Lady.
+
+Pose of the Day!!!! [+200]: You're a Genki Girl (or Boy). Almost always dialed to 144%.
+
+Do You OoWoo? [+100]: You are cute. Between a bunny with a pancake on its head and a kitten.
+
+Stone Sober [+100]: You cannot consume any mood-altering substances more potent than tea.
+
+In Deep Water [Variable]: +50 to +300 depending on depth. For double points, it's not water, it's molasses.
+
+All the Hats [+50]: You are convinced that anything you can put on your head is a hat.
+
+Gunshy [+100 or +200 or +300]: You are psychologically unable and unwilling to fight. Escalating levels.
+
+
+[END OF EXTRACTED CONTENT]
+The following UDS v1.13 categories exist but are NOT included in this partial extraction:
+- Warehouse Drawbacks (4 new in 1.13: New Warehouse Who's This, No Inventory, Timelapse, Threadripper)
+- Companion Drawbacks (5 new in 1.13: Old Companion Lockout, Importation Lottery, One Jump Charlie, One Jump Charlie Foxtrot, Wedding Bell Blues)
+- Power Drawbacks (3 new in 1.13: Stop Showing Off, Wrong Genre Savant, Menu-Sama)
+- Thematic Drawbacks (2 new in 1.13: Walking in London, Street Tier)
+- HQ Drawbacks (7 new in 1.13: Jonesin' for the Joe, Oh God! The Monkeys, Creepy Cats, Of No Consequence, Of Limited Scale, Annoying Goose, Horrible Swan)
+- Dietary Drawbacks (2 new in 1.13: Supplemental Energy, Maintenance Dose)
+- Challenge Mode Drawbacks (1 new in 1.13: All In Your Head)
+- Origin Drawbacks (2 new in 1.13: Jumper Who, Awakening From A Dream)
+- Questionable Drawbacks (2 new in 1.13: Big Eater, Ferr & Balanced)
+- Alternative Event Drawbacks (2 new in 1.13: Abandoned by the Chain, Historical Accuracy Be Damned)
+- Starting Drawbacks (1 new in 1.13: Playing Catchup!)
+- The Hate Squad / Vortex of Enemies escalation (referenced in changelog as part of Warehouse section)
+- The Hub
+- Bitch of Destiny
+- Drawback Stacking / CID interactions
+
+To get the full UDS, fetch the Google Doc v1.13 (unreleased) at:
+https://docs.google.com/document/d/1OHjF8NterF6NAK_a4aCYJoBuBW1sbsD5YtK6fA0dGrI/edit
+And export as text via:
+https://docs.google.com/document/d/1OHjF8NterF6NAK_a4aCYJoBuBW1sbsD5YtK6fA0dGrI/export?format=txt
+Note: The text export is ~30KB and will be truncated by webfetch's context window. Fetch in sections if needed.
