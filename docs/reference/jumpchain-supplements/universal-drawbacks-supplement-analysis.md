@@ -1,8 +1,8 @@
-# Universal Drawbacks Supplement (UDS) v1.13 — Min-Max Analysis
+# Universal Drawbacks Supplement (UDS) v1.13  EMin-Max Analysis
 
 > **Source:** UDS v1.13 (unreleased), by SJ-Chan. Google Doc v1.13 is ahead of the published v1.10.
 > **Extraction scope:** PARTIAL. The source file (`sources/uds-v1.13.txt`) contains the full rules framework, Safety Dance, AEIOU, all 15 Chain Drawbacks, and all 17 Jumper Drawbacks. Every other category (Warehouse, Companion, Power, Thematic, HQ, Dietary, Challenge Mode, Origin, Questionable, Alternative Event, Starting, The Hub, Bitch of Destiny) was truncated by the webfetch tool and is NOT analyzed here. See §6 for the full missing list.
-> **Quality bar:** comparable to `docs/worm-cyoa-v6/tier-list.md` and `docs/worm-cyoa-v6/archetypes.md`.
+> **Quality bar:** comparable to `../worm-cyoa-v6/tier-list.md` and `../worm-cyoa-v6/archetypes.md`.
 > **Companion docs (in progress):** Essential Body Mod, SB Body Mod, Personal Reality Supplement, Generic First Jump. Cross-supplement synergy docs come after all five land.
 
 ---
@@ -345,7 +345,7 @@ The changelog references this as part of the Warehouse Drawbacks section, and th
 
 Without the source text, I cannot confirm the exact mechanic, CP value, or stacking rules. The changelog note that v1.13 "Clarified how CID interacts with Gauntlet-Kun and Retail Rocker" suggests these drawbacks have non-trivial interactions with the CP-doubling multipliers. If Hate Squad or Vortex of Enemies has a Special value, Gauntlet-Kun would double it (subject to the "does not double Retail Rocker" carve-out).
 
-In a complete analysis, this pair would likely land in S or A tier. Persistent enemy spawning is a classic high-value drawback category because it provides constant narrative pressure and combat engagement, which justifies high CP, while a prepared jumper can mitigate the threat with combat perks. This is the "baddies attack me" pattern documented in `docs/worm-cyoa-v6/drawback-catalog.md`, where enemy-spawning drawbacks function as inverted buffs for Trump-stack builds.
+In a complete analysis, this pair would likely land in S or A tier. Persistent enemy spawning is a classic high-value drawback category because it provides constant narrative pressure and combat engagement, which justifies high CP, while a prepared jumper can mitigate the threat with combat perks. This is the "baddies attack me" pattern documented in `../worm-cyoa-v6/drawback-catalog.md`, where enemy-spawning drawbacks function as inverted buffs for Trump-stack builds.
 
 ---
 

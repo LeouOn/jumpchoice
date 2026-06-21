@@ -1,4 +1,4 @@
-# SB Body Mod Supplement v1.2 — Min-Max Analysis
+# SB Body Mod Supplement v1.2  EMin-Max Analysis
 
 > Companion to `sources/sb-body-mod-v1.2.txt`. All costs and quoted text are verbatim from the source. Where the source is ambiguous, the ambiguity is called out rather than papered over.
 
@@ -126,11 +126,11 @@ Forfeiting Ascension without an Affinity grants no discount at all. This is a co
 
 ### The three Affinities
 
-**Body [100 CP]** — discounts Strength (primary), Endurance, Speed, Resilience, Reflex. The flavor text is written in a parody of a drill sergeant, with the intentional typo "yuo" (confirmed in Notes: "The 'yuo' in the body affinity is entirely intentional."). Recommended for combat builds, Brute archetypes, and any jumper who expects to take physical damage. The discount profile makes the classic "comic-book peak human" stat block trivially achievable.
+**Body [100 CP]**  Ediscounts Strength (primary), Endurance, Speed, Resilience, Reflex. The flavor text is written in a parody of a drill sergeant, with the intentional typo "yuo" (confirmed in Notes: "The 'yuo' in the body affinity is entirely intentional."). Recommended for combat builds, Brute archetypes, and any jumper who expects to take physical damage. The discount profile makes the classic "comic-book peak human" stat block trivially achievable.
 
-**Mind [100 CP]** — discounts Logic, Memory, Resolve, Coordination, Perception. Recommended for Thinker archetypes, scholars, investigators, and any build that leans on information warfare. Note that Resolve 200 CP under Mind Affinity + forfeit Ascension is free, and Resolve 200 is one of the strongest Augments in the supplement (see §4).
+**Mind [100 CP]**  Ediscounts Logic, Memory, Resolve, Coordination, Perception. Recommended for Thinker archetypes, scholars, investigators, and any build that leans on information warfare. Note that Resolve 200 CP under Mind Affinity + forfeit Ascension is free, and Resolve 200 is one of the strongest Augments in the supplement (see §4).
 
-**Heart [100 CP]** — discounts Charisma, Appeal, Empathy, Flexibility, Fertility. Recommended for social builds, diplomat archetypes, legacy dynasties, and any jumper whose primary tool is other people. Often undervalued because the Augments look soft; Fertility 200 CP (offspring inherit your Augments) is a generational-scale min-max lever.
+**Heart [100 CP]**  Ediscounts Charisma, Appeal, Empathy, Flexibility, Fertility. Recommended for social builds, diplomat archetypes, legacy dynasties, and any jumper whose primary tool is other people. Often undervalued because the Augments look soft; Fertility 200 CP (offspring inherit your Augments) is a generational-scale min-max lever.
 
 ### The "yuo" joke
 

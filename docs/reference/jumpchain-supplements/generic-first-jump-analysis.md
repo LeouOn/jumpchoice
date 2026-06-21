@@ -1,6 +1,6 @@
-# Generic First Jump (v1.1) — Min-Max Analysis
+# Generic First Jump (v1.1)  EMin-Max Analysis
 
-**Source:** `docs/jumpchain-supplements/sources/generic-first-jump.html` (Notion export)
+**Source:** `sources/generic-first-jump.html` (Notion export)
 **Author:** Ursine
 **Version analyzed:** v1.1
 **Total options catalogued:** 56 unique options (58 tier rows counting dual-cost variants)
@@ -11,19 +11,19 @@
 
 ## §1 Source Overview
 
-**Generic First Jump** (GFJ) by Ursine is the modern "first jump" alternative to Pokémon. Where Pokémon (the original first-jump CYOA) gives you a starter Pokémon, a companion slot of 6, and setting-specific perks, GFJ gives you **ten sequential Levels** drawn from a 1d10 table, a free origin ("The Tourist"), a 1000 CP base budget, and — most importantly — a capstone that converts every perk and item purchased into Body Mod.
+**Generic First Jump** (GFJ) by Ursine is the modern "first jump" alternative to Pokémon. Where Pokémon (the original first-jump CYOA) gives you a starter Pokémon, a companion slot of 6, and setting-specific perks, GFJ gives you **ten sequential Levels** drawn from a 1d10 table, a free origin ("The Tourist"), a 1000 CP base budget, and  Emost importantly  Ea capstone that converts every perk and item purchased into Body Mod.
 
 ### Key design
 
 1. **Ten-Level Structure.** The Jump consists of ten "Levels" (Modern Occult, Military, Science Fiction, Fantasy, Historical/Alt-Historical/Lost World, Slice of Life, Super Hero, Modern Adventure, Survival, Horror). At each Level, you acquire an identity with full memories, plus level-appropriate baseline competency via the "Basic Requirements" free perk. Levels can be completed in any order; the same setting can fill only one Level slot.
 
-2. **Single Origin.** "The Tourist" is the only Origin. It is the meta-origin — a Jumper who is in it for the experience, not for any specific build path. The Tourist gets one free 100cp perk, one discounted 100cp perk, one free 100cp Item, and discounts on remaining Origin perks.
+2. **Single Origin.** "The Tourist" is the only Origin. It is the meta-origin  Ea Jumper who is in it for the experience, not for any specific build path. The Tourist gets one free 100cp perk, one discounted 100cp perk, one free 100cp Item, and discounts on remaining Origin perks.
 
 3. **The Body Mod Reward capstone (the killer feature).** At Jump end, all perks and items purchased become Body Mod: "All perks and items from this jump (with the exception of Basic Requirements) are now considered part of your Body Mod. You will still have them, even in Gauntlets or if you take a Power Loss Drawback." This single line is the reason GFJ is the canonical way to bootstrap a supplement stack. It is the supplement-stack equivalent of a 1000-CP-bonus voucher that ignores the Power Loss and Gauntlet rules.
 
 4. **Drawback stacking is unbounded.** "You can take as many Drawbacks as you want, without limit on cp gained." Combined with the absence of a stated CP floor (the source ledger in the Notion export shows the user reaching -1800 CP in perks before drawback gains), this is the mechanism that lets you buy most of the level-specific perks.
 
-5. **Items section has a +200cp stipend.** The +200cp is for the Items section only — and is a top-level addition to the 1000-CP base budget, increasing your total spend to 1200 CP across Perks + Items.
+5. **Items section has a +200cp stipend.** The +200cp is for the Items section only  Eand is a top-level addition to the 1000-CP base budget, increasing your total spend to 1200 CP across Perks + Items.
 
 ### What's NOT in the source (honest notes)
 
@@ -38,7 +38,7 @@ Three things commonly attributed to GFJ are **absent from v1.1's text** and shou
 - Starting CP: 1000
 - +200 Items stipend: 1200 total (perks + items spendable)
 - Drawback gains: unbounded
-- Perks are 50–400cp; most level-specific perks are 100cp; Tourist perks are 100/200/400cp with 50% discount for Tourist and 100cp perks free.
+- Perks are 50 E00cp; most level-specific perks are 100cp; Tourist perks are 100/200/400cp with 50% discount for Tourist and 100cp perks free.
 - Items are 100cp (most), with one free Origin item and discounts on Origin-related items.
 
 ### How this doc is organized
@@ -49,7 +49,7 @@ Three things commonly attributed to GFJ are **absent from v1.1's text** and shou
 
 ## §2 Level Progression Analysis
 
-The 10-Level structure is the meta-game of GFJ. It is not just a flavor device — it has direct mechanical implications for perk access, identity stacking, and chain pacing.
+The 10-Level structure is the meta-game of GFJ. It is not just a flavor device  Eit has direct mechanical implications for perk access, identity stacking, and chain pacing.
 
 ### §2.1 The 10 Levels (verbatim from source, 1d10 order)
 
@@ -72,17 +72,17 @@ Each Level has its own pool of one-to-three level-specific 100cp perks, one-to-t
 
 **In-jump benefits (per Level):**
 
-1. **Basic Requirements (Free) — level-scaling baseline.** "You will receive whatever special abilities, traits, backgrounds, and skills that are required for basic participation in the Level you are in." Example: Modern Occult (psychic ghost-hunting) gives you average-setting psychic ability. Military (Vietnam) gives decent fitness + basic training. Super Hero gives average-setting powers. **This perk is excluded from the Body Mod Reward** ("with the exception of Basic Requirements"), so the level-baseline abilities do NOT carry over.
+1. **Basic Requirements (Free)  Elevel-scaling baseline.** "You will receive whatever special abilities, traits, backgrounds, and skills that are required for basic participation in the Level you are in." Example: Modern Occult (psychic ghost-hunting) gives you average-setting psychic ability. Military (Vietnam) gives decent fitness + basic training. Super Hero gives average-setting powers. **This perk is excluded from the Body Mod Reward** ("with the exception of Basic Requirements"), so the level-baseline abilities do NOT carry over.
 
 2. **An identity with all appropriate memories.** "In each Level, you acquire an identity that fits the setting, with all appropriate memories." These memories are the *narrative* mechanism for surviving 10 settings. The source is silent on whether the identity's memories survive the Jump (the perk "Mind Like A Jumper" handles pre-existing conditions; the Tourist perk "Seeing The Sights, All The Sights" handles perfect memory of experiences, not identities).
 
-3. **Practice/training/study time** for mundane skills. "Nothing can be done to retain [Basic Requirements] abilities, but you do benefit from any practice, training, study, or actual use in the Level itself of any mundane skills." This is the loophole for keeping mundane skill gains — a 10-Year-Jumper trained in 10 different settings picks up real skills even if the supernatural baseline evaporates.
+3. **Practice/training/study time** for mundane skills. "Nothing can be done to retain [Basic Requirements] abilities, but you do benefit from any practice, training, study, or actual use in the Level itself of any mundane skills." This is the loophole for keeping mundane skill gains  Ea 10-Year-Jumper trained in 10 different settings picks up real skills even if the supernatural baseline evaporates.
 
 4. **One to two free access to level-specific perks.** You can buy the level-specific perks whenever you want, but the perks only fire when you are in that Level's setting. Buying "Run Like Hell" in the Horror level means you can run from monsters in Horror. Buying it pre-emptively for a future Horror-only jump is wasted.
 
-5. **Drawback triggers** — some drawbacks are level-specific and only function in that Level (e.g., "Bandits" in Fantasy fires when you're in a Fantasy Level).
+5. **Drawback triggers**  Esome drawbacks are level-specific and only function in that Level (e.g., "Bandits" in Fantasy fires when you're in a Fantasy Level).
 
-### §2.3 What unlocks at each Level — perk access by Level
+### §2.3 What unlocks at each Level  Eperk access by Level
 
 | Level | Perks | Notable standout |
 |-------|-------|------------------|
@@ -105,16 +105,16 @@ Each Level has its own pool of one-to-three level-specific 100cp perks, one-to-t
 
 **You can, however, choose Level order for free.** The "Randomized" drawback (+100cp) randomizes this; without the drawback, you pick. Optimal order is:
 
-1. **Slice of Life first** — easiest level, no combat, lets you stack Expertise and Friendly Friends early, train up Bare Necessities baseline.
-2. **Science Fiction second** — pick up Universal Translation immediately; retroactive language acquisition is useful for every later Level.
-3. **Modern Occult third** — Screw the Devil for possession immunity.
-4. **Horror fourth** — Be Not Afraid stacks onto the previous defenses.
-5. **Survival fifth** — Eagle Scout for resource-finding during later harder Levels.
-6. **Fantasy sixth** — Cantrips for utility, Class Skills repeatable.
-7. **Modern Adventure seventh** — Quick and the Dead (3x thought speed) and Sherlock Scan.
-8. **Super Hero eighth** — Secondary Superpowers is universally useful and a cornerstone perk.
-9. **Military ninth** — AIT + MOS for combat and logistics.
-10. **Historical tenth** — Student of War capstone for strategy/tactics.
+1. **Slice of Life first**  Eeasiest level, no combat, lets you stack Expertise and Friendly Friends early, train up Bare Necessities baseline.
+2. **Science Fiction second**  Epick up Universal Translation immediately; retroactive language acquisition is useful for every later Level.
+3. **Modern Occult third**  EScrew the Devil for possession immunity.
+4. **Horror fourth**  EBe Not Afraid stacks onto the previous defenses.
+5. **Survival fifth**  EEagle Scout for resource-finding during later harder Levels.
+6. **Fantasy sixth**  ECantrips for utility, Class Skills repeatable.
+7. **Modern Adventure seventh**  EQuick and the Dead (3x thought speed) and Sherlock Scan.
+8. **Super Hero eighth**  ESecondary Superpowers is universally useful and a cornerstone perk.
+9. **Military ninth**  EAIT + MOS for combat and logistics.
+10. **Historical tenth**  EStudent of War capstone for strategy/tactics.
 
 This order front-loads the universal-perk picks (Translation, Possession, Fear, Survival, Thought Speed) and back-loads the more setting-specific training (Super Hero, Military, Historical).
 
@@ -124,7 +124,7 @@ The source contains a crucial clause often missed: "If you choose, you can go to
 
 This is **huge**. It means:
 - You can substitute any real Jump's setting for any Level (e.g., use a Modern Occult setting from a specific Jump without actually taking that Jump).
-- **Nothing from GFJ carries over to the actual Jump for that setting** — including the Body Mod Reward. So if you substitute a setting from a real Jump, you lose the Body Mod conversion for the perks you bought in that Level.
+- **Nothing from GFJ carries over to the actual Jump for that setting**  Eincluding the Body Mod Reward. So if you substitute a setting from a real Jump, you lose the Body Mod conversion for the perks you bought in that Level.
 
 This is the main "trap" in GFJ: players who take the "specific setting" option to enrich flavor end up giving up the Body Mod conversion for those perks. The recommended reading: only use generic settings (no specific Jump), or use a specific setting from a Jump you don't plan to take anyway.
 
@@ -132,15 +132,15 @@ This is the main "trap" in GFJ: players who take the "specific setting" option t
 
 "You acquire an identity that fits the setting, with all appropriate memories" is repeated for each Level. The text does not say whether the 10 identities all persist post-Jump, or whether they merge. The conservative reading is that they are temporary cover identities that dissolve at Jump end. The "perfect memory" perk (Seeing The Sights) is the cleanest way to preserve the experiences: take it, and you will remember all 10 identities in full detail even if the identities themselves don't persist.
 
-**Optimization note:** the Tourist perk "Ride The Rails To See The Sights" interacts with identity in an interesting way — it preserves the canon plot of each Level's setting, so your 10 cover identities will be embedded in a world where canon events happen. This is a flavor multiplier more than a mechanical one.
+**Optimization note:** the Tourist perk "Ride The Rails To See The Sights" interacts with identity in an interesting way  Eit preserves the canon plot of each Level's setting, so your 10 cover identities will be embedded in a world where canon events happen. This is a flavor multiplier more than a mechanical one.
 
 ### §2.7 Why the 10-Level system exists
 
 The 10-Level system serves three purposes:
 
-1. **Justifies the perk variety.** A "First Jump" generic needs to expose the Jumper to enough variety to be a meaningful "tutorial" jump. 10 settings × 1-2 perks/Level = 18 level-specific perks, plus 12 general perks and 3 Tourist perks.
+1. **Justifies the perk variety.** A "First Jump" generic needs to expose the Jumper to enough variety to be a meaningful "tutorial" jump. 10 settings ÁE1-2 perks/Level = 18 level-specific perks, plus 12 general perks and 3 Tourist perks.
 
-2. **Provides narrative weight.** A 10-year (or however long the Jump lasts — the source is silent on duration) first jump is a substantial opening for a chain. The 10 identities give the Jumper a real backstory.
+2. **Provides narrative weight.** A 10-year (or however long the Jump lasts  Ethe source is silent on duration) first jump is a substantial opening for a chain. The 10 identities give the Jumper a real backstory.
 
 3. **Front-loads the Body Mod Reward.** By making the capstones (Instant Access, Body Mod Reward) end-of-Jump free perks, the doc incentivizes you to complete the full 10 Levels. There is no early-exit option.
 
@@ -189,7 +189,7 @@ This section is the master index. §5, §6, §7 split out Perks, Items, and Draw
 | 33 | 100cp | Perks/Science Fiction | Universal Translation | **S** | Retroactive omnilingualism. Body-mod converts. |
 | 34 | 100cp | Perks/Science Fiction | Engineer | **A** | Fix tech you can use. Body-mod converts. |
 | 35 | Free | Items/General | Bare Necessities (free version) | **A** | Job + home + vehicle. Free. |
-| 36 | 100cp | Items/General | Bare Necessities (trust fund upgrade) | **S** | $200K/yr, multiplies ×10 per repurchase, follows you, can be toggled off, scales. |
+| 36 | 100cp | Items/General | Bare Necessities (trust fund upgrade) | **S** | $200K/yr, multiplies ÁE0 per repurchase, follows you, can be toggled off, scales. |
 | 37 | 100cp | Items/General | Franchise | **A** | Your adventures as media. Body-mod converts. |
 | 38 | 100cp (Free for Tourist) | Items/Tourist | Camera | **B** | Auto-snapshot of memorable moments. Useful but narrow. |
 | 39 | +100cp | Drawbacks/General | Randomized | **A** | Random level order. Pure CP gain if you don't care about order. |
@@ -223,26 +223,26 @@ Total rows: 58 (counting dual-cost variants as separate rows for granular tier p
 | A | 19 | Most remaining level-specific perks + a few drawbacks. |
 | B | 15 | Niche perks and drawbacks. |
 | C | 8 | Common-flavor perks + active-threat drawbacks. |
-| D | 0 | — |
-| F | 0 | — |
+| D | 0 |  E|
+| F | 0 |  E|
 
 ### §3.3 S-Tier summary
 
 The 16 S-tier options cluster into three groups:
 
 **Capstones (the reason to take GFJ):**
-- **Body Mod Reward** (Free, end-of-jump) — the entire reason GFJ exists
-- **Instant Access** (Free, end-of-jump) — Warehouse access
+- **Body Mod Reward** (Free, end-of-jump)  Ethe entire reason GFJ exists
+- **Instant Access** (Free, end-of-jump)  EWarehouse access
 
 **Universally useful perks that convert to body mod (12):**
 - Body Like A Jumper, Mind Like A Jumper, Common Sense, Boredom Immunity, No Matter Where You Go There You Are, Secondary Superpowers, Be Not Afraid, Screw the Devil, Universal Translation
 - The three Tourist perks (Road Goes Ever On, Seeing The Sights, Ride The Rails)
 
 **The single S-tier drawback:**
-- **Three Sea Shells** (+100cp, Science Fiction) — never lethal, easy to take, pure CP
+- **Three Sea Shells** (+100cp, Science Fiction)  Enever lethal, easy to take, pure CP
 
 **The single S-tier item:**
-- **Bare Necessities trust fund upgrade** (100cp) — exponential wealth scaling, follows you to all jumps
+- **Bare Necessities trust fund upgrade** (100cp)  Eexponential wealth scaling, follows you to all jumps
 
 ---
 
@@ -263,29 +263,29 @@ GFJ has exactly **one Origin: The Tourist.**
 Re-reading the source carefully: "Perks are discounted by 50% for their Origin, and 100cp perks are free for their Origin." The Origin in this Jump is "The Tourist." So **all Tourist-tagged perks are discounted 50% (and 100cp ones are free)**, but level-specific perks are full price.
 
 This means the Tourist's perks are:
-- The Road Goes Ever On And On (100cp) — **Free** for Tourist
-- Seeing The Sights, All The Sights (200cp) — **100cp for Tourist** (50% off)
-- Ride The Rails To See The Sights (400cp) — **200cp for Tourist** (50% off)
+- The Road Goes Ever On And On (100cp)  E**Free** for Tourist
+- Seeing The Sights, All The Sights (200cp)  E**100cp for Tourist** (50% off)
+- Ride The Rails To See The Sights (400cp)  E**200cp for Tourist** (50% off)
 
 The Tourist's Item:
-- Camera (100cp) — **Free for Tourist**
+- Camera (100cp)  E**Free for Tourist**
 
 ### §4.2 Tier ranking
 
-**The Tourist — S-tier Origin.** The 50% discount on the three most powerful perks in the doc (perfect memory, canon preservation, eternity readiness) and the free Camera item make The Tourist the obvious Origin. There is no Origin choice to make; you just take it.
+**The Tourist  ES-tier Origin.** The 50% discount on the three most powerful perks in the doc (perfect memory, canon preservation, eternity readiness) and the free Camera item make The Tourist the obvious Origin. There is no Origin choice to make; you just take it.
 
 ### §4.3 Why there's only one Origin
 
-GFJ is a first-jump doc. First-jump docs are intentionally narrow: they exist to bootstrap the Jumper, not to provide build variety. The Tourist framing — "in it for the experience" — is consistent with this. Compare to Pokémon, which has a more structured Origin system (Trainer, Breeder, Researcher, Coordinator, etc.). GFJ's single-Origin design is a feature, not a limitation: it simplifies the bootstrap and gives every Jumper the same meta-progression path.
+GFJ is a first-jump doc. First-jump docs are intentionally narrow: they exist to bootstrap the Jumper, not to provide build variety. The Tourist framing  E"in it for the experience"  Eis consistent with this. Compare to Pokémon, which has a more structured Origin system (Trainer, Breeder, Researcher, Coordinator, etc.). GFJ's single-Origin design is a feature, not a limitation: it simplifies the bootstrap and gives every Jumper the same meta-progression path.
 
 ### §4.4 Sub-archetypes within The Tourist
 
 The Tourist is a single Origin, but the perk selection differentiates sub-archetypes:
 
-- **The Lore Tourist** — leans into Tourist perks. Canon Preservation + Perfect Memory is the S-tier Tourist core.
-- **The Combat Tourist** — leans into level-specific combat perks (AIT, Fists of Justice, Quick and the Dead).
-- **The Utility Tourist** — leans into support perks (Universal Translation, Secondary Superpowers, Class Skills).
-- **The Drawback Tourist** — takes every drawback, builds for the Body Mod conversion.
+- **The Lore Tourist**  Eleans into Tourist perks. Canon Preservation + Perfect Memory is the S-tier Tourist core.
+- **The Combat Tourist**  Eleans into level-specific combat perks (AIT, Fists of Justice, Quick and the Dead).
+- **The Utility Tourist**  Eleans into support perks (Universal Translation, Secondary Superpowers, Class Skills).
+- **The Drawback Tourist**  Etakes every drawback, builds for the Body Mod conversion.
 
 The build archetypes in §9 are sub-archetypes of The Tourist.
 
@@ -297,7 +297,7 @@ This section provides tier-by-tier ranking of all 33 perks, with full justificat
 
 ### §5.1 Tier S Perks (12)
 
-These perks are universal — they apply regardless of Level or chain phase. Combined with the Body Mod Reward, they are permanent across the entire chain.
+These perks are universal  Ethey apply regardless of Level or chain phase. Combined with the Body Mod Reward, they are permanent across the entire chain.
 
 #### Body Like A Jumper (Free)
 
@@ -309,7 +309,7 @@ These perks are universal — they apply regardless of Level or chain phase. Com
 
 > "You are aware of any mental illness, disorders, disabilities, or other conditions you may be suffering from as you enter this jump, and may choose to have any or all of them removed. This does not make you immune to these things, it just removes pre-existing conditions."
 
-**Why S:** Free. Pairs with Body Like A Jumper for a complete clean-slate. The "you are aware" clause is important — it's not a sneaky override, it's a conscious opt-in. Together with the Tourist perk "No Matter Where You Go" (trauma immunity), it forms the Jumper's mental-foundation stack.
+**Why S:** Free. Pairs with Body Like A Jumper for a complete clean-slate. The "you are aware" clause is important  Eit's not a sneaky override, it's a conscious opt-in. Together with the Tourist perk "No Matter Where You Go" (trauma immunity), it forms the Jumper's mental-foundation stack.
 
 #### Common Sense (50cp)
 
@@ -321,13 +321,13 @@ These perks are universal — they apply regardless of Level or chain phase. Com
 
 > "You are completely immune to boredom. When engaged in a simple repetitive task, you can choose to fast-forward through it, remembering performing the task without having to experience it fully. This fast-forward ends instantly if something changes that require your attention."
 
-**Why S:** Centuries-long chains involve a *lot* of repetitive tasks (training, grinding, watching canon play out). The fast-forward is a QoL perk with body-mod conversion that pays dividends for the entire chain. "Instantly ends if something changes" is a fair-balance clause — you can't sleep through a surprise attack.
+**Why S:** Centuries-long chains involve a *lot* of repetitive tasks (training, grinding, watching canon play out). The fast-forward is a QoL perk with body-mod conversion that pays dividends for the entire chain. "Instantly ends if something changes" is a fair-balance clause  Eyou can't sleep through a surprise attack.
 
 #### No Matter Where You Go, There You Are (100cp)
 
 > "Your priorities, sense of morality and beliefs only change how you desire them to. You will instantly process and deal with any trauma in the best possible way for you, making you immune to PTSD and similar issues."
 
-**Why S:** "Morality only changes how you desire them to" is a **character-locking clause** — it prevents chain drift. If you start as a hero, you stay a hero (or you intentionally change). The trauma immunity is a complementary buff. Together: this is the "Jumper is the same person across centuries" perk, and body-mod conversion makes it permanent.
+**Why S:** "Morality only changes how you desire them to" is a **character-locking clause**  Eit prevents chain drift. If you start as a hero, you stay a hero (or you intentionally change). The trauma immunity is a complementary buff. Together: this is the "Jumper is the same person across centuries" perk, and body-mod conversion makes it permanent.
 
 #### The Road Goes Ever On And On (100cp, Free for Tourist)
 
@@ -359,13 +359,13 @@ The downside: 100cp is a significant chunk of your budget. But it's a one-time i
 
 > "You are completely immune to any form of possession. Outside control might still work on you, but you are the only actual occupant of your body, mind and soul, and you are going to stay that way. If you allow something else to possess you, you can resume control and kick them out at will. Nothing can stop you from doing so, if that is what you want to do."
 
-**Why S:** Possession is a common jumpchain threat (Solomon Kane, Constantine, many religious settings). The "even if you let something in, you can kick it out" clause is more permissive than simple immunity — it lets you use possession tactically while retaining control. Body-mod conversion makes it permanent.
+**Why S:** Possession is a common jumpchain threat (Solomon Kane, Constantine, many religious settings). The "even if you let something in, you can kick it out" clause is more permissive than simple immunity  Eit lets you use possession tactically while retaining control. Body-mod conversion makes it permanent.
 
 #### Universal Translation (100cp, Science Fiction)
 
 > "You can understand, speak, read, write, and think any language you have ever encountered, as long as you have the necessary anatomy. This is retroactive to any languages you might have been exposed to in the past."
 
-**Why S:** Retroactive omnilingualism with body-mod conversion. The "anatomy permitting" clause is fair — you can't speak whale-song without a whale's mouth. This is a chain-permanent utility perk. Pairs with the Tourist perk "Seeing The Sights" for a complete information-retention stack.
+**Why S:** Retroactive omnilingualism with body-mod conversion. The "anatomy permitting" clause is fair  Eyou can't speak whale-song without a whale's mouth. This is a chain-permanent utility perk. Pairs with the Tourist perk "Seeing The Sights" for a complete information-retention stack.
 
 #### Secondary Superpowers (100cp, Super Hero)
 
@@ -393,25 +393,25 @@ These perks are strong but situational or less unique than S-tier picks.
 
 > "When you enter a new Jump, you gain knowledge of the location and culture you start in that is equivalent to what the average citizen would know. You also gain fluency in the local language or languages. For an additional 50cp, all of your knowledge will have the local equivalent added, such as a student of history knowing as much as an equivalently educated student of history in the new setting. This added information never goes away, but is never confusing and does not impair you in any way."
 
-**Why A:** The base perk (50cp, equivalent to average citizen) is C-tier. The 100cp upgrade adds professional-grade setting knowledge that **never goes away** — this is the chain-permanent utility. Body-mod conversion makes it permanent across all jumps.
+**Why A:** The base perk (50cp, equivalent to average citizen) is C-tier. The 100cp upgrade adds professional-grade setting knowledge that **never goes away**  Ethis is the chain-permanent utility. Body-mod conversion makes it permanent across all jumps.
 
 #### Expertise (100cp, Slice of Life, repeatable)
 
 > "You are at an expert level of skill and ability in one real-world profession of your choice. This level of skill does not make you one of the best in the world, but it does make you a top-notch professional. This can be taken multiple times, for a different profession each time."
 
-**Why A:** Repeatable, body-mod-convertible. Each purchase gives a top-notch professional skill. Pairs with Class Skills (Fantasy) for a complete skill-stack. The "real-world profession" clause means you can't pick "Sorcerer Supreme" — it's bounded to mundane careers.
+**Why A:** Repeatable, body-mod-convertible. Each purchase gives a top-notch professional skill. Pairs with Class Skills (Fantasy) for a complete skill-stack. The "real-world profession" clause means you can't pick "Sorcerer Supreme"  Eit's bounded to mundane careers.
 
 #### Eagle Scout (100cp, Survival)
 
 > "You are an expert when it comes to survival, both wilderness and urban. You are both talented and lucky at finding the materials and resources you need, in any environment, they could exist."
 
-**Why A:** Resource luck is a unique utility. The "talented and lucky" framing is a strong buff — you can find what you need anywhere. Body-mod conversion.
+**Why A:** Resource luck is a unique utility. The "talented and lucky" framing is a strong buff  Eyou can find what you need anywhere. Body-mod conversion.
 
 #### The Quick and the Dead (100cp, Modern Adventure)
 
 > "You think fast, react fast, and move fast. Your reaction speed is peak human, and your thought processes are three times as fast as they otherwise would be."
 
-**Why A:** 3x thought speed is a strong cognitive buff. Pairs with Sherlock Scan for an information-processing stack. "Peak human" reaction time is good but not superhuman — this is a foundation, not a capstone.
+**Why A:** 3x thought speed is a strong cognitive buff. Pairs with Sherlock Scan for an information-processing stack. "Peak human" reaction time is good but not superhuman  Ethis is a foundation, not a capstone.
 
 #### Sherlock Scan (100cp, Modern Adventure)
 
@@ -435,7 +435,7 @@ These perks are strong but situational or less unique than S-tier picks.
 
 > "You have the specialized skills set that best fits an occupation or 'class' of your choice, appropriate to a fantasy setting. This does not provide any magical abilities but can include lore or theoretical knowledge of magic, which will update to your current setting. This can be taken multiple times, for a different 'class' each time."
 
-**Why A:** Repeatable, body-mod-convertible. The "lore or theoretical knowledge of magic, which will update to your current setting" clause is unique — your magical knowledge stays current as you move between settings. Stacks well with Expertise.
+**Why A:** Repeatable, body-mod-convertible. The "lore or theoretical knowledge of magic, which will update to your current setting" clause is unique  Eyour magical knowledge stays current as you move between settings. Stacks well with Expertise.
 
 ### §5.3 Tier B Perks (8)
 
@@ -527,7 +527,7 @@ GFJ has 3 unique items (4 purchase options counting Bare Necessities' free and t
 
 > "For 100cp, you have a trust fund that pays in whatever the local currency is, equivalent to two hundred thousand dollars ($200,000.00) per year. Your home, vehicle, and other possessions are upgraded to be appropriate for this level of income. This money is legal, with all taxes paid and all documentation needed. No one will question where it comes from. Each time you purchase the upgrade, move the decimal point one space to the right. This item follows you to all future jumps, adapting as needed, and can be toggled off for a jump. Any other form of income you receive, including from other perks or items, can be added to the trust fund, and will also be completely legal with all taxes paid and documentation needed."
 
-**Why S:** The single best item in the doc. $200K/year, **exponentially scaling per repurchase** (×10 each time: $200K → $2M → $20M → $200M → ...). Follows you to all future jumps, adapts to local currency, **can be toggled off per jump** (so you can take it for the trust fund scaling and disable it in a low-income setting). Other income can be added, with all taxes paid. This is a chain-permanent wealth engine that converts to body mod.
+**Why S:** The single best item in the doc. $200K/year, **exponentially scaling per repurchase** (ÁE0 each time: $200K ↁE$2M ↁE$20M ↁE$200M ↁE...). Follows you to all future jumps, adapts to local currency, **can be toggled off per jump** (so you can take it for the trust fund scaling and disable it in a low-income setting). Other income can be added, with all taxes paid. This is a chain-permanent wealth engine that converts to body mod.
 
 **Critical interaction:** "Each time you purchase the upgrade, move the decimal point one space to the right." This is **multiplicative scaling**, not additive. Buying it twice in one Jump is $2M/year; buying it 3 times is $20M/year. **A 7th repurchase puts you at $2 trillion/year.** This is the most economically broken item in the supplement set.
 
@@ -557,13 +557,13 @@ GFJ has 3 unique items (4 purchase options counting Bare Necessities' free and t
 
 ### §6.4 Item mechanics
 
-**"If these items are lost, stolen, or destroyed, new ones will be in the Warehouse 24 hours later."** This applies to all items. The 24-hour respawn timer is a unique utility — items cannot be permanently lost.
+**"If these items are lost, stolen, or destroyed, new ones will be in the Warehouse 24 hours later."** This applies to all items. The 24-hour respawn timer is a unique utility  Eitems cannot be permanently lost.
 
 **"You can combine similar items purchased from this Jump at no additional cost."** Stacking allowed at no cost. For example, multiple Bare Necessities upgrades combine into one trust fund with the higher income.
 
 **"Any item can be taken multiple times, but 100cp Origin items are discounted instead of free after the first purchase."** The Tourist's Camera is free the first time, then discounted on subsequent purchases in future Jumps (when this Origin applies again).
 
-**"Each Origin gets one of its 100cp items for free, and a discount on its other item."** The Tourist gets Camera free. The Tourist's "other item" is not defined in the source — this is a minor source-text issue (see §11.6). The Tourist does NOT get a free Franchise or a discount on Franchise.
+**"Each Origin gets one of its 100cp items for free, and a discount on its other item."** The Tourist gets Camera free. The Tourist's "other item" is not defined in the source  Ethis is a minor source-text issue (see §11.6). The Tourist does NOT get a free Franchise or a discount on Franchise.
 
 ### §6.5 Items not in the source
 
@@ -585,7 +585,7 @@ Three mechanical rules govern drawbacks:
 
 Rule 2 is the most interesting. The doc explicitly grants **meta-world-changes** as drawback effects, and fiat cannot revert them if you have the power to change them. This is a unique mechanic: it's an anti-fiat clause for drawbacks. The classic example: a "World Ends" drawback. If you can prevent the end of the world, fiat won't undo your prevention. If you can't, the world ends. The drawback just sets the initial condition; the outcome is up to you.
 
-Rule 3 means that "Bandits" in Fantasy only fires when you're in the Fantasy Level, not in other Levels. This affects how you allocate CP — you only "pay" the Fantasy drawbacks during the Fantasy Level of the Jump.
+Rule 3 means that "Bandits" in Fantasy only fires when you're in the Fantasy Level, not in other Levels. This affects how you allocate CP  Eyou only "pay" the Fantasy drawbacks during the Fantasy Level of the Jump.
 
 ### §7.2 Tier S Drawbacks (1)
 
@@ -593,7 +593,7 @@ Rule 3 means that "Bandits" in Fantasy only fires when you're in the Fantasy Lev
 
 > "The future is full of amazing new technology designed to improve every aspect of life. The problem is that you have no clue how to use most of it, cannot figure it out for yourself, and for some reason have difficulty getting anyone to teach you how to use it. This is a quality of life issue that applies mostly to everyday convenience technology. If your life depends on it, you have as good a chance to figure it out as you normally would."
 
-**Why S:** "If your life depends on it, you have as good a chance to figure it out as you normally would" — this is the **fair-balance clause that makes Three Sea Shells the best drawback in the doc.** It's a quality-of-life inconvenience, not a combat or survival threat. Pure CP gain. Take it always.
+**Why S:** "If your life depends on it, you have as good a chance to figure it out as you normally would"  Ethis is the **fair-balance clause that makes Three Sea Shells the best drawback in the doc.** It's a quality-of-life inconvenience, not a combat or survival threat. Pure CP gain. Take it always.
 
 ### §7.3 Tier A Drawbacks (6)
 
@@ -689,7 +689,7 @@ Rule 3 means that "Bandits" in Fantasy only fires when you're in the Fantasy Lev
 
 > "You have a friend, or comrade, or student, or whatever other reason you might have a person following you around. The thing is that no matter how much you might like this person, they are really more trouble than they are worth... Unfortunately, there is just no getting rid of this person."
 
-**Why C:** NPC liability. The "no getting rid of this person" clause is the killer — you can't just ditch them. Genuine annoyance.
+**Why C:** NPC liability. The "no getting rid of this person" clause is the killer  Eyou can't just ditch them. Genuine annoyance.
 
 #### Secret Society (+100cp, Modern Adventure)
 
@@ -768,15 +768,15 @@ The strategic implication: **every CP spent in GFJ is a CP that is permanently l
 
 This is the most important synergy in the entire GFJ analysis. The standard Jumpchain supplement stack is:
 
-1. **Body Mod** (Essential Body Mod, SB Body Mod, or similar) — provides the Jumper's physical/spiritual baseline
-2. **Personal Reality Supplement** (PRS) — provides the Jumper's personal dimension/spaces
-3. **Universal Drawbacks Supplement** (UDS) — applies universal drawbacks across all jumps
-4. **Generic First Jump** (GFJ) — the "first jump" supplement
+1. **Body Mod** (Essential Body Mod, SB Body Mod, or similar)  Eprovides the Jumper's physical/spiritual baseline
+2. **Personal Reality Supplement** (PRS)  Eprovides the Jumper's personal dimension/spaces
+3. **Universal Drawbacks Supplement** (UDS)  Eapplies universal drawbacks across all jumps
+4. **Generic First Jump** (GFJ)  Ethe "first jump" supplement
 
 The intended play order is:
 
 1. **Take GFJ as Jump 1.** This is the meta-Jump that gives you 10 Levels of training, a Tourist identity, and a Body Mod conversion at the end.
-2. **At GFJ's end, the Body Mod Reward converts all your GFJ perks and items to Body Mod.** This is the "snap" — the 1000+ CP you spent in GFJ is now part of your permanent body mod.
+2. **At GFJ's end, the Body Mod Reward converts all your GFJ perks and items to Body Mod.** This is the "snap"  Ethe 1000+ CP you spent in GFJ is now part of your permanent body mod.
 3. **Apply Body Mod to your Jumper baseline.** Essential Body Mod (or SB Body Mod) provides the structural framework; GFJ provides the content.
 4. **Apply Personal Reality Supplement.** Your personal dimension is built around the body-mod-converted Jumper.
 5. **Apply Universal Drawbacks Supplement.** Your standard drawbacks stack on top of the body-mod Jumper.
@@ -792,16 +792,16 @@ GFJ is the **canonical way to bootstrap your supplement stack** because:
 - It has the Body Like A Jumper / Mind Like A Jumper free perks (a clean physical/mental baseline).
 - It has Common Sense (Benefactor-punish detection) which is unique and useful for any chain.
 
-**The supplement-stack bootstrap order is: GFJ → Body Mod → PRS → UDS.** GFJ first because it provides the perks/items; Body Mod second because it provides the structural framework that the perks attach to; PRS third because it provides the spaces; UDS fourth because it provides the cross-jump drawback engine.
+**The supplement-stack bootstrap order is: GFJ ↁEBody Mod ↁEPRS ↁEUDS.** GFJ first because it provides the perks/items; Body Mod second because it provides the structural framework that the perks attach to; PRS third because it provides the spaces; UDS fourth because it provides the cross-jump drawback engine.
 
 ### §8.5 Synergy with other Generic jumps
 
 GFJ's relationship to other Generic jumps is complex:
 
-- **Generic Jumpchain** (the original, by StompieLongStocking or similar) — provides a much wider origin selection and more perk variety, but lacks the Body Mod Reward. The two can be taken in either order, but GFJ should be taken first if you want the Body Mod conversion to apply to the broader perks.
-- **Generic Second Jump / Generic Third Jump** — the "continuation" docs that pick up where Generic First Jump leaves off. They typically assume you've taken GFJ first and have the Body Mod conversion.
-- **Generic Specific Jump** — supplements for specific genres (Generic Harry Potter, Generic Worm, etc.) — these are usually in-setting and don't interact with GFJ's body mod.
-- **Generic Powers Supplement** — provides power-level perks. Stacks well with GFJ's Secondary Superpowers.
+- **Generic Jumpchain** (the original, by StompieLongStocking or similar)  Eprovides a much wider origin selection and more perk variety, but lacks the Body Mod Reward. The two can be taken in either order, but GFJ should be taken first if you want the Body Mod conversion to apply to the broader perks.
+- **Generic Second Jump / Generic Third Jump**  Ethe "continuation" docs that pick up where Generic First Jump leaves off. They typically assume you've taken GFJ first and have the Body Mod conversion.
+- **Generic Specific Jump**  Esupplements for specific genres (Generic Harry Potter, Generic Worm, etc.)  Ethese are usually in-setting and don't interact with GFJ's body mod.
+- **Generic Powers Supplement**  Eprovides power-level perks. Stacks well with GFJ's Secondary Superpowers.
 
 The recommended reading: **take GFJ as Jump 1, then take other Generic jumps in any order, and let the Body Mod conversion handle the rest.** Each Generic jump you take adds to your body mod via its own Body Mod clause (most modern Generic jumps have one).
 
@@ -815,21 +815,21 @@ The "perks-first" reading (the source ledger's reading) is: spend freely, drawba
 
 The "raw CP" reading (which this analysis uses throughout) is: treat drawbacks as a separate CP source, applied at Jump end to balance any perk overspend.
 
-**This is a critical ambiguity** — see §11.4 for the full ruling.
+**This is a critical ambiguity**  Esee §11.4 for the full ruling.
 
 ### §8.7 Tourist's "Discount for The Tourist" is the only Origin discount
 
 Because GFJ has only one Origin (The Tourist), the 50% discount on Origin perks is always active. There is no Origin choice to make; you just take the discount. This means:
 
-- The Road Goes Ever On And On (100cp) — Free for Tourist = 0cp
-- Seeing The Sights, All The Sights (200cp) — Discount for Tourist = 100cp
-- Ride The Rails To See The Sights (400cp) — Discount for Tourist = 200cp
+- The Road Goes Ever On And On (100cp)  EFree for Tourist = 0cp
+- Seeing The Sights, All The Sights (200cp)  EDiscount for Tourist = 100cp
+- Ride The Rails To See The Sights (400cp)  EDiscount for Tourist = 200cp
 
-Plus the Tourist Item (Camera) is free. So the Tourist is, mechanically, the best possible Origin in the doc — because there's no alternative.
+Plus the Tourist Item (Camera) is free. So the Tourist is, mechanically, the best possible Origin in the doc  Ebecause there's no alternative.
 
 ### §8.8 The "10 levels, 10 identities" synergy
 
-You visit 10 Levels and acquire 10 identities with full memories. Combined with Seeing The Sights, you have a perfect record of all 10 identities. Combined with the Tourist framing, this is the "lore tourist" playstyle — you experience the settings, you record them, and you carry them into the chain.
+You visit 10 Levels and acquire 10 identities with full memories. Combined with Seeing The Sights, you have a perfect record of all 10 identities. Combined with the Tourist framing, this is the "lore tourist" playstyle  Eyou experience the settings, you record them, and you carry them into the chain.
 
 Combined with Ride The Rails (canon preservation), the 10 identities exist in a world where canon events happen, so you can insert yourself into them.
 
@@ -880,7 +880,7 @@ Five named archetypes, each a distinct strategy for using GFJ.
 
 ### §9.3 Archetype 3: The Self-Insert Safe Start (The Cautious Tourist)
 
-**Strategy:** Take GFJ as a low-risk "first jump." Minimal drawbacks, focus on defensive perks. The Jumper is not a combatant yet — they're a tourist.
+**Strategy:** Take GFJ as a low-risk "first jump." Minimal drawbacks, focus on defensive perks. The Jumper is not a combatant yet  Ethey're a tourist.
 
 **CP allocation (2 drawbacks, +200cp; ~600cp spent):**
 - Drawbacks: Three Sea Shells (+100) + Modern Sensibilities (+100) = +200cp
@@ -936,22 +936,22 @@ Detailed builds for the most interesting archetypes, with full budget breakdowns
 **Origin:** The Tourist (mandatory)
 
 **Drawbacks (3, +300cp):**
-- Randomized (+100) — Random level order, doesn't matter for this build
-- Three Sea Shells (+100) — Quality-of-life inconvenience only
-- Modern Sensibilities (+100) — Culture shock, easily handled
+- Randomized (+100)  ERandom level order, doesn't matter for this build
+- Three Sea Shells (+100)  EQuality-of-life inconvenience only
+- Modern Sensibilities (+100)  ECulture shock, easily handled
 
 **Perks (700cp):**
-- The Road Goes Ever On And On (Free for Tourist) — 0cp
-- Seeing The Sights, All The Sights (100cp, Tourist discount) — 100cp
-- Ride The Rails To See The Sights (200cp, Tourist discount) — 200cp
-- Body Like A Jumper (Free for All) — 0cp
-- Mind Like A Jumper (Free for All) — 0cp
-- Universal Translation (100cp) — 100cp
-- General Knowledge 100cp upgrade (100cp) — 100cp
-- Veteran (100cp) — 100cp
+- The Road Goes Ever On And On (Free for Tourist)  E0cp
+- Seeing The Sights, All The Sights (100cp, Tourist discount)  E100cp
+- Ride The Rails To See The Sights (200cp, Tourist discount)  E200cp
+- Body Like A Jumper (Free for All)  E0cp
+- Mind Like A Jumper (Free for All)  E0cp
+- Universal Translation (100cp)  E100cp
+- General Knowledge 100cp upgrade (100cp)  E100cp
+- Veteran (100cp)  E100cp
 
 **Items (100cp):**
-- Bare Necessities trust fund upgrade (100cp) — $200K/yr, exponential scaling on repurchase
+- Bare Necessities trust fund upgrade (100cp)  E$200K/yr, exponential scaling on repurchase
 
 **Total spent: 800cp**
 **Drawback gains: +300cp**
@@ -968,18 +968,18 @@ Detailed builds for the most interesting archetypes, with full budget breakdowns
 **Drawbacks:** None (the "Safe Start" approach)
 
 **Perks (650cp):**
-- The Road Goes Ever On And On (Free) — 0cp
-- Seeing The Sights, All The Sights (100cp) — 100cp
-- Ride The Rails To See The Sights (200cp) — 200cp
-- Body Like A Jumper (Free) — 0cp
-- Mind Like A Jumper (Free) — 0cp
-- Common Sense (50cp) — 50cp
-- Boredom Immunity (100cp) — 100cp
-- No Matter Where You Go, There You Are (100cp) — 100cp
-- Universal Translation (100cp) — 100cp
+- The Road Goes Ever On And On (Free)  E0cp
+- Seeing The Sights, All The Sights (100cp)  E100cp
+- Ride The Rails To See The Sights (200cp)  E200cp
+- Body Like A Jumper (Free)  E0cp
+- Mind Like A Jumper (Free)  E0cp
+- Common Sense (50cp)  E50cp
+- Boredom Immunity (100cp)  E100cp
+- No Matter Where You Go, There You Are (100cp)  E100cp
+- Universal Translation (100cp)  E100cp
 
 **Items (100cp):**
-- Bare Necessities trust fund (100cp) — $200K/yr
+- Bare Necessities trust fund (100cp)  E$200K/yr
 
 **Total spent: 750cp**
 **Drawback gains: 0**
@@ -1010,17 +1010,17 @@ Detailed builds for the most interesting archetypes, with full budget breakdowns
 - General (4 free + 4 at 50cp + 4 at 100cp = 200 + 400 = 600)
   - Body Like A Jumper (0) + Mind Like A Jumper (0) + Basic Requirements (0) + Sexy (50) + Common Sense (50) + Self-Motivation (50) + Life Skills (50) + General Knowledge base+upgrade (50+50=100) + Friendly Sort (100) + Boredom Immunity (100) + No Matter Where You Go (100) + Veteran (100) = 800cp
 - Tourist: Road (Free) + Seeing (100 for Tourist) + Ride (200 for Tourist) = 300cp
-- Level-specific (18 perks × 100cp = 1800cp) — Expertise, Friendly Friends, Eagle Scout, Lone Survivor, Run Like Hell, Be Not Afraid, AIT, MOS, Quick and the Dead, Sherlock Scan, Fists of Justice, Secondary Superpowers, Screw the Devil, Student of War, Cantrips, Class Skills, Universal Translation, Engineer
+- Level-specific (18 perks ÁE100cp = 1800cp)  EExpertise, Friendly Friends, Eagle Scout, Lone Survivor, Run Like Hell, Be Not Afraid, AIT, MOS, Quick and the Dead, Sherlock Scan, Fists of Justice, Secondary Superpowers, Screw the Devil, Student of War, Cantrips, Class Skills, Universal Translation, Engineer
 - Subtotal: 800 + 300 + 1800 = 2900cp
 
 **Items (200cp):**
-- Bare Necessities trust fund (100cp) — 100
-- Franchise (100cp) — 100
-- Camera (Free for Tourist) — 0
+- Bare Necessities trust fund (100cp)  E100
+- Franchise (100cp)  E100
+- Camera (Free for Tourist)  E0
 
 **Total spent: 2900 + 200 = 3100cp**
 **Total budget: 1000 + 1800 + 200 = 3000cp**
-**Overspend: -100cp** — slightly over. Drop one repeatable perk or skip a niche pick.
+**Overspend: -100cp**  Eslightly over. Drop one repeatable perk or skip a niche pick.
 
 Adjusting: drop Self-Motivation (50) and Life Skills (50) = -100cp, bringing total to 3000cp. Or drop Cantrips (100) and add 100cp back, etc. The point: the Drawback Stacker gets every perk and item but is right at the edge of affordability.
 
@@ -1033,23 +1033,23 @@ Adjusting: drop Self-Motivation (50) and Life Skills (50) = -100cp, bringing tot
 **Origin:** The Tourist
 
 **Drawbacks (2, +200cp):**
-- Three Sea Shells (+100) — pure CP
-- Massive Collateral (+100) — pure CP
+- Three Sea Shells (+100)  Epure CP
+- Massive Collateral (+100)  Epure CP
 
 **Perks (750cp):**
-- The Road Goes Ever On And On (Free) — 0
-- Seeing The Sights, All The Sights (100cp) — 100
-- Ride The Rails To See The Sights (200cp) — 200
-- Body Like A Jumper (Free) — 0
-- Mind Like A Jumper (Free) — 0
-- Common Sense (50cp) — 50
-- Secondary Superpowers (100cp) — 100
-- No Matter Where You Go (100cp) — 100
-- Universal Translation (100cp) — 100
-- Boredom Immunity (100cp) — 100
+- The Road Goes Ever On And On (Free)  E0
+- Seeing The Sights, All The Sights (100cp)  E100
+- Ride The Rails To See The Sights (200cp)  E200
+- Body Like A Jumper (Free)  E0
+- Mind Like A Jumper (Free)  E0
+- Common Sense (50cp)  E50
+- Secondary Superpowers (100cp)  E100
+- No Matter Where You Go (100cp)  E100
+- Universal Translation (100cp)  E100
+- Boredom Immunity (100cp)  E100
 
 **Items (100cp):**
-- Bare Necessities trust fund (100cp) — 100
+- Bare Necessities trust fund (100cp)  E100
 
 **Total spent: 850cp**
 **Drawback gains: +200cp**
@@ -1064,22 +1064,22 @@ Adjusting: drop Self-Motivation (50) and Life Skills (50) = -100cp, bringing tot
 **Origin:** The Tourist
 
 **Drawbacks (2, +200cp):**
-- Three Sea Shells (+100) — pure CP
-- Modern Sensibilities (+100) — pure CP
+- Three Sea Shells (+100)  Epure CP
+- Modern Sensibilities (+100)  Epure CP
 
 **Perks (700cp):**
-- The Road Goes Ever On And On (Free) — 0
-- Seeing The Sights, All The Sights (100cp) — 100
-- Ride The Rails To See The Sights (200cp) — 200
-- Body Like A Jumper (Free) — 0
-- Mind Like A Jumper (Free) — 0
-- Be Not Afraid (100cp) — 100
-- Screw the Devil (100cp) — 100
-- No Matter Where You Go (100cp) — 100
-- Veteran (100cp) — 100
+- The Road Goes Ever On And On (Free)  E0
+- Seeing The Sights, All The Sights (100cp)  E100
+- Ride The Rails To See The Sights (200cp)  E200
+- Body Like A Jumper (Free)  E0
+- Mind Like A Jumper (Free)  E0
+- Be Not Afraid (100cp)  E100
+- Screw the Devil (100cp)  E100
+- No Matter Where You Go (100cp)  E100
+- Veteran (100cp)  E100
 
 **Items (100cp):**
-- Bare Necessities trust fund (100cp) — 100
+- Bare Necessities trust fund (100cp)  E100
 
 **Total spent: 800cp**
 **Drawback gains: +200cp**
@@ -1166,8 +1166,7 @@ For this analysis, the perks-first reading is used. If you prefer the strict rea
 **Source text:** "Each Origin gets one of its 100cp items for free, and a discount on its other item."
 
 **The Tourist's items:**
-- Camera (100cp) — Free for Tourist ✓
-- "Other item" — The Tourist's only Origin-tagged item is Camera. There is no "other item."
+- Camera (100cp)  EFree for Tourist ✁E- "Other item"  EThe Tourist's only Origin-tagged item is Camera. There is no "other item."
 
 **Ruling:** The 50% discount on the Tourist's "other item" applies to a non-existent item. This is a minor source-text issue. In practice, the Tourist gets one free Item (Camera) and the other Items (Bare Necessities, Franchise) are full price.
 
@@ -1193,7 +1192,7 @@ The Body Mod Reward explicitly excludes Basic Requirements: "All perks and items
 
 **Ruling:** The conservative reading is that the 10 identities are temporary cover identities that dissolve at Jump end. The perfect-memory perk (Seeing The Sights) is the cleanest way to preserve the experiences: take it, and you will remember all 10 identities in full detail even if the identities themselves don't persist.
 
-The "they merge" reading is also valid — you become a composite of 10 cover identities, drawing on each as needed. This is the "polymath Jumper" reading.
+The "they merge" reading is also valid  Eyou become a composite of 10 cover identities, drawing on each as needed. This is the "polymath Jumper" reading.
 
 **Recommendation:** Take Seeing The Sights, All The Sights. The perk handles the memory preservation regardless of how the identities resolve.
 
@@ -1201,7 +1200,7 @@ The "they merge" reading is also valid — you become a composite of 10 cover id
 
 **Source text:** "You can combine similar items purchased from this Jump at no additional cost."
 
-**Implication:** If you take Bare Necessities trust fund twice in one Jump, you don't pay 200cp for two trust funds — you get one trust fund at the higher scaling. This is multiplicative: one purchase = $200K/yr, two purchases = $2M/yr, three purchases = $20M/yr, etc. (the "move the decimal point one space to the right" rule).
+**Implication:** If you take Bare Necessities trust fund twice in one Jump, you don't pay 200cp for two trust funds  Eyou get one trust fund at the higher scaling. This is multiplicative: one purchase = $200K/yr, two purchases = $2M/yr, three purchases = $20M/yr, etc. (the "move the decimal point one space to the right" rule).
 
 **Ruling:** Stacking is allowed at no cost. Optimize by taking the trust fund at the end of the Jump (after perks) to maximize CP efficiency.
 
@@ -1229,7 +1228,7 @@ For Body-Mod-conversion purposes, you only need to take an Origin item once in G
 
 **Edge case:** "Any monster, no matter what its type" is a very broad clause. Does this include "boss" monsters, named NPCs, supernatural beings, or just generic monsters? The source is silent.
 
-**Ruling:** Interpret literally — "any monster" means any monster, including named ones. The drawback is genuinely dangerous. Mitigate with Be Not Afraid (fear/mind immunity) + Secondary Superpowers (defensive buffs) + Run Like Hell (escape specialist).
+**Ruling:** Interpret literally  E"any monster" means any monster, including named ones. The drawback is genuinely dangerous. Mitigate with Be Not Afraid (fear/mind immunity) + Secondary Superpowers (defensive buffs) + Run Like Hell (escape specialist).
 
 ### §11.14 The "Perks are discounted by 50% for their Origin" clause
 
@@ -1259,21 +1258,21 @@ This is the source-text-strict reading. Some players extend the discount to all 
 
 **Implication:** Income from other Body Mod perks (e.g., a future "Henchman Salary" perk) can be added to the trust fund, with all taxes paid. The trust fund becomes a chain-permanent wealth engine that incorporates all future income.
 
-**Ruling:** This is a chain-economic-engine perk. Combined with the ×10 scaling on repurchase, a 7-repurchase Jumper has a $2 trillion/year trust fund that can absorb any other income. **This is the most economically broken single clause in the entire supplement set.**
+**Ruling:** This is a chain-economic-engine perk. Combined with the ÁE0 scaling on repurchase, a 7-repurchase Jumper has a $2 trillion/year trust fund that can absorb any other income. **This is the most economically broken single clause in the entire supplement set.**
 
 ---
 
 ## §12 Power Creep Assessment
 
-GFJ is intentionally high-power. Its balancing factor is the 10-Level duration (1 year per Level, presumably) and the fact that most perks are "mundane-tier" — no superpowers except Cantrips (D&D 3.5 scale) and Secondary Superpowers (which doesn't grant powers, just enables them).
+GFJ is intentionally high-power. Its balancing factor is the 10-Level duration (1 year per Level, presumably) and the fact that most perks are "mundane-tier"  Eno superpowers except Cantrips (D&D 3.5 scale) and Secondary Superpowers (which doesn't grant powers, just enables them).
 
 ### §12.1 The balance mechanisms
 
-1. **Mundane-tier perks.** Most GFJ perks are non-superpower. The Quick and the Dead grants "peak human" reaction time, not superhuman. The Tourist perks are meta-game, not combat. Be Not Afraid is immunity, not power. The only offensive perks are AIT, Fists of Justice, Student of War — all "trained human" tier.
+1. **Mundane-tier perks.** Most GFJ perks are non-superpower. The Quick and the Dead grants "peak human" reaction time, not superhuman. The Tourist perks are meta-game, not combat. Be Not Afraid is immunity, not power. The only offensive perks are AIT, Fists of Justice, Student of War  Eall "trained human" tier.
 
 2. **Cantrips only.** The Fantasy Level's magical perk is Cantrips, which is explicitly D&D 3.5 cantrip-scale (cleaning, light, etc.). No fireballs, no lightning bolts.
 
-3. **Secondary Superpowers, not superpowers.** Super Hero's main perk is Secondary Superpowers, which doesn't grant powers — it makes future powers work properly.
+3. **Secondary Superpowers, not superpowers.** Super Hero's main perk is Secondary Superpowers, which doesn't grant powers  Eit makes future powers work properly.
 
 4. **10-Level duration.** The 10 Levels are presumed to take 10 years (1 year per Level). That's a significant time investment.
 
@@ -1332,7 +1331,7 @@ GFJ is the **most CP-efficient first jump** in the supplement set. Its 1000cp + 
 
 **No, in the context of supplement-stack Jumpers.** Supplement-stack Jumpers routinely take GFJ as part of their stack. The "balance" is that everyone who knows about GFJ takes it. The competitive advantage comes from supplement *combinations* (Body Mod + PRS + UDS), not from GFJ alone.
 
-**The real power of GFJ is the supplement-stack foundation.** A Jumper who takes GFJ → Body Mod → PRS → UDS has a complete supplement stack with chain-permanent buffs. That's the meta-build for serious Jumpchainers.
+**The real power of GFJ is the supplement-stack foundation.** A Jumper who takes GFJ ↁEBody Mod ↁEPRS ↁEUDS has a complete supplement stack with chain-permanent buffs. That's the meta-build for serious Jumpchainers.
 
 ### §12.6 The "fair balance" clauses
 
@@ -1377,7 +1376,7 @@ For a 100+ Jump chain, GFJ's Tourist core is the most valuable set of perks you 
 
 This section maps GFJ's interactions with the other 4 supplements in the analysis set.
 
-### §13.1 GFJ ↔ Essential Body Mod (EBM)
+### §13.1 GFJ ↁEEssential Body Mod (EBM)
 
 **EBM provides:** the Jumper's physical/spiritual baseline (body, soul, perks storage, etc.)
 
@@ -1385,9 +1384,9 @@ This section maps GFJ's interactions with the other 4 supplements in the analysi
 
 **Synergy:** GFJ's perks become the *content* of EBM's body. EBM provides the *framework*; GFJ provides the *stuff*. Take EBM after GFJ (or together if your supplement stack allows it) so that GFJ's perks attach to EBM's body structure.
 
-**Key interaction:** EBM's "perks storage" clause typically says "all perks from all Jumps attach to your Body Mod." GFJ's "Body Mod Reward" clause says the same. The two clauses stack — GFJ perks are body-mod-locked by both GFJ and EBM.
+**Key interaction:** EBM's "perks storage" clause typically says "all perks from all Jumps attach to your Body Mod." GFJ's "Body Mod Reward" clause says the same. The two clauses stack  EGFJ perks are body-mod-locked by both GFJ and EBM.
 
-### §13.2 GFJ ↔ SB Body Mod (SBBM)
+### §13.2 GFJ ↁESB Body Mod (SBBM)
 
 **SBBM provides:** an alternative body mod framework, often with more detail than EBM (Stamina, Strength, etc.)
 
@@ -1395,7 +1394,7 @@ This section maps GFJ's interactions with the other 4 supplements in the analysi
 
 **Key interaction:** SBBM may have specific slot counts or attribute caps that GFJ's perks can fill. For example, if SBBM has a "skills" slot, Expertise (100cp) and Class Skills (100cp) fill those slots.
 
-### §13.3 GFJ ↔ Personal Reality Supplement (PRS)
+### §13.3 GFJ ↁEPersonal Reality Supplement (PRS)
 
 **PRS provides:** the Jumper's personal dimension/spaces (Warehouse extension, personal realm, etc.)
 
@@ -1403,7 +1402,7 @@ This section maps GFJ's interactions with the other 4 supplements in the analysi
 
 **Key interaction:** PRS may have a "personal realm" that includes your body mod. GFJ's body mod conversion means the personal realm includes your 33 buffs. This is a chain-permanent stacking effect.
 
-### §13.4 GFJ ↔ Universal Drawbacks Supplement (UDS)
+### §13.4 GFJ ↁEUniversal Drawbacks Supplement (UDS)
 
 **UDS provides:** universal drawbacks that apply across all jumps (Power Loss, Gauntlet, etc.)
 
@@ -1417,17 +1416,17 @@ This is the most important synergy: **GFJ is the UDS-counter.** A Jumper who has
 
 The recommended order for taking the 5 supplements:
 
-1. **GFJ first** (Jump 1) — provides the perks/items
-2. **Body Mod** (or EBM or SBBM) — provides the structural framework
-3. **PRS** — provides the personal spaces
-4. **UDS** — provides the cross-jump drawback engine
+1. **GFJ first** (Jump 1)  Eprovides the perks/items
+2. **Body Mod** (or EBM or SBBM)  Eprovides the structural framework
+3. **PRS**  Eprovides the personal spaces
+4. **UDS**  Eprovides the cross-jump drawback engine
 
 The order is important: GFJ first because the Body Mod Reward needs to fire at the end of GFJ. Body Mod second because the GFJ perks attach to it. PRS third because the personal realm builds on the body mod. UDS fourth because the UDS drawbacks stack on the body mod.
 
 **Alternative order (PRS first):** Some players take PRS first to establish the personal realm, then Body Mod, then GFJ. This works if your PRS has a "perks from future Jumps attach here" clause. The GFJ perks then attach to the PRS via the Body Mod Reward.
 
 **The "supplement stack" timeline:**
-- Jump 1: GFJ → Body Mod Reward fires
+- Jump 1: GFJ ↁEBody Mod Reward fires
 - Jump 2-5: Body Mod + PRS attached
 - Jump 6+: UDS attached, full stack active
 
@@ -1475,7 +1474,7 @@ The 10 Levels give the Jumper a 10-identity backstory. This is a narrative hook 
 - PRS can have a "10-setting archive" feature.
 - The Jumper can roleplay as a composite of 10 cover identities.
 
-This is a soft synergy — it doesn't grant mechanical benefits, but it provides narrative depth.
+This is a soft synergy  Eit doesn't grant mechanical benefits, but it provides narrative depth.
 
 ### §13.10 The Trust Fund + UDS economic hook
 
@@ -1488,11 +1487,11 @@ The Trust Fund's exponential scaling + UDS's cross-jump drawback engine = a Jump
 In extreme supplement-stack play, a Jumper takes 20+ supplements in addition to a typical first jump. GFJ is usually one of the first 5 (the "supplement core"). The other supplements (Generic Powers, Generic Magic, etc.) build on the GFJ foundation.
 
 **The supplement core (5 supplements):**
-1. **GFJ** — first jump + body mod conversion
-2. **Body Mod** — structural framework
-3. **PRS** — personal spaces
-4. **UDS** — cross-jump drawbacks
-5. **One of the Body Mods (EBM or SBBM)** — alternate body mod
+1. **GFJ**  Efirst jump + body mod conversion
+2. **Body Mod**  Estructural framework
+3. **PRS**  Epersonal spaces
+4. **UDS**  Ecross-jump drawbacks
+5. **One of the Body Mods (EBM or SBBM)**  Ealternate body mod
 
 The supplement core is the "minimum viable supplement stack." A Jumper with the supplement core has a chain-permanent body mod, personal realm, and cross-jump drawback engine.
 
@@ -1501,10 +1500,10 @@ The supplement core is the "minimum viable supplement stack." A Jumper with the 
 GFJ is **the entry point** of the supplement stack. It's where the Jumper goes first, where the Body Mod Reward fires, and where the chain-permanent buffs originate. The other supplements (Body Mod, PRS, UDS) build on the GFJ foundation.
 
 **The chain of dependencies:**
-- GFJ → Body Mod (GFJ's perks attach to Body Mod)
-- Body Mod → PRS (PRS's personal realm is built around the body mod)
-- PRS → UDS (UDS's cross-jump drawbacks are housed in the personal realm)
-- UDS → all future Jumps (UDS applies everywhere)
+- GFJ ↁEBody Mod (GFJ's perks attach to Body Mod)
+- Body Mod ↁEPRS (PRS's personal realm is built around the body mod)
+- PRS ↁEUDS (UDS's cross-jump drawbacks are housed in the personal realm)
+- UDS ↁEall future Jumps (UDS applies everywhere)
 
 GFJ is the **first domino**. Without it, the supplement stack is much weaker.
 
@@ -1550,7 +1549,7 @@ For the other 4 supplement analyses:
 - **Personal Reality Supplement (PRS)**: personal spaces. Synergy: see §13.3.
 - **Universal Drawbacks Supplement (UDS)**: cross-jump drawbacks. Synergy: see §13.4.
 
-**The canonical stack order:** GFJ → EBM (or SBBM) → PRS → UDS. See §13.5.
+**The canonical stack order:** GFJ ↁEEBM (or SBBM) ↁEPRS ↁEUDS. See §13.5.
 
 **The "Body Mod First" key insight:** GFJ is the canonical way to bootstrap your supplement stack. See §13.6.
 
@@ -1560,8 +1559,8 @@ For the other 4 supplement analyses:
 
 Three things commonly attributed to GFJ are NOT in v1.1's source text and are flagged as community conventions:
 
-1. **"Death doesn't end chain"** — NOT in source. See §11.1.
-2. **"Supplement mode" / cross-jump stacking** — NOT in source as "supplement." The Body Mod Reward achieves this implicitly. See §11.2.
-3. **Items +200cp stipend** — could be bonus, separate budget, or hybrid. Source-ledger reading: separate budget. See §11.3.
+1. **"Death doesn't end chain"**  ENOT in source. See §11.1.
+2. **"Supplement mode" / cross-jump stacking**  ENOT in source as "supplement." The Body Mod Reward achieves this implicitly. See §11.2.
+3. **Items +200cp stipend**  Ecould be bonus, separate budget, or hybrid. Source-ledger reading: separate budget. See §11.3.
 
 The analysis honors these as community readings and notes the ambiguity honestly. For the cross-supplement synergy work, these conventions are assumed to be the operating interpretation.
