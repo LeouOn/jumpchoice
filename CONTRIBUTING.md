@@ -172,6 +172,7 @@ The overlay is not a substitute for this guide. When instructions conflict, foll
 - `docs/CONFIGURATION.md` is the environment variable and `.env` reference.
 - `docs/TROUBLESHOOTING.md` collects common user-facing issues and fixes.
 - `docs/FAQ.md` is the user-facing FAQ for common questions like LAN access.
+- `docs/CYOA_REFERENCE_INDEX.md` is the hub for first-party JumpChain and CYOA player reference docs. It is **not** platform documentation and is not gated on JumpChoice releases.
 - If a change makes any existing doc misleading, fix that doc in the same PR.
 
 ## Versioning and Releases
