@@ -1,0 +1,5189 @@
+{
+  "1527": {
+    "title": "Aura",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "7963": {
+    "title": "Vista",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "9740": {
+    "title": "(Thinker) Glimpse",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "iwa0": {
+    "title": "Lore",
+    "row": "Worm CYOA V6.1",
+    "rowIdx": 0,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "4y9v": {
+    "title": "Lore",
+    "row": "Worm CYOA V6.1",
+    "rowIdx": 0,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "0hqw": {
+    "title": "Lore",
+    "row": "Worm CYOA V6.1",
+    "rowIdx": 0,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "3g93": {
+    "title": "Disclaimer",
+    "row": "Worm CYOA V6.1",
+    "rowIdx": 0,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "rp19": {
+    "title": "Author",
+    "row": "Worm CYOA V6.1",
+    "rowIdx": 0,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "b97h": {
+    "title": "IMPORTANT: Upload",
+    "row": "Worm CYOA V6.1",
+    "rowIdx": 0,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ck5v": {
+    "title": "Who?",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "yedw": {
+    "title": "Difficulty",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "bxz5": {
+    "title": "Scenario",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "va5k": {
+    "title": "Alignment",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "cjqy": {
+    "title": "Character",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "xy6v": {
+    "title": "Shard",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "6dri": {
+    "title": "Point Conversion",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "b0pr": {
+    "title": "Perks and Drawbacks",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "wwyj": {
+    "title": "Skills",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "udrw": {
+    "title": "Powers",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "j9ec": {
+    "title": "Oops / Setting",
+    "row": "Tabs",
+    "rowIdx": 2,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "8mhz": {
+    "title": "You",
+    "row": "Meta (Target)",
+    "rowIdx": 3,
+    "costShard": "-5",
+    "costCharacter": 0
+  },
+  "zp9a": {
+    "title": "Someone Else",
+    "row": "Meta (Target)",
+    "rowIdx": 3,
+    "costShard": "-10",
+    "costCharacter": 0
+  },
+  "ri2z": {
+    "title": "Fictional Character (With Powers)",
+    "row": "Meta (Target)",
+    "rowIdx": 3,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "qbzv": {
+    "title": "Fictional Character (Without Powers)",
+    "row": "Meta (Target)",
+    "rowIdx": 3,
+    "costShard": "-5",
+    "costCharacter": "5"
+  },
+  "zz09": {
+    "title": "Original Character",
+    "row": "Meta (Target)",
+    "rowIdx": 3,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "iv4s": {
+    "title": "Meta",
+    "row": "Meta (Target)",
+    "rowIdx": 3,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "trog": {
+    "title": "Someone Else",
+    "row": "Meta (Awareness)",
+    "rowIdx": 4,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "0ofk": {
+    "title": "The Alien",
+    "row": "Meta (Awareness)",
+    "rowIdx": 4,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "0wyi": {
+    "title": "CYOA",
+    "row": "Meta (Awareness)",
+    "rowIdx": 4,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "1psq": {
+    "title": "A Deal with the Alien",
+    "row": "Meta (Awareness)",
+    "rowIdx": 4,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "xatd": {
+    "title": "Easy",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": "-30",
+    "costCharacter": 0
+  },
+  "jqcg": {
+    "title": "Normal",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "cmed": {
+    "title": "Hard",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "cd5a": {
+    "title": "Extra Hard",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "3nvz": {
+    "title": "Extremely Hard",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": "50",
+    "costCharacter": 0
+  },
+  "iuhy": {
+    "title": "Death Mode",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "sod4": {
+    "title": "Suicide Mode",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": "50",
+    "costCharacter": 0
+  },
+  "v3pt": {
+    "title": "Determination Mode",
+    "row": "Difficulty",
+    "rowIdx": 5,
+    "costShard": "100",
+    "costCharacter": 0
+  },
+  "jfl2": {
+    "title": "Open All",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "fqch": {
+    "title": "Incarnation",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "a6nc": {
+    "title": "Age",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "mapp": {
+    "title": "Sex",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "c3ih": {
+    "title": "Gender",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "jvpg": {
+    "title": "Appearance",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "5dq9": {
+    "title": "Identity",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "58k6": {
+    "title": "Civilian Identity",
+    "row": "You",
+    "rowIdx": 6,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "znp9": {
+    "title": "Open All",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "udjo": {
+    "title": "Shard Power Classifications",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "an1a": {
+    "title": "Power Copy",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "piiq": {
+    "title": "Combo Powers",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "wf8r": {
+    "title": "Tier 3 Powers",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ou9p": {
+    "title": "Tier 2 Powers",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ezx6": {
+    "title": "Tier 1 Powers",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ibrt": {
+    "title": "Shardless Powers",
+    "row": "Powers",
+    "rowIdx": 7,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "a6yy": {
+    "title": "Open All",
+    "row": "Shardless Powers",
+    "rowIdx": 8,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ak5q": {
+    "title": "One Pointers",
+    "row": "Shardless Powers",
+    "rowIdx": 8,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "awk7": {
+    "title": "Multi-Pointers",
+    "row": "Shardless Powers",
+    "rowIdx": 8,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "jwlb": {
+    "title": "April 7, 2011",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": "-20",
+    "costCharacter": "-20"
+  },
+  "1y99": {
+    "title": "Summer, 2009",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": "-15",
+    "costCharacter": "-15"
+  },
+  "xp7k": {
+    "title": "May 8th, 2005",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": "-15",
+    "costCharacter": "-10"
+  },
+  "boxl": {
+    "title": "September 14th, 2000",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": "-8",
+    "costCharacter": "-8"
+  },
+  "eh6l": {
+    "title": "November 1st, 1999",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": "-8",
+    "costCharacter": "-5"
+  },
+  "ofgr": {
+    "title": "May 19th, 1982",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": "5",
+    "costCharacter": "5"
+  },
+  "o315": {
+    "title": "June 20th, 2013",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": "-35",
+    "costCharacter": "-15"
+  },
+  "3nzj": {
+    "title": "July 1st, 2015",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "y68r": {
+    "title": "June 24th, 2063",
+    "row": "Scenario",
+    "rowIdx": 9,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "fxb5": {
+    "title": "Lawful",
+    "row": "Alignment",
+    "rowIdx": 10,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "g124": {
+    "title": "True",
+    "row": "Alignment",
+    "rowIdx": 10,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "sp1y": {
+    "title": "Chaotic",
+    "row": "Alignment",
+    "rowIdx": 10,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "7z83": {
+    "title": "Good",
+    "row": "Alignment",
+    "rowIdx": 10,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "i7bw": {
+    "title": "Neutral",
+    "row": "Alignment",
+    "rowIdx": 10,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "k0tu": {
+    "title": "Evil",
+    "row": "Alignment",
+    "rowIdx": 10,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "8tcr": {
+    "title": "Character-Insert",
+    "row": "Incarnation",
+    "rowIdx": 11,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "kht1": {
+    "title": "Reincarnation",
+    "row": "Incarnation",
+    "rowIdx": 11,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "icne": {
+    "title": "Insert",
+    "row": "Incarnation",
+    "rowIdx": 11,
+    "costShard": "-5",
+    "costCharacter": "-5"
+  },
+  "cxxo": {
+    "title": "0 to 6 years old",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": "-8",
+    "costCharacter": 0
+  },
+  "ytlq": {
+    "title": "6 to 10 years old",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": "-5",
+    "costCharacter": 0
+  },
+  "8h7h": {
+    "title": "10 to 12 years old",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": "-3",
+    "costCharacter": 0
+  },
+  "chun": {
+    "title": "12 to 14 years old",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "myd7": {
+    "title": "14 to 18 years old",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ig9l": {
+    "title": "18 to 24",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "xfo0": {
+    "title": "24 to 29",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ptsr": {
+    "title": "30 to 50",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "kf8e": {
+    "title": "50 to 70",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": "-2",
+    "costCharacter": "-5"
+  },
+  "yw0r": {
+    "title": "70+",
+    "row": "Age",
+    "rowIdx": 12,
+    "costShard": "-5",
+    "costCharacter": "-10"
+  },
+  "l1un": {
+    "title": "Male",
+    "row": "Sex",
+    "rowIdx": 13,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "zsp0": {
+    "title": "Other",
+    "row": "Sex",
+    "rowIdx": 13,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "puxg": {
+    "title": "Female",
+    "row": "Sex",
+    "rowIdx": 13,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ilp3": {
+    "title": "Male",
+    "row": "Gender",
+    "rowIdx": 14,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "n84s": {
+    "title": "Nonbinary",
+    "row": "Gender",
+    "rowIdx": 14,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "fbcq": {
+    "title": "Female",
+    "row": "Gender",
+    "rowIdx": 14,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "q4jr": {
+    "title": "Beautiful",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "a8nj": {
+    "title": "Handsome",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "b57k": {
+    "title": "Androgynous",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "4kr0": {
+    "title": "Attractive",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": "7"
+  },
+  "gl7t": {
+    "title": "Average",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "tndr": {
+    "title": "Ugly",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "mre9": {
+    "title": "Hideous",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "udw3": {
+    "title": "Deformed",
+    "row": "Appearance",
+    "rowIdx": 15,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "ee5n": {
+    "title": "Taylor Anne Hebert",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "1b1s": {
+    "title": "Amy Dallon",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "wohf": {
+    "title": "Victoria Dallon",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "p4k9": {
+    "title": "Sarah Livsey/Lisa Wilbourn",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "zu23": {
+    "title": "Lily",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "kip4": {
+    "title": "Sabah",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "rbpk": {
+    "title": "Aisha Laborn",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "zx2a": {
+    "title": "Missy Biron",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "iek5": {
+    "title": "Dinah Alcott",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "iofn": {
+    "title": "Riley Grace Davis",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "3axn": {
+    "title": "Annette Hebert",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": 0,
+    "costCharacter": "-8"
+  },
+  "vll5": {
+    "title": "Hana",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "n8fi": {
+    "title": "Dean Stansfield",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "rau8": {
+    "title": "Brian Laborn",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "4pem": {
+    "title": "Carlos",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "19h3": {
+    "title": "Jean-Paul Vasil",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "l7s2": {
+    "title": "Theo Anders",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "m2up": {
+    "title": "Dennis \"Dynamite\"",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "f7ta": {
+    "title": "Colin Wallis",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "yc9u": {
+    "title": "Danny Hebert",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "-5",
+    "costCharacter": "-5"
+  },
+  "yzm3": {
+    "title": "Shawn",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "ax8h": {
+    "title": "Kenta",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "k9xa": {
+    "title": "Max Anders",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "ab2s": {
+    "title": "Thomas Calvert",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "g9pl": {
+    "title": "Jacob",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "35",
+    "costCharacter": 0
+  },
+  "m4be": {
+    "title": "Siberian",
+    "row": "Identity",
+    "rowIdx": 16,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "pm4o": {
+    "title": "CEO",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "mstd": {
+    "title": "Politician",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "s8qh": {
+    "title": "PRT",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "7"
+  },
+  "x70q": {
+    "title": "Teacher",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "id7c": {
+    "title": "Lawyer",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "bwx3": {
+    "title": "Full-Time Job",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "2"
+  },
+  "et40": {
+    "title": "Part-Time Job",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "usdk": {
+    "title": "College",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "3"
+  },
+  "gma7": {
+    "title": "High School",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-1"
+  },
+  "2v85": {
+    "title": "Middle School",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-2"
+  },
+  "jpt9": {
+    "title": "Elementary School",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "tatd": {
+    "title": "Preschool or Kindergarten",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-4"
+  },
+  "imhz": {
+    "title": "Homeschool",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "3"
+  },
+  "eu44": {
+    "title": "Orphan",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-6"
+  },
+  "78tp": {
+    "title": "Nothing",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "jm3m": {
+    "title": "Other",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "uxoe": {
+    "title": "(Orphan) High School Student",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "cp1y": {
+    "title": "(Orphan) Middle School Student",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-4"
+  },
+  "7tsd": {
+    "title": "(Orphan) Elementary School Student",
+    "row": "Civilian Identity",
+    "rowIdx": 17,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "0s6z": {
+    "title": "Shard of the Warrior Entity",
+    "row": "Shard",
+    "rowIdx": 18,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "euib": {
+    "title": "Mundane",
+    "row": "Shard",
+    "rowIdx": 18,
+    "costShard": 0,
+    "costCharacter": "-60"
+  },
+  "k62u": {
+    "title": "Empowered",
+    "row": "Shard",
+    "rowIdx": 18,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "ar45": {
+    "title": "Shard of the Thinker Entity",
+    "row": "Shard",
+    "rowIdx": 18,
+    "costShard": "-10",
+    "costCharacter": 0
+  },
+  "sxhj": {
+    "title": "Queen",
+    "row": "Shard Ranking",
+    "rowIdx": 19,
+    "costShard": 0,
+    "costCharacter": "20"
+  },
+  "ttv5": {
+    "title": "Vital",
+    "row": "Shard Ranking",
+    "rowIdx": 19,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "axaw": {
+    "title": "Normal",
+    "row": "Shard Ranking",
+    "rowIdx": 19,
+    "costShard": 0,
+    "costCharacter": "-20"
+  },
+  "orxr": {
+    "title": "Irritable",
+    "row": "Shard Influence",
+    "rowIdx": 20,
+    "costShard": "-2",
+    "costCharacter": "-1"
+  },
+  "kfuv": {
+    "title": "Wrathful",
+    "row": "Shard Influence",
+    "rowIdx": 20,
+    "costShard": "-2",
+    "costCharacter": "-1"
+  },
+  "kloo": {
+    "title": "Battle Hungry",
+    "row": "Shard Influence",
+    "rowIdx": 20,
+    "costShard": "-5",
+    "costCharacter": "-3"
+  },
+  "0fkt": {
+    "title": "Blood Thirsty",
+    "row": "Shard Influence",
+    "rowIdx": 20,
+    "costShard": "-8",
+    "costCharacter": "-5"
+  },
+  "n2bs": {
+    "title": "Mental Disorder",
+    "row": "Shard Influence",
+    "rowIdx": 20,
+    "costShard": "-10",
+    "costCharacter": "-5"
+  },
+  "36fq": {
+    "title": "Relatibility",
+    "row": "Shard Influence",
+    "rowIdx": 20,
+    "costShard": "-10",
+    "costCharacter": "-5"
+  },
+  "z4op": {
+    "title": "Not-so-Gentle Push",
+    "row": "Shard Influence",
+    "rowIdx": 20,
+    "costShard": "-5",
+    "costCharacter": "-5"
+  },
+  "glyh": {
+    "title": "+25 SP -50 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-25",
+    "costCharacter": "50"
+  },
+  "hfao": {
+    "title": "+15 SP -30 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-15",
+    "costCharacter": "30"
+  },
+  "ar4o": {
+    "title": "+10 SP -20 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-10",
+    "costCharacter": "20"
+  },
+  "u6fb": {
+    "title": "+5 SP -10 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-5",
+    "costCharacter": "10"
+  },
+  "te5f": {
+    "title": "+2 SP -4 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-2",
+    "costCharacter": "4"
+  },
+  "wg6e": {
+    "title": "+2 SP -4 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-2",
+    "costCharacter": "4"
+  },
+  "fjet": {
+    "title": "+1 SP -2 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-1",
+    "costCharacter": "2"
+  },
+  "jrdv": {
+    "title": "+1 SP -2 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-1",
+    "costCharacter": "2"
+  },
+  "gmfz": {
+    "title": "+1 SP -2 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-1",
+    "costCharacter": "2"
+  },
+  "c8cd": {
+    "title": "+1 SP -2 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-1",
+    "costCharacter": "2"
+  },
+  "vp59": {
+    "title": "+1 SP -2 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-1",
+    "costCharacter": "2"
+  },
+  "wgxp": {
+    "title": "+1 SP -2 CP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "-1",
+    "costCharacter": "2"
+  },
+  "ji69": {
+    "title": "+25 CP -50 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "50",
+    "costCharacter": "-25"
+  },
+  "v7wq": {
+    "title": "+15 CP -30 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "30",
+    "costCharacter": "-15"
+  },
+  "5y4v": {
+    "title": "+10 CP -20 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "20",
+    "costCharacter": "-10"
+  },
+  "wgvb": {
+    "title": "+5 CP -10 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "10",
+    "costCharacter": "-5"
+  },
+  "xcfc": {
+    "title": "+2 CP -4 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "4",
+    "costCharacter": "-2"
+  },
+  "tu55": {
+    "title": "+2 CP -4 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "4",
+    "costCharacter": "-2"
+  },
+  "ca4o": {
+    "title": "+1 CP -2 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "2",
+    "costCharacter": "-1"
+  },
+  "tiq5": {
+    "title": "+1 CP -2 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "2",
+    "costCharacter": "-1"
+  },
+  "mh9x": {
+    "title": "+1 CP -2 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "2",
+    "costCharacter": "-1"
+  },
+  "pqne": {
+    "title": "+1 CP -2 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "2",
+    "costCharacter": "-1"
+  },
+  "owf6": {
+    "title": "+1 CP -2 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "2",
+    "costCharacter": "-1"
+  },
+  "qr0v": {
+    "title": "+1 CP -2 SP",
+    "row": "Point Conversion",
+    "rowIdx": 21,
+    "costShard": "2",
+    "costCharacter": "-1"
+  },
+  "0nl8": {
+    "title": "+25 CP -25 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "25",
+    "costCharacter": "-25"
+  },
+  "ogk7": {
+    "title": "+15 CP -15 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "15",
+    "costCharacter": "-15"
+  },
+  "edtw": {
+    "title": "+10 CP -10 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "10",
+    "costCharacter": "-10"
+  },
+  "xrbk": {
+    "title": "+5 CP -5 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "5",
+    "costCharacter": "-5"
+  },
+  "zhle": {
+    "title": "+2 CP -2 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "2",
+    "costCharacter": "-2"
+  },
+  "if2s": {
+    "title": "+2 CP -2 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "2",
+    "costCharacter": "-2"
+  },
+  "y68p": {
+    "title": "+1 CP -1 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "1",
+    "costCharacter": "-1"
+  },
+  "zohy": {
+    "title": "+1 CP -1 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "1",
+    "costCharacter": "-1"
+  },
+  "v9yg": {
+    "title": "+1 CP -1 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "1",
+    "costCharacter": "-1"
+  },
+  "ycca": {
+    "title": "+1 CP -1 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "1",
+    "costCharacter": "-1"
+  },
+  "fg5u": {
+    "title": "+1 CP -1 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "1",
+    "costCharacter": "-1"
+  },
+  "6lqv": {
+    "title": "+1 CP -1 SP",
+    "row": "Shardless Point Conversion",
+    "rowIdx": 22,
+    "costShard": "1",
+    "costCharacter": "-1"
+  },
+  "ek4o": {
+    "title": "Perks",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "wwb1": {
+    "title": "Regular Badass",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "ffrg": {
+    "title": "Apex",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "qpwm": {
+    "title": "Cosmetic Shapeshift",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "kb60": {
+    "title": "Fan Service",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "fy08": {
+    "title": "Cloak Mark I",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "1",
+    "costCharacter": "2"
+  },
+  "uh4g": {
+    "title": "Cloak Mark II",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "2",
+    "costCharacter": "3"
+  },
+  "9mam": {
+    "title": "Cloak Mark III",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "3",
+    "costCharacter": "2"
+  },
+  "4ech": {
+    "title": "Cloak Mark IV",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "2",
+    "costCharacter": "1"
+  },
+  "42jg": {
+    "title": "Mental Barrier",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "1",
+    "costCharacter": "5"
+  },
+  "87du": {
+    "title": "Wealthy",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "w0ll": {
+    "title": "Trumped the Trump",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "7otl": {
+    "title": "Backup",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "mnpg": {
+    "title": "Peaceful Vibes",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "2"
+  },
+  "48m6": {
+    "title": "Negentropy",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "8",
+    "costCharacter": "3"
+  },
+  "2b7c": {
+    "title": "Extended Range",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "8",
+    "costCharacter": "3"
+  },
+  "jner": {
+    "title": "Conflicted Predictions",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "3",
+    "costCharacter": "3"
+  },
+  "eo3o": {
+    "title": "Frankenstein",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "15"
+  },
+  "pjir": {
+    "title": "All Seeing Precognition",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "20",
+    "costCharacter": "10"
+  },
+  "akq3": {
+    "title": "'Plot' Armor",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "pr2q": {
+    "title": "Noctis Cape",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "pnjs": {
+    "title": "Homecoming",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "20",
+    "costCharacter": "10"
+  },
+  "ima4": {
+    "title": "Sandbagging Kaiju",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "15",
+    "costCharacter": "15"
+  },
+  "d1hc": {
+    "title": "Weakened Kaiju",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "23",
+    "costCharacter": "7"
+  },
+  "j4fl": {
+    "title": "End of the Kaiju",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "642t": {
+    "title": "Enraged Avatar",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-15",
+    "costCharacter": "-15"
+  },
+  "oaof": {
+    "title": "Golden Avatar",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-23",
+    "costCharacter": "-7"
+  },
+  "g1zy": {
+    "title": "Overcharge Strike",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-30",
+    "costCharacter": 0
+  },
+  "wpxb": {
+    "title": "Drawbacks",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "7jpe": {
+    "title": "(Minor) Conscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-1",
+    "costCharacter": "-3"
+  },
+  "v4do": {
+    "title": "(Moderate) Conscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-2",
+    "costCharacter": "-5"
+  },
+  "y5v1": {
+    "title": "(Severe) Conscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-3",
+    "costCharacter": "-7"
+  },
+  "sl3c": {
+    "title": "Additional (Mild) Conscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "-2"
+  },
+  "34yb": {
+    "title": "Additional (Mild) Unconscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-1",
+    "costCharacter": "-1"
+  },
+  "834x": {
+    "title": "Additional (Moderate) Conscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "-4"
+  },
+  "rund": {
+    "title": "Additional (Moderate) Unconscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-2",
+    "costCharacter": "-2"
+  },
+  "pu5h": {
+    "title": "Additional (Severe) Conscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-1",
+    "costCharacter": "-5"
+  },
+  "zuzv": {
+    "title": "Additional (Severe) Unconscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-3",
+    "costCharacter": "-3"
+  },
+  "nd1r": {
+    "title": "(Mild) Unconscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-3",
+    "costCharacter": "-1"
+  },
+  "8ej5": {
+    "title": "(Moderate) Unconscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-2"
+  },
+  "7aoo": {
+    "title": "(Severe) Unconscious Geas",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-7",
+    "costCharacter": "-3"
+  },
+  "whrm": {
+    "title": "Case 53",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-8"
+  },
+  "34vl": {
+    "title": "Wanted",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "pfjj": {
+    "title": "Wildbow? Where have I heard that before?",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-8"
+  },
+  "6s5p": {
+    "title": "Ryoga Hibiki",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-10",
+    "costCharacter": "-10"
+  },
+  "ju05": {
+    "title": "Nosebleed",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-12",
+    "costCharacter": 0
+  },
+  "x88q": {
+    "title": "Monologue",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-3",
+    "costCharacter": "-10"
+  },
+  "0kzc": {
+    "title": "Selective Amnesia",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-10"
+  },
+  "6zrd": {
+    "title": "Orphaned",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "r1r7": {
+    "title": "Corona Pollentia",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-15",
+    "costCharacter": "-15"
+  },
+  "l8bx": {
+    "title": "Slaughterhouse 8",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-10"
+  },
+  "9gbp": {
+    "title": "Endbringer Target",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-10",
+    "costCharacter": "-5"
+  },
+  "qt4x": {
+    "title": "Shounen",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-8"
+  },
+  "tn6g": {
+    "title": "Ditz",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-2",
+    "costCharacter": "-5"
+  },
+  "gmpq": {
+    "title": "Handicapped",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-3",
+    "costCharacter": "-8"
+  },
+  "pgsf": {
+    "title": "Servant",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-2",
+    "costCharacter": "-6"
+  },
+  "vrqv": {
+    "title": "Poor",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "s4ui": {
+    "title": "Homeless",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": 0,
+    "costCharacter": "-12"
+  },
+  "pl4z": {
+    "title": "Tinfoil Hat",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-10"
+  },
+  "wckn": {
+    "title": "Insane",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-20",
+    "costCharacter": "-15"
+  },
+  "kvpo": {
+    "title": "Fallen Worship",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-5",
+    "costCharacter": "-10"
+  },
+  "xsyg": {
+    "title": "May you live in Interesting Times",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-20",
+    "costCharacter": "-20"
+  },
+  "vntt": {
+    "title": "Genius of Hard Work",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-20",
+    "costCharacter": 0
+  },
+  "q0f4": {
+    "title": "Late to the Party",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-20",
+    "costCharacter": "-5"
+  },
+  "cd6f": {
+    "title": "Second Wave Parahumans",
+    "row": "Perks and Drawbacks",
+    "rowIdx": 23,
+    "costShard": "-30",
+    "costCharacter": "-10"
+  },
+  "u4x5": {
+    "title": "Anything Goes School of Martial Arts",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "25"
+  },
+  "4q6l": {
+    "title": "Sword Art Offline",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "x09z": {
+    "title": "Martial Arts",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "rfs7": {
+    "title": "Adaptable Martial Arts",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "b2q6": {
+    "title": "Marksmanship",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "7"
+  },
+  "gg25": {
+    "title": "Gun Fu",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "3"
+  },
+  "0w4c": {
+    "title": "Parkour",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "gjf9": {
+    "title": "Stealth",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "jd1c": {
+    "title": "Survival",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "x1wn": {
+    "title": "First-Aid",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "jw7m": {
+    "title": "Mechanics",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "l645": {
+    "title": "Programming",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "uhrn": {
+    "title": "Programming Language",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "4"
+  },
+  "ee65": {
+    "title": "Hacking",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "4"
+  },
+  "4exl": {
+    "title": "Teaching",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "3"
+  },
+  "8cwa": {
+    "title": "Learning",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "e7iw": {
+    "title": "Tactics",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "xv6q": {
+    "title": "Strategy",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "r579": {
+    "title": "Business",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "7"
+  },
+  "moxh": {
+    "title": "Investigation",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "8"
+  },
+  "9ekf": {
+    "title": "Law",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "4bfg": {
+    "title": "Politics",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "hj5x": {
+    "title": "Inspiration",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "15"
+  },
+  "1tj1": {
+    "title": "Echolocation",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "4"
+  },
+  "zam7": {
+    "title": "Pickpocketing",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "fw91": {
+    "title": "Lipreading",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "plxm": {
+    "title": "Sign-Language",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "57je": {
+    "title": "Banter",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "ml3x": {
+    "title": "Earth Bet Slang",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "elqz": {
+    "title": "Language",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "68wo": {
+    "title": "Omnilingual",
+    "row": "Skills",
+    "rowIdx": 24,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "6q91": {
+    "title": "Wildcard",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "ab0h": {
+    "title": "Twinsies",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "b1fy": {
+    "title": "(Mover) Fast as a Hedgehog",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "z3qi": {
+    "title": "(Mover) Flying like a Chicken",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "uazi": {
+    "title": "(Mover) Soaring through the Sky like a Flying Bison",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "p2li": {
+    "title": "(Mover/Thinker) Blink and you Miss it.",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "ktjc": {
+    "title": "(Mover/Striker) Hotwheels",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "ktej": {
+    "title": "(Mover/Shaker) Position Control",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "dg11": {
+    "title": "(Mover/Thinker) Star-Nosed Mole",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "l3ot": {
+    "title": "(Mover/Blaster/Shaker) The Last Airbender",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "3jr2": {
+    "title": "(Mover/Striker) Spit Marker",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "cbl4": {
+    "title": "(Mover) Blink!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "3mp7": {
+    "title": "(Mover/Striker) Quicker than Thunder",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "7uxp": {
+    "title": "(Mover/Thinker) I am the Shadow",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "tnjk": {
+    "title": "(Mover) Raven",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "1f9q": {
+    "title": "(Shaker) Target Acquired",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "ycv8": {
+    "title": "(Shaker/Master/Thinker/Blaster) Bag of Holding",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "xpsu": {
+    "title": "(Shaker/Thinker) Sound of Silence",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "s9jv": {
+    "title": "(Shaker) Forcefield",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "vub6": {
+    "title": "(Shaker) Earthbender",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "uwde": {
+    "title": "(Shaker/Master) Tentacles",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "duec": {
+    "title": "(Shaker) Gravity",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "kmwf": {
+    "title": "(Shaker) Temporal Tempo",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "rzk9": {
+    "title": "(Shaker) Telekinesis",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "eyy3": {
+    "title": "(Shaker) Environment Shaping",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "br2j": {
+    "title": "(Shaker) Storm",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "hgmb": {
+    "title": "(Shaker) Traveler",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "dh91": {
+    "title": "(Shaker) Deus Ex Machina",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "q5du": {
+    "title": "(Brute/Striker) Captain America",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "izkr": {
+    "title": "(Brute) Vampire",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "zt1s": {
+    "title": "(Brute) No, I am Spartacus",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "x0pj": {
+    "title": "(Brute) Atlas",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "xjn6": {
+    "title": "(Brute) Do you even lift?",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "m981": {
+    "title": "(Brute) Yang it!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "9w7n": {
+    "title": "(Brute) Aegis",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "jcx7": {
+    "title": "(Brute) Invulnerable",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "lv3m": {
+    "title": "(Brute) Mine, Mine, Mine!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "fltu": {
+    "title": "(Brute) Telekinetic Barrier",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "idq4": {
+    "title": "(Brute) Deadpool",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "6lrz": {
+    "title": "(Brute) Rocky",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "sbho": {
+    "title": "(Brute/Trump) Stronger Together",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "g4y9": {
+    "title": "(Breaker) Immune Response",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "4g4c": {
+    "title": "(Breaker) Phase",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "51t5": {
+    "title": "(Breaker) Gomu Gomu no Mi",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "fmjp": {
+    "title": "(Breaker) Ant Man",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "j7qd": {
+    "title": "(Breaker/Mover) Mirror World",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "s7sb": {
+    "title": "(Breaker/Mover) Puella Magi Homura Magika",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "8k7k": {
+    "title": "(Breaker) Null",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "ruiw": {
+    "title": "(Breaker) Rotom",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "jkpx": {
+    "title": "(Breaker) Density",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "0a4d": {
+    "title": "(Breaker) Rebirth",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "pqh4": {
+    "title": "(Breaker) Elemental",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "go6q": {
+    "title": "(Breaker) Reconstruction",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "fmwg": {
+    "title": "(Breaker) Friction",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "n7uv": {
+    "title": "(Master) Geas",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "t5bk": {
+    "title": "(Master/Thinker) Confetti",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "rk8k": {
+    "title": "(Master/Tinker/Trump) Love Potion",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "qmoi": {
+    "title": "(Master/Thinker) Rodent King",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "2e0t": {
+    "title": "(Master/Thinker) Instinct",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "fq6b": {
+    "title": "(Master) Red Strings",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "5mks": {
+    "title": "(Master) Technopathy",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "k4ei": {
+    "title": "(Master) Kage no Bunshin",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "399l": {
+    "title": "(Master) Love at First Sight",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "jfkd": {
+    "title": "(Master) Friendbringers",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "p6jc": {
+    "title": "(Master) Golem",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "13",
+    "costCharacter": 0
+  },
+  "3vmt": {
+    "title": "(Master) Hive Mind",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "0u3s": {
+    "title": "(Master) Khepri",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "ui8c": {
+    "title": "(Tinker) Jack of All Trades",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "7tda": {
+    "title": "(Tinker) Detection and Analysis",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "nmu7": {
+    "title": "(Tinker) Repair",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "tjz1": {
+    "title": "(Tinker) Swords",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "az0n": {
+    "title": "(Tinker) Guns",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "agi7": {
+    "title": "(Tinker) Robots",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "uzve": {
+    "title": "(Tinker/Trump) Enchantment",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "cws8": {
+    "title": "(Tinker) Fortifications and Artillery",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "woqj": {
+    "title": "(Tinker) Reproduction",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "9sey": {
+    "title": "(Tinker) Self-Alteration",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "ue1o": {
+    "title": "(Tinker/Master) Nanobots",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "13",
+    "costCharacter": 0
+  },
+  "bfmo": {
+    "title": "(Tinker) Nuclear",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "6oda": {
+    "title": "(Tinker) Code",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "9fph": {
+    "title": "(Blaster) Epilepsy",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "lzyw": {
+    "title": "(Blaster) Unlimited Ammo Works",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "vp1e": {
+    "title": "(Blaster/Master) Earworm",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "4gag": {
+    "title": "(Blaster) Hookshot",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "44jp": {
+    "title": "(Blaster) Blaster",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "n0p3": {
+    "title": "(Blaster) Lightningrod",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "evl6": {
+    "title": "(Blaster) Firebender",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "7n74": {
+    "title": "(Blaster/Shaker) Waterbender",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "gqh7": {
+    "title": "(Blaster) Solar",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "u871": {
+    "title": "(Blaster) Worship",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "vr7c": {
+    "title": "(Blaster) Broken Phantasm",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "ccy1": {
+    "title": "(Blaster/Trump) Metronome",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "gugn": {
+    "title": "(Blaster) Mythical",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "pqji": {
+    "title": "(Thinker) X-Ray and Vav",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "czhr": {
+    "title": "(Thinker) Byakugan",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "gnqu": {
+    "title": "(Thinker) Skilled",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "l8f2": {
+    "title": "(Thinker) One or the other",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "gkyf": {
+    "title": "(Thinker) Schroedinger",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "4lsv": {
+    "title": "(Thinker) Retroactive Empath",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "pc3h": {
+    "title": "(Thinker) Snap",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "i2i8": {
+    "title": "(Thinker) My Eyes are Your Eyes",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "o1y0": {
+    "title": "(Thinker) Oracle of Delphi",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "s097": {
+    "title": "(Thinker) Weakspot",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "807u": {
+    "title": "(Thinker) Plans within Plans",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "af9x": {
+    "title": "(Thinker) Respawn",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "u43h": {
+    "title": "(Striker) Knockout",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "vnws": {
+    "title": "(Striker) Hardlight",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "mw65": {
+    "title": "(Striker) Stop!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "743x": {
+    "title": "(Striker) Vibranium",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "m82l": {
+    "title": "(Striker/Master) Forget me yes",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "99v2": {
+    "title": "(Striker/Trump) Perk",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "6yuc": {
+    "title": "(Striker) Wither",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "o19d": {
+    "title": "(Striker/Trump/Thinker) Chi Blocking",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "h38m": {
+    "title": "(Striker/Master) Body-Swap",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "r7vx": {
+    "title": "(Striker) Tactile Telekinesis",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "febv": {
+    "title": "(Striker/Brute) Stop! Hammer Time.",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "9c3r": {
+    "title": "(Striker) 1000 Degree Knife",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "27qv": {
+    "title": "(Striker) Vector Alteration",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "9x20": {
+    "title": "(Striker) Death Touch",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "nhgo": {
+    "title": "(Striker) Redistribution of Pain",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "x85f": {
+    "title": "(Striker) Reinforcement",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "w67q": {
+    "title": "(Striker) Clockstopper",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "ni6o": {
+    "title": "(Changer) Beauty",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "5j0z": {
+    "title": "(Changer) Self-Petrification",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "64z4": {
+    "title": "(Changer/Stranger) Human Shapeshift",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "jk0h": {
+    "title": "(Changer/Blaster/Brute) Dinosaur",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "985a": {
+    "title": "(Changer/Trump) Kirby",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "ccx7": {
+    "title": "(Changer/Trump) It's a me, a Mario!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "j84x": {
+    "title": "(Changer/Trump) Slime",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "ox1e": {
+    "title": "(Changer) Forest",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "b8h1": {
+    "title": "(Changer) Self-Biokinesis",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "yef4": {
+    "title": "(Changer/Shaker/Master) Dungeon Core",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "eu9q": {
+    "title": "(Changer/Blaster/Brute/Master) Bowser",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "7ttn": {
+    "title": "(Changer) Lung? Hah! I'm the real dragon here.",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "cx7u": {
+    "title": "(Changer/Trump) Pokemon",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "rc6i": {
+    "title": "(Trump) Power Sight",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "2vjs": {
+    "title": "(Trump) Powerswap",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "82sh": {
+    "title": "(Trump) Fae Court",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "eg0c": {
+    "title": "(Trump) Copycat",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "7j1e": {
+    "title": "(Trump) Redirection",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "4m5v": {
+    "title": "(Trump) Fluctuation",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "0ljl": {
+    "title": "(Trump) Immunity",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "hqw9": {
+    "title": "(Trump) Fighting makes me stronger!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "ldpj": {
+    "title": "(Trump) Nope!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "a53v": {
+    "title": "(Trump) Santaclause",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "k1xt": {
+    "title": "(Trump) Soulmate",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "81j1": {
+    "title": "(Trump) Trade!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "wks1": {
+    "title": "(Trump/Shaker) Don't mess with a white mage",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "vl5k": {
+    "title": "(Stranger) Again, Sherlock?",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "sd82": {
+    "title": "(Stranger) Vocals",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "led1": {
+    "title": "(Stranger) Mime",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "ijd6": {
+    "title": "(Stranger) Average Joe",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "la20": {
+    "title": "(Stranger) New Identity",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "d2ry": {
+    "title": "(Stranger) Stranger Danger? No way? This guy? He's so nice though!",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "5uau": {
+    "title": "Schrodinger's Asshole",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "rlg9": {
+    "title": "(Stranger) Invisible Woman",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "ckjl": {
+    "title": "(Stranger) Unnoticable",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "kv7x": {
+    "title": "(Stranger) Center of Attention",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "uj85": {
+    "title": "(Stranger) Boring",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "l8tj": {
+    "title": "(Stranger) Truth",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "13",
+    "costCharacter": 0
+  },
+  "8qam": {
+    "title": "(Stranger) Bluff",
+    "row": "Tier 3 Powers",
+    "rowIdx": 26,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "jhsh": {
+    "title": "Aegis",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "xzo0": {
+    "title": "Antares",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "9at7": {
+    "title": "Assault",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "gq95": {
+    "title": "Armsmaster",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "smz9": {
+    "title": "Ballistic",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "q3c7": {
+    "title": "Bakuda",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "ad8i": {
+    "title": "Battery",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "pmil": {
+    "title": "Bitch",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "rnkx": {
+    "title": "Bonesaw",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "dssh": {
+    "title": "Circus",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "ta5o": {
+    "title": "Clockblocker",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "zwy8": {
+    "title": "Coil",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "y8ke": {
+    "title": "Cherish",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "2aow": {
+    "title": "Crusader",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "lz2w": {
+    "title": "Damsel of Distress",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "ljdq": {
+    "title": "Dauntless",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "9dwj": {
+    "title": "Dinah Alcott",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "4q60": {
+    "title": "Faultline",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "3o0x": {
+    "title": "Flechette/Foil",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "wpoe": {
+    "title": "Fog",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "bcj3": {
+    "title": "Gallant",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "nho5": {
+    "title": "Glory Girl",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "iqqe": {
+    "title": "Grue",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "uscx": {
+    "title": "Golem",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "tipt": {
+    "title": "Imp",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "11",
+    "costCharacter": 0
+  },
+  "pb8b": {
+    "title": "Kaiser",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "r2xj": {
+    "title": "Kid Win",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "ma3s": {
+    "title": "Labyrinth",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "5vet": {
+    "title": "Lung",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "yipq": {
+    "title": "Marquis",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "1x6x": {
+    "title": "Miss Militia",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "m7zs": {
+    "title": "Myrddin",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "yla6": {
+    "title": "Newter",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "b6h8": {
+    "title": "Nice Guy",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "uql3": {
+    "title": "Night",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "7cad": {
+    "title": "Parian",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "etl7": {
+    "title": "Panacea",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "14",
+    "costCharacter": 0
+  },
+  "74f5": {
+    "title": "Precipice",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "axa2": {
+    "title": "Regent",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "ei2c": {
+    "title": "Rune",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "y4q3": {
+    "title": "Shadow Stalker",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "h94j": {
+    "title": "Shatterbird",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "pwit": {
+    "title": "Skidmark",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "bytu": {
+    "title": "Skitter/Weaver",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "6",
+    "costCharacter": 0
+  },
+  "8ihy": {
+    "title": "Sundancer",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "9",
+    "costCharacter": 0
+  },
+  "ix6e": {
+    "title": "Über",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "2",
+    "costCharacter": 0
+  },
+  "snlc": {
+    "title": "Tattletale",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "6a7o": {
+    "title": "Valefor",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "13",
+    "costCharacter": 0
+  },
+  "lpeb": {
+    "title": "Victor",
+    "row": "Power Copy",
+    "rowIdx": 27,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "olwh": {
+    "title": "(Brute/Shaker/Tinker) Emperor of Man",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "35",
+    "costCharacter": 0
+  },
+  "l3ed": {
+    "title": "(Trump) Power Manipulator",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "bqul": {
+    "title": "(Trump/Breaker/Thinker) The Gamer",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "5zy0": {
+    "title": "(Thinker) Omniscient",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "8cpj": {
+    "title": "(Trump) Dovahkiin",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "ak39": {
+    "title": "(Changer/Trump) Pokemon",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "pxsf": {
+    "title": "(Brute) Unlimited Potential",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "gbd9": {
+    "title": "(Shaker) Inviolable",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "b5vq": {
+    "title": "(Master) Endbringer",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "f0jk": {
+    "title": "(Changer) Endbringer",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "22",
+    "costCharacter": 0
+  },
+  "0r6j": {
+    "title": "(Brute) Endbringer",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "cpi7": {
+    "title": "(Thinker) Time-Loop",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "137x": {
+    "title": "(Changer) Grimm",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "ufrq": {
+    "title": "(Thinker) Number Man",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "yhdr": {
+    "title": "(Trump/Master) Butcher",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "v7ra": {
+    "title": "(Blaster/Thinker/Trump/Master) Jack Slash",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "oen1": {
+    "title": "(Trump) Eidolon",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "joh4": {
+    "title": "(Trump) Fairy Queen",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "j4ms": {
+    "title": "(Tinker) Hero",
+    "row": "Tier 2 Powers",
+    "rowIdx": 28,
+    "costShard": "22",
+    "costCharacter": 0
+  },
+  "y1b9": {
+    "title": "Precognition",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "7dpu": {
+    "title": "Telekinesis",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "247g": {
+    "title": "Earth",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "03ok": {
+    "title": "Copy",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "1ane": {
+    "title": "Time",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "sdky": {
+    "title": "Gravity",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "hmb0": {
+    "title": "Mind-Control",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "94qj": {
+    "title": "Summoning",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "t2h1": {
+    "title": "Vaatu",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "9tus": {
+    "title": "Dynakinesis",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "gfd6": {
+    "title": "Flash",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "24e4": {
+    "title": "Saitama",
+    "row": "(Master) Custom Endbringer Powers",
+    "rowIdx": 29,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "key6": {
+    "title": "Small",
+    "row": "(Master) Custom Endbringer Appearance",
+    "rowIdx": 30,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "z5r3": {
+    "title": "Large",
+    "row": "(Master) Custom Endbringer Appearance",
+    "rowIdx": 30,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "i67r": {
+    "title": "Huge",
+    "row": "(Master) Custom Endbringer Appearance",
+    "rowIdx": 30,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "o618": {
+    "title": "Humanoid",
+    "row": "(Master) Custom Endbringer Appearance",
+    "rowIdx": 30,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "s3mv": {
+    "title": "Monsterous",
+    "row": "(Master) Custom Endbringer Appearance",
+    "rowIdx": 30,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "bzdz": {
+    "title": "Beastlike",
+    "row": "(Master) Custom Endbringer Appearance",
+    "rowIdx": 30,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "oxs1": {
+    "title": "Precognition",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "y4i6": {
+    "title": "Telekinesis",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "09rr": {
+    "title": "Earth",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "hmie": {
+    "title": "Copy",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "0n7j": {
+    "title": "Time",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "vpbp": {
+    "title": "Gravity",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "fzfu": {
+    "title": "Mind-Control",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "qvxy": {
+    "title": "Summoning",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "zche": {
+    "title": "Vaatu",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "u3r8": {
+    "title": "Dynakinesis",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "i8lx": {
+    "title": "Flash",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "5r2t": {
+    "title": "Saitama",
+    "row": "(Changer) Custom Endbringer Powers",
+    "rowIdx": 31,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "4buc": {
+    "title": "Small",
+    "row": "(Changer) Custom Endbringer Appearance",
+    "rowIdx": 32,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "zq44": {
+    "title": "Large",
+    "row": "(Changer) Custom Endbringer Appearance",
+    "rowIdx": 32,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "3icc": {
+    "title": "Huge",
+    "row": "(Changer) Custom Endbringer Appearance",
+    "rowIdx": 32,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "481t": {
+    "title": "Humanoid",
+    "row": "(Changer) Custom Endbringer Appearance",
+    "rowIdx": 32,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "4sqf": {
+    "title": "Monsterous",
+    "row": "(Changer) Custom Endbringer Appearance",
+    "rowIdx": 32,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "k4gb": {
+    "title": "Beastlike",
+    "row": "(Changer) Custom Endbringer Appearance",
+    "rowIdx": 32,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "ypm0": {
+    "title": "(Blaster/Striker) Sting",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "sful": {
+    "title": "(Trump) Oberon/Titania",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "35",
+    "costCharacter": 0
+  },
+  "w6xe": {
+    "title": "(Brute/Breaker) Immortal",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "sls0": {
+    "title": "(Shaker) It Gets Worse",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "40",
+    "costCharacter": 0
+  },
+  "ri0t": {
+    "title": "(Mover) Door Me",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "67nt": {
+    "title": "(Shaker) And the Void Stares Back",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "35",
+    "costCharacter": 0
+  },
+  "3qqm": {
+    "title": "(Tinker) Revolution",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "974r": {
+    "title": "(Brute) Avalon",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "g2oz": {
+    "title": "(Thinker) Vision",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "35",
+    "costCharacter": 0
+  },
+  "u8po": {
+    "title": "(Shaker) Cast",
+    "row": "Tier 1 Powers",
+    "rowIdx": 33,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "e2an": {
+    "title": "Mover",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "fhr6": {
+    "title": "Shaker",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "47pj": {
+    "title": "Brute",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "k345": {
+    "title": "Breaker",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "u6x2": {
+    "title": "Master",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "mv7e": {
+    "title": "Tinker",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "dy7h": {
+    "title": "Blaster",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "ojin": {
+    "title": "Thinker",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "2r4f": {
+    "title": "Striker",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "1gay": {
+    "title": "Changer",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "kpwp": {
+    "title": "Trump",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "sfkh": {
+    "title": "Stranger",
+    "row": "(Shardless) One Pointers",
+    "rowIdx": 34,
+    "costShard": "1",
+    "costCharacter": 0
+  },
+  "potm": {
+    "title": "Holmes",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "s8hp": {
+    "title": "The Force",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "lyt5": {
+    "title": "Alchemy",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "zv1o": {
+    "title": "Code Geass",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "qqnn": {
+    "title": "Magik",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "xluv": {
+    "title": "Magecraft",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "obae": {
+    "title": "Demiservant",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "30",
+    "costCharacter": 0
+  },
+  "nss7": {
+    "title": "Heroic Spirit",
+    "row": "(Multi-Pointer) Shardless Powers",
+    "rowIdx": 35,
+    "costShard": "50",
+    "costCharacter": 0
+  },
+  "whs5": {
+    "title": "Avatar",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "wo5e": {
+    "title": "Biobringer",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "mazz": {
+    "title": "Tsundere",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "o80q": {
+    "title": "Jedi Knight",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "2f3c": {
+    "title": "Yang Xiao-Long",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "5pxx": {
+    "title": "Gate of Babylon",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "uxkw": {
+    "title": "Golden Trio and their +1",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "4lb9": {
+    "title": "The End-Becomer",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "gw54": {
+    "title": "Time Lord",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "ccoz": {
+    "title": "Meta Knowledge",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "mypd": {
+    "title": "Truth",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "o1kp": {
+    "title": "Mage",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "wxio": {
+    "title": "Cabbage Corp",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "0ze9": {
+    "title": "Natsuki Subaru",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "-8",
+    "costCharacter": 0
+  },
+  "1mnn": {
+    "title": "Soldier of the Future",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "l4kr": {
+    "title": "Biotech",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "5elz": {
+    "title": "Biomass Generation",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "lyn7": {
+    "title": "Path to Victory",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "ueuc": {
+    "title": "The Legion of the Fae",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "aeq3": {
+    "title": "Skittering Legions",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "nx9r": {
+    "title": "Resurrection",
+    "row": "Combo Powers",
+    "rowIdx": 36,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "q6x8": {
+    "title": "Earth Bet",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "asb1": {
+    "title": "Earth Bet AU",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "q9pq": {
+    "title": "No Transfer",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "30",
+    "costCharacter": "15"
+  },
+  "s5dh": {
+    "title": "RWBY",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "j3wf": {
+    "title": "My Hero Academia",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "dais": {
+    "title": "Avatar: The Last Airbender",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "fxww": {
+    "title": "Avatar: Legend of Korra",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "78de": {
+    "title": "Fullmetal Alchemist: Brotherhood",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "qfmr": {
+    "title": "Star Wars: The Original Trilogy",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "swq5": {
+    "title": "Familiar of Zero",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "hqa5": {
+    "title": "Akame ga Kill!",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "mqcl": {
+    "title": "Gate: Thus the JSDF Fought There",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "25",
+    "costCharacter": 0
+  },
+  "qe04": {
+    "title": "Pokemon",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "onx3": {
+    "title": "Fate/Stay Night",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "tz0c": {
+    "title": "Ranma 1/2",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "o6fk": {
+    "title": "Naruto",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "978h": {
+    "title": "Harry Potter",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "tz70": {
+    "title": "Marvel Cinamatic Universe",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "mf6a": {
+    "title": "One Piece",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "581n": {
+    "title": "Fallout New Vegas",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "f28t": {
+    "title": "Practical Guide to Evil",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "wv6t": {
+    "title": "X-Men",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "hvvg": {
+    "title": "Mass Effect",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "aqu7": {
+    "title": "A Song of Ice and Fire",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "cx1r": {
+    "title": "Skyrim",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "q4m0": {
+    "title": "Puella Magi Madoka Magika",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "mgla": {
+    "title": "Fairy Tail",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "3s16": {
+    "title": "Percy Jackson and the Olympians",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "51ks": {
+    "title": "Re:Zero",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "0xlq": {
+    "title": "DanMachi",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "ephy": {
+    "title": "Legend of Zelda",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "7nic": {
+    "title": "Undertale",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "mmnv": {
+    "title": "Life is Strange",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "vmha": {
+    "title": "Shadowrun",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "8oe0": {
+    "title": "(Easy) Other World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "18",
+    "costCharacter": 0
+  },
+  "19bz": {
+    "title": "(Moderate) Other World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "12",
+    "costCharacter": 0
+  },
+  "1mlb": {
+    "title": "(Hard) Other World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "dvo2": {
+    "title": "(Extra Hard) Other World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "-8",
+    "costCharacter": 0
+  },
+  "6x77": {
+    "title": "(Easy) Original World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "20",
+    "costCharacter": 0
+  },
+  "3tk2": {
+    "title": "(Moderate) Original World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "umqx": {
+    "title": "(Hard) Original World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "ktfw": {
+    "title": "(Extra Hard) Original World",
+    "row": "(Universe) Oops...",
+    "rowIdx": 37,
+    "costShard": "-3",
+    "costCharacter": 0
+  },
+  "66kt": {
+    "title": "Parahuman Fiefdoms",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-7"
+  },
+  "chgs": {
+    "title": "Galactic",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "ozwv": {
+    "title": "Secret Society",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "4"
+  },
+  "8iyh": {
+    "title": "Brute",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "pgwo": {
+    "title": "Red Shirt",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "4",
+    "costCharacter": 0
+  },
+  "qduh": {
+    "title": "Cops and Robbers",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "14"
+  },
+  "g6es": {
+    "title": "World War III",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "-10",
+    "costCharacter": "-15"
+  },
+  "fapg": {
+    "title": "Mutants",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "-5",
+    "costCharacter": "-20"
+  },
+  "s5p0": {
+    "title": "Merlin's Beard!",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "10",
+    "costCharacter": 0
+  },
+  "8p7x": {
+    "title": "Peggy Sue",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "-10",
+    "costCharacter": "-15"
+  },
+  "x2wx": {
+    "title": "Peggy Sue - Cured",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "3",
+    "costCharacter": 0
+  },
+  "um8b": {
+    "title": "Real Evil",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "-5",
+    "costCharacter": 0
+  },
+  "6pg4": {
+    "title": "Without a Hero",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "-12",
+    "costCharacter": 0
+  },
+  "h7zy": {
+    "title": "Benign",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "8",
+    "costCharacter": 0
+  },
+  "9p6y": {
+    "title": "Techie",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "7",
+    "costCharacter": 0
+  },
+  "amja": {
+    "title": "Tinkers are Thinkers",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "15",
+    "costCharacter": 0
+  },
+  "0nho": {
+    "title": "Reroll",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "-4",
+    "costCharacter": 0
+  },
+  "q708": {
+    "title": "Modern",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "10"
+  },
+  "4nhn": {
+    "title": "TINO",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "-15",
+    "costCharacter": 0
+  },
+  "eli7": {
+    "title": "Powerswap",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": "5",
+    "costCharacter": 0
+  },
+  "j9s3": {
+    "title": "Historical",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "0mef": {
+    "title": "Prehistoric",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-25"
+  },
+  "xwqc": {
+    "title": "Classical Era",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "3v09": {
+    "title": "All Roads Lead to Rome",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "f1yy": {
+    "title": "Medieval Era",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "f2go": {
+    "title": "Renaissance Era",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "6xb6": {
+    "title": "Colonial Era",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "cc1s": {
+    "title": "World War Era",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "ndlu": {
+    "title": "Cold War",
+    "row": "AUs",
+    "rowIdx": 38,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "xyye": {
+    "title": "Lost",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-8"
+  },
+  "4tfy": {
+    "title": "Brockton Bay",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "qc37": {
+    "title": "Boston",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "glz9": {
+    "title": "Chicago",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "pdj7": {
+    "title": "Newfoundland",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-1"
+  },
+  "s37b": {
+    "title": "(East Coast) North America",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "3"
+  },
+  "eb8e": {
+    "title": "(Central) North America",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "5wvn": {
+    "title": "(West Coast) North America",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "rzjt": {
+    "title": "Europe",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "8i2t": {
+    "title": "Australia",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "mjx2": {
+    "title": "South America",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "y6j4": {
+    "title": "Kyushu",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "eb5s": {
+    "title": "Asia",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "camv": {
+    "title": "Africa",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "p1oc": {
+    "title": "Antarctica",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "mpv4": {
+    "title": "Simurgh Containment Zone",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-12"
+  },
+  "nbxt": {
+    "title": "Containment Camp",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-20"
+  },
+  "id8l": {
+    "title": "Radioactive Wasteland",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "z66w": {
+    "title": "Ocean",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "6f3x": {
+    "title": "Moon",
+    "row": "Location",
+    "rowIdx": 39,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "1x0q": {
+    "title": "Safe Space",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-1"
+  },
+  "eu8o": {
+    "title": "Capital City",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "qp4e": {
+    "title": "School",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "1"
+  },
+  "brnx": {
+    "title": "Grimmlands",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "cv6m": {
+    "title": "I-Island",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "7fac": {
+    "title": "Spirit World",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "s6ic": {
+    "title": "Truth",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": "-15",
+    "costCharacter": "-15"
+  },
+  "6d5o": {
+    "title": "A Disturbance in the Force",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "3"
+  },
+  "h1lv": {
+    "title": "Intruder Alert",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "3sx8": {
+    "title": "Kill the human!",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "e030": {
+    "title": "Hidden Village",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "3igv": {
+    "title": "Alien World",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-3"
+  },
+  "xdht": {
+    "title": "Grand Line",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "olhk": {
+    "title": "Grand Line",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-7"
+  },
+  "dl81": {
+    "title": "Red Line",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "ol1h": {
+    "title": "Reaped",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "xx6n": {
+    "title": "Waypoint",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "4w2h": {
+    "title": "Incubation",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "jouf": {
+    "title": "Guild Building",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "p091": {
+    "title": "Camp Halfblood",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "gjaj": {
+    "title": "New Rome",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "5"
+  },
+  "kvjl": {
+    "title": "Gods Above",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "lrz6": {
+    "title": "Should I take a left... or my other left?",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "zu4c": {
+    "title": "Underworld",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-15"
+  },
+  "zbdt": {
+    "title": "Tartarus",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-25"
+  },
+  "cex0": {
+    "title": "Primordial",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-35"
+  },
+  "eryi": {
+    "title": "River Styx",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-50"
+  },
+  "609w": {
+    "title": "Dungeon 1-20",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-5"
+  },
+  "2ex6": {
+    "title": "Dungeon 21-40",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "ypfs": {
+    "title": "Dungeon 41-60",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-20"
+  },
+  "1djt": {
+    "title": "Dungeon 61-80",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-30"
+  },
+  "m6bp": {
+    "title": "Dungeon 81-100",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-40"
+  },
+  "ni4c": {
+    "title": "Dungeon 81-100",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-40"
+  },
+  "y1b7": {
+    "title": "Dungeon (LoZ)",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-40"
+  },
+  "w7fc": {
+    "title": "Mt. Ebott",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "3hgh": {
+    "title": "Underground",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "up1u": {
+    "title": "Main Character's House",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-10"
+  },
+  "qyey": {
+    "title": "Main Character's Face",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "-20"
+  },
+  "shg8": {
+    "title": "Ally",
+    "row": "Locations (Available to Non-Earths)",
+    "rowIdx": 40,
+    "costShard": 0,
+    "costCharacter": "50"
+  },
+  "cvne": {
+    "title": "Drago",
+    "row": "Patreons",
+    "rowIdx": 41,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "kueb": {
+    "title": "William Davis",
+    "row": "Patreons",
+    "rowIdx": 41,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "6wa2": {
+    "title": "Khaos End",
+    "row": "Patreons",
+    "rowIdx": 41,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "v7ql": {
+    "title": "Definitely Not Dio",
+    "row": "Patreons",
+    "rowIdx": 41,
+    "costShard": 0,
+    "costCharacter": 0
+  },
+  "scz9": {
+    "title": "Punchweasel",
+    "row": "Patreons",
+    "rowIdx": 41,
+    "costShard": 0,
+    "costCharacter": 0
+  }
+}
