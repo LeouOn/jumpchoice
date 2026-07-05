@@ -398,6 +398,11 @@ export const MINIMAX_MODELS: KnownModel[] = [
   { id: "MiniMax-M2", name: "MiniMax M2", context: 204800, maxOutput: 8192 },
 ];
 
+// LongCat (Meituan) — base URL must keep the /openai path segment or every request 404s.
+export const LONGCAT_MODELS: KnownModel[] = [
+  { id: "LongCat-2.0", name: "LongCat 2.0 (1M ctx)", context: 1000000, maxOutput: 131072 },
+];
+
 // AI21 (from #model_ai21_select)
 export const AI21_MODELS: KnownModel[] = [
   // Jamba (Latest)
@@ -641,6 +646,7 @@ export const MODEL_LISTS: Record<APIProvider, KnownModel[]> = {
   deepseek: DEEPSEEK_MODELS,
   zhipu: ZAI_MODELS,
   minimax: MINIMAX_MODELS,
+  longcat: LONGCAT_MODELS,
   // Seed OAI-compatible endpoints with the OpenAI catalog; remote /models still merge on top.
   custom: OPENAI_MODELS,
   image_generation: IMAGE_GEN_MODELS,

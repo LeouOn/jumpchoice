@@ -147,6 +147,15 @@ export const PROVIDERS: Record<APIProvider, ProviderDefinition> = {
     usesAuthHeader: true,
     apiKeyHeader: null,
   },
+  longcat: {
+    id: "longcat",
+    name: "LongCat (Meituan)",
+    defaultBaseUrl: "https://api.longcat.chat/openai",
+    modelsEndpoint: "/models",
+    supportsStreaming: true,
+    usesAuthHeader: true,
+    apiKeyHeader: null,
+  },
   custom: {
     id: "custom",
     name: "Custom (OAI-Compatible)",

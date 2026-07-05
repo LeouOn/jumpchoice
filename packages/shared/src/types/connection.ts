@@ -18,6 +18,7 @@ export type APIProvider =
   | "deepseek"
   | "zhipu"
   | "minimax"
+  | "longcat"
   | "custom"
   | "image_generation";
 

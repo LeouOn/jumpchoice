@@ -51,6 +51,7 @@ export function createLLMProvider(
     case "deepseek":
     case "zhipu":
     case "minimax":
+    case "longcat":
     case "custom":
       return new OpenAIProvider(
         baseUrl,

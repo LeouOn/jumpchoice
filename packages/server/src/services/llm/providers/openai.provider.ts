@@ -66,7 +66,8 @@ type OpenAIProviderKind =
   | "local-sidecar"
   | "deepseek"
   | "zhipu"
-  | "minimax";
+  | "minimax"
+  | "longcat";
 
 /**
  * Handles OpenAI, OpenRouter, Mistral, Cohere, and any OpenAI-compatible endpoint.
