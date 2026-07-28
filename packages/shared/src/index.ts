@@ -151,3 +151,5 @@ export * from "./utils/noodler-onboarding.js";
 export * from "./utils/noodle-interactions.js";
 export * from "./utils/noodle-unseen.js";
 export * from "./utils/spatial-context.js";
+
+export * from "./types/jump-document.js";
