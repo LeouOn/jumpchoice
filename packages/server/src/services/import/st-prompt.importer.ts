@@ -1,6 +1,6 @@
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Importer: SillyTavern Prompt Preset
-// ──────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import type { DB } from "../../db/connection.js";
 import type { MarkerConfig } from "@jumpchoice/shared";
 import { createPromptsStorage } from "../storage/prompts.storage.js";
@@ -91,22 +91,22 @@ export async function importSTPreset(
   // Detect XML wrapper bracket pairs and create groups for them
   const groupIdMap = await detectAndCreateGroups(sortedPrompts, created.id, storage);
 
-  // Track identifier → created section ID for reordering
+  // Track identifier â†’ created section ID for reordering
   const createdSectionIds: string[] = [];
 
   // Track which consolidated marker types have already been emitted so we
-  // don't create duplicates (e.g. worldInfoBefore + worldInfoAfter → one lorebook).
+  // don't create duplicates (e.g. worldInfoBefore + worldInfoAfter â†’ one lorebook).
   const emittedMarkerTypes = new Set<string>();
 
   for (const entry of sortedPrompts) {
     // Skip bracket entries that are just XML open/close tags (now handled by groups)
-    const isBracket = /^[┌└┎┖⌈⌊⌜⌞]/.test(entry.name);
+    const isBracket = /^[â”Œâ””â”Žâ”–âŒˆâŒŠâŒœâŒž]/.test(entry.name);
     if (isBracket && !entry.content?.trim()) continue;
 
     // Map ST marker identifiers to our marker types
     const mappedMarkerConfig = entry.marker ? mapSTMarkerConfig(entry.identifier) : null;
 
-    // Deduplicate consolidated markers — if we already emitted a marker of
+    // Deduplicate consolidated markers â€” if we already emitted a marker of
     // this type, skip the duplicate (e.g. second world-info or character marker).
     if (mappedMarkerConfig) {
       const key = mappedMarkerConfig.type;
@@ -177,7 +177,7 @@ export async function importSTPreset(
  * marker expander expects specific types (e.g. "chat_history", "character").
  *
  * ST splits character info into separate Description / Personality / Scenario markers
- * and world info into Before / After — we consolidate each into a single marker.
+ * and world info into Before / After â€” we consolidate each into a single marker.
  */
 function mapSTMarkerConfig(identifier: string): MarkerConfig | null {
   switch (identifier) {
@@ -204,7 +204,7 @@ function mapSTMarkerConfig(identifier: string): MarkerConfig | null {
 
 /**
  * Detect variable toggle groups from ST's naming convention.
- * Patterns like "➊ Game Master", "➋ Roleplayer" with {{setvar::type::value}}
+ * Patterns like "âžŠ Game Master", "âž‹ Roleplayer" with {{setvar::type::value}}
  */
 function detectVariableGroups(prompts: STPromptEntry[]): PromptVariableGroup[] {
   const groups = new Map<string, PromptVariableGroup>();
@@ -222,7 +222,7 @@ function detectVariableGroups(prompts: STPromptEntry[]): PromptVariableGroup[] {
       }
       const group = groups.get(varName)!;
       if (!group.options.find((o) => o.value === varValue)) {
-        group.options.push({ label: entry.name.replace(/^[➊➋➌➍➎➏➐➑➀➁➂➃➄➅]\s*/, ""), value: varValue });
+        group.options.push({ label: entry.name.replace(/^[âžŠâž‹âžŒâžâžŽâžâžâž‘âž€âžâž‚âžƒâž„âž…]\s*/, ""), value: varValue });
       }
     }
   }
@@ -274,8 +274,8 @@ export function extractSetvarAssignments(content: string): Array<[name: string, 
 }
 
 /**
- * Detect bracket-paired XML wrappers (┌ open / └ close) and create groups.
- * Returns a map of promptIdentifier → groupId for sections inside the pair.
+ * Detect bracket-paired XML wrappers (â”Œ open / â”” close) and create groups.
+ * Returns a map of promptIdentifier â†’ groupId for sections inside the pair.
  */
 async function detectAndCreateGroups(
   prompts: STPromptEntry[],
@@ -287,10 +287,10 @@ async function detectAndCreateGroups(
 
   for (let i = 0; i < prompts.length; i++) {
     const entry = prompts[i]!;
-    if (/^[┌┎⌈⌜]/.test(entry.name)) {
-      const groupName = entry.name.replace(/^[┌┎⌈⌜]\s*/, "").trim();
+    if (/^[â”Œâ”ŽâŒˆâŒœ]/.test(entry.name)) {
+      const groupName = entry.name.replace(/^[â”Œâ”ŽâŒˆâŒœ]\s*/, "").trim();
       openStack.push({ name: groupName, startIdx: i });
-    } else if (/^[└┖⌊⌞]/.test(entry.name) && openStack.length > 0) {
+    } else if (/^[â””â”–âŒŠâŒž]/.test(entry.name) && openStack.length > 0) {
       const open = openStack.pop()!;
       // Create a group and assign all entries between open and close
       const group = await storage.createGroup({ presetId, name: open.name });

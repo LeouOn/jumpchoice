@@ -545,7 +545,7 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     let presencePenalty = 0;
     let showThoughts = true;
     let reasoningEffort: "low" | "medium" | "high" | "xhigh" | "maximum" | null = null;
-    let verbosity: "low" | "medium" | "high" | null = null;
+    let verbosity: "low" | "medium" | "high" | "max" | null = null;
     let serviceTier: "flex" | "priority" | null = null;
     let assistantPrefill = "";
     let customParameters: Record<string, unknown> = {};

@@ -38,7 +38,7 @@ export type EditableGenerationParameters = Pick<
 type EditableGenerationParameterOverrides = Partial<EditableGenerationParameters>;
 
 const REASONING_LEVELS = [null, "low", "medium", "high", "xhigh", "maximum"] as const;
-const VERBOSITY_LEVELS = [null, "low", "medium", "high"] as const;
+const VERBOSITY_LEVELS = [null, "low", "medium", "high", "max"] as const;
 const OPENROUTER_SERVICE_TIERS = [null, "flex", "priority"] as const;
 const THINKING_TAG_CONTENT_PLACEHOLDER = "{{thinking}}";
 const PARAM_CHOICE_ACTIVE_CLASS = "bg-[var(--primary)]/15 text-[var(--primary)] ring-1 ring-[var(--primary)]/30";

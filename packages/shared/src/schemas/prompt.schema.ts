@@ -50,7 +50,7 @@ export const generationParametersSchema = z.object({
   frequencyPenalty: z.number().min(-2).max(2).default(0),
   presencePenalty: z.number().min(-2).max(2).default(0),
   reasoningEffort: z.enum(["low", "medium", "high", "xhigh", "maximum"]).nullable().default(null),
-  verbosity: z.enum(["low", "medium", "high"]).nullable().default(null),
+  verbosity: z.enum(["low", "medium", "high", "max"]).nullable().default(null),
   serviceTier: z.enum(["flex", "priority"]).nullable().default(null),
   assistantPrefill: z.string().default(""),
   customThinkingTags: z

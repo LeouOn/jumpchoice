@@ -68,7 +68,7 @@ const rawParametersSchema = z
     frequencyPenalty: z.number().min(-2).max(2).optional(),
     presencePenalty: z.number().min(-2).max(2).optional(),
     reasoningEffort: z.enum(["low", "medium", "high", "xhigh", "maximum"]).nullable().optional(),
-    verbosity: z.enum(["low", "medium", "high"]).nullable().optional(),
+    verbosity: z.enum(["low", "medium", "high", "max"]).nullable().optional(),
     serviceTier: z.enum(["flex", "priority"]).nullable().optional(),
     customParameters: z.record(z.unknown()).optional(),
     enabledParameters: z.record(z.boolean()).optional(),
@@ -158,7 +158,7 @@ export async function registerRawRoute(app: FastifyInstance) {
     let frequencyPenalty = 0;
     let presencePenalty = 0;
     let reasoningEffort: "low" | "medium" | "high" | "xhigh" | "maximum" | null = null;
-    let verbosity: "low" | "medium" | "high" | null = null;
+    let verbosity: "low" | "medium" | "high" | "max" | null = null;
     let serviceTier: "flex" | "priority" | null = null;
     let customParameters: Record<string, unknown> = {};
     let enabledParameters: GenerationParameterSendMap | undefined;

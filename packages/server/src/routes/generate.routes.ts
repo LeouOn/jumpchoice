@@ -1680,7 +1680,7 @@ export async function generateRoutes(app: FastifyInstance) {
         let showThoughts = true;
         let reasoningEffort: "low" | "medium" | "high" | "xhigh" | "maximum" | null =
           DEFAULT_GENERATION_PARAMS.reasoningEffort;
-        let verbosity: "low" | "medium" | "high" | null = null;
+        let verbosity: "low" | "medium" | "high" | "max" | null = null;
         let serviceTier: "flex" | "priority" | null = null;
         let assistantPrefill = "";
         let customThinkingTags: ThinkingTagPair[] = [];

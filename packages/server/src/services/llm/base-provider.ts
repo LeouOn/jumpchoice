@@ -149,7 +149,7 @@ export interface ChatOptions {
   /** When true, previous provider-native reasoning state is not reused. */
   excludePastReasoning?: boolean;
   /** Output verbosity for GPT-5+ models */
-  verbosity?: "low" | "medium" | "high";
+  verbosity?: "low" | "medium" | "high" | "max";
   /** Emit provider prompt debug logs even when normal debug logging is disabled. */
   debugMode?: boolean;
   /** OpenRouter-only service tier. */

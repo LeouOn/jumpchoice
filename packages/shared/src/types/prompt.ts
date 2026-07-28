@@ -232,7 +232,7 @@ export interface GenerationParameters {
   /** For reasoning models */
   reasoningEffort: "low" | "medium" | "high" | "xhigh" | "maximum" | null;
   /** Output verbosity for models that support it (GPT-5+) */
-  verbosity: "low" | "medium" | "high" | null;
+  verbosity: "low" | "medium" | "high" | "max" | null;
   /** OpenRouter-only service tier. Null uses the provider/default tier. */
   serviceTier: "flex" | "priority" | null;
   /** Optional assistant-role prefill appended after the final user message. */

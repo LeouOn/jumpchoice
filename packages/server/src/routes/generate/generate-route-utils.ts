@@ -1130,7 +1130,7 @@ export function parseStoredGenerationParameters(raw: unknown): StoredGenerationP
   ) {
     out.reasoningEffort = source.reasoningEffort as StoredGenerationParameters["reasoningEffort"];
   }
-  if (source.verbosity === null || ["low", "medium", "high"].includes(String(source.verbosity))) {
+  if (source.verbosity === null || ["low", "medium", "high", "max"].includes(String(source.verbosity))) {
     out.verbosity = source.verbosity as StoredGenerationParameters["verbosity"];
   }
   if (source.serviceTier === null || source.serviceTier === "flex" || source.serviceTier === "priority") {

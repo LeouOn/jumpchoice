@@ -642,7 +642,7 @@ export class OpenAIProvider extends BaseLLMProvider {
     );
   }
 
-  private resolveXAIReasoningEffort(reasoningEffort?: string | null): "none" | "low" | "medium" | "high" | null {
+  private resolveXAIReasoningEffort(reasoningEffort?: string | null): "none" | "low" | "medium" | "high" | "max" | null {
     switch (reasoningEffort) {
       case "none":
       case "low":
