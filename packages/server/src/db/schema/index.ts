@@ -31,3 +31,7 @@ export * from "./mari-instructions.js";
 export * from "./achievements.js";
 export * from "./noodle.js";
 export * from "./library-folders.js";
+export * from "./cyoa.js";
+export * from "./cyoa-builds.js";
+export * from "./learning.js";
+export * from "./jump-doc.js";

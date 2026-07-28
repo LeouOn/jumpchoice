@@ -32,7 +32,8 @@ export type Panel =
   | "personas"
   | "settings"
   | "bot-browser"
-  | "extensions";
+  | "extensions"
+  | "cyoa";
 export type ChatModeShortcut = "conversation" | "roleplay" | "game";
 export const CHARACTER_LIBRARY_SORT_OPTIONS = ["name-asc", "name-desc", "newest", "oldest", "favorites"] as const;
 export type CharacterLibrarySort = (typeof CHARACTER_LIBRARY_SORT_OPTIONS)[number];
@@ -590,6 +591,8 @@ interface UIState {
   personaDetailId: string | null;
   /** When set, the main area shows the full-page regex script editor */
   regexDetailId: string | null;
+  /** When set, the main area shows the full-page CYOA document editor */
+  cyoaDetailId: string | null;
   /** When set, the main area shows the hierarchical map editor for this chat */
   spatialMapDetailChatId: string | null;
   /** One-shot generated map preview handed from Game setup into the spatial editor. Never persisted. */
@@ -992,6 +995,8 @@ interface UIState {
     options?: { defaultCharacterIds?: string[]; returnTo?: { characterId: string; tab?: string } },
   ) => void;
   closeRegexDetail: () => void;
+  openCyoa: (id: string) => void;
+  closeCyoa: () => void;
   openSpatialMapDetail: (chatId: string) => void;
   openSpatialMapDraftReview: (review: PendingSpatialMapDraftReview) => void;
   clearPendingSpatialMapDraftReview: () => void;
@@ -1391,6 +1396,7 @@ export const useUIStore = create<UIState>()(
       toolDetailId: null,
       personaDetailId: null,
       regexDetailId: null,
+      cyoaDetailId: null,
       spatialMapDetailChatId: null,
       pendingSpatialMapDraftReview: null,
       regexDetailDefaultCharacterIds: null,
@@ -1933,6 +1939,26 @@ export const useUIStore = create<UIState>()(
             ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
           };
         }),
+      openCyoa: (id) =>
+        set((s) => ({
+          cyoaDetailId: id,
+          characterDetailId: null,
+          lorebookDetailId: null,
+          presetDetailId: null,
+          connectionDetailId: null,
+          agentDetailId: null,
+          toolDetailId: null,
+          personaDetailId: null,
+          regexDetailId: null,
+          rightPanel: "cyoa",
+          ...getMobileDetailReturnState(s),
+        })),
+      closeCyoa: () =>
+        set((s) => ({
+          cyoaDetailId: null,
+          editorDirty: false,
+          ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
+        })),
       openSpatialMapDetail: (chatId) =>
         set((s) => ({
           spatialMapDetailChatId: chatId,
