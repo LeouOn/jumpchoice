@@ -17,6 +17,10 @@ export type APIProvider =
   | "nanogpt"
   | "xai"
   | "arli"
+  | "deepseek"
+  | "zhipu"
+  | "minimax"
+  | "longcat"
   | "custom"
   | "image_generation"
   | "video_generation";

@@ -75,7 +75,11 @@ type OpenAIProviderKind =
   | "arli"
   | "custom"
   | "openai-chatgpt"
-  | "local-sidecar";
+  | "local-sidecar"
+  | "deepseek"
+  | "zhipu"
+  | "minimax"
+  | "longcat";
 
 export function normalizeOpenAIChatCompletionsResponseFormat(
   responseFormat: { type: string; [key: string]: unknown } | undefined,

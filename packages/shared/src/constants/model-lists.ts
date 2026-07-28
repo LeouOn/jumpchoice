@@ -561,6 +561,22 @@ export const ZAI_MODELS: KnownModel[] = [
   { id: "autoglm-phone-multilingual", name: "autoglm-phone-multilingual", context: 128000, maxOutput: 4096 },
 ];
 
+// MiniMax (from #model_minimax_select)
+export const MINIMAX_MODELS: KnownModel[] = [
+  { id: "MiniMax-M2.7", name: "MiniMax M2.7", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.7-highspeed", name: "MiniMax M2.7 Highspeed", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.5", name: "MiniMax M2.5", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.5-highspeed", name: "MiniMax M2.5 Highspeed", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.1", name: "MiniMax M2.1", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2.1-highspeed", name: "MiniMax M2.1 Highspeed", context: 204800, maxOutput: 8192 },
+  { id: "MiniMax-M2", name: "MiniMax M2", context: 204800, maxOutput: 8192 },
+];
+
+// LongCat (Meituan) — base URL must keep the /openai path segment or every request 404s.
+export const LONGCAT_MODELS: KnownModel[] = [
+  { id: "LongCat-2.0", name: "LongCat 2.0 (1M ctx)", context: 1000000, maxOutput: 131072 },
+];
+
 // AI21 (from #model_ai21_select)
 export const AI21_MODELS: KnownModel[] = [
   // Jamba (Latest)
@@ -988,6 +1004,10 @@ export const MODEL_LISTS: Record<APIProvider, KnownModel[]> = {
   nanogpt: [], // NanoGPT aggregator — models fetched dynamically via API
   xai: XAI_MODELS,
   arli: [], // Arli AI — models fetched dynamically via the /models endpoint
+  deepseek: DEEPSEEK_MODELS,
+  zhipu: ZAI_MODELS,
+  minimax: MINIMAX_MODELS,
+  longcat: LONGCAT_MODELS,
   // Seed OAI-compatible endpoints with the OpenAI catalog; remote /models still merge on top.
   custom: [...OPENAI_MODELS, ...ZAI_MODELS],
   image_generation: IMAGE_GEN_MODELS,
