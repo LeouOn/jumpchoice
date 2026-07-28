@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
 import { hapticService } from "../services/haptic/buttplug-service.js";
-import type { HapticDeviceCommand } from "@marinara-engine/shared";
+import type { HapticDeviceCommand } from "@jumpchoice/shared";
 import { isHapticsRemoteAllowed } from "../config/runtime-config.js";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 

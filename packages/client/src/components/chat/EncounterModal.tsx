@@ -26,7 +26,7 @@ import { useEncounter } from "../../hooks/use-encounter";
 import { useLorebooks } from "../../hooks/use-lorebooks";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { cn } from "../../lib/utils";
-import type { CombatPartyMember, CombatEnemy, CombatAttack, NarrativeStyle, Lorebook } from "@marinara-engine/shared";
+import type { CombatPartyMember, CombatEnemy, CombatAttack, NarrativeStyle, Lorebook } from "@jumpchoice/shared";
 import { Translation, useTranslation as useUiTranslation } from "react-i18next";
 
 // ──────────────────────────────────────────────

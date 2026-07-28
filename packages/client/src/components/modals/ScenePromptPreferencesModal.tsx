@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import type { ScenePromptPreferences, ScenePromptPov, ScenePromptTense } from "@marinara-engine/shared";
+import type { ScenePromptPreferences, ScenePromptPov, ScenePromptTense } from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal";
 import { normalizeScenePromptPreferences } from "../../stores/ui.store";
 import { useTranslation as useUiTranslation } from "react-i18next";

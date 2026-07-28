@@ -102,7 +102,7 @@ Static analysis cannot prove the absence of runtime string lookup, downloaded pa
 
 ### 1.4 Misleading zero-test runner
 
-`packages/server/scripts/run-tests.mjs` targets three `.test.ts` globs, but none of the target directories contains a test file. Running both `pnpm --filter @marinara-engine/server test` and root `pnpm test` exits successfully with zero tests and zero suites. The former tests were intentionally removed, and repository rules prohibit retaining `.test.ts` files.
+`packages/server/scripts/run-tests.mjs` targets three `.test.ts` globs, but none of the target directories contains a test file. Running both `pnpm --filter @jumpchoice/server test` and root `pnpm test` exits successfully with zero tests and zero suites. The former tests were intentionally removed, and repository rules prohibit retaining `.test.ts` files.
 
 This is more dangerous than ordinary dead code because a green `pnpm test` currently implies coverage that does not exist.
 

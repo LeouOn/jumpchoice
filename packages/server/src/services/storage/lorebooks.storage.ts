@@ -24,8 +24,8 @@ import {
   type CreateLorebookFolderInput,
   type LorebookEntry,
   type UpdateLorebookFolderInput,
-} from "@marinara-engine/shared";
-import { collectEffectivelyDisabledFolderIds, collectFolderSubtreeIds } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { collectEffectivelyDisabledFolderIds, collectFolderSubtreeIds } from "@jumpchoice/shared";
 import { normalizeTimestampOverrides, type TimestampOverrides } from "../import/import-timestamps.js";
 import { toPaginatedList } from "../../utils/list-pagination.js";
 

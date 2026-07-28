@@ -9,7 +9,7 @@ import {
   type PersonalExtensionContributionDescriptor,
   type PersonalExtensionHostContribution,
   type PersonalExtensionUiElement,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 type ContributionSnapshot = {
   contributions: readonly PersonalExtensionHostContribution[];

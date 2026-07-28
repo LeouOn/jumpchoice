@@ -3,7 +3,7 @@ import {
   PROVIDERS,
   type APIProvider,
   type ImageGenerationQuality,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { CreateConnectionPayload } from "../hooks/use-connections";
 
 export type ConnectionTransferRow = {

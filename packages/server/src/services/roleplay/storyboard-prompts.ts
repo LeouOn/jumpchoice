@@ -1,4 +1,4 @@
-import { normalizeAgentPromptTemplateOptions, type AgentPromptTemplateOption } from "@marinara-engine/shared";
+import { normalizeAgentPromptTemplateOptions, type AgentPromptTemplateOption } from "@jumpchoice/shared";
 import type { ChatMessage } from "../llm/base-provider.js";
 import { escapeXmlAttribute } from "../prompt/xml-escaping.js";
 import { renderTemplate } from "../prompt-overrides/index.js";

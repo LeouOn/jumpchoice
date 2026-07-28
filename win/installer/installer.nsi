@@ -777,26 +777,26 @@ Would you like to retry?" IDYES retryInstall IDNO skipRetryInstall
   DetailPrint ""
   DetailPrint "Building ${APP_NAME} (this may take 1-3 minutes)..."
   ${If} $PNPM_RUNNER == "corepack"
-    nsExec::ExecToLog 'cmd /c corepack pnpm@${PNPM_DESCRIPTOR} --filter @marinara-engine/shared build'
+    nsExec::ExecToLog 'cmd /c corepack pnpm@${PNPM_DESCRIPTOR} --filter @jumpchoice/shared build'
     Pop $0
     ${If} $0 == 0
-      nsExec::ExecToLog 'cmd /c corepack pnpm@${PNPM_DESCRIPTOR} --filter @marinara-engine/server --filter @marinara-engine/client --parallel run build'
+      nsExec::ExecToLog 'cmd /c corepack pnpm@${PNPM_DESCRIPTOR} --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build'
       Pop $0
     ${EndIf}
   ${EndIf}
   ${If} $PNPM_RUNNER == "npx"
-    nsExec::ExecToLog 'cmd /c npx --yes pnpm@${PNPM_VERSION} --filter @marinara-engine/shared build'
+    nsExec::ExecToLog 'cmd /c npx --yes pnpm@${PNPM_VERSION} --filter @jumpchoice/shared build'
     Pop $0
     ${If} $0 == 0
-      nsExec::ExecToLog 'cmd /c npx --yes pnpm@${PNPM_VERSION} --filter @marinara-engine/server --filter @marinara-engine/client --parallel run build'
+      nsExec::ExecToLog 'cmd /c npx --yes pnpm@${PNPM_VERSION} --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build'
       Pop $0
     ${EndIf}
   ${EndIf}
   ${If} $PNPM_RUNNER == "pnpm"
-    nsExec::ExecToLog 'cmd /c pnpm --filter @marinara-engine/shared build'
+    nsExec::ExecToLog 'cmd /c pnpm --filter @jumpchoice/shared build'
     Pop $0
     ${If} $0 == 0
-      nsExec::ExecToLog 'cmd /c pnpm --filter @marinara-engine/server --filter @marinara-engine/client --parallel run build'
+      nsExec::ExecToLog 'cmd /c pnpm --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build'
       Pop $0
     ${EndIf}
   ${EndIf}

@@ -4,7 +4,7 @@
 // Supports V2 and V3 character card specs
 // ──────────────────────────────────────────────
 
-import { MAX_FILE_SIZES } from "@marinara-engine/shared";
+import { MAX_FILE_SIZES } from "@jumpchoice/shared";
 
 const CHARA_KEYWORDS = new Set(["ccv3", "chara"]);
 // zTXt card metadata may be raw JSON or base64 (up to 4/3 the JSON size).

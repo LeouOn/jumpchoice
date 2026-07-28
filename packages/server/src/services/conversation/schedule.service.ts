@@ -18,10 +18,10 @@ import {
   type DaySchedule,
   type ScheduleBlock,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 // The schedule/override status-derivation helpers and their schedule types now
-// live in @marinara-engine/shared so the client presence dots derive status the
+// live in @jumpchoice/shared so the client presence dots derive status the
 // same way the server does. Re-export them here so existing server imports from
 // "./schedule.service.js" keep resolving unchanged.
 export {
@@ -434,7 +434,7 @@ function inferStatusFromActivity(activity: string): ConversationPresenceStatus {
 
 // ── Status Derivation ──
 // getCurrentStatus / getActiveStatusOverride / getEffectiveCurrentStatus moved to
-// @marinara-engine/shared (utils/conversation-presence) — imported + re-exported above.
+// @jumpchoice/shared (utils/conversation-presence) — imported + re-exported above.
 
 /**
  * Get a human-readable summary of today's schedule for a character.

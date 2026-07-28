@@ -1,4 +1,4 @@
-import { PROVIDERS, localAuthProviderBaseUrl } from "@marinara-engine/shared";
+import { PROVIDERS, localAuthProviderBaseUrl } from "@jumpchoice/shared";
 
 /** Resolve the base URL for a connection, falling back to the provider default. */
 export function resolveBaseUrl(connection: { baseUrl: string | null; provider: string }): string {

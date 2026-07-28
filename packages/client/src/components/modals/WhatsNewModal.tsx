@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, MapPinned, Swords, type LucideIcon } from "lucide-react";
-import { APP_VERSION } from "@marinara-engine/shared";
+import { APP_VERSION } from "@jumpchoice/shared";
 import { useUIStore } from "../../stores/ui.store";
 import { Modal } from "../ui/Modal";
 import { Trans, useTranslation as useUiTranslation } from "react-i18next";

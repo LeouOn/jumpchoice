@@ -25,7 +25,7 @@ import { cn } from "../../lib/utils";
 import { confirmNonEmptyFolderDelete } from "../../lib/app-dialogs";
 import { useUpdateLorebookFolder, useDeleteLorebookFolder, useCloneLorebookFolder } from "../../hooks/use-lorebooks";
 import { SettingsSwitch } from "../panels/settings/SettingControls";
-import { canReparentFolder, collectFolderSubtreeIds, type LorebookFolder } from "@marinara-engine/shared";
+import { canReparentFolder, collectFolderSubtreeIds, type LorebookFolder } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 interface Props {

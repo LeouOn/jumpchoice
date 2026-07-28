@@ -43,7 +43,7 @@ import {
   resolveMacros,
   type MacroContext,
   type RegexPlacement,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 // ═══════════════════════════════════════════════

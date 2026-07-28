@@ -6,7 +6,7 @@ import type {
   RouteHandlerMethod,
   RouteOptions,
 } from "fastify";
-import type { InstalledCapabilityPackage } from "@marinara-engine/shared";
+import type { InstalledCapabilityPackage } from "@jumpchoice/shared";
 import { requirePrivilegedAccess } from "../../middleware/privileged-gate.js";
 
 type Cleanup = () => void;

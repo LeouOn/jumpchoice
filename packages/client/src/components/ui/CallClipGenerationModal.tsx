@@ -3,7 +3,7 @@ import { Loader2, Wand2 } from "lucide-react";
 import {
   CONVERSATION_CALL_CHARACTER_VIDEO_CLIP_KINDS,
   type ConversationCallCharacterVideoClipKind,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useConnections } from "../../hooks/use-connections";
 import { type CharacterCallVideoGenerationInput } from "../../hooks/use-characters";
 import { cn } from "../../lib/utils";

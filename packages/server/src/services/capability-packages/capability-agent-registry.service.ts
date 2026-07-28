@@ -1,7 +1,7 @@
 import {
   replaceBuiltInAgentDefinitions,
   type BuiltInAgentManifest,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { capabilityPackageManager } from "./package-manager.service.js";
 
 export async function initializeCapabilityAgentRegistry(): Promise<void> {

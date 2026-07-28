@@ -2,7 +2,7 @@
 // Chat: Message — mode-aware rendering
 // ──────────────────────────────────────────────
 import { cn, copyToClipboard, getAvatarCropStyle, isLegacyAvatarCrop } from "../../lib/utils";
-import { normalizeAvatarCrop, type AvatarCrop } from "@marinara-engine/shared";
+import { normalizeAvatarCrop, type AvatarCrop } from "@jumpchoice/shared";
 import { applyInlineMarkdown, renderMarkdownBlocks, applyInlineMarkdownHTML } from "../../lib/markdown";
 import {
   normalizeCardAssetImageSyntax,
@@ -42,8 +42,8 @@ import {
   EyeOff,
   Shield,
 } from "lucide-react";
-import { decodeEncodedSpeakerTags, formatTextQuotes, type Message, type QuoteFormat } from "@marinara-engine/shared";
-import type { GameTurnStoryboard, GameTurnStoryboardKeyframe } from "@marinara-engine/shared";
+import { decodeEncodedSpeakerTags, formatTextQuotes, type Message, type QuoteFormat } from "@jumpchoice/shared";
+import type { GameTurnStoryboard, GameTurnStoryboardKeyframe } from "@jumpchoice/shared";
 import { memo, useState, useMemo, useRef, useEffect, useId, useLayoutEffect, useCallback, type ReactNode } from "react";
 import { useTranslation, useTranslation as useUiTranslation } from "react-i18next";
 import { useQueryClient, type InfiniteData } from "@tanstack/react-query";

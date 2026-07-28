@@ -70,7 +70,7 @@ import {
   type SpritePlacement,
   type SpriteSide,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { resolveLiveConversationStatus } from "../../lib/conversation-presence-status";
 import { useUIStore } from "../../stores/ui.store";
 import { useAgentStore, EMPTY_AGENT_TYPES } from "../../stores/agent.store";
@@ -1692,7 +1692,7 @@ export const ChatArea = memo(function ChatArea() {
   const refreshVisibleGameState = useCallback(async () => {
     if (!shouldRefreshGameStateOnSwipe || !activeChatId) return;
     try {
-      const gs = await api.get<import("@marinara-engine/shared").GameState | null>(`/chats/${activeChatId}/game-state`);
+      const gs = await api.get<import("@jumpchoice/shared").GameState | null>(`/chats/${activeChatId}/game-state`);
       if (useChatStore.getState().activeChatId !== activeChatId) return;
       useGameStateStore.getState().setGameState(gs ?? null);
     } catch {

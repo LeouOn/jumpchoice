@@ -1,4 +1,4 @@
-import { LOCAL_SIDECAR_CONNECTION_ID } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID } from "@jumpchoice/shared";
 import type { createConnectionsStorage } from "../storage/connections.storage.js";
 import type { BaseLLMProvider, ChatOptions } from "../llm/base-provider.js";
 import { getLocalSidecarProvider, LOCAL_SIDECAR_MODEL } from "../llm/local-sidecar.js";

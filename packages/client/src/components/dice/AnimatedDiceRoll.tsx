@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
-import { skillCheckDiceSumToTotal, type DiceRollResult } from "@marinara-engine/shared";
+import { skillCheckDiceSumToTotal, type DiceRollResult } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { DiceGlyph, type DiceGlyphPhase, type DiceGlyphSize } from "./DiceGlyph";
 import { getFaceLabel } from "./dice-shapes";

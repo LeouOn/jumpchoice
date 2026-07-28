@@ -1,4 +1,4 @@
-import type { NoodleRefreshSchedulerStatus } from "@marinara-engine/shared";
+import type { NoodleRefreshSchedulerStatus } from "@jumpchoice/shared";
 
 export const NOODLE_REFRESH_SCHEDULE_VERSION = 1 as const;
 

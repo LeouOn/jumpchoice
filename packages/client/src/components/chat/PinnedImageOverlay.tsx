@@ -8,7 +8,7 @@ import type { PinnedGalleryMedia } from "../../stores/gallery.store";
 import { cn } from "../../lib/utils";
 import { getChatToolbarButtonClass } from "./ChatToolbarControls";
 import { useGalleryImages, useSceneVideos } from "../../hooks/use-gallery";
-import type { GeneratedSceneVideo } from "@marinara-engine/shared";
+import type { GeneratedSceneVideo } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 const EMPTY_SCENE_VIDEOS: GeneratedSceneVideo[] = [];

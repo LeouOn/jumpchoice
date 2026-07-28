@@ -10,7 +10,7 @@ import type {
   CapabilityPersonaRecord,
   CapabilityPersonaUpdateInput,
   CapabilityResourceHost,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createLorebooksStorage } from "../storage/lorebooks.storage.js";

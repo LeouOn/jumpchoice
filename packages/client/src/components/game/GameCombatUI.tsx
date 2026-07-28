@@ -43,7 +43,7 @@ import type {
   CombatStatus,
   PartyDialogueLine,
   TTSConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   Heart,
   Droplets,

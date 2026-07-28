@@ -5,7 +5,7 @@ import { brotliDecompressSync, gunzipSync, zstdDecompressSync } from "node:zlib"
 import { Agent } from "undici";
 import { isLoopbackIp, isPrivateNetworkIp } from "../middleware/ip-allowlist.js";
 import { logger } from "../lib/logger.js";
-import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@marinara-engine/shared";
+import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@jumpchoice/shared";
 import { requestHeadersWithOpenRouterAttribution } from "./openrouter-attribution.js";
 
 export { CSRF_HEADER, CSRF_HEADER_VALUE };

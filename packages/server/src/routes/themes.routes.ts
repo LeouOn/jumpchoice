@@ -2,7 +2,7 @@
 // Routes: Synced Custom Themes
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { createThemeSchema, setActiveThemeSchema, updateThemeSchema } from "@marinara-engine/shared";
+import { createThemeSchema, setActiveThemeSchema, updateThemeSchema } from "@jumpchoice/shared";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 import { createThemesStorage } from "../services/storage/themes.storage.js";
 

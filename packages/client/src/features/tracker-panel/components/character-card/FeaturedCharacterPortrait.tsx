@@ -1,4 +1,4 @@
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import { useCharacterSprites, type SpriteInfo } from "../../../../hooks/use-characters";
 import {
   TRACKER_PORTRAIT_DEFAULT_FOCUS_X,

@@ -113,7 +113,7 @@ import {
   Check,
 } from "lucide-react";
 import { cn, copyToClipboard, generateClientId, getAvatarCropStyle } from "../../lib/utils";
-import { normalizeAvatarCrop } from "@marinara-engine/shared";
+import { normalizeAvatarCrop } from "@jumpchoice/shared";
 import { extractColorsFromImage } from "../../lib/avatar-color-extraction";
 import { buildCardAssetMarkdown } from "../../lib/card-asset-links";
 import { HelpTooltip } from "../ui/HelpTooltip";
@@ -142,7 +142,7 @@ import {
   type ConvoBehaviorConfig,
   type RPGStatPool,
   type RPGStatsConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { parseTrackerCardColorConfig, serializeTrackerCardColorConfig } from "../../lib/tracker-card-colors";
 import {
   getStatNameOccurrence,

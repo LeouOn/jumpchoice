@@ -5,7 +5,7 @@ import {
   renameTrackerFieldLockPrefix,
   type CharacterStat,
   type SupportedStatIcon,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../../../lib/utils";
 import { getStatNameOccurrence } from "../../../../lib/stat-icon-assignments";
 import { TRACKER_BAR, TRACKER_TEXT_ROW } from "../../lib/tracker-panel.constants";

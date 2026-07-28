@@ -1,7 +1,7 @@
 import type {
   PersonalExtensionContributionPosition,
   PersonalExtensionContributionSurface,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   activatePersonalExtensionContribution,
   usePersonalExtensionContributions,

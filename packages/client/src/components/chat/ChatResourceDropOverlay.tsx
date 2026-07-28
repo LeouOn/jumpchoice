@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Ban, Bot, BookOpen, FileText, Image, Link, UserPlus, VenetianMask } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { isAgentConfigDeleted, type Chat, type Lorebook } from "@marinara-engine/shared";
+import { isAgentConfigDeleted, type Chat, type Lorebook } from "@jumpchoice/shared";
 import { useUpdateChat, useUpdateChatMetadata } from "../../hooks/use-chats";
 import { usePersona } from "../../hooks/use-characters";
 import { useLorebooks } from "../../hooks/use-lorebooks";

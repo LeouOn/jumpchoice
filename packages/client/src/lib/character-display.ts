@@ -1,5 +1,5 @@
-import type { AvatarCrop } from "@marinara-engine/shared";
-import { normalizeAvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
+import { normalizeAvatarCrop } from "@jumpchoice/shared";
 
 export interface CharacterDisplayInfo {
   name: string;

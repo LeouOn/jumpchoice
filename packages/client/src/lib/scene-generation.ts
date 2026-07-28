@@ -4,7 +4,7 @@ import type {
   SceneFullPlan,
   ScenePlanResponse,
   ScenePromptPreferences,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "./api-client";
 import { useChatStore } from "../stores/chat.store";
 import { normalizeScenePromptPreferences, useUIStore } from "../stores/ui.store";

@@ -129,7 +129,7 @@ New file: `packages/client/src/components/chat/MariSuggestionChips.tsx`
 
 Requirements:
 - Props: `{ chips: MariSuggestionChip[]; onSelect: (chip: MariSuggestionChip) => void; disabled?: boolean; compact?: boolean }`.
-- Import `MariSuggestionChip` from `@marinara-engine/shared` (match how other shared imports are written in sibling files).
+- Import `MariSuggestionChip` from `@jumpchoice/shared` (match how other shared imports are written in sibling files).
 - Layout: a horizontal, wrapping/scrollable row rendered ABOVE the input, using a new `.mari-suggestion-chips` class (Step 6).
 - Each chip is a button reusing the existing pill primitive: base classes `mari-panel-gradient-button` + (when `chip.entity`) `mari-panel-gradient--{entity}`. When `chip.tone` is set it overrides entity color:
   - `danger` → `--destructive` styling (match existing danger usage `mari-chrome-control--danger` / `border-[var(--destructive)]`), `caution` → amber (`amber-400/…`), `success` → emerald. Model these on existing usages in `CyoaChoices.tsx` and `HomeProfessorMariChat.tsx`.

@@ -8,7 +8,7 @@ import {
   GAME_STORYBOARD_KEYFRAME_COUNT_MIN,
   type AgentPromptTemplateOption,
   type StoryboardAgentSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { MacroTextarea } from "../ui/MacroTextarea";
 
 interface ConnectionOption {

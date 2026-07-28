@@ -1,4 +1,4 @@
-import type { SpriteCharacterVisualSettings, SpriteSide } from "@marinara-engine/shared";
+import type { SpriteCharacterVisualSettings, SpriteSide } from "@jumpchoice/shared";
 import { normalizeSpritePlacements, type SpritePlacementMap } from "./sprite-placement";
 import {
   SPRITE_DISPLAY_OPACITY_MAX,

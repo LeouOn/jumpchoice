@@ -7,7 +7,7 @@ import {
   DOCS_LANGUAGE_LABELS,
   DOCS_LANGUAGE_SETTINGS_KEY,
   normalizeDocsLanguage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../lib/logger.js";
 import { existsSync } from "fs";
 import { readdir, readFile, realpath, stat } from "fs/promises";

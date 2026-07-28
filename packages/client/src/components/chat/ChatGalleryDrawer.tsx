@@ -19,7 +19,7 @@ import {
   isAgentConfigDeleted,
   parseAgentSettingsRecord,
   type Chat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { ChatImage } from "../../hooks/use-gallery";
 import { useAgentConfigs } from "../../hooks/use-agents";
 import { useCapabilityAgentRegistry, useInstalledCapabilityPackages } from "../../hooks/use-capability-packages";

@@ -1,4 +1,4 @@
-import type { CreateLorebookInput, Lorebook } from "@marinara-engine/shared";
+import type { CreateLorebookInput, Lorebook } from "@jumpchoice/shared";
 
 function canonicalLinkedIds(ids: string[], legacyId: string | null) {
   return Array.from(new Set([...ids, legacyId].filter((id): id is string => Boolean(id))));

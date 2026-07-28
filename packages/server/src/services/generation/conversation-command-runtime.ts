@@ -5,7 +5,7 @@ import {
   type ChatMode,
   type ConversationCommandKey,
   type WrapFormat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import type { CharacterCommand } from "../conversation/character-commands.js";

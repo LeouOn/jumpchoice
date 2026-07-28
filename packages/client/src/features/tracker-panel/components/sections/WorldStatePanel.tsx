@@ -22,7 +22,7 @@ import {
   worldTrackerLockKey,
   type GameState,
   type WorldCustomField,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { GameStatePatchField } from "../../../../hooks/use-game-state-patcher";
 import type { TrackerPanelSizeProfile, TrackerTemperatureUnit } from "../../../../stores/ui.store";
 import { cn } from "../../../../lib/utils";

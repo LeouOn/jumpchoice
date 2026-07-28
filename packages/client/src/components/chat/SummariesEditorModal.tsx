@@ -4,7 +4,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { X, Plus, Trash2, CalendarClock, ChevronRight, ChevronsDownUp, ChevronsUpDown, RefreshCw } from "lucide-react";
 import { cn } from "../../lib/utils";
-import type { Chat, ChatMetadata, DaySummaryEntry, WeekSummaryEntry } from "@marinara-engine/shared";
+import type { Chat, ChatMetadata, DaySummaryEntry, WeekSummaryEntry } from "@jumpchoice/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { chatKeys, useBackfillConversationSummaries, useUpdateChatSummaries } from "../../hooks/use-chats";
 import { useTranslation as useUiTranslation } from "react-i18next";

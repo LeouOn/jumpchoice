@@ -1,4 +1,4 @@
-import { compactQuestProgressForContext, formatCustomTrackerFieldForPrompt } from "@marinara-engine/shared";
+import { compactQuestProgressForContext, formatCustomTrackerFieldForPrompt } from "@jumpchoice/shared";
 import { wrapContent } from "../prompt/format-engine.js";
 
 type WrapFormat = "xml" | "markdown" | "none";

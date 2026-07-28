@@ -9,7 +9,7 @@ import {
   isPatternSafe,
   resolveRegexPatternLiteralMacros,
   type RegexPlacement,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useUIStore } from "../stores/ui.store";
 import { useChatStore } from "../stores/chat.store";
 

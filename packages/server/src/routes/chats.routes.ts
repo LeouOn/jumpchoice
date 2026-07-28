@@ -33,7 +33,7 @@ import {
   normalizeTextForMatch,
   formatRpgStatsForPrompt,
   normalizeRpgStatPools,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   CharacterData,
   ChatMemoryChunk,
@@ -48,7 +48,7 @@ import type {
   RPGStatsConfig,
   WorldCustomField,
   HomeFeedSnapshot,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   createChatsStorage,
   InvalidMessageCursorError,

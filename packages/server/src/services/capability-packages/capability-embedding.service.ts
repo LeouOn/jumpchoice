@@ -1,4 +1,4 @@
-import type { CapabilityEmbeddingHost } from "@marinara-engine/shared";
+import type { CapabilityEmbeddingHost } from "@jumpchoice/shared";
 import { createHash } from "node:crypto";
 import type { DB } from "../../db/connection.js";
 import { localEmbed } from "../local-embedder.js";

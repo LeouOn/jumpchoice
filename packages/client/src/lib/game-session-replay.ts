@@ -1,4 +1,4 @@
-import type { DirectionCommand, Message, SceneSegmentEffect } from "@marinara-engine/shared";
+import type { DirectionCommand, Message, SceneSegmentEffect } from "@jumpchoice/shared";
 import { api } from "./api-client";
 import { parseGmTags } from "./game-tag-parser";
 import { normalizeChoiceText } from "./game-choice-utils";

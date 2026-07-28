@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // Music DJ Spotify prompt constraints
 // ──────────────────────────────────────────────
-import { normalizeSpotifySourceType } from "@marinara-engine/shared";
+import { normalizeSpotifySourceType } from "@jumpchoice/shared";
 
 function cleanString(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value.trim() : null;

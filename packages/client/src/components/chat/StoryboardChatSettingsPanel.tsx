@@ -11,8 +11,8 @@ import {
   type StoryboardAgentSettings,
   type StoryboardAutoGenerateMode,
   type StoryboardViewerMode,
-} from "@marinara-engine/shared";
-import { mergeBuiltInAgentSettings, normalizeStoryboardAgentSettings } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { mergeBuiltInAgentSettings, normalizeStoryboardAgentSettings } from "@jumpchoice/shared";
 import { useAgentConfigs, type AgentConfigRow } from "../../hooks/use-agents";
 import { useCapabilityAgentRegistry } from "../../hooks/use-capability-packages";
 import { useUpdateChatMetadata } from "../../hooks/use-chats";

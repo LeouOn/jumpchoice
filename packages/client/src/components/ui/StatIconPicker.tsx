@@ -8,7 +8,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { CircleDashed, X } from "lucide-react";
-import { SUPPORTED_STAT_ICONS, type SupportedStatIcon } from "@marinara-engine/shared";
+import { SUPPORTED_STAT_ICONS, type SupportedStatIcon } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 import { cn } from "../../lib/utils";
 import { StatIcon } from "./stat-icons";

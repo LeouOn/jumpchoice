@@ -8,7 +8,7 @@ import {
   formatRpgStatsForPrompt,
   isExternallyImportedAgent,
   resolveMacros,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   CharacterMacroProfile,
   MarkerConfig,
@@ -19,7 +19,7 @@ import type {
   LorebookEntryTimingState,
   MacroContext,
   ResolveMacroOptions,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createAgentsStorage } from "../storage/agents.storage.js";
 import { getCustomAgentImportPolicy } from "../agents/custom-agent-import-policy.service.js";

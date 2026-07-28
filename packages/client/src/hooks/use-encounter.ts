@@ -14,7 +14,7 @@ import type {
   EncounterSettings,
   CombatPartyMember,
   CombatEnemy,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 /** Ensure each party member has all required numeric/string fields so components don't crash. */
 function sanitizeParty(arr: unknown[], fallback: CombatPartyMember[]): CombatPartyMember[] {

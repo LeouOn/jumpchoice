@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useTranslation as useUiTranslation } from "react-i18next";
-import type { GameTurnStoryboard, GameTurnStoryboardKeyframe } from "@marinara-engine/shared";
+import type { GameTurnStoryboard, GameTurnStoryboardKeyframe } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { getChatToolbarButtonClass } from "../chat/ChatToolbarControls";
 import { getStoryboardViewerWidthBounds } from "./game-storyboard-ui";

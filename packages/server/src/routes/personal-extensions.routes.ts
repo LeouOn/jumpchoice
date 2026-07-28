@@ -20,7 +20,7 @@ import {
   type PersonalExtensionCapability,
   type PersonalExtensionCharacterSnapshot,
   type PersonalExtensionPersonaSnapshot,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 import { createPersonalExtensionsStorage } from "../services/extensions/personal-extension-storage.service.js";
 import { createPersonalExtensionSettingsStorage } from "../services/extensions/personal-extension-settings.service.js";

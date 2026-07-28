@@ -7,7 +7,7 @@ import {
   resolveProviderReasoningEffort,
   type ChatMLMessage,
   type GenerationParameterSendMap,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createConnectionsStorage } from "../../services/storage/connections.storage.js";
 import { createLLMProvider } from "../../services/llm/provider-registry.js";
 import { withConnectionFallbackProvider } from "../../services/llm/connection-fallback-provider.js";

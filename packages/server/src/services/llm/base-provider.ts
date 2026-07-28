@@ -9,7 +9,7 @@ import {
   isProviderLocalUrlsEnabled,
 } from "../../config/runtime-config.js";
 import { requestHeadersWithIdentityEncoding, safeFetch, type SafeFetchOptions } from "../../utils/security.js";
-import type { GenerationParameterSendKey, GenerationParameterSendMap } from "@marinara-engine/shared";
+import type { GenerationParameterSendKey, GenerationParameterSendMap } from "@jumpchoice/shared";
 
 /**
  * Shared undici Agent settings. The headers timeout (time to first byte) follows

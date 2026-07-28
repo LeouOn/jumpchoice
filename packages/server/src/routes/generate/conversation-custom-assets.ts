@@ -5,7 +5,7 @@ import {
   type CustomEmojiSelectionPrefs,
   type GroupedSegment,
   type MessageReaction,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import { cosineSimilarity } from "../../services/lorebook/embeddings.js";

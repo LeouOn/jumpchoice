@@ -6,9 +6,9 @@ import {
   type GenerationParameterSendMap,
   type ManagedGenerationParameterDefinition,
   type ThinkingTagPair,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
-import { LOCAL_SIDECAR_CONNECTION_ID } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID } from "@jumpchoice/shared";
 import { createLLMProvider } from "../llm/provider-registry.js";
 import { getLocalSidecarProvider } from "../llm/local-sidecar.js";
 import type { BaseLLMProvider } from "../llm/base-provider.js";

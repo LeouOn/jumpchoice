@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import type { ResolvedOwnerSpatialProjection } from "@marinara-engine/shared";
+import type { ResolvedOwnerSpatialProjection } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { createGalleryStorage } from "../storage/gallery.storage.js";

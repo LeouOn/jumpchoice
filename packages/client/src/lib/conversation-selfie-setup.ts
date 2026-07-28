@@ -1,4 +1,4 @@
-import type { ConversationCommandToggles } from "@marinara-engine/shared";
+import type { ConversationCommandToggles } from "@jumpchoice/shared";
 
 export type ConversationSelfieConnectionOption = {
   id: string;

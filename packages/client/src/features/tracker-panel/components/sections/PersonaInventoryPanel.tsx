@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HeartPulse, Package, Sparkles } from "lucide-react";
-import type { CharacterStat, InventoryItem, Persona } from "@marinara-engine/shared";
-import { isTrackerFieldLocked, personaStatTrackerLockKey, personaStatusTrackerLockKey } from "@marinara-engine/shared";
+import type { CharacterStat, InventoryItem, Persona } from "@jumpchoice/shared";
+import { isTrackerFieldLocked, personaStatTrackerLockKey, personaStatusTrackerLockKey } from "@jumpchoice/shared";
 import type { TrackerPanelSide, TrackerPanelSizeProfile, TrackerStatDisplayMode } from "../../../../stores/ui.store";
 import { useCharacterSprites, type SpriteInfo } from "../../../../hooks/use-characters";
 import {

@@ -1,4 +1,4 @@
-import type { NoodleAccount, NoodlerSourceSnapshot, NoodlerSourceStatus } from "@marinara-engine/shared";
+import type { NoodleAccount, NoodlerSourceSnapshot, NoodlerSourceStatus } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 

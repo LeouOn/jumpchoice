@@ -1,4 +1,4 @@
-import { normalizeTextForMatch, resolveMacros, type MacroContext, type Persona } from "@marinara-engine/shared";
+import { normalizeTextForMatch, resolveMacros, type MacroContext, type Persona } from "@jumpchoice/shared";
 
 export interface MacroCharacterData {
   id?: string;

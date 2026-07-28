@@ -3,7 +3,7 @@ import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 import {
   isReservedManagedGenerationParameterKey,
   type ManagedGenerationParameterDefinition,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {

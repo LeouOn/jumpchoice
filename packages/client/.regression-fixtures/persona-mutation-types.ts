@@ -1,4 +1,4 @@
-import type { PersonaUpdateInput, TrackerCardColorConfig } from "@marinara-engine/shared";
+import type { PersonaUpdateInput, TrackerCardColorConfig } from "@jumpchoice/shared";
 import { useUpdatePersona, useUpdatePersonaTrackerCard } from "../src/hooks/use-characters";
 
 declare const sharedUpdate: PersonaUpdateInput;

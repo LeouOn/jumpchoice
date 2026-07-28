@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils";
 import { renderMarkdownBlocks, applyInlineMarkdown } from "../../lib/markdown";
 import { useDocContent, useDocsIndex, useDocsSearch, type DocSummary } from "../../hooks/use-docs";
 import { useTranslation as useUiTranslation } from "react-i18next";
-import { docsLanguageDirection } from "@marinara-engine/shared";
+import { docsLanguageDirection } from "@jumpchoice/shared";
 
 /**
  * Sidebar category headers, keyed by the ACTIVE DOCS LANGUAGE (not the UI

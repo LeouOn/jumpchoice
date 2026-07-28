@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { QuestProgress } from "@marinara-engine/shared";
+import type { QuestProgress } from "@jumpchoice/shared";
 import type { TrackerPanelSizeProfile } from "../../../../../stores/ui.store";
 import { TrackerReadabilityVeil } from "../../controls/TrackerProfileChrome";
 import { QuestBoard } from "./QuestBoard";

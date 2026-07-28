@@ -1,4 +1,4 @@
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 
 export const HOME_CHAT_MODE_ACCENTS: Record<ChatMode, string> = {
   conversation: "oklch(0.79 0.16 205)",

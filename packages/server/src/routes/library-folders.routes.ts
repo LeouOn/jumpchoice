@@ -9,7 +9,7 @@ import {
   migrateLibraryFoldersSchema,
   moveLibraryItemsSchema,
   updateLibraryFolderSchema,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createLibraryFoldersStorage } from "../services/storage/library-folders.storage.js";
 
 export async function libraryFoldersRoutes(app: FastifyInstance) {

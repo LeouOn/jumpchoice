@@ -20,8 +20,8 @@ import type {
   SidecarStatus,
   SidecarStatusResponse,
   SidecarQuantization,
-} from "@marinara-engine/shared";
-import { SIDECAR_DEFAULT_CONFIG } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { SIDECAR_DEFAULT_CONFIG } from "@jumpchoice/shared";
 import { api } from "../lib/api-client.js";
 import { consumeSidecarDownloadStream } from "../lib/sidecar-download-stream.js";
 

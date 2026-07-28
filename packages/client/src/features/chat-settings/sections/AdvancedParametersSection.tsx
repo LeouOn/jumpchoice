@@ -15,7 +15,7 @@ import { useSaveConnectionDefaults } from "../../../hooks/use-connections";
 import { isLanguageGenerationConnection, type ConnectionProviderLike } from "../../../lib/connection-filters";
 import { cn } from "../../../lib/utils";
 import { useTranslation as useUiTranslation } from "react-i18next";
-import { parseConnectionImageCaptioningDefaults } from "@marinara-engine/shared";
+import { parseConnectionImageCaptioningDefaults } from "@jumpchoice/shared";
 
 const EDITABLE_PARAMETER_KEYS: Array<keyof EditableGenerationParameters> = [
   "temperature",

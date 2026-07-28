@@ -11,8 +11,8 @@ import { createCharactersStorage } from "../services/storage/characters.storage.
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { withConnectionFallbackProvider } from "../services/llm/connection-fallback-provider.js";
-import { CONVERSATION_SCHEDULE_DAYS, PROVIDERS, localAuthProviderBaseUrl } from "@marinara-engine/shared";
-import type { CharacterData, ConversationStatusOverride } from "@marinara-engine/shared";
+import { CONVERSATION_SCHEDULE_DAYS, PROVIDERS, localAuthProviderBaseUrl } from "@jumpchoice/shared";
+import type { CharacterData, ConversationStatusOverride } from "@jumpchoice/shared";
 import {
   generateCharacterSchedule,
   generateCharacterDaySchedule,

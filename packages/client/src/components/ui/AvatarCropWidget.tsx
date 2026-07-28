@@ -13,7 +13,7 @@
 // ratio without distortion.
 import { useEffect, useRef, useState } from "react";
 import { Crop, Maximize2, RotateCcw, Trash2, X } from "lucide-react";
-import type { AvatarCrop, SourceRectAvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop, SourceRectAvatarCrop } from "@jumpchoice/shared";
 import { getAvatarCropStyle, isLegacyAvatarCrop } from "../../lib/utils";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

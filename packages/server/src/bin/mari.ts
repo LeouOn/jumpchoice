@@ -2,7 +2,7 @@
 // ──────────────────────────────────────────────
 // Marinara local CLI
 // ──────────────────────────────────────────────
-import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@marinara-engine/shared";
+import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@jumpchoice/shared";
 import { readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";

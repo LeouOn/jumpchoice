@@ -16,7 +16,7 @@ import {
   MARINARA_UNIVERSAL_PRESET_NAME,
   MARINARA_UNIVERSAL_PRESET_SYSTEM_KEY,
   isStockMarinaraUniversalPreset,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";

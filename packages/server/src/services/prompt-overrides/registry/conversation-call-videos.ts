@@ -1,4 +1,4 @@
-import type { ConversationCallCharacterVideoClipKind } from "@marinara-engine/shared";
+import type { ConversationCallCharacterVideoClipKind } from "@jumpchoice/shared";
 import type { PromptOverrideKeyDef } from "../types.js";
 
 export interface ConversationCallVideoClipCtx extends Record<string, string | number | undefined> {

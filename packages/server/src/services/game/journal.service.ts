@@ -5,7 +5,7 @@
 // state snapshots — no LLM summarization needed.
 // ──────────────────────────────────────────────
 
-import type { GameNpc } from "@marinara-engine/shared";
+import type { GameNpc } from "@jumpchoice/shared";
 
 // ── Types ──
 

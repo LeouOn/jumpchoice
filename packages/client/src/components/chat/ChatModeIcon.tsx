@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 import { Gamepad2, MessageSquare, Theater, type LucideProps } from "lucide-react";
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 
 export const CHAT_MODE_ICON_COMPONENTS = {
   conversation: MessageSquare,

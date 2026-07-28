@@ -53,7 +53,7 @@ import {
   type NoodleSettingsUpdateInput,
   type NoodlerCreateInteractionInput,
   type NoodlerRemoveInteractionInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { isFileUniqueConstraintError } from "../../db/file-schema.js";
 import { logger } from "../../lib/logger.js";

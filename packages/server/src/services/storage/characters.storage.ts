@@ -21,7 +21,7 @@ import {
   type CharacterData,
   type PersonaCardSnapshot,
   type UpdateCharacterInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { normalizeTimestampOverrides, type TimestampOverrides } from "../import/import-timestamps.js";
 import { toPaginatedList } from "../../utils/list-pagination.js";
 import { withAvatarFileLifecycleLock } from "../image/avatar-file-lifecycle.js";

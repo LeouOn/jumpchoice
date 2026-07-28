@@ -1,5 +1,5 @@
 import { ArrowLeft, Box, MessageSquare, Settings2, Sparkles } from "lucide-react";
-import type { BuiltInAgentManifest, InstalledCapabilityPackage } from "@marinara-engine/shared";
+import type { BuiltInAgentManifest, InstalledCapabilityPackage } from "@jumpchoice/shared";
 import { CapabilityElement } from "../capabilities/CapabilityElement";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

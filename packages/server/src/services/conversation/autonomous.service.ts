@@ -5,7 +5,7 @@
 // should send autonomous messages. Also handles character-to-character
 // exchanges in group chats.
 
-import type { ConversationStatusOverride } from "@marinara-engine/shared";
+import type { ConversationStatusOverride } from "@jumpchoice/shared";
 import { getEffectiveCurrentStatus, type WeekSchedule } from "./schedule.service.js";
 
 // ── Types ──

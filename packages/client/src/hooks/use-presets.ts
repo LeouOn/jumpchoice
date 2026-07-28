@@ -4,7 +4,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "../lib/api-client";
-import type { PromptPreset, PromptGroup, PromptSection, ChoiceBlock } from "@marinara-engine/shared";
+import type { PromptPreset, PromptGroup, PromptSection, ChoiceBlock } from "@jumpchoice/shared";
 
 // ── Query Keys ──
 

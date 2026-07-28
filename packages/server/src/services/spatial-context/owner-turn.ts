@@ -5,7 +5,7 @@ import type {
   ResolvedSpatialTravel,
   SpatialContextSnapshot,
   SpatialTransitionErrorCode,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getCapabilityService } from "../capability-packages/capability-service-registry.service.js";
 
 export type SpatialOwnerTurnErrorCode =

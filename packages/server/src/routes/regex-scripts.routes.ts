@@ -2,7 +2,7 @@
 // Routes: Regex Scripts
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { createRegexScriptSchema, reorderRegexScriptsSchema, updateRegexScriptSchema } from "@marinara-engine/shared";
+import { createRegexScriptSchema, reorderRegexScriptsSchema, updateRegexScriptSchema } from "@jumpchoice/shared";
 import { createRegexScriptsStorage } from "../services/storage/regex-scripts.storage.js";
 
 export async function regexScriptsRoutes(app: FastifyInstance) {

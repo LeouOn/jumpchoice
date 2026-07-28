@@ -1,4 +1,4 @@
-import type { MariDbCommandResult } from "@marinara-engine/shared";
+import type { MariDbCommandResult } from "@jumpchoice/shared";
 import { FandomMediaWikiClient } from "./fandom-mediawiki-client.js";
 import { formatWikiPayload } from "./format-wiki-result.js";
 import type { ProfessorMariWikiPayload, WikiPageContentMode } from "./types.js";

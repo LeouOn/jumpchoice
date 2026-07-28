@@ -6,7 +6,7 @@ import {
   type CharacterMacroProfile,
   type MacroContext,
   type RPGStatsConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { wrapContent } from "../prompt/format-engine.js";
 import { sanitizeExampleDialoguePromptLeaf, sanitizePromptLeaf } from "../prompt/prompt-escaping.js";
 import { cardPromptText } from "../prompt/card-text.js";

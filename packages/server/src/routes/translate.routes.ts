@@ -11,7 +11,7 @@ import {
   PROVIDERS,
   localAuthProviderBaseUrl,
   resolveTranslationSystemPrompt,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isDeeplxLocalUrlsEnabled } from "../config/runtime-config.js";
 import { safeFetch, validateOutboundUrl } from "../utils/security.js";
 import { resolveBaseUrl } from "./generate/generate-route-utils.js";

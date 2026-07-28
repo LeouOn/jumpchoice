@@ -6,10 +6,10 @@ import {
   type ConversationPresenceStatus,
   type ScheduleBlock,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal";
 import { api } from "../../lib/api-client";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import { toast } from "sonner";
 import { useUIStore } from "../../stores/ui.store";

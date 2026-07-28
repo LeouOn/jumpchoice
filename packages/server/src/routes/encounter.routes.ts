@@ -12,7 +12,7 @@ import { createLLMProvider } from "../services/llm/provider-registry.js";
 import type { ChatMessage } from "../services/llm/base-provider.js";
 import { logger, logDebugOverride } from "../lib/logger.js";
 import { cardPromptText } from "../services/prompt/card-text.js";
-import { localAuthProviderBaseUrl, normalizeRpgStatPools } from "@marinara-engine/shared";
+import { localAuthProviderBaseUrl, normalizeRpgStatPools } from "@jumpchoice/shared";
 import type {
   EncounterInitRequest,
   EncounterActionRequest,
@@ -24,7 +24,7 @@ import type {
   CombatActionResult,
   EncounterLogEntry,
   RPGStatsConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { resolveActivePersonaCandidate } from "./generate/generate-route-utils.js";
 
 // ──────────────────────────────────────────────
@@ -60,7 +60,7 @@ async function resolveConnection(
 
   let baseUrl = conn.baseUrl;
   if (!baseUrl) {
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     baseUrl = providerDef?.defaultBaseUrl ?? "";
   }

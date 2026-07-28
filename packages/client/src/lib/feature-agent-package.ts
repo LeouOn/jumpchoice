@@ -1,4 +1,4 @@
-import type { BuiltInAgentManifest, InstalledCapabilityPackage } from "@marinara-engine/shared";
+import type { BuiltInAgentManifest, InstalledCapabilityPackage } from "@jumpchoice/shared";
 
 export function resolveFeatureAgentPackage(
   agent: BuiltInAgentManifest,

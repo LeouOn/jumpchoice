@@ -59,7 +59,7 @@ import {
   type ChatFolder,
   type ChatMode,
   type ConversationPresenceStatus,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { resolveLiveConversationStatus } from "../../lib/conversation-presence-status";
 import { Modal } from "../ui/Modal";
 import { Reorder, useDragControls } from "framer-motion";

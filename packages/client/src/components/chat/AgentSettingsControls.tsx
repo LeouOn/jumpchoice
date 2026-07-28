@@ -1,7 +1,7 @@
 import { useEffect, useId, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight, Settings2, Trash2 } from "lucide-react";
 import { useTranslation as useUiTranslation } from "react-i18next";
-import type { AgentPromptTemplateOption } from "@marinara-engine/shared";
+import type { AgentPromptTemplateOption } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { useUIStore } from "../../stores/ui.store";
 import { SettingsSwitch } from "../panels/settings/SettingControls";

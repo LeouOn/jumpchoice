@@ -2,7 +2,7 @@
 // Generic API client for communicating with the backend
 // ──────────────────────────────────────────────
 
-import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@marinara-engine/shared";
+import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@jumpchoice/shared";
 import { showGenerationFallbackHeader, showGenerationFallbackToast } from "./generation-fallback-notice";
 
 const BASE = "/api";

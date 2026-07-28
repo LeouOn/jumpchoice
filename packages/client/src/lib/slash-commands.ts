@@ -15,7 +15,7 @@ import {
   buildGuidedGenerationInstructionMessage,
   buildNarratorInstructionMessage,
   normalizeTextForMatch,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export interface SlashCommand {
   name: string;

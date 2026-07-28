@@ -16,7 +16,7 @@ import {
   type RPGStatsConfig,
   type ResolveMacroOptions,
   type WrapFormat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { processLorebooks, type LorebookScanResult } from "../lorebook/index.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";

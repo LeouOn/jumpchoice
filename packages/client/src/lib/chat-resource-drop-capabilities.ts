@@ -1,4 +1,4 @@
-import { isAgentAvailableInChatMode, type Chat, type Lorebook } from "@marinara-engine/shared";
+import { isAgentAvailableInChatMode, type Chat, type Lorebook } from "@jumpchoice/shared";
 import { chatBackgroundMetadataToUrl, chatBackgroundUrlToMetadata } from "./backgrounds";
 import { parseChatMetadata } from "./chat-display";
 import { deriveActiveLorebookViews, getChatExcludedLorebookIds, type LorebookActiveReason } from "./chat-lorebooks";

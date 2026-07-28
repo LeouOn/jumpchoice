@@ -7,7 +7,7 @@ import {
   questTrackerLockKey,
   renameTrackerFieldLockPrefix,
   type QuestProgress,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../../../../lib/utils";
 import { TRACKER_BAR } from "../../../lib/tracker-panel.constants";
 import { visibleText } from "../../../lib/tracker-display";

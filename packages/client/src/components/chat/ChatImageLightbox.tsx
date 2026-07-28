@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Download, Pin, X } from "lucide-react";
-import type { GeneratedSceneVideo } from "@marinara-engine/shared";
+import type { GeneratedSceneVideo } from "@jumpchoice/shared";
 import type { ChatImage } from "../../hooks/use-gallery";
 import { useGalleryStore } from "../../stores/gallery.store";
 import { ImagePromptPanel } from "./ImagePromptPanel";

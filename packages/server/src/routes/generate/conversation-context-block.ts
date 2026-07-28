@@ -1,4 +1,4 @@
-import { normalizeTextForMatch, type WrapFormat } from "@marinara-engine/shared";
+import { normalizeTextForMatch, type WrapFormat } from "@jumpchoice/shared";
 
 import { getIntentHint, isMessageIntent } from "../../services/conversation/intent.service.js";
 import {

@@ -518,22 +518,22 @@ fi
 # ── Build if needed ──
 if [ ! -f "packages/shared/dist/constants/defaults.js" ]; then
     echo "  [..] Building shared types..."
-    run_pnpm --filter @marinara-engine/shared build
+    run_pnpm --filter @jumpchoice/shared build
 fi
 if [ ! -f "packages/server/dist/index.js" ]; then
     echo "  [..] Building server..."
-    run_pnpm --filter @marinara-engine/server build
+    run_pnpm --filter @jumpchoice/server build
 fi
 if [ ! -f "packages/client/dist/index.html" ]; then
     echo "  [..] Building client..."
     # Skip tsc type-check on Termux — it OOMs on low-memory devices.
     # Skip PWA service worker — terser minifier OOMs on low-memory devices.
     # Vite doesn't need tsc output (tsconfig has noEmit: true).
-    if ! SKIP_PWA=1 run_pnpm --filter @marinara-engine/client exec vite build 2>&1; then
+    if ! SKIP_PWA=1 run_pnpm --filter @jumpchoice/client exec vite build 2>&1; then
         echo "  [WARN] Vite build failed — native binaries may not match Node.js $(node -v)."
         echo "  [..] Ensuring WASM fallback for rollup is installed and retrying..."
-        run_pnpm install --frozen-lockfile --prefer-offline --filter @marinara-engine/client 2>/dev/null || true
-        SKIP_PWA=1 run_pnpm --filter @marinara-engine/client exec vite build
+        run_pnpm install --frozen-lockfile --prefer-offline --filter @jumpchoice/client 2>/dev/null || true
+        SKIP_PWA=1 run_pnpm --filter @jumpchoice/client exec vite build
     fi
 fi
 

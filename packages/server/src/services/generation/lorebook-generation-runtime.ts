@@ -1,4 +1,4 @@
-import { LIMITS, type LorebookEntryTimingState } from "@marinara-engine/shared";
+import { LIMITS, type LorebookEntryTimingState } from "@jumpchoice/shared";
 import type { createChatsStorage } from "../storage/chats.storage.js";
 import { parseExtra } from "../../routes/generate/generate-route-utils.js";
 

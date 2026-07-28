@@ -9,7 +9,7 @@ import { useGenerate } from "../../hooks/use-generate";
 import { useChatStore } from "../../stores/chat.store";
 import { useUIStore } from "../../stores/ui.store";
 import { cn } from "../../lib/utils";
-import type { Message } from "@marinara-engine/shared";
+import type { Message } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 import { buildCyoaChoiceSubmissionPayload } from "./cyoa-choice-submission";
 

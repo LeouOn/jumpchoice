@@ -6,7 +6,7 @@ import {
   LONG_TERM_MEMORY_CHAT_SUMMARY_PROMPT_ID,
   isLongTermMemoryChatSummaryPromptAllowed,
   normalizeChatSummaryPromptSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { tryParseJsonRecord } from "../../lib/json-repair.js";
 
 const RETIRED_CHAT_SUMMARY_AGENT_ID = "chat-summary";

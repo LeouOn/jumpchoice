@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { useInfiniteQuery, useQuery, useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "../lib/api-client";
-import type { BulkUpdateLorebookEntriesInput, Lorebook, LorebookEntry, LorebookFolder } from "@marinara-engine/shared";
+import type { BulkUpdateLorebookEntriesInput, Lorebook, LorebookEntry, LorebookFolder } from "@jumpchoice/shared";
 import { characterKeys } from "./use-characters";
 import { achievementKeys, trackAchievementEvent } from "./use-achievements";
 import {

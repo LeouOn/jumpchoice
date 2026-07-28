@@ -4,7 +4,7 @@
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 import { basename, extname, join, resolve } from "node:path";
-import { inferImageSource, type ImagePromptKind } from "@marinara-engine/shared";
+import { inferImageSource, type ImagePromptKind } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { flushDB } from "../../db/connection.js";
 import { DATA_DIR } from "../../utils/data-dir.js";
@@ -22,7 +22,7 @@ import { createGalleryStorage } from "../storage/gallery.storage.js";
 import { createCharacterGalleryStorage } from "../storage/character-gallery.storage.js";
 import { createChatsStorage } from "../storage/chats.storage.js";
 import { buildAssetManifest } from "../game/asset-manifest.service.js";
-import type { MariDbCommandResult } from "@marinara-engine/shared";
+import type { MariDbCommandResult } from "@jumpchoice/shared";
 import { deleteChatGalleryImageEverywhere } from "../image/chat-gallery-cascade-deletion.js";
 import {
   collectPersonaAvatarPaths,

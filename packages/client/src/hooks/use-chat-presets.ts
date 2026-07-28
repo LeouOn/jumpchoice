@@ -4,7 +4,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
 import { chatKeys, syncCachedChat } from "./use-chats";
-import type { Chat, ChatMode, ChatPreset, ChatPresetSettings } from "@marinara-engine/shared";
+import type { Chat, ChatMode, ChatPreset, ChatPresetSettings } from "@jumpchoice/shared";
 
 export const chatPresetKeys = {
   all: ["chat-presets"] as const,

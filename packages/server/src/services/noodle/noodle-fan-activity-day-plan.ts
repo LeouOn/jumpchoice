@@ -344,4 +344,4 @@ export function claimManualNoodleFanActivityRun(
   };
   return { plan: { ...plan, runs: [...automaticRuns, ...manualRuns, run] }, run };
 }
-import type { NoodleAuthorSnapshot } from "@marinara-engine/shared";
+import type { NoodleAuthorSnapshot } from "@jumpchoice/shared";

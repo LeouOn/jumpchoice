@@ -1,4 +1,4 @@
-import type { SidecarRuntimePreference } from "@marinara-engine/shared";
+import type { SidecarRuntimePreference } from "@jumpchoice/shared";
 
 export type GpuVendor = "nvidia" | "amd" | "intel";
 

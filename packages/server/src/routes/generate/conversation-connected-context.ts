@@ -1,4 +1,4 @@
-import type { WrapFormat } from "@marinara-engine/shared";
+import type { WrapFormat } from "@jumpchoice/shared";
 
 import { sanitizeConnectedGameTranscript } from "../../services/generation/generation-text-utils.js";
 import { isConversationCommandEnabled } from "../../services/generation/conversation-command-runtime.js";

@@ -1,4 +1,4 @@
-import type { PersonalExtensionContextSnapshot } from "@marinara-engine/shared";
+import type { PersonalExtensionContextSnapshot } from "@jumpchoice/shared";
 
 export const PERSONAL_EXTENSION_CONTEXT_MAX_ID_LENGTH = 256;
 export const PERSONAL_EXTENSION_CONTEXT_MAX_CHARACTER_IDS = 256;

@@ -37,7 +37,7 @@ import {
   type MariSuggestionChip,
   type Message,
   type Persona,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   matchSlashCommand,
   shouldExecuteQuickPostAsCommand,
@@ -47,7 +47,7 @@ import {
 } from "../../lib/slash-commands";
 import { createInputMacroResolverForChat, isPromptPreviewMacro } from "../../lib/chat-macros";
 import { parseChatMetadata } from "../../lib/chat-display";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import { applyTextareaQuoteFormat } from "../../lib/textarea-quotes";
 import { translateDraftText } from "../../lib/draft-translation";

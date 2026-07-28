@@ -1,5 +1,5 @@
 // DJ Mari - Spotify playlist composer
-import { PROVIDERS, localAuthProviderBaseUrl } from "@marinara-engine/shared";
+import { PROVIDERS, localAuthProviderBaseUrl } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { createLLMProvider } from "../llm/provider-registry.js";

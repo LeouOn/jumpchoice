@@ -33,7 +33,7 @@ import {
   type ChatAssetBrowserItem,
   type ChatImage,
 } from "../../hooks/use-gallery";
-import type { GeneratedSceneVideo } from "@marinara-engine/shared";
+import type { GeneratedSceneVideo } from "@jumpchoice/shared";
 import { useGalleryStore } from "../../stores/gallery.store";
 import { toast } from "sonner";
 import { ImageUploadDropzone } from "../ui/ImageUploadDropzone";

@@ -56,7 +56,7 @@ import {
 } from "../../lib/card-library-search";
 import { clearActiveChatResourceDrag, writeChatResourceDragPayload } from "../../lib/chat-resource-drag";
 import { ChatResourceActionButton } from "../chat/ChatResourceActionButton";
-import type { Persona } from "@marinara-engine/shared";
+import type { Persona } from "@jumpchoice/shared";
 
 type PersonaGroupRow = { id: string; name: string; description: string; personaIds: string };
 type ParsedPersonaGroupRow = PersonaGroupRow & { memberIds: string[] };

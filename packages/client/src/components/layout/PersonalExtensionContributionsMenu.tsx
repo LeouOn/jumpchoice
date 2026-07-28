@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronRight, Puzzle } from "lucide-react";
 import { useTranslation, useTranslation as useUiTranslation } from "react-i18next";
-import type { PersonalExtensionHostContribution } from "@marinara-engine/shared";
+import type { PersonalExtensionHostContribution } from "@jumpchoice/shared";
 import { useUIStore } from "../../stores/ui.store";
 import {
   activatePersonalExtensionContribution,

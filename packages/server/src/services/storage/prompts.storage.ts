@@ -14,8 +14,8 @@ import type {
   UpdatePromptGroupInput,
   CreateChoiceBlockInput,
   UpdateChoiceBlockInput,
-} from "@marinara-engine/shared";
-import { DEFAULT_GENERATION_PARAMS } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { DEFAULT_GENERATION_PARAMS } from "@jumpchoice/shared";
 import { normalizeTimestampOverrides, type TimestampOverrides } from "../import/import-timestamps.js";
 
 function resolveTimestamps(overrides?: TimestampOverrides | null) {

@@ -7,7 +7,7 @@ import { inflateSync } from "node:zlib";
 import { platform, homedir } from "os";
 import { readdir, stat } from "fs/promises";
 import { resolve as pathResolve } from "path";
-import { MAX_FILE_SIZES, normalizeTextForMatch, type ChatMode } from "@marinara-engine/shared";
+import { MAX_FILE_SIZES, normalizeTextForMatch, type ChatMode } from "@jumpchoice/shared";
 import { importSTChat } from "../services/import/st-chat.importer.js";
 import {
   importSTCharacter,

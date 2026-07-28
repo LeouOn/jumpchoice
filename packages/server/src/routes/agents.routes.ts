@@ -22,7 +22,7 @@ import {
   normalizeCustomAgentCapabilities,
   normalizeAgentPhaseForType,
   type CustomAgentCapability,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 import {
   getCustomAgentImportPolicy,

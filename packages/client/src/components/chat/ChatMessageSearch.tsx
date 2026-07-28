@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { normalizeTextForMatch, type Message } from "@marinara-engine/shared";
+import { normalizeTextForMatch, type Message } from "@jumpchoice/shared";
 import { Loader2, Search, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";

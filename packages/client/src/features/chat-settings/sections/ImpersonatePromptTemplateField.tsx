@@ -4,7 +4,7 @@ import {
   DEFAULT_IMPERSONATE_PROMPT,
   EMPTY_IMPERSONATE_PROMPT_TEMPLATE_CATALOG,
   IMPERSONATE_PROMPT_TEMPLATE_MAX_NAME_LENGTH,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 import { ExpandedTextarea } from "../../../components/ui/ExpandedTextarea";
 import { HelpTooltip } from "../../../components/ui/HelpTooltip";

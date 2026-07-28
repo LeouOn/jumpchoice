@@ -3,7 +3,7 @@
 // Ties together storage, scanning, and injection.
 // ──────────────────────────────────────────────
 import type { DB } from "../../db/connection.js";
-import { LIMITS } from "@marinara-engine/shared";
+import { LIMITS } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import type {
   CharacterData,
@@ -12,7 +12,7 @@ import type {
   LorebookEntry,
   LorebookEntryTimingState,
   LorebookMatchingSource,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createLorebooksStorage } from "../storage/lorebooks.storage.js";
 import {

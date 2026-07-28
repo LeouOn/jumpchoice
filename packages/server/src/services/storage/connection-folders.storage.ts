@@ -2,7 +2,7 @@
 // Storage: API Connection Folders
 // ──────────────────────────────────────────────
 import { eq } from "../../db/file-query.js";
-import type { CreateConnectionFolderInput, UpdateFolderInput } from "@marinara-engine/shared";
+import type { CreateConnectionFolderInput, UpdateFolderInput } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { apiConnectionFolders, apiConnections } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";

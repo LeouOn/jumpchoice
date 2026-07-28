@@ -315,16 +315,16 @@ if "!BUILD_REQUIRED!"=="1" (
     echo  [..] Cleaning stale build artifacts...
     call :run_pnpm clean:stale-client
     if errorlevel 1 echo  [ERROR] Failed to clean stale client artifacts. & pause & exit /b 1
-    call :run_pnpm --filter @marinara-engine/shared run clean
+    call :run_pnpm --filter @jumpchoice/shared run clean
     if errorlevel 1 echo  [ERROR] Failed to clean shared build artifacts. & pause & exit /b 1
-    call :run_pnpm --filter @marinara-engine/server run clean
+    call :run_pnpm --filter @jumpchoice/server run clean
     if errorlevel 1 echo  [ERROR] Failed to clean server build artifacts. & pause & exit /b 1
-    call :run_pnpm --filter @marinara-engine/client run clean
+    call :run_pnpm --filter @jumpchoice/client run clean
     if errorlevel 1 echo  [ERROR] Failed to clean client build artifacts. & pause & exit /b 1
     echo  [..] Building Marinara Engine...
-    call :run_pnpm --filter @marinara-engine/shared build
+    call :run_pnpm --filter @jumpchoice/shared build
     if errorlevel 1 echo  [ERROR] Failed to build shared package. & pause & exit /b 1
-    call :run_pnpm --filter @marinara-engine/server --filter @marinara-engine/client --parallel run build
+    call :run_pnpm --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build
     if errorlevel 1 echo  [ERROR] Failed to build server or client package. & pause & exit /b 1
 )
 

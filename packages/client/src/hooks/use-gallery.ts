@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
-import type { GeneratedSceneVideo } from "@marinara-engine/shared";
+import type { GeneratedSceneVideo } from "@jumpchoice/shared";
 
 export interface ChatImage {
   id: string;

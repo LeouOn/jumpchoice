@@ -1,4 +1,4 @@
-import type { Message, AvatarCrop } from "@marinara-engine/shared";
+import type { Message, AvatarCrop } from "@jumpchoice/shared";
 
 export type CharacterMap = Map<
   string,

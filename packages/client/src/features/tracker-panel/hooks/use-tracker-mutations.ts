@@ -7,7 +7,7 @@ import type {
   PresentCharacter,
   QuestProgress,
   TrackerHiddenFields,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   characterTrackerLockPrefix,
   inventoryItemTrackerLockPrefix,
@@ -16,7 +16,7 @@ import {
   removeTrackerFieldLockPrefix,
   removeTrackerQuestLocks,
   renameTrackerFieldLockPrefix,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../../../lib/api-client";
 import { useGameStateStore } from "../../../stores/game-state.store";
 import type { GameStatePatchField } from "../../../hooks/use-game-state-patcher";

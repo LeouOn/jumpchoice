@@ -24,7 +24,7 @@ import { execFile } from "child_process";
 import { platform } from "os";
 import { z } from "zod";
 import { pipeline } from "stream/promises";
-import { MUSIC_GENRES, MUSIC_INTENSITIES } from "@marinara-engine/shared";
+import { MUSIC_GENRES, MUSIC_INTENSITIES } from "@jumpchoice/shared";
 import { GAME_ASSETS_DIR, buildAssetManifest, getAssetManifest } from "../services/game/asset-manifest.service.js";
 import { folderContainsBundledGameAssets, isBundledGameAsset } from "../services/game/native-game-assets.js";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";

@@ -1,4 +1,4 @@
-import type { GameTurnStoryboardKeyframe, Message } from "@marinara-engine/shared";
+import type { GameTurnStoryboardKeyframe, Message } from "@jumpchoice/shared";
 import {
   GAME_STORYBOARD_ANIMATION_DURATION_SECONDS_DEFAULT,
   GAME_STORYBOARD_ANIMATION_DURATION_SECONDS_MAX,
@@ -6,7 +6,7 @@ import {
   GAME_STORYBOARD_KEYFRAME_COUNT_DEFAULT,
   GAME_STORYBOARD_KEYFRAME_COUNT_MAX,
   GAME_STORYBOARD_KEYFRAME_COUNT_MIN,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { GenerateGameTurnStoryboardInput } from "../../hooks/use-game-storyboards";
 import type { GameSegmentEdit } from "../../lib/game-segment-edits";
 import { parseNarrationSegments, type NarrationSegment } from "./GameNarration";

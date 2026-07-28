@@ -23,7 +23,7 @@ import { buildAssetManifest, ensureAssetDirs } from "./services/game/asset-manif
 import { recoverGalleryImages } from "./services/storage/gallery-recovery.js";
 import { migrateCharacterExtendedDescriptionsToLorebooks } from "./services/lorebook/extended-descriptions-migration.js";
 import { migrateLegacyDefaultAgentPrompts } from "./services/agents/default-prompt-migration.js";
-import { APP_VERSION, resetTurnGameRegistry } from "@marinara-engine/shared";
+import { APP_VERSION, resetTurnGameRegistry } from "@jumpchoice/shared";
 import { existsSync } from "fs";
 import { readFile } from "fs/promises";
 import { join, resolve, dirname } from "path";

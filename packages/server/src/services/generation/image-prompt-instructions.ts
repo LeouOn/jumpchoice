@@ -1,4 +1,4 @@
-import { normalizeImagePromptInstructions } from "@marinara-engine/shared";
+import { normalizeImagePromptInstructions } from "@jumpchoice/shared";
 
 export function appendImagePromptInstructions(prompt: string, instructions: unknown): string {
   const normalizedInstructions = normalizeImagePromptInstructions(instructions);

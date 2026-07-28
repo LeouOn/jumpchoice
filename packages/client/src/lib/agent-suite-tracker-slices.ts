@@ -1,4 +1,4 @@
-import type { GameState, PlayerStats } from "@marinara-engine/shared";
+import type { GameState, PlayerStats } from "@jumpchoice/shared";
 
 export type AgentSuiteTrackerSlice = {
   label: string;

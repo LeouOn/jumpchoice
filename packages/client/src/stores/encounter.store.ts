@@ -12,7 +12,7 @@ import type {
   EncounterLogEntry,
   EncounterSettings,
   CombatStyleNotes,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 interface EncounterState {
   // ── State ──

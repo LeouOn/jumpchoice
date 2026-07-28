@@ -1,4 +1,4 @@
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 import { Modal } from "../ui/Modal";
 import { ChatModeIcon } from "./ChatModeIcon";

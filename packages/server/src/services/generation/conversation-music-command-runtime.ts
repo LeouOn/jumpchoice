@@ -1,4 +1,4 @@
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import type {

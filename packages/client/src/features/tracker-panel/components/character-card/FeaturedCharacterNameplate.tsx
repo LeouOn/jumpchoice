@@ -1,6 +1,6 @@
 import { type RefObject } from "react";
 import { Brain, Minimize2 } from "lucide-react";
-import { characterTrackerLockKey, isTrackerFieldLocked, type PresentCharacter } from "@marinara-engine/shared";
+import { characterTrackerLockKey, isTrackerFieldLocked, type PresentCharacter } from "@jumpchoice/shared";
 import { cn } from "../../../../lib/utils";
 import type { TrackerProfileSide } from "../../lib/tracker-profile-layout";
 import { InlineEdit } from "../controls/InlineControls";

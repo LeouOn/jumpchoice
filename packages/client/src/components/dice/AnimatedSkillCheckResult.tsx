@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { SkillCheckResult } from "@marinara-engine/shared";
+import type { SkillCheckResult } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { AnimatedDiceRoll } from "./AnimatedDiceRoll";
 import { useTranslation as useUiTranslation } from "react-i18next";

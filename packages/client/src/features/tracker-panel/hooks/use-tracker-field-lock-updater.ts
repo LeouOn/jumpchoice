@@ -3,7 +3,7 @@ import {
   normalizeTrackerFieldLocksForState,
   trackerFieldLocksAreEqual,
   type TrackerFieldLocks,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { GameStatePatchField } from "../../../hooks/use-game-state-patcher";
 import { useGameStateStore } from "../../../stores/game-state.store";
 

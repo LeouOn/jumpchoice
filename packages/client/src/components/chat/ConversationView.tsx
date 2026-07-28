@@ -43,7 +43,7 @@ import {
   parseGroupedSpeakerSegments,
   stripLeadingMessageTimestamps,
   type Message,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useInstalledCapabilityPackages } from "../../hooks/use-capability-packages";
 import { CapabilityElement } from "../capabilities/CapabilityElement";
 import { TURN_GAME_BOT_REQUEST_EVENT } from "../../lib/capability-turn-game-events";

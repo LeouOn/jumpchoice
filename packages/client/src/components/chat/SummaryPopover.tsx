@@ -76,7 +76,7 @@ import {
   type ChatSummaryEntry,
   type ChatSummaryPromptSettings,
   type ChatSummaryPromptTemplate,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { DraftNumberInput } from "../ui/DraftNumberInput";
 import { MacroTextarea } from "../ui/MacroTextarea";

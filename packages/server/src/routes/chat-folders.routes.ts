@@ -2,7 +2,7 @@
 // Routes: Chat Folders
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
-import { createChatFolderSchema, moveChatToFolderSchema, reorderChatsInFolderSchema } from "@marinara-engine/shared";
+import { createChatFolderSchema, moveChatToFolderSchema, reorderChatsInFolderSchema } from "@jumpchoice/shared";
 import { createChatFoldersStorage } from "../services/storage/chat-folders.storage.js";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { registerFolderCrudRoutes } from "./folder-routes.shared.js";

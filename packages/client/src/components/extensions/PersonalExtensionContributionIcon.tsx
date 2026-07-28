@@ -1,6 +1,6 @@
 import { Puzzle } from "lucide-react";
 import { DynamicIcon, iconNames, type IconName } from "lucide-react/dynamic";
-import type { PersonalExtensionContributionIcon } from "@marinara-engine/shared";
+import type { PersonalExtensionContributionIcon } from "@jumpchoice/shared";
 
 const CONTRIBUTION_ICON_NAMES = new Set<string>(iconNames);
 const LEGACY_ICON_ALIASES: Record<string, IconName> = {

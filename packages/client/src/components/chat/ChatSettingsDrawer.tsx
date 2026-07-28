@@ -84,7 +84,7 @@ import { PromptPresetSection } from "../../features/chat-settings/sections/Promp
 import { SceneInstructionsSection } from "../../features/chat-settings/sections/SceneInstructionsSection";
 import { TranslationSection } from "../../features/chat-settings/sections/TranslationSection";
 import { CapabilityElement } from "../capabilities/CapabilityElement";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import { showAlertDialog, showConfirmDialog, showPromptDialog } from "../../lib/app-dialogs";
 import { HelpTooltip } from "../ui/HelpTooltip";
@@ -200,14 +200,14 @@ import type {
   PromptPreset,
   SpotifySourceType,
   WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   MAX_ILLUSTRATOR_IMAGES_PER_GENERATION,
   customAgentHasCapability,
   normalizeIllustratorImagesPerGeneration,
   normalizeSpotifySourceType,
   parseAgentSettingsRecord,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useAgentConfigs, useCreateAgent, useUpdateAgent, type AgentConfigRow } from "../../hooks/use-agents";
 import { useAgentStore } from "../../stores/agent.store";
 import { useSidecarStore } from "../../stores/sidecar.store";
@@ -245,14 +245,14 @@ import {
   normalizeAgentPromptTemplateSelectionMap,
   resolveDefaultAgentPromptTemplateId,
   resolveAgentPromptTemplate,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   Chat,
   CharacterGroup,
   GameCombatStyle,
   Lorebook,
   SpriteCharacterVisualSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   isCustomToolSelectable,
   useCustomToolCapabilities,

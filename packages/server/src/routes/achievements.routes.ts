@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { ACHIEVEMENT_EVENTS } from "@marinara-engine/shared";
+import { ACHIEVEMENT_EVENTS } from "@jumpchoice/shared";
 import { createAchievementsService } from "../services/achievements/achievements.service.js";
 
 const achievementTrackSchema = z.object({

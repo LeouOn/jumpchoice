@@ -1,4 +1,4 @@
-import { sanitizeFolderSegment, type PersonalExtension } from "@marinara-engine/shared";
+import { sanitizeFolderSegment, type PersonalExtension } from "@jumpchoice/shared";
 import type { ZipFileInput } from "./download-zip";
 
 export function createPersonalExtensionPackageFiles(extension: PersonalExtension): ZipFileInput[] {

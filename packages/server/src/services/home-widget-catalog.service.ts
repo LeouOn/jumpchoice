@@ -3,7 +3,7 @@ import {
   homeCustomWidgetCatalogSchema,
   type HomeCustomWidget,
   type HomeCustomWidgetCatalog,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../db/connection.js";
 import { eq } from "../db/file-query.js";
 import { appSettings } from "../db/schema/index.js";

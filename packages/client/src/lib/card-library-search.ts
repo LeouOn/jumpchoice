@@ -1,4 +1,4 @@
-import { includesTextForMatch, normalizeTextForMatch } from "@marinara-engine/shared";
+import { includesTextForMatch, normalizeTextForMatch } from "@jumpchoice/shared";
 
 export type CardLibrarySearchQuery = {
   text: string;

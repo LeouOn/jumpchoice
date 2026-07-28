@@ -14,7 +14,7 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
-import type { MessageExtra } from "@marinara-engine/shared";
+import type { MessageExtra } from "@jumpchoice/shared";
 import type { RefObject } from "react";
 import { useTranslation, useTranslation as useUiTranslation } from "react-i18next";
 import { cn } from "../../lib/utils";

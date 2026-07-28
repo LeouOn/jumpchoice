@@ -1,4 +1,4 @@
-import { MAX_FILE_SIZES } from "@marinara-engine/shared";
+import { MAX_FILE_SIZES } from "@jumpchoice/shared";
 import { isAllowedImageBuffer, safeFetch, type SafeFetchOptions } from "../../utils/security.js";
 
 const JANNY_DOWNLOAD_API = "https://api.jannyai.com/api/v1/download";

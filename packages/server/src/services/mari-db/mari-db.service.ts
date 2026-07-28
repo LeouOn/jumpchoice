@@ -50,7 +50,7 @@ import {
   type MariDbRowChange,
   type MariDbValidationIssue,
   type MariDbValidationResult,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { computePersonalExtensionHash } from "../extensions/personal-extension-hash.js";
 import { HomeWidgetCatalogConflictError, replaceHomeWidgetCatalog } from "../home-widget-catalog.service.js";
 import { createMariWherePredicate } from "./mari-where-expression.js";

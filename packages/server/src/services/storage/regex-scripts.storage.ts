@@ -5,7 +5,7 @@ import { eq, asc } from "../../db/file-query.js";
 import type { DB } from "../../db/connection.js";
 import { regexScripts } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
-import type { CreateRegexScriptInput, RegexApplyMode } from "@marinara-engine/shared";
+import type { CreateRegexScriptInput, RegexApplyMode } from "@jumpchoice/shared";
 
 function deriveApplyMode(input: { applyMode?: RegexApplyMode; promptOnly?: boolean }): RegexApplyMode {
   if (input.applyMode === "prompt" || input.applyMode === "display" || input.applyMode === "both") {

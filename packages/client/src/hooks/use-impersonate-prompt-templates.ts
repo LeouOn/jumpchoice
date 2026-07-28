@@ -6,7 +6,7 @@ import {
   impersonatePromptTemplateCatalogSchema,
   type ImpersonatePromptTemplate,
   type ImpersonatePromptTemplateCatalog,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 import { translate } from "../localization/i18n";
 

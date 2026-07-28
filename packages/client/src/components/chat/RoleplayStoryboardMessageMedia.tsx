@@ -1,4 +1,4 @@
-import type { GameTurnStoryboard, GameTurnStoryboardKeyframe } from "@marinara-engine/shared";
+import type { GameTurnStoryboard, GameTurnStoryboardKeyframe } from "@jumpchoice/shared";
 import { ChevronLeft, ChevronRight, Loader2, PanelsTopLeft, TriangleAlert } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation as useUiTranslation } from "react-i18next";

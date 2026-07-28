@@ -12,7 +12,7 @@ import { useSpriteCapabilities } from "../../hooks/use-characters";
 import { useUIStore } from "../../stores/ui.store";
 import { api } from "../../lib/api-client";
 import { ImagePromptReviewModal, type ImagePromptOverride, type ImagePromptReviewItem } from "./ImagePromptReviewModal";
-import { normalizeSpriteExpressionLabel } from "@marinara-engine/shared";
+import { normalizeSpriteExpressionLabel } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 // ── Types ──

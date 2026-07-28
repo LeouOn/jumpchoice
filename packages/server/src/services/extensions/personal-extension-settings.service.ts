@@ -1,7 +1,7 @@
 import {
   personalExtensionStoragePatchSchema,
   type PersonalExtensionStoragePatchInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { createAppSettingsStorage } from "../storage/app-settings.storage.js";
 
 const STORAGE_KEY_PREFIX = "extension-storage:";

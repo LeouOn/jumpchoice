@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { GameSceneVideoAspectRatio, GameTurnStoryboard } from "@marinara-engine/shared";
+import type { GameSceneVideoAspectRatio, GameTurnStoryboard } from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 
 export const gameStoryboardKeys = {

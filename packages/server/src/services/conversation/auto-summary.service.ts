@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 // Shared daily/weekly summary generation for conversation mode.
 
-import type { DaySummaryEntry, WeekSummaryEntry } from "@marinara-engine/shared";
+import type { DaySummaryEntry, WeekSummaryEntry } from "@jumpchoice/shared";
 import type { BaseLLMProvider } from "../llm/base-provider.js";
 import { tryParseJsonRecord } from "../../lib/json-repair.js";
 import { stripConversationPromptTimestamps } from "./transcript-sanitize.js";

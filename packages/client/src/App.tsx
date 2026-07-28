@@ -15,7 +15,7 @@ import {
 } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Translation } from "react-i18next";
-import { APP_VERSION } from "@marinara-engine/shared";
+import { APP_VERSION } from "@jumpchoice/shared";
 import { CustomThemeInjector } from "./components/layout/CustomThemeInjector";
 import { PersonalExtensionInjector } from "./components/layout/PersonalExtensionInjector";
 import { ModelDownloadModal } from "./components/modals/ModelDownloadModal";

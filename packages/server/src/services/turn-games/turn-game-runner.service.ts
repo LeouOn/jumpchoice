@@ -6,7 +6,7 @@
 // applies validated moves. Bot-seat generation (the LLM narration loop) is
 // layered on top of this in the generation pipeline; this module is the
 // deterministic core used by both the REST routes and that loop.
-import { getTurnGameEngine, type AnyTurnGameEngine, type Seat } from "@marinara-engine/shared";
+import { getTurnGameEngine, type AnyTurnGameEngine, type Seat } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { createChatsStorage } from "../storage/chats.storage.js";

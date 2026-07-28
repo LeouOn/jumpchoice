@@ -85,7 +85,7 @@ import {
   VIDEO_GENERATION_SETTINGS_KEY,
   type ImageGenerationDefaultsProfile,
   type ImageStyleProfileSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { assertInsideDir, isAllowedImageBuffer } from "../utils/security.js";
 import { sendValidatedMediaFile, validateImageAssetFile } from "../utils/media-file-security.js";
 

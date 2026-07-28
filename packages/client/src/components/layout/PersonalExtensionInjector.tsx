@@ -6,7 +6,7 @@ import {
   type PersonalExtensionCharacterSnapshot,
   type PersonalExtensionContextSnapshot,
   type PersonalExtensionPersonaSnapshot,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { usePersonalExtensionRuntime } from "../../hooks/use-personal-extensions";
 import {
   createPersonalExtensionContextSnapshot,

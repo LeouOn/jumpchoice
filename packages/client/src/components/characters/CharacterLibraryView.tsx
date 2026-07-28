@@ -12,7 +12,7 @@ import {
   Star,
   User,
 } from "lucide-react";
-import { type CharacterData, type Persona } from "@marinara-engine/shared";
+import { type CharacterData, type Persona } from "@jumpchoice/shared";
 import { useTranslation, useTranslation as useUiTranslation } from "react-i18next";
 import {
   flattenCharacterPages,
@@ -29,7 +29,7 @@ import {
 } from "../../lib/card-library-search";
 import { estimateCharacterCardTokens, formatEstimatedTokens } from "../../lib/character-token-count";
 import { applyInlineMarkdown, renderMarkdownBlocks } from "../../lib/markdown";
-import { normalizeAvatarCrop, type AvatarCrop } from "@marinara-engine/shared";
+import { normalizeAvatarCrop, type AvatarCrop } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import { useLocalizedUiText } from "../../localization/use-localized-ui-text";
 import {

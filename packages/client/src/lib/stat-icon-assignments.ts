@@ -3,7 +3,7 @@ import {
   normalizeTextForMatch,
   type SupportedStatIcon,
   type TrackerStatIconAssignment,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 function assignmentKey(name: unknown, occurrence: unknown) {
   return `${normalizeTextForMatch(name)}\u0000${occurrence}`;

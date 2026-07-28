@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { BookOpen, Eye, EyeOff, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslation, useTranslation as useUiTranslation } from "react-i18next";
-import { LIMITS, type Lorebook } from "@marinara-engine/shared";
+import { LIMITS, type Lorebook } from "@jumpchoice/shared";
 import { isLorebookScopeActiveForChat } from "../../../lib/lorebook-scope";
 import type { ActiveLorebookView } from "../../../lib/chat-lorebooks";
 import { HelpTooltip } from "../../../components/ui/HelpTooltip";

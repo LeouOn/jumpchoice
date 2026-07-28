@@ -1,4 +1,4 @@
-import { LIMITS, type Lorebook, type LorebookEntry } from "@marinara-engine/shared";
+import { LIMITS, type Lorebook, type LorebookEntry } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { localEmbed } from "../local-embedder.js";

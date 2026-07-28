@@ -73,7 +73,7 @@ import {
   type TacticalCoord,
   type TacticalTerrain,
   type TacticalClass,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 // ── Props ──

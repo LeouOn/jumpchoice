@@ -11,7 +11,7 @@
 // On a single confident hit it resolves to one entity (Mari auto-opens it). On a
 // weak or ambiguous match it returns a ranked candidate LIST so Mari can ask the
 // user which one — never a silent wrong guess.
-import { normalizeTextForMatch } from "@marinara-engine/shared";
+import { normalizeTextForMatch } from "@jumpchoice/shared";
 import { logger } from "../lib/logger.js";
 import { localEmbed } from "./local-embedder.js";
 import { calibrateLorebookSimilarity, cosineSimilarity, lorebookSimilarityBaseline } from "./lorebook/embeddings.js";

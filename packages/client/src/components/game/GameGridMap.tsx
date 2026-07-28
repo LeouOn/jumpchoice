@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import type { ReactNode } from "react";
 import { cn } from "../../lib/utils";
-import type { GridCell, GameMap } from "@marinara-engine/shared";
+import type { GridCell, GameMap } from "@jumpchoice/shared";
 import { AnimatedText } from "./AnimatedText";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

@@ -1,4 +1,4 @@
-import type { TextDirection } from "@marinara-engine/shared";
+import type { TextDirection } from "@jumpchoice/shared";
 
 export const DEFAULT_APP_LANGUAGE = "en";
 

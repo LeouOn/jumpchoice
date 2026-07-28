@@ -14,7 +14,7 @@ import { useSidecarStore } from "../../stores/sidecar.store";
 import { appendLocalSidecarConnectionOption, isLocalSidecarConnectionOption } from "../../lib/connection-filters";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import { useTranslation as useUiTranslation } from "react-i18next";
-import type { Persona } from "@marinara-engine/shared";
+import type { Persona } from "@jumpchoice/shared";
 
 interface PersonaGroupRow {
   id: string;

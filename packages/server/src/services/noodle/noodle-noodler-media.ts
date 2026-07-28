@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "fs";
 import { join } from "path";
-import type { NoodlerManagedPost } from "@marinara-engine/shared";
+import type { NoodlerManagedPost } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { DATA_DIR } from "../../utils/data-dir.js";
 import { assertInsideDir } from "../../utils/security.js";

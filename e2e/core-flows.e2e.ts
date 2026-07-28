@@ -2,7 +2,7 @@ import { expect, test, type APIRequestContext, type Locator, type Page, type Rou
 import AdmZip from "adm-zip";
 import { readFileSync } from "node:fs";
 import { createServer } from "node:http";
-import type { HomeCustomWidgetCatalog } from "@marinara-engine/shared";
+import type { HomeCustomWidgetCatalog } from "@jumpchoice/shared";
 import { forceColorValueEnablesColor } from "./playwright-color-environment.js";
 
 const TRANSPARENT_GIF_BASE64 = "R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";

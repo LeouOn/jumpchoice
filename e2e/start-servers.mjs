@@ -108,7 +108,7 @@ process.on("SIGTERM", () => stopChildren("SIGTERM"));
 
 try {
   resetPlaywrightData();
-  await runPnpm(["--filter", "@marinara-engine/shared", "build:preserve"]);
+  await runPnpm(["--filter", "@jumpchoice/shared", "build:preserve"]);
   startProject("mobile", mobileClientPort, mobileServerPort);
   await waitForUrl(`http://127.0.0.1:${mobileClientPort}`);
   startProject("desktop", desktopClientPort, desktopServerPort);

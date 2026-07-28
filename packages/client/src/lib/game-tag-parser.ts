@@ -8,7 +8,7 @@
 // Returns clean content + extracted commands.
 // ──────────────────────────────────────────────
 
-import type { DirectionCommand, DirectionEffect, SkillCheckResult, WidgetUpdate } from "@marinara-engine/shared";
+import type { DirectionCommand, DirectionEffect, SkillCheckResult, WidgetUpdate } from "@jumpchoice/shared";
 
 const MAX_DICE_COUNT = 100;
 const MAX_DICE_SIDES = 1000;

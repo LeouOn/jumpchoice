@@ -4,7 +4,7 @@ import {
   type ConversationPresenceStatus,
   type ScheduleBlock,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export const CHARACTER_SCHEDULE_EXPORT_KIND = "marinara.character-schedule";
 export const CHARACTER_SCHEDULE_EXPORT_VERSION = 1;

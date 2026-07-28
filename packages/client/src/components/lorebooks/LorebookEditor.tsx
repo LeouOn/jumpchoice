@@ -95,7 +95,7 @@ import {
   type LorebookFolder,
   type LorebookCategory,
   type BulkUpdateLorebookEntriesInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { LorebookEntryRow } from "./LorebookEntryRow";
 import { LorebookFolderRow } from "./LorebookFolderRow";
 import { ExpandableTextarea, estimateTokens } from "./LorebookFormFields";

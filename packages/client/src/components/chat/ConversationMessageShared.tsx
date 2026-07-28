@@ -9,7 +9,7 @@ import {
   type MessageExtra,
   type MessageReaction,
   type QuoteFormat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import type { ReactionSegmentTarget } from "../../lib/reactions";
 import { applyInlineMarkdown, renderMarkdownBlocks } from "../../lib/markdown";
@@ -250,7 +250,7 @@ export function highlightMentions(nodes: ReactNode[], names: string[], keyPrefix
 
 // Speaker-segment parsing (parseSpeakerTags / parseNamePrefixFormat /
 // groupConsecutiveSegments / parseGroupedSpeakerSegments) lives in
-// @marinara-engine/shared (utils/speaker-segments.ts): the server derives
+// @jumpchoice/shared (utils/speaker-segments.ts): the server derives
 // reaction-attribution segment indexes with the same code.
 
 // ── Small shared components ───────────────────────

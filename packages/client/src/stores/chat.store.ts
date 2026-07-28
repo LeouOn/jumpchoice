@@ -2,7 +2,7 @@
 // Zustand Store: Chat Slice
 // ──────────────────────────────────────────────
 import { create } from "zustand";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import { subscribeWithSelector } from "zustand/middleware";
 import type {
   Chat,
@@ -12,7 +12,7 @@ import type {
   Message,
   PendingSpatialTransition,
   SpatialDestinationRelation,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../components/chat/chat-area.types";
 import { api } from "../lib/api-client";
 import { useAgentStore } from "./agent.store";

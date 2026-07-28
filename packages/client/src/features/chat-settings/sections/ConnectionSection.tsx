@@ -1,5 +1,5 @@
 import { AlertTriangle, Plug } from "lucide-react";
-import { LOCAL_SIDECAR_CONNECTION_ID } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID } from "@jumpchoice/shared";
 import { ChatSettingsSection } from "../ChatSettingsSection";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

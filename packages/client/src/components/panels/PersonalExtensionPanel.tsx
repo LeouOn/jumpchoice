@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PERSONAL_EXTENSION_UI_LIMITS, type PersonalExtensionUiElement } from "@marinara-engine/shared";
+import { PERSONAL_EXTENSION_UI_LIMITS, type PersonalExtensionUiElement } from "@jumpchoice/shared";
 import { useUIStore } from "../../stores/ui.store";
 import {
   dispatchPersonalExtensionContributionEvent,

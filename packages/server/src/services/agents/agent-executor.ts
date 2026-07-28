@@ -14,7 +14,7 @@ import type {
   TrackerHiddenFields,
   WrapFormat,
   GenerationParameterSendMap,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   AGENT_RESULT_TYPE_VALUES,
   characterTrackerLockKey,
@@ -32,7 +32,7 @@ import {
   normalizeRpgStatPools,
   resolveMacros,
   type CustomAgentContextSources,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getAgentCallTimeoutMs, getMaxToolRounds, isDebugAgentsEnabled } from "../../config/runtime-config.js";
 import { logger, logDebugOverride } from "../../lib/logger.js";
 import { repairJsonText } from "../../lib/json-repair.js";

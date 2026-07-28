@@ -1,4 +1,4 @@
-import type { CapabilityPackageManifest } from "@marinara-engine/shared";
+import type { CapabilityPackageManifest } from "@jumpchoice/shared";
 
 function normalizeLocale(locale: string | undefined) {
   return locale?.trim().replace(/_/g, "-").toLowerCase() ?? "";

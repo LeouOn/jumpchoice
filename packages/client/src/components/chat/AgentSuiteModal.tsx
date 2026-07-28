@@ -19,7 +19,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { toast } from "sonner";
-import type { Chat, GameState } from "@marinara-engine/shared";
+import type { Chat, GameState } from "@jumpchoice/shared";
 import {
   useAgentMemory,
   useAgentSuiteRewrite,

@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // Merger — Adjacent same-role message merging
 // ──────────────────────────────────────────────
-import type { ChatMLMessage } from "@marinara-engine/shared";
+import type { ChatMLMessage } from "@jumpchoice/shared";
 
 export function hasSamePromptAudience(first: ChatMLMessage | undefined, second: ChatMLMessage): boolean {
   if (first?.conversationStartForCharacterIds?.length || second.conversationStartForCharacterIds?.length) {

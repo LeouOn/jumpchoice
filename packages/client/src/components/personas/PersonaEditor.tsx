@@ -67,8 +67,8 @@ import {
   Pencil,
   Check,
 } from "lucide-react";
-import type { AvatarCrop } from "@marinara-engine/shared";
-import { normalizeAvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
+import { normalizeAvatarCrop } from "@jumpchoice/shared";
 import { cn, generateClientId, getAvatarCropStyle } from "../../lib/utils";
 import { showConfirmDialog, showPromptDialog } from "../../lib/app-dialogs";
 import { formatCardVersionTimestamp, getCardVersionTitle } from "../../lib/card-version-history";
@@ -132,7 +132,7 @@ import {
   type RPGStatPool,
   type RPGStatsConfig,
   type TrackerCardColorConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useQuoteFormatter } from "../../hooks/use-quote-formatter";
 import { LorebookAssignmentSection } from "../lorebooks/LorebookAssignmentSection";
 import { ConvoProfileFields } from "../characters/ConvoProfileFields";

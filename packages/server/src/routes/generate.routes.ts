@@ -50,7 +50,7 @@ import {
   normalizeGameStoryboardKeyframeCount,
   type APIProvider,
   type MacroContext,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   AgentContext,
   AgentCallDebugEvent,
@@ -62,7 +62,7 @@ import type {
   ChatMode,
   ResolvedSpatialTravel,
   ThinkingTagPair,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import {
   commitSpatialOwnerTurn,
@@ -214,7 +214,7 @@ import { executeKnowledgeRouter } from "../services/agents/knowledge-router.js";
 import { extractFileText, getSourceFilePath } from "./knowledge-sources.routes.js";
 import { gameStateSnapshots as gameStateSnapshotsTable } from "../db/schema/index.js";
 import { eq } from "../db/file-query.js";
-import { PROFESSOR_MARI_ID, type GenerationParameterSendMap } from "@marinara-engine/shared";
+import { PROFESSOR_MARI_ID, type GenerationParameterSendMap } from "@jumpchoice/shared";
 import { chunkAndEmbedMessages } from "../services/memory-recall.js";
 import {
   isMemoryRecallVectorizerAvailable,
@@ -471,7 +471,7 @@ import {
   withActiveGameMapMeta,
 } from "../services/game/map-position.service.js";
 import { applyAllSegmentEdits } from "../services/game/segment-edits.js";
-import type { CharacterData, GameMap, GameNpc, Lorebook, LorebookEntry } from "@marinara-engine/shared";
+import type { CharacterData, GameMap, GameNpc, Lorebook, LorebookEntry } from "@jumpchoice/shared";
 import {
   buildConversationProfileBlocks,
   readCharacterConvoFields,
@@ -3263,7 +3263,7 @@ export async function generateRoutes(app: FastifyInstance) {
               hasSceneModel,
               hudWidgets: gmCtx.hudWidgets,
               turnNumber: gameTurnNumber,
-              gameActiveState: gameActiveState as import("@marinara-engine/shared").GameActiveState,
+              gameActiveState: gameActiveState as import("@jumpchoice/shared").GameActiveState,
               sessionNumber,
               gameTime,
               map: gameMap,

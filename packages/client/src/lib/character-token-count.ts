@@ -1,4 +1,4 @@
-import type { CharacterBook, CharacterBookEntry, CharacterData, DepthPrompt } from "@marinara-engine/shared";
+import type { CharacterBook, CharacterBookEntry, CharacterData, DepthPrompt } from "@jumpchoice/shared";
 
 const CHARS_PER_TOKEN = 4;
 

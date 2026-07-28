@@ -6,7 +6,7 @@
 // and attribute-linked modifiers.
 // ──────────────────────────────────────────────
 
-import type { RPGAttributes } from "@marinara-engine/shared";
+import type { RPGAttributes } from "@jumpchoice/shared";
 
 export interface SkillCheckInput {
   /** Skill name (e.g. "Perception", "Stealth"). */

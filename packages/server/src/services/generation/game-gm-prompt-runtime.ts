@@ -8,7 +8,7 @@ import {
   type GameMap,
   type GameNpc,
   type SessionSummary,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { buildGmSystemPrompt, type GmPromptContext } from "../game/gm-prompts.js";
 import { listPartySprites } from "../game/sprite.service.js";
 import { generatePerceptionHints, formatPerceptionHints, type PerceptionContext } from "../game/perception.service.js";

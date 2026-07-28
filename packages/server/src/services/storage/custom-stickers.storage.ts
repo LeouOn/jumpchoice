@@ -5,7 +5,7 @@ import { eq, asc } from "../../db/file-query.js";
 import type { DB } from "../../db/connection.js";
 import { customStickers } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
-import type { CreateCustomStickerInput, UpdateCustomStickerInput } from "@marinara-engine/shared";
+import type { CreateCustomStickerInput, UpdateCustomStickerInput } from "@jumpchoice/shared";
 
 export function createCustomStickersStorage(db: DB) {
   return {

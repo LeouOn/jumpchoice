@@ -2,7 +2,7 @@ import {
   GAME_STORYBOARD_IMAGE_PROMPT_TEMPLATE_ID,
   normalizeAgentPromptTemplateOptions,
   type AgentPromptTemplateOption,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { GAME_SCENE_ILLUSTRATION, renderTemplate, type GameSceneIllustrationCtx } from "../prompt-overrides/index.js";
 
 function readTrimmedString(value: unknown): string | null {

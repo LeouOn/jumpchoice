@@ -1,5 +1,5 @@
 import { blockDurationMinutes, getAdjacentBlocks, type ScheduleBlock, type WeekSchedule } from "./schedule.service.js";
-import type { ConversationMessageIntent } from "@marinara-engine/shared";
+import type { ConversationMessageIntent } from "@jumpchoice/shared";
 
 export type MessageIntent = ConversationMessageIntent;
 

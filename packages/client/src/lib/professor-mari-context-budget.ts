@@ -1,4 +1,4 @@
-import type { Message } from "@marinara-engine/shared";
+import type { Message } from "@jumpchoice/shared";
 
 export type ProfessorMariContextBudget = {
   usedTokens: number;

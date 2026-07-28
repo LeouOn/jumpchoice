@@ -34,7 +34,7 @@ import { loadImageGenerationUserSettings } from "../services/image/image-generat
 import { resolveImagePromptReviewSize } from "../services/image/image-prompt-review.js";
 import { parseThumbnailWidth, resolveThumbPath } from "../services/image/image-thumbnail.js";
 import { resolveImageConnectionFallback } from "../services/generation/media-connection-fallback.js";
-import { resolveGameSetupArtStylePrompt } from "@marinara-engine/shared";
+import { resolveGameSetupArtStylePrompt } from "@jumpchoice/shared";
 
 const BG_DIR = join(DATA_DIR, "backgrounds");
 const META_PATH = join(BG_DIR, "meta.json");

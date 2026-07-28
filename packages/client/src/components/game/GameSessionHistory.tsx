@@ -20,7 +20,7 @@ import {
   Play,
   SlidersHorizontal,
 } from "lucide-react";
-import type { GameInitialSetupSnapshot, GameMap, GameNpc, PartyArc, SessionSummary } from "@marinara-engine/shared";
+import type { GameInitialSetupSnapshot, GameMap, GameNpc, PartyArc, SessionSummary } from "@jumpchoice/shared";
 import { toast } from "sonner";
 import { AnimatedText } from "./AnimatedText";
 import { GameSetupSummary } from "./GameSetupSummary";

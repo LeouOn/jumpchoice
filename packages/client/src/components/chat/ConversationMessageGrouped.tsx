@@ -2,7 +2,7 @@
 // Grouped multi-speaker message layout (merged group chat / Name: text format)
 // ──────────────────────────────────────────────
 import { Fragment, type RefObject } from "react";
-import { normalizeTextForMatch } from "@marinara-engine/shared";
+import { normalizeTextForMatch } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import {
   HiddenFromAIConversationSummary,

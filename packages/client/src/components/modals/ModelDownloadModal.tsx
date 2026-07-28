@@ -30,7 +30,7 @@ import {
   type SidecarEmbeddingPooling,
   type SidecarQuantization,
   type SidecarRuntimePreference,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal.js";
 import { GEMMA_RESTART_MESSAGE, useSidecarStore } from "../../stores/sidecar.store.js";
 import { useTranslation as useUiTranslation } from "react-i18next";

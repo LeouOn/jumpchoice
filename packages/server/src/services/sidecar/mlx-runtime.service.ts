@@ -12,7 +12,7 @@ import {
 } from "fs";
 import { join } from "path";
 import { fileURLToPath } from "url";
-import type { SidecarDownloadProgress, SidecarRuntimeInfo } from "@marinara-engine/shared";
+import type { SidecarDownloadProgress, SidecarRuntimeInfo } from "@jumpchoice/shared";
 import { getDataDir } from "../../utils/data-dir.js";
 import { assertInsideDir } from "../../utils/security.js";
 import { downloadFileWithProgress, isAbortError, retry } from "./sidecar-download.js";

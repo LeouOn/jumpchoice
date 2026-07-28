@@ -6,7 +6,7 @@
 // so the character naturally "remembers" what's happening elsewhere.
 // ──────────────────────────────────────────────
 
-import type { WrapFormat } from "@marinara-engine/shared";
+import type { WrapFormat } from "@jumpchoice/shared";
 
 import { eq } from "../../db/file-query.js";
 import type { DB } from "../../db/connection.js";

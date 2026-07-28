@@ -8,7 +8,7 @@ import {
   normalizeAgentPhaseForType,
   normalizeAgentPromptTemplateOptions,
   parseAgentSettingsRecord,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { agentConfigs } from "../../db/schema/index.js";
 import { logger } from "../../lib/logger.js";

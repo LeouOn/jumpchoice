@@ -6,7 +6,7 @@ import { api } from "../lib/api-client";
 import { useUIStore } from "../stores/ui.store";
 import { useChatStore } from "../stores/chat.store";
 import { chatKeys } from "./use-chats";
-import type { APIProvider, Chat, ConnectionTestResult, ImageGenerationQuality } from "@marinara-engine/shared";
+import type { APIProvider, Chat, ConnectionTestResult, ImageGenerationQuality } from "@jumpchoice/shared";
 
 export const connectionKeys = {
   all: ["connections"] as const,

@@ -13,7 +13,7 @@ import {
   VIDEO_GENERATION_SETTINGS_KEY,
   appSettingsUpdateSchema,
   impersonatePromptTemplateCatalogSchema,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../lib/logger.js";
 import {
   HomeWidgetCatalogConflictError,

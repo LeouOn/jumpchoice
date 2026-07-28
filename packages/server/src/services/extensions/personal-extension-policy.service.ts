@@ -1,4 +1,4 @@
-import type { PersonalExtension, PersonalExtensionPolicy, PersonalExtensionSource } from "@marinara-engine/shared";
+import type { PersonalExtension, PersonalExtensionPolicy, PersonalExtensionSource } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { isExternalExtensionsEnvEnabled } from "../../config/runtime-config.js";
 import { createAppSettingsStorage } from "../storage/app-settings.storage.js";

@@ -8,7 +8,7 @@ import {
   type Lorebook,
   type LorebookScope,
   type LorebookScopeMode,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useChats } from "../../hooks/use-chats";
 import { useEmbedLorebook, useLorebooks, useUpdateLorebook } from "../../hooks/use-lorebooks";
 import { DEFAULT_LOREBOOK_SCOPE, normalizeLorebookScope } from "../../lib/lorebook-scope";

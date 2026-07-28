@@ -1,4 +1,4 @@
-import type { Chat, Lorebook } from "@marinara-engine/shared";
+import type { Chat, Lorebook } from "@jumpchoice/shared";
 import { getChatCharacterIds } from "./chat-macros";
 import { isLorebookScopeActiveForChat } from "./lorebook-scope";
 

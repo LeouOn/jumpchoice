@@ -1,4 +1,4 @@
-import type { CustomAgentImportPolicy } from "@marinara-engine/shared";
+import type { CustomAgentImportPolicy } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { createAppSettingsStorage } from "../storage/app-settings.storage.js";
 

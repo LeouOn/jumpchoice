@@ -9,7 +9,7 @@ import type {
   ReorderConnectionsInFolderInput,
   ReorderFoldersInput,
   UpdateFolderInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { connectionKeys } from "./use-connections";
 
 export const connectionFolderKeys = {

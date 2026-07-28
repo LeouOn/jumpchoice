@@ -101,7 +101,7 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import type { SupportedStatIcon, SupportedWorldCustomFieldIcon } from "@marinara-engine/shared";
+import type { SupportedStatIcon, SupportedWorldCustomFieldIcon } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 
 type SupportedConfiguredIcon = SupportedStatIcon | SupportedWorldCustomFieldIcon;

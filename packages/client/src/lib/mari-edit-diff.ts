@@ -3,7 +3,7 @@
 // fields, recursing into the nested JSON columns (character `data`, lorebook arrays, preset order
 // arrays) so the reviewer sees "Personality changed", not "data changed".
 
-import type { MariDbRowChange } from "@marinara-engine/shared";
+import type { MariDbRowChange } from "@jumpchoice/shared";
 
 export interface FieldChange {
   path: string;

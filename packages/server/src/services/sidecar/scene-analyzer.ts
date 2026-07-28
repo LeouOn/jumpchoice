@@ -16,7 +16,7 @@ import {
   type GameNpc,
   type GameActiveState,
   type SceneSpotifyTrackCandidate,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export interface SceneAnalyzerContext {
   /** Current game state before this turn. */

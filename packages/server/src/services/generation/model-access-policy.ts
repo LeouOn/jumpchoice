@@ -1,4 +1,4 @@
-import { findKnownModel, shouldSuppressUnknownModelParameters, type APIProvider } from "@marinara-engine/shared";
+import { findKnownModel, shouldSuppressUnknownModelParameters, type APIProvider } from "@jumpchoice/shared";
 import {
   fitMessagesToContext,
   type ChatMessage,

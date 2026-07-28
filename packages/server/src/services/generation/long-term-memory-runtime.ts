@@ -1,4 +1,4 @@
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 import { getAgentCallTimeoutMs } from "../../config/runtime-config.js";
 import { logger } from "../../lib/logger.js";
 import { getCapabilityService } from "../capability-packages/capability-service-registry.service.js";

@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { ACHIEVEMENT_DEFINITION_BY_ID, type AchievementProgress } from "@marinara-engine/shared";
+import { ACHIEVEMENT_DEFINITION_BY_ID, type AchievementProgress } from "@jumpchoice/shared";
 import { translate } from "../localization/i18n";
 import { localizeAchievementTitle } from "./achievement-localization";
 

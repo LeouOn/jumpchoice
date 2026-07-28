@@ -1,4 +1,4 @@
-import { DEFAULT_IMPERSONATE_PROMPT } from "@marinara-engine/shared";
+import { DEFAULT_IMPERSONATE_PROMPT } from "@jumpchoice/shared";
 
 interface BuildImpersonateInstructionArgs {
   customPrompt?: unknown;

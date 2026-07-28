@@ -20,7 +20,7 @@
 
 import { like } from "../../db/file-query.js";
 import type { DB } from "../../db/connection.js";
-import type { CharacterBook, CharacterBookEntry } from "@marinara-engine/shared";
+import type { CharacterBook, CharacterBookEntry } from "@jumpchoice/shared";
 import { characters } from "../../db/schema/index.js";
 import { createLorebooksStorage } from "../storage/lorebooks.storage.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";

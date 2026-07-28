@@ -5,7 +5,7 @@ import {
   toConversationScheduleWallClockDate,
   type ConversationPresenceStatus,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { useUIStore } from "../../stores/ui.store";
 import { useTranslation as useUiTranslation } from "react-i18next";

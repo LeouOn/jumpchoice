@@ -10,7 +10,7 @@ import {
   type ChatMode,
   type ChatPresetSettings,
   type ExportEnvelope,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createChatPresetsStorage } from "../services/storage/chat-presets.storage.js";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 

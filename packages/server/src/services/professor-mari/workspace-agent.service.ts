@@ -61,7 +61,7 @@ import {
   sanitizeMariSuggestionChips,
   type APIProvider,
   type GenerationParameterSendMap,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   MariDbCommandResult,
   MariDbReadTruncation,
@@ -73,7 +73,7 @@ import type {
   MariWorkspaceStatus,
   MariWorkspaceToolName,
   MariWorkspaceTraceItem,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getMariDbService } from "../mari-db/mari-db.service.js";
 import { getProfessorMariWorkspaceSkillsService } from "./workspace-skills.service.js";
 import { sidecarModelService } from "../sidecar/sidecar-model.service.js";

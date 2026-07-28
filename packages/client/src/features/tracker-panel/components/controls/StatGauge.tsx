@@ -1,4 +1,4 @@
-import type { CharacterStat, SupportedStatIcon } from "@marinara-engine/shared";
+import type { CharacterStat, SupportedStatIcon } from "@jumpchoice/shared";
 import { StatIconPicker } from "../../../../components/ui/StatIconPicker";
 import { cn } from "../../../../lib/utils";
 import { visibleText } from "../../lib/tracker-display";

@@ -102,10 +102,10 @@ try {
   }
 
   if (process.env.DEV_SKIP_SHARED_BUILD !== "true") {
-    await runPnpm(["--filter", "@marinara-engine/shared", SHARED_BUILD_SCRIPT]);
+    await runPnpm(["--filter", "@jumpchoice/shared", SHARED_BUILD_SCRIPT]);
   }
 
-  const server = spawnPnpm(["--filter", "@marinara-engine/server", "dev"]);
+  const server = spawnPnpm(["--filter", "@jumpchoice/server", "dev"]);
   server.once("exit", (code, signal) => {
     if (!shuttingDown) {
       stopChildren();
@@ -117,7 +117,7 @@ try {
   const readyMs = await waitForServer();
   console.log(`[dev] Server ready in ${readyMs}ms; starting client.`);
 
-  const client = spawnPnpm(["--filter", "@marinara-engine/client", "dev"]);
+  const client = spawnPnpm(["--filter", "@jumpchoice/client", "dev"]);
   client.once("exit", (code, signal) => {
     if (!shuttingDown) {
       stopChildren();

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useQueries } from "@tanstack/react-query";
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import { characterKeys } from "../../../hooks/use-characters";
 import { api } from "../../../lib/api-client";
 import { parseCharacterDisplayData } from "../../../lib/character-display";

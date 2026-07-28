@@ -1,4 +1,4 @@
-import type { PendingSpatialTransition, ResolvedSpatialTravel } from "@marinara-engine/shared";
+import type { PendingSpatialTransition, ResolvedSpatialTravel } from "@jumpchoice/shared";
 
 export interface RecoveredSpatialOwnerTurnResponse {
   applied: true;

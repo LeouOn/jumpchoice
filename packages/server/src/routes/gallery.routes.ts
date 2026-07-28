@@ -14,7 +14,7 @@ import {
   normalizeVideoGenerationUserSettings,
   type GameSceneVideoAspectRatio,
   type GeneratedSceneVideo,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createGalleryStorage } from "../services/storage/gallery.storage.js";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";

@@ -1,4 +1,4 @@
-import { stripMacroComments } from "@marinara-engine/shared";
+import { stripMacroComments } from "@jumpchoice/shared";
 import { readPreferredFullBodySpriteBase64 } from "../game/sprite.service.js";
 import { readAvatarBase64 } from "../game/game-asset-generation.js";
 import { readFile } from "node:fs/promises";

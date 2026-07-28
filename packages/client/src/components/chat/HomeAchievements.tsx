@@ -16,7 +16,7 @@ import {
   Hand,
   type LucideIcon,
 } from "lucide-react";
-import type { AchievementDefinition, AchievementProgress } from "@marinara-engine/shared";
+import type { AchievementDefinition, AchievementProgress } from "@jumpchoice/shared";
 import { useAchievements } from "../../hooks/use-achievements";
 import { useUIStore } from "../../stores/ui.store";
 import { cn } from "../../lib/utils";

@@ -3,7 +3,7 @@ import {
   MIN_AGENT_MAX_TOKENS,
   generationParametersSchema,
   resolveProviderReasoningEffort,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { BaseLLMProvider, ChatOptions } from "../llm/base-provider.js";
 
 export function normalizeMaxContext(value: unknown): number | undefined {

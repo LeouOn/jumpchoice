@@ -7,7 +7,7 @@
 // ──────────────────────────────────────────────
 import { readdirSync, statSync, existsSync, mkdirSync, writeFileSync, readFileSync, renameSync } from "fs";
 import { join, extname, relative, basename } from "path";
-import { type MusicGenre, type MusicIntensity } from "@marinara-engine/shared";
+import { type MusicGenre, type MusicIntensity } from "@jumpchoice/shared";
 import { DATA_DIR } from "../../utils/data-dir.js";
 
 export const GAME_ASSETS_DIR = join(DATA_DIR, "game-assets");

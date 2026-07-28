@@ -11,7 +11,7 @@ import {
   removeTrackerFieldLockPrefix,
   renameTrackerFieldLockPrefix,
   type PresentCharacter,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { TrackerPanelSizeProfile, TrackerStatDisplayMode } from "../../../../stores/ui.store";
 import { cn } from "../../../../lib/utils";
 import type { StatIconLookup } from "../../hooks/use-stat-icons";

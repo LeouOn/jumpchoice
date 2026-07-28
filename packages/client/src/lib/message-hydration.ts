@@ -1,4 +1,4 @@
-import type { Message } from "@marinara-engine/shared";
+import type { Message } from "@jumpchoice/shared";
 
 export function normalizeHydratedMessage(message: Message): Message {
   const rawContent = (message as Message & { content?: unknown }).content;

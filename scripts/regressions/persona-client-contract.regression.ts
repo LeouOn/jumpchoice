@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import type { Persona } from "@marinara-engine/shared";
+import type { Persona } from "@jumpchoice/shared";
 import { ApiError, formatFirstApiValidationIssue } from "../../packages/client/src/lib/api-client.js";
 import { personaCacheKeys, syncCachedPersona } from "../../packages/client/src/lib/persona-cache.js";
 import {

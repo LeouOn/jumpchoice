@@ -40,7 +40,7 @@ import {
   GitBranch,
   Languages,
 } from "lucide-react";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import { cn, copyToClipboard, getAvatarCropStyle } from "../../lib/utils";
 import { useRenderTimer } from "../../lib/perf-diagnostics";
 import { findNamedMapValue } from "../../lib/game-character-name-match";
@@ -89,7 +89,7 @@ import {
   type GameNpc,
   type SkillCheckResult,
   formatSkillCheckResultSummary,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../chat/chat-area.types";
 import { MESSAGE_SELECTION_SURFACE_CLASS } from "../chat/message-selection-styles";
 import { useTranslation as useUiTranslation } from "react-i18next";

@@ -3,7 +3,7 @@ import {
   normalizePersonalExtensionCapabilities,
   type PersonalExtensionCapability,
   type PersonalExtensionRuntime,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export type PersonalExtensionExecutable = {
   runtime: PersonalExtensionRuntime;

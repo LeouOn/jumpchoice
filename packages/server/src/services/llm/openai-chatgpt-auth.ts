@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile, chmod } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
-import { APP_VERSION } from "@marinara-engine/shared";
+import { APP_VERSION } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { safeFetch } from "../../utils/security.js";
 

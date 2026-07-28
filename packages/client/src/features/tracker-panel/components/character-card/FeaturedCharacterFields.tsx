@@ -6,7 +6,7 @@ import {
   normalizeTrackerFieldLocks,
   normalizeTrackerHiddenFields,
   type PresentCharacter,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { TrackerPanelSizeProfile } from "../../../../stores/ui.store";
 import { cn } from "../../../../lib/utils";
 import { visibleText } from "../../lib/tracker-display";

@@ -1,4 +1,4 @@
-import type { AgentContext, Lorebook, LorebookEntry } from "@marinara-engine/shared";
+import type { AgentContext, Lorebook, LorebookEntry } from "@jumpchoice/shared";
 import { buildLorebookSemanticEmbeddingsById } from "../lorebook/embeddings.js";
 import {
   lorebookEntryPassesContextFilters,

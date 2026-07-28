@@ -2,7 +2,7 @@
 // Personal Extension trust migration
 // ──────────────────────────────────────────────
 import type { DB } from "../../db/connection.js";
-import { normalizePersonalExtensionCapabilities } from "@marinara-engine/shared";
+import { normalizePersonalExtensionCapabilities } from "@jumpchoice/shared";
 import { eq } from "../../db/file-query.js";
 import { installedExtensions } from "../../db/schema/index.js";
 import { computePersonalExtensionHash } from "../extensions/personal-extension-hash.js";

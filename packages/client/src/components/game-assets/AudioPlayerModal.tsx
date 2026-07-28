@@ -2,7 +2,7 @@
 // File Browser — Audio player with format fallback
 // ──────────────────────────────────────────────
 import { useEffect, useState } from "react";
-import { AUDIO_MIME_MAP } from "@marinara-engine/shared";
+import { AUDIO_MIME_MAP } from "@jumpchoice/shared";
 import { gameAssetFileUrl } from "../../lib/game-asset-urls";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

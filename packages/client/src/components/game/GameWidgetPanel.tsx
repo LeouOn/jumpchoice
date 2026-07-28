@@ -10,7 +10,7 @@ import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import type { HudWidget } from "@marinara-engine/shared";
+import type { HudWidget } from "@jumpchoice/shared";
 import { useUpdateGameWidgets } from "../../hooks/use-game";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { cn } from "../../lib/utils";

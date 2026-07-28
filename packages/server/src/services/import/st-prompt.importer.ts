@@ -2,9 +2,9 @@
 // Importer: SillyTavern Prompt Preset
 // ──────────────────────────────────────────────
 import type { DB } from "../../db/connection.js";
-import type { MarkerConfig } from "@marinara-engine/shared";
+import type { MarkerConfig } from "@jumpchoice/shared";
 import { createPromptsStorage } from "../storage/prompts.storage.js";
-import type { PromptVariableGroup } from "@marinara-engine/shared";
+import type { PromptVariableGroup } from "@jumpchoice/shared";
 import type { TimestampOverrides } from "./import-timestamps.js";
 
 /** Friendly display names for consolidated markers. */

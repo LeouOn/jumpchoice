@@ -7,7 +7,7 @@ import {
   type CapabilityPackageUpdate,
   type BuiltInAgentManifest,
   type InstalledCapabilityPackage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 import {
   beginCapabilityClientImport,

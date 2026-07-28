@@ -10,7 +10,7 @@ import type {
   MariDependencyTarget,
   MariSensitiveFileApproval,
   MariWorkspacePendingApproval,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 
 const APPROVAL_TIMEOUT_MS = 10 * 60_000;
@@ -71,9 +71,9 @@ const TARGET_MANIFESTS: Record<MariDependencyTarget, string> = {
 };
 
 const TARGET_FILTERS: Partial<Record<MariDependencyTarget, string>> = {
-  client: "@marinara-engine/client",
-  server: "@marinara-engine/server",
-  shared: "@marinara-engine/shared",
+  client: "@jumpchoice/client",
+  server: "@jumpchoice/server",
+  shared: "@jumpchoice/shared",
 };
 
 type FileReviewRecord = MariSensitiveFileApproval & {

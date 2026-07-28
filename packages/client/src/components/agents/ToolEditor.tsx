@@ -33,7 +33,7 @@ import { cn } from "../../lib/utils";
 import { downloadJsonFile, sanitizeExportFilenamePart } from "../../lib/download-json";
 import { HelpTooltip } from "../ui/HelpTooltip";
 import { SettingsSwitch } from "../panels/settings/SettingControls";
-import { createFolderEntry } from "@marinara-engine/shared";
+import { createFolderEntry } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 const EXEC_TYPES = [

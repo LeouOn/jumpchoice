@@ -2,7 +2,7 @@
 // Game: Party Player Prompt Building
 // ──────────────────────────────────────────────
 
-import type { PartyArc } from "@marinara-engine/shared";
+import type { PartyArc } from "@jumpchoice/shared";
 import type { CharacterSpriteInfo } from "./sprite.service.js";
 
 export interface PartyPromptContext {

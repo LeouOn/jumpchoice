@@ -69,7 +69,7 @@ import {
   type QuoteFormat,
   type Theme,
   type VideoGenerationUserSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   findDuplicateTheme,
   useCreateTheme,

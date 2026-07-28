@@ -27,7 +27,7 @@ import {
   PERSONAL_EXTENSION_CAPABILITIES,
   PERSONAL_EXTENSION_FULL_PAGE_CAPABILITY,
   type PersonalExtension,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { ApiError, getPrivilegedActionErrorMessage } from "../../../lib/api-client";
 import { showConfirmDialog } from "../../../lib/app-dialogs";
 import { cn } from "../../../lib/utils";

@@ -7,7 +7,7 @@ import { logger } from "../lib/logger.js";
 import type { DB } from "./connection.js";
 import { apiConnections } from "./schema/connections.js";
 import { eq } from "./file-query.js";
-import { DEFAULT_CONNECTION_ID } from "@marinara-engine/shared";
+import { DEFAULT_CONNECTION_ID } from "@jumpchoice/shared";
 
 export async function seedDefaultConnection(db: DB) {
   // Check if it already exists

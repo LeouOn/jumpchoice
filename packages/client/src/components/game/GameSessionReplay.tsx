@@ -27,7 +27,7 @@ import type {
   GameTurnStoryboard,
   GameTurnStoryboardKeyframe,
   Message,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { SpriteInfo } from "../../hooks/use-characters";
 import { useGameSessions } from "../../hooks/use-game";
 import { useGameTurnStoryboards } from "../../hooks/use-game-storyboards";
@@ -37,7 +37,7 @@ import { resolveAssetTag } from "../../lib/asset-fuzzy-match";
 import { parseChatMetadata } from "../../lib/chat-display";
 import { findReplayableGameSessionChat } from "../../lib/game-session-resolution";
 import { findReplayStoryboardKeyframe } from "../../lib/game-storyboard-keyframes";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../chat/chat-area.types";
 import { buildGameSessionReplayTurns, type GameReplayPresentationCue } from "../../lib/game-session-replay";
 import { useGameAssetStore } from "../../stores/game-asset.store";

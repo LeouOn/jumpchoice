@@ -5,7 +5,7 @@ import type {
   PersonalExtension,
   PersonalExtensionPolicy,
   UpdatePersonalExtensionInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 
 export const personalExtensionKeys = {

@@ -20,7 +20,7 @@ import { createReplyFallbackNotifier } from "./generate/fallback-notification.js
 import { stripConversationPromptTimestamps } from "../services/conversation/transcript-sanitize.js";
 import { DATA_DIR } from "../utils/data-dir.js";
 import type { ChatCompletionResult, ChatMessage } from "../services/llm/base-provider.js";
-import { localAuthProviderBaseUrl } from "@marinara-engine/shared";
+import { localAuthProviderBaseUrl } from "@jumpchoice/shared";
 import type {
   SceneCreateRequest,
   SceneCreateResponse,
@@ -32,7 +32,7 @@ import type {
   ScenePlanResponse,
   ScenePromptPreferences,
   SceneFullPlan,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   resolveActivePersonaCandidate,
   resolveBaseUrl as resolveSceneConnectionBaseUrl,
@@ -109,7 +109,7 @@ async function resolveConnection(
 
   let baseUrl = conn.baseUrl;
   if (!baseUrl) {
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     baseUrl = providerDef?.defaultBaseUrl ?? "";
   }

@@ -3,10 +3,10 @@ import {
   migrateLibraryFolderSchema,
   type LibraryFolderScope,
   type MigrateLibraryFolderInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 
-export type { LibraryFolderScope } from "@marinara-engine/shared";
+export type { LibraryFolderScope } from "@jumpchoice/shared";
 
 export type LibraryFolder = {
   id: string;

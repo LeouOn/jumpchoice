@@ -1,4 +1,4 @@
-import type { SidecarDownloadProgress } from "@marinara-engine/shared";
+import type { SidecarDownloadProgress } from "@jumpchoice/shared";
 import { api } from "./api-client";
 
 export type SidecarDownloadEvent = Partial<SidecarDownloadProgress> & {

@@ -6,7 +6,7 @@ import { Modal } from "../ui/Modal";
 import { Download, FileJson, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api-client";
-import { getFolderImportEntries, getFolderManifestConfig } from "@marinara-engine/shared";
+import { getFolderImportEntries, getFolderManifestConfig } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 interface Props {

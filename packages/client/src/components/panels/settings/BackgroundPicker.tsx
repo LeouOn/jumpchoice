@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { BACKGROUND_THUMBNAIL_WIDTH } from "@marinara-engine/shared";
+import { BACKGROUND_THUMBNAIL_WIDTH } from "@jumpchoice/shared";
 import { api } from "../../../lib/api-client";
 import { cn } from "../../../lib/utils";
 import {

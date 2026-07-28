@@ -8,7 +8,7 @@ import { extname, join } from "path";
 import { DATA_DIR } from "../../utils/data-dir.js";
 import { logger } from "../../lib/logger.js";
 import { getSharp } from "./sharp-runtime.js";
-import { BACKGROUND_THUMBNAIL_WIDTH } from "@marinara-engine/shared";
+import { BACKGROUND_THUMBNAIL_WIDTH } from "@jumpchoice/shared";
 
 // Sibling of the image directories, never inside them: the background library listing walks its own dir.
 const THUMB_DIR = join(DATA_DIR, "backgrounds-thumbs");

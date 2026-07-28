@@ -6,7 +6,7 @@ import {
   DATE_TIME_TOKEN_SOURCE,
   FULL_DATE_TOKEN_SOURCE,
   normalizeTextForMatch,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const DATE_TAG_RE = /<\/?date(?:="[^"]*")?>/gi;
 const TIMESTAMP_TOKEN = String.raw`\[(?:${DATE_TIME_TOKEN_SOURCE}|${CLOCK_TOKEN_SOURCE}|${FULL_DATE_TOKEN_SOURCE})\]`;

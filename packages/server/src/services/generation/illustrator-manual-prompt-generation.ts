@@ -1,4 +1,4 @@
-import type { AgentContext } from "@marinara-engine/shared";
+import type { AgentContext } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { normalizeAgentContextSize, renderAgentPromptTemplate } from "../agents/agent-executor.js";
 import type { ResolvedAgent } from "../agents/agent-pipeline.js";

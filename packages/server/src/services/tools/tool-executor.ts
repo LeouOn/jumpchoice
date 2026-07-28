@@ -20,7 +20,7 @@ import {
   BUILT_IN_TOOLS,
   isJsonRecord,
   SPOTIFY_RECENT_TRACK_HISTORY_LIMIT,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 type ToolExecutionOutcome =
   | { result: unknown; success: true; httpStatus?: never }

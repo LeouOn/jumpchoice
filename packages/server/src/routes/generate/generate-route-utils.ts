@@ -24,7 +24,7 @@ import {
   type MacroContext,
   type PlayerStats,
   type WrapFormat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { wrapContent } from "../../services/prompt/format-engine.js";
 import {
   appendReadableAttachmentsToContent,

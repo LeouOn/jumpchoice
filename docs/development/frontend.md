@@ -398,7 +398,7 @@ See [Personal Extension Architecture](personal-extensions.md) before changing th
 
 ## Shared package (`packages/shared`)
 
-The frontend imports types, schemas, and constants from `@marinara-engine/shared`.
+The frontend imports types, schemas, and constants from `@jumpchoice/shared`.
 
 ### Constants
 

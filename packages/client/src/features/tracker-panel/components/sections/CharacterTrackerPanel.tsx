@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Users } from "lucide-react";
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import type {
   TrackerPanelSide,
   TrackerPanelSizeProfile,

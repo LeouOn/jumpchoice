@@ -8,7 +8,7 @@ import {
   type LorebookCategory,
   type LorebookScope,
   type ScenePromptPreferences,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const CreateCharacterModal = lazy(() =>
   import("../modals/CreateCharacterModal").then((module) => ({ default: module.CreateCharacterModal })),

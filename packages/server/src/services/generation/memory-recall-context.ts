@@ -1,4 +1,4 @@
-import type { WrapFormat } from "@marinara-engine/shared";
+import type { WrapFormat } from "@jumpchoice/shared";
 
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";

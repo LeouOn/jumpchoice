@@ -5,7 +5,7 @@ import {
   PERSONAL_EXTENSION_FULL_PAGE_CAPABILITY,
   normalizePersonalExtensionCapabilities,
   type PersonalExtensionCapability,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   getPackagePathBasename,
   resolvePackageTextPaths,

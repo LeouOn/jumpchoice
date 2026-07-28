@@ -7,7 +7,7 @@ import {
   normalizeChatSummaryPromptSettings,
   type AppSettingsResponse,
   type ChatSummaryPromptSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 
 type ChatSummaryPromptSettingsState = ChatSummaryPromptSettings & {

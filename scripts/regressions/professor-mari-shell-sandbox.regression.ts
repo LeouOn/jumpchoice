@@ -130,7 +130,7 @@ try {
   assert.equal(workspacePathAccessPolicy(reviewWorkspace, join(reviewWorkspace, ".env")), "forbidden");
   assert.equal(workspacePathAccessPolicy(reviewWorkspace, join(reviewWorkspace, ".git/config")), "forbidden");
   assert.equal(isPackageManagerMutationCommand("pnpm add zod"), true);
-  assert.equal(isPackageManagerMutationCommand("pnpm --filter @marinara-engine/server add zod"), true);
+  assert.equal(isPackageManagerMutationCommand("pnpm --filter @jumpchoice/server add zod"), true);
   assert.equal(isPackageManagerMutationCommand("python -m pip install requests"), true);
   assert.equal(isPackageManagerMutationCommand("pnpm check"), false);
 

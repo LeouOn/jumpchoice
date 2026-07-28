@@ -4,7 +4,7 @@ import type {
   TrackerCardColorConfig,
   TrackerCardColorMode,
   TrackerCardPortraitStageBackground,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import {
   getTrackerCardFinish,

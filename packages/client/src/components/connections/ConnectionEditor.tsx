@@ -108,7 +108,7 @@ import {
   type VideoGenerationDefaultsProfile,
   type VideoReferenceUploadExpiry,
   type VideoResolution,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 /** Links where users can obtain API keys for each provider */
 const API_KEY_LINKS: Partial<Record<APIProvider, { label: string; url: string }>> = {

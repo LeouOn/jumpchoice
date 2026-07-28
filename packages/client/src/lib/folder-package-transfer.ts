@@ -1,4 +1,4 @@
-import { getFolderImportEntries, isJsonRecord, sanitizeFolderSegment } from "@marinara-engine/shared";
+import { getFolderImportEntries, isJsonRecord, sanitizeFolderSegment } from "@jumpchoice/shared";
 
 export type PackageTextFile = {
   path: string;

@@ -47,7 +47,7 @@ import {
   type GameCombatStyle,
   type Persona,
   type AvatarCrop,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getCharacterTitle } from "../../lib/character-display";
 import { api } from "../../lib/api-client";
 import { cn, getAvatarCropStyle } from "../../lib/utils";

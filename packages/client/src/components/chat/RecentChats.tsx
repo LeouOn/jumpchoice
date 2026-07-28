@@ -1,6 +1,6 @@
 import { useMemo, type CSSProperties } from "react";
 import { MessageSquare, RefreshCw } from "lucide-react";
-import { normalizeAvatarCrop, type AvatarCrop } from "@marinara-engine/shared";
+import { normalizeAvatarCrop, type AvatarCrop } from "@jumpchoice/shared";
 import { useCharacterSpritePreviews, useCharacterSummaries, type SpriteInfo } from "../../hooks/use-characters";
 import { useHomeFeed } from "../../hooks/use-home-feed";
 import { useGameAssetManifest } from "../../hooks/use-game-assets";

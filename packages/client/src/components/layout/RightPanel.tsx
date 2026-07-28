@@ -9,7 +9,7 @@ import { usePersonalExtensionContributions } from "../../lib/personal-extension-
 import { PersonalExtensionContributionIcon } from "../extensions/PersonalExtensionContributionIcon";
 import { PersonalExtensionContributionSlot } from "../extensions/PersonalExtensionContributionSlot";
 import { useTranslation as useUiTranslation } from "react-i18next";
-import type { PersonalExtensionContributionSurface } from "@marinara-engine/shared";
+import type { PersonalExtensionContributionSurface } from "@jumpchoice/shared";
 
 const CharactersPanel = lazy(() =>
   import("../panels/CharactersPanel").then((module) => ({ default: module.CharactersPanel })),

@@ -1,4 +1,4 @@
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import { visibleText } from "./tracker-display";
 
 export function getCharacterPortraitFallback(character: PresentCharacter) {

@@ -1,4 +1,4 @@
-import { normalizeIllustratorImagesPerGeneration } from "@marinara-engine/shared";
+import { normalizeIllustratorImagesPerGeneration } from "@jumpchoice/shared";
 
 export async function generateIllustratorImageVariants<T>({
   count,

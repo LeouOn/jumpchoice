@@ -1,4 +1,4 @@
-import { normalizeTextForMatch } from "@marinara-engine/shared";
+import { normalizeTextForMatch } from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import type { CharacterCommand, CrossPostCommand } from "../conversation/character-commands.js";

@@ -32,7 +32,7 @@ import {
   type PersonaCreateInput,
   type PersonaUpdateInput,
   type TrackerCardColorConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { CustomKind, CustomTagPatch } from "../lib/custom-emoji";
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -1,4 +1,4 @@
-import type { HapticDeviceCommand, HapticFeedbackPattern, HapticFeedbackSensitivity } from "@marinara-engine/shared";
+import type { HapticDeviceCommand, HapticFeedbackPattern, HapticFeedbackSensitivity } from "@jumpchoice/shared";
 
 export interface HapticRuntimeSettings {
   sensitivity: HapticFeedbackSensitivity;

@@ -22,7 +22,7 @@ import {
   SANDBOX_HOT_POLL_MS,
   SANDBOX_WATCHDOG_INTERVAL_MS,
 } from "./sandbox-protocol.js";
-import type { PersonalExtension } from "@marinara-engine/shared";
+import type { PersonalExtension } from "@jumpchoice/shared";
 
 type ActiveExtension = {
   id: string;

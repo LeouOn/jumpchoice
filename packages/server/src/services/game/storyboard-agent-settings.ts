@@ -5,7 +5,7 @@ import {
   STORYBOARD_AGENT_ID,
   type AgentPromptTemplateOption,
   type StoryboardAutoGenerateMode,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import type { createAgentsStorage } from "../storage/agents.storage.js";
 

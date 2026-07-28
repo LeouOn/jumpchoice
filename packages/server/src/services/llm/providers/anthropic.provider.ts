@@ -12,7 +12,7 @@ import {
   type LLMToolDefinition,
   type LLMUsage,
 } from "../base-provider.js";
-import { isClaudeAdaptiveOnlyNoSamplingModel, shouldSuppressUnknownModelParameters } from "@marinara-engine/shared";
+import { isClaudeAdaptiveOnlyNoSamplingModel, shouldSuppressUnknownModelParameters } from "@jumpchoice/shared";
 import { logger } from "../../../lib/logger.js";
 
 const DEFAULT_CACHING_AT_DEPTH = 5;

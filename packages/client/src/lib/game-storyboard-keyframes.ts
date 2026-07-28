@@ -1,4 +1,4 @@
-import type { GameTurnStoryboardKeyframe } from "@marinara-engine/shared";
+import type { GameTurnStoryboardKeyframe } from "@jumpchoice/shared";
 
 export function findReplayStoryboardKeyframe(
   frames: readonly GameTurnStoryboardKeyframe[],

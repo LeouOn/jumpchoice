@@ -70,7 +70,7 @@ import {
   type MariSensitiveFileApproval,
   type MariWorkspaceTraceItem,
   type Message,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useConnections } from "../../hooks/use-connections";
 import { useTrackAchievement } from "../../hooks/use-achievements";
 import { chatKeys } from "../../hooks/use-chats";

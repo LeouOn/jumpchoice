@@ -6,7 +6,7 @@
 // a single LLM context window, it splits it into chunks and runs
 // multiple extraction passes, then consolidates the results.
 // ──────────────────────────────────────────────
-import type { AgentContext, AgentResult } from "@marinara-engine/shared";
+import type { AgentContext, AgentResult } from "@jumpchoice/shared";
 import type { BaseLLMProvider } from "../llm/base-provider.js";
 import { executeAgent, type AgentExecConfig } from "./agent-executor.js";
 

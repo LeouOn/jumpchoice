@@ -4,7 +4,7 @@ import {
   isAgentAvailableInChatMode,
   nameToXmlTag,
   type ChatMode,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { AgentInjection } from "../agents/agent-pipeline.js";
 import { resolveAgentResultType } from "../agents/agent-executor.js";
 

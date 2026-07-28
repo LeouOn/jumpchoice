@@ -6,7 +6,7 @@ import { Modal } from "../ui/Modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api-client";
 import { Loader2, BookOpen, AlertCircle } from "lucide-react";
-import type { LorebookCategory, LorebookScope } from "@marinara-engine/shared";
+import type { LorebookCategory, LorebookScope } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 const LOREBOOK_CATEGORIES: Array<{ id: LorebookCategory; label: string }> = [

@@ -25,7 +25,7 @@ import {
   type ImageGenerationQuality,
   type NovelAiDefaults,
   type SceneIllustrationCharacterPrompt,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isImageLocalUrlsEnabled } from "../../config/runtime-config.js";
 import { generateRunPodComfyUI } from "./runpod-comfyui.service.js";
 import { logger, logDebugOverride } from "../../lib/logger.js";

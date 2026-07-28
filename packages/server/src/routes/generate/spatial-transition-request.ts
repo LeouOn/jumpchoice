@@ -1,4 +1,4 @@
-import type { PendingSpatialTransition, ResolvedSpatialTravel, SpatialContextSnapshot } from "@marinara-engine/shared";
+import type { PendingSpatialTransition, ResolvedSpatialTravel, SpatialContextSnapshot } from "@jumpchoice/shared";
 
 type SpatialGenerationMode = "conversation" | "roleplay" | "game";
 export type SpatialGenerationOrigin = "owner" | "guided" | "autonomous" | "turn_game";

@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import type { GameCampaignPlan, GameNpc } from "@marinara-engine/shared";
+import type { GameCampaignPlan, GameNpc } from "@jumpchoice/shared";
 import { normalizeCharacterLookupName } from "./name-normalization.js";
 
 function normalizeText(value: unknown, fallback = ""): string {

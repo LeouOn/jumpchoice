@@ -8,7 +8,7 @@
 // ──────────────────────────────────────────────
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { MessageReaction } from "@marinara-engine/shared";
+import type { MessageReaction } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { USER_REACTOR, customEmojiReactionName } from "../../lib/reactions";
 import { useTranslation as useUiTranslation } from "react-i18next";

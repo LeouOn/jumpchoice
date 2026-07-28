@@ -1,6 +1,6 @@
 import { Image } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import { SpriteRangeSlider } from "./AgentSettingsControls";
 import {

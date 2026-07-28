@@ -9,7 +9,7 @@ import {
   type HudWidget,
   type HudWidgetConfig,
   type HudWidgetType,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { translate } from "../../localization/i18n";
 import { DraftNumberInput } from "../ui/DraftNumberInput";

@@ -378,12 +378,12 @@ echo  [OK] Dependencies installed
 :: -- Build --
 echo.
 echo  [..] Building Marinara Engine...
-call :run_pnpm --filter @marinara-engine/shared build
+call :run_pnpm --filter @jumpchoice/shared build
 if %errorlevel% neq 0 (
     set "INSTALL_ERROR=Shared package build failed."
     goto :fatal
 )
-call :run_pnpm --filter @marinara-engine/server --filter @marinara-engine/client --parallel run build
+call :run_pnpm --filter @jumpchoice/server --filter @jumpchoice/client --parallel run build
 if %errorlevel% neq 0 (
     set "INSTALL_ERROR=Server or client build failed."
     goto :fatal

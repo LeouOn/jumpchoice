@@ -3,7 +3,7 @@ import {
   GAME_VIDEO_PROMPT_TEMPLATE_ID,
   normalizeAgentPromptTemplateOptions,
   type AgentPromptTemplateOption,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { GAME_VIDEO, renderTemplate, type GameVideoCtx } from "../prompt-overrides/index.js";
 import type { PromptOverridesStorage } from "../storage/prompt-overrides.storage.js";
 import { isDebugAgentsEnabled } from "../../config/runtime-config.js";

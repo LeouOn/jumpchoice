@@ -2,7 +2,7 @@
 // Bubble message layout (Messenger-style)
 // ──────────────────────────────────────────────
 import { User } from "lucide-react";
-import { normalizeTextForMatch, splitGroupedSegmentDisplayLines } from "@marinara-engine/shared";
+import { normalizeTextForMatch, splitGroupedSegmentDisplayLines } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { PendingTypingDots } from "./PendingTypingDots";
 import {

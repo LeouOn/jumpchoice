@@ -7,7 +7,7 @@ import {
   type Persona,
   type PersonaCreateInput,
   type PersonaUpdateInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { PersonaStorageRow, PersonaStorageWriteFields } from "../storage/characters.storage.js";
 
 /** Convert one serialized file-table row into the public runtime Persona contract. */

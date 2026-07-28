@@ -5,7 +5,7 @@ import { eq, asc } from "../../db/file-query.js";
 import type { DB } from "../../db/connection.js";
 import { customEmojis } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
-import type { CreateCustomEmojiInput, UpdateCustomEmojiInput } from "@marinara-engine/shared";
+import type { CreateCustomEmojiInput, UpdateCustomEmojiInput } from "@jumpchoice/shared";
 
 export function createCustomEmojisStorage(db: DB) {
   return {

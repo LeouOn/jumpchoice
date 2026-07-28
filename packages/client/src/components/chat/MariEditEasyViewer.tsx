@@ -10,7 +10,7 @@ import { useTranslation as useUiTranslation } from "react-i18next";
 import { cn } from "../../lib/utils";
 import { computeFieldChanges, resolveLorebookVectorStatus, type FieldChange, type LorebookVectorStatus } from "../../lib/mari-edit-diff";
 import { diffWords } from "../../lib/word-diff";
-import type { MariDbPendingApproval, MariDbRowChange } from "@marinara-engine/shared";
+import type { MariDbPendingApproval, MariDbRowChange } from "@jumpchoice/shared";
 import { ChevronDown, ChevronRight, Eye, FileText, Pencil, Sparkles, Trash2, Undo2 } from "lucide-react";
 
 type Row = Record<string, unknown> | null | undefined;

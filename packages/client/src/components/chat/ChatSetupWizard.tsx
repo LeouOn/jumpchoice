@@ -71,7 +71,7 @@ import {
   type Lorebook,
   type Message,
   type Persona,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   CHAT_PARAMETER_DEFAULTS,

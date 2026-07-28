@@ -6,7 +6,7 @@ import {
   type VideoAspectRatio,
   type VideoGenerationDefaultsProfile,
   type VideoResolution,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   resolveVideoReferencePublicUploadOptions,
   type VideoReferencePublicUploadOptions,

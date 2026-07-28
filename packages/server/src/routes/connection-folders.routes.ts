@@ -6,7 +6,7 @@ import {
   createConnectionFolderSchema,
   moveConnectionToFolderSchema,
   reorderConnectionsInFolderSchema,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createConnectionFoldersStorage } from "../services/storage/connection-folders.storage.js";
 import { registerFolderCrudRoutes } from "./folder-routes.shared.js";
 

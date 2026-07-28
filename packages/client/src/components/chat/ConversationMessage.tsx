@@ -13,11 +13,11 @@ import {
   parseGroupedSpeakerSegments,
   type Message,
   type MessageReaction,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { toast } from "sonner";
 import { useUIStore, type ConversationMessageStyle } from "../../stores/ui.store";
 import { cn, copyToClipboard, getAvatarCropStyle } from "../../lib/utils";
-import { normalizeAvatarCrop } from "@marinara-engine/shared";
+import { normalizeAvatarCrop } from "@jumpchoice/shared";
 import { resolveMessageMacros } from "../../lib/chat-macros";
 import { useTranslate } from "../../hooks/use-translate";
 import { useApplyRegex } from "../../hooks/use-apply-regex";

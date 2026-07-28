@@ -3,7 +3,7 @@ import {
   type GameMap,
   type GameSetupConfig,
   type GameWorldMapMode,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { ensureGameMapId, withActiveGameMapMeta } from "./map-position.service.js";
 
 export const HIERARCHICAL_MAPS_AGENT_ID = "hierarchical-maps";

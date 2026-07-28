@@ -19,7 +19,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import type { AvatarCrop } from "@marinara-engine/shared";
+import type { AvatarCrop } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle } from "../../lib/utils";
 import { DraftNumberInput } from "../ui/DraftNumberInput";
 import { NEUTRAL_SURFACE_VARIABLES } from "../ui/neutral-surface-styles";
@@ -28,7 +28,7 @@ import {
   normalizeRpgStatPools,
   syncRpgHpFromPools,
   type RPGStatPool,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 export interface GameCharacterSheetGameCard {

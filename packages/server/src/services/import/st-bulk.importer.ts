@@ -19,7 +19,7 @@ import { characters as charactersTable } from "../../db/schema/index.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { DATA_DIR } from "../../utils/data-dir.js";
 import { getFileTimestampOverrides, parseTrustedTimestamp } from "./import-timestamps.js";
-import { MAX_FILE_SIZES, normalizeTextForMatch } from "@marinara-engine/shared";
+import { MAX_FILE_SIZES, normalizeTextForMatch } from "@jumpchoice/shared";
 
 const BG_DIR = join(DATA_DIR, "backgrounds");
 const BG_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]);

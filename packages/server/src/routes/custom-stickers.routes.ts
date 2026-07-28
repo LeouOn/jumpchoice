@@ -23,7 +23,7 @@ import {
   CUSTOM_STICKER_NAME_PATTERN,
   CUSTOM_STICKER_MAX_DIMENSION,
   updateCustomStickerSchema,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const CUSTOM_STICKERS_ROOT = join(DATA_DIR, "custom-stickers");
 const ALLOWED_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]);

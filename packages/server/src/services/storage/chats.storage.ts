@@ -40,7 +40,7 @@ import { newId, now } from "../../utils/id-generator.js";
 import { existsSync, rmSync } from "fs";
 import { join } from "path";
 import { DATA_DIR } from "../../utils/data-dir.js";
-import type { CreateChatInput, CreateMessageInput } from "@marinara-engine/shared";
+import type { CreateChatInput, CreateMessageInput } from "@jumpchoice/shared";
 import {
   ensureTimestampAfter,
   latestTrustedTimestamp,

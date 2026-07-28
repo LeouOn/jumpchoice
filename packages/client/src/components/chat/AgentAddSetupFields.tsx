@@ -12,7 +12,7 @@ import {
   type KnowledgeAgentSourceSettings,
   type Lorebook,
   type SpotifySourceType,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useKnowledgeSources, useUploadKnowledgeSource } from "../../hooks/use-knowledge-sources";
 import { api } from "../../lib/api-client";
 import { showAlertDialog } from "../../lib/app-dialogs";

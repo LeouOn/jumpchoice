@@ -47,7 +47,7 @@ import {
   type ConnectionFolder,
   type SidecarSpeechModelId,
   type SidecarSpeechRuntimeDiagnostics,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { confirmNonEmptyFolderDelete, showConfirmDialog } from "../../lib/app-dialogs";
 import {
   Plus,

@@ -6,7 +6,7 @@ import { Modal } from "../ui/Modal";
 import { useCreateConnection } from "../../hooks/use-connections";
 import { useUIStore } from "../../stores/ui.store";
 import { Loader2, Link } from "lucide-react";
-import { MODEL_LISTS, PROVIDERS, type APIProvider } from "@marinara-engine/shared";
+import { MODEL_LISTS, PROVIDERS, type APIProvider } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

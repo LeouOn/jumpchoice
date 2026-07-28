@@ -14,7 +14,7 @@ import {
   CUSTOM_EMOJI_SELECTION_MIN_COUNT,
   CUSTOM_EMOJI_SELECTION_MAX_COUNT,
   type CustomEmojiSelectionPrefs,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

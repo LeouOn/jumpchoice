@@ -31,7 +31,7 @@ import {
   type GameMap,
   type WrapFormat,
   type GenerationParameterSendMap,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { eq } from "../../db/file-query.js";
 import { listCharacterSprites } from "../../services/game/sprite.service.js";
 import { DATA_DIR } from "../../utils/data-dir.js";

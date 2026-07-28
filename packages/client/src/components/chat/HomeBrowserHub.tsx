@@ -45,7 +45,7 @@ import {
   type AchievementEvent,
   type HomeCustomWidget,
   type HomeCustomWidgetCatalog,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useTranslation } from "react-i18next";
 import { useAgentConfigs } from "../../hooks/use-agents";
 import { useChats } from "../../hooks/use-chats";

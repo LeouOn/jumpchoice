@@ -10,7 +10,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { BookOpen, Eye, Maximize2, Pencil, X } from "lucide-react";
-import { SUPPORTED_MACROS } from "@marinara-engine/shared";
+import { SUPPORTED_MACROS } from "@jumpchoice/shared";
 
 import { applyInlineMarkdown, renderMarkdownBlocks } from "../../lib/markdown";
 import { resolveSelfCardAssets } from "../../lib/card-asset-links";

@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { readFile } from "node:fs/promises";
 import { z } from "zod";
-import { BUILT_IN_AGENT_MANIFESTS } from "@marinara-engine/shared";
+import { BUILT_IN_AGENT_MANIFESTS } from "@jumpchoice/shared";
 import { requirePrivilegedAccess } from "../middleware/privileged-gate.js";
 import {
   capabilityPackageManager,

@@ -13,7 +13,7 @@ import {
   type LorebookCategory,
   type QuoteFormat,
   type ScenePromptPreferences,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { LegacyNoodleNavigationState as NoodleNavigationState } from "../lib/legacy-noodle-navigation";
 import { isCssGradient, RAINBOW_GRADIENT_PRESET } from "../lib/css-colors";
 import { announceChatFloatingUiDismiss } from "../lib/chat-floating-ui-events";

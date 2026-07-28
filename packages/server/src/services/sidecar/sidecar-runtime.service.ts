@@ -22,7 +22,7 @@ import type {
   SidecarRuntimeInfo,
   SidecarRuntimePreference,
   SidecarRuntimeSource,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getDataDir } from "../../utils/data-dir.js";
 import { downloadFileWithProgress, isAbortError, retry } from "./sidecar-download.js";
 import { assertInsideDir } from "../../utils/security.js";

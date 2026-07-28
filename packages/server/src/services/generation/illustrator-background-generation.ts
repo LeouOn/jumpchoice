@@ -3,7 +3,7 @@ import {
   resolveGameSetupArtStylePrompt,
   type GameState,
   type ImageStyleProfileSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import type { ResolvedAgent } from "../agents/agent-pipeline.js";

@@ -3,5 +3,5 @@ export {
   mergeCompiledPromptMeta,
   formatImageStylePromptGuidance,
   resolveImageStyleGuidanceText,
-} from "@marinara-engine/shared";
-export type { CompiledImagePrompt, CompileImagePromptInput } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+export type { CompiledImagePrompt, CompileImagePromptInput } from "@jumpchoice/shared";

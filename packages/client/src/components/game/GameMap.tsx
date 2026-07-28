@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { useState, useCallback, useEffect, useRef, type FocusEvent, type PointerEvent, type RefObject } from "react";
 import { motion } from "framer-motion";
-import type { GameMap, GameActiveState, SpatialContextResponse } from "@marinara-engine/shared";
+import type { GameMap, GameActiveState, SpatialContextResponse } from "@jumpchoice/shared";
 import { GameGridMap } from "./GameGridMap";
 import { GameNodeMap } from "./GameNodeMap";
 import { CapabilityElement } from "../capabilities/CapabilityElement";

@@ -1,4 +1,4 @@
-import { LOCAL_SIDECAR_CONNECTION_ID, PROVIDERS, localAuthProviderBaseUrl } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID, PROVIDERS, localAuthProviderBaseUrl } from "@jumpchoice/shared";
 import { createHash } from "node:crypto";
 import type { DB } from "../db/connection.js";
 import { logger } from "../lib/logger.js";

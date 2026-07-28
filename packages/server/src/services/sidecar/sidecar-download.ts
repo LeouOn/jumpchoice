@@ -3,7 +3,7 @@ import { createWriteStream, existsSync, mkdirSync, renameSync, statSync, unlinkS
 import { dirname } from "path";
 import { Readable } from "stream";
 import { pipeline as streamPipeline } from "stream/promises";
-import type { SidecarDownloadProgress } from "@marinara-engine/shared";
+import type { SidecarDownloadProgress } from "@jumpchoice/shared";
 import { sanitizeApiError } from "../llm/base-provider.js";
 
 const USER_AGENT = "MarinaraEngine";

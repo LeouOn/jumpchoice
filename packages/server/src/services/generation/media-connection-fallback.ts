@@ -3,7 +3,7 @@ import {
   inferVideoSource,
   normalizeVideoGenerationProfile,
   VIDEO_DEFAULTS_STORAGE_KEY,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { ImageGenRequest } from "../image/image-generation.js";
 import { resolveConnectionImageDefaults, resolveConnectionImageQuality } from "../image/image-generation-defaults.js";
 import type { VideoGenerationRequest } from "../video/video-generation.js";

@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // Regex Scripts — Prompt Application
 // ──────────────────────────────────────────────
-import { applyRegexReplacement, isPatternSafe, resolveRegexPatternLiteralMacros } from "@marinara-engine/shared";
+import { applyRegexReplacement, isPatternSafe, resolveRegexPatternLiteralMacros } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { vmRegexReplaceGuard } from "../lorebook/regex-timeout.js";
 

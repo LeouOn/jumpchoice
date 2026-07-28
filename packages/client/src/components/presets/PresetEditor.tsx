@@ -83,7 +83,7 @@ import {
   type PromptPreset,
   type PromptSection,
   type WrapFormat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useCapabilityAgentRegistry } from "../../hooks/use-capability-packages";
 import { useQuoteFormatter } from "../../hooks/use-quote-formatter";
 import { EditorTabRail } from "../ui/EditorTabRail";

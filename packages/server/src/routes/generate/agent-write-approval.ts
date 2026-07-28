@@ -1,4 +1,4 @@
-import type { AgentWriteApprovalEnvelope, AgentWriteApprovalProposal } from "@marinara-engine/shared";
+import type { AgentWriteApprovalEnvelope, AgentWriteApprovalProposal } from "@jumpchoice/shared";
 import { mergeLorebookKeeperUpdateContent } from "./lorebook-keeper-utils.js";
 
 const LOREBOOK_APPROVAL_ENTRY_DELIMITER = "<!-- marinara:lorebook-entry:v1 -->";

@@ -16,8 +16,8 @@ import {
   createFolderEntry,
   isStockMarinaraUniversalPreset,
   type LorebookEntryTimingState,
-} from "@marinara-engine/shared";
-import type { ExportEnvelope } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { ExportEnvelope } from "@jumpchoice/shared";
 import { createPromptsStorage } from "../services/storage/prompts.storage.js";
 import { assemblePrompt, type AssemblerInput } from "../services/prompt/index.js";
 import { cardPromptText } from "../services/prompt/card-text.js";

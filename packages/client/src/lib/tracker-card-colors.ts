@@ -3,8 +3,8 @@ import type {
   TrackerCardColorConfig,
   TrackerCardColorMode,
   TrackerCardPortraitStageBackground,
-} from "@marinara-engine/shared";
-import { normalizeTrackerCardColorConfig as normalizeSharedTrackerCardColorConfig } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { normalizeTrackerCardColorConfig as normalizeSharedTrackerCardColorConfig } from "@jumpchoice/shared";
 import { normalizeStatIconAssignments } from "./stat-icon-assignments";
 
 export const DEFAULT_TRACKER_CARD_COLOR_MODE: TrackerCardColorMode = "chat";

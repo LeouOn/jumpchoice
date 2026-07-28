@@ -6,7 +6,7 @@ import {
   type CustomAgentCapability,
   type CustomAgentRepositoryChange,
   type CustomAgentRepositoryPreview,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { toast } from "sonner";
 import {
   useAddCustomAgentRepository,

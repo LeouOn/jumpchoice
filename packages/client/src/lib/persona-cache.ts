@@ -1,4 +1,4 @@
-import type { Persona } from "@marinara-engine/shared";
+import type { Persona } from "@jumpchoice/shared";
 import type { QueryClient } from "@tanstack/react-query";
 
 export const personaCacheKeys = {

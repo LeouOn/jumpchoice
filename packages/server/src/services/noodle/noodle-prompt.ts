@@ -8,7 +8,7 @@ import {
   type NoodleInteraction,
   type NoodlePost,
   type NoodleSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export const NOODLE_PAST_MEMORY_MIN_AGE_MS = 48 * 60 * 60 * 1000;
 /** Behavior when a Noodle setting's `enableEnhancedTimelineWriting` is off — reproduces the exact pre-toggle defaults. */

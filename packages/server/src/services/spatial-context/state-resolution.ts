@@ -1,4 +1,4 @@
-import type { ResolvedSpatialTravel, SpatialContextDefinition, SpatialContextSnapshot } from "@marinara-engine/shared";
+import type { ResolvedSpatialTravel, SpatialContextDefinition, SpatialContextSnapshot } from "@jumpchoice/shared";
 import { getCapabilityService } from "../capability-packages/capability-service-registry.service.js";
 import { isHierarchicalMapsEnabledForChat } from "./activation.js";
 

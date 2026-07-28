@@ -1,4 +1,4 @@
-import { DEFAULT_WORLD_CUSTOM_FIELD_ICON, normalizeWorldCustomFieldIcon } from "@marinara-engine/shared";
+import { DEFAULT_WORLD_CUSTOM_FIELD_ICON, normalizeWorldCustomFieldIcon } from "@jumpchoice/shared";
 import { cn } from "../../../lib/utils";
 import { StatIcon } from "../../../components/ui/stat-icons";
 

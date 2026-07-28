@@ -1,4 +1,4 @@
-import { BUILT_IN_AGENTS } from "@marinara-engine/shared";
+import { BUILT_IN_AGENTS } from "@jumpchoice/shared";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === "object" && !Array.isArray(value);

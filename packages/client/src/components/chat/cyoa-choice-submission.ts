@@ -1,4 +1,4 @@
-import type { PendingSpatialTransition } from "@marinara-engine/shared";
+import type { PendingSpatialTransition } from "@jumpchoice/shared";
 
 interface CyoaChoiceImpersonationOptions {
   presetId?: string | null;

@@ -1,4 +1,4 @@
-import { getFolderManifestConfig, isJsonRecord } from "@marinara-engine/shared";
+import { getFolderManifestConfig, isJsonRecord } from "@jumpchoice/shared";
 import type { CustomToolRow } from "../hooks/use-custom-tools";
 import type { ZipFileInput } from "./download-zip";
 import {

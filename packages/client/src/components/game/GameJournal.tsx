@@ -13,7 +13,7 @@ import { cleanNpcAvatarDisplayName, normalizeNpcAvatarName } from "../../lib/gam
 import { applyInlineMarkdown, renderMarkdownBlocks } from "../../lib/markdown";
 import { AnimatedText } from "./AnimatedText";
 
-import type { GameNpc } from "@marinara-engine/shared";
+import type { GameNpc } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 interface JournalEntry {

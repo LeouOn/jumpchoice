@@ -1,4 +1,4 @@
-import { LOCAL_SIDECAR_CONNECTION_ID } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID } from "@jumpchoice/shared";
 import type { BaseLLMProvider } from "../llm/base-provider.js";
 import { withConnectionFallbackProvider, type FallbackConnection } from "../llm/connection-fallback-provider.js";
 import { getLocalSidecarProvider, LOCAL_SIDECAR_MODEL } from "../llm/local-sidecar.js";

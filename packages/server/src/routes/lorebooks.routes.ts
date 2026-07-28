@@ -21,8 +21,8 @@ import {
   type Lorebook,
   type LorebookEntry,
   type LorebookFolder,
-} from "@marinara-engine/shared";
-import type { ExportEnvelope } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { ExportEnvelope } from "@jumpchoice/shared";
 import { createLorebooksStorage } from "../services/storage/lorebooks.storage.js";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";

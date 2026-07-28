@@ -2,7 +2,7 @@
 // React Query: Generation (streaming + agent pipeline)
 // ──────────────────────────────────────────────
 import { useCallback, useRef } from "react";
-import { normalizeAvatarCrop, type AvatarCrop } from "@marinara-engine/shared";
+import { normalizeAvatarCrop, type AvatarCrop } from "@jumpchoice/shared";
 import { useQueryClient, type InfiniteData, type QueryClient } from "@tanstack/react-query";
 import { toast, type ExternalToast } from "sonner";
 import { api, ApiError } from "../lib/api-client";
@@ -59,7 +59,7 @@ import {
   type Persona,
   type ResolvedSpatialTravel,
   type ThinkingTagPair,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 type RetryAgentsOptions = {
   lorebookKeeperBackfill?: boolean;
@@ -595,7 +595,7 @@ import { showLocalMessageNotification, showNativeMessageNotification } from "../
 import { dispatchCapabilityClientEvent } from "../lib/capability-client-events";
 import { messageHasPendingPostProcessing, parseMessageExtraRecord } from "../lib/chat-message-extra";
 import { stripGmTagsKeepReadables } from "../lib/game-tag-parser";
-import type { APIConnection, Chat, GameMap, Message } from "@marinara-engine/shared";
+import type { APIConnection, Chat, GameMap, Message } from "@jumpchoice/shared";
 
 function sortMessagesByCreatedAt(messages: Message[]): Message[] {
   return [...messages].sort((a, b) => {
@@ -1065,7 +1065,7 @@ async function refreshVisibleGameStateAfterGeneration(chatId: string) {
 
   const refreshPromise = (async () => {
     try {
-      const gs = await api.get<import("@marinara-engine/shared").GameState | null>(`/chats/${chatId}/game-state`);
+      const gs = await api.get<import("@jumpchoice/shared").GameState | null>(`/chats/${chatId}/game-state`);
       if (useChatStore.getState().activeChatId === chatId) {
         useGameStateStore.getState().setGameState(gs ?? null);
       }

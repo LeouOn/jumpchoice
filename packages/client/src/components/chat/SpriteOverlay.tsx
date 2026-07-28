@@ -5,7 +5,7 @@
 import { useState, useEffect, useMemo, useRef, type CSSProperties, type RefObject } from "react";
 import { motion, AnimatePresence, type TargetAndTransition } from "framer-motion";
 import { Check } from "lucide-react";
-import type { SpriteCharacterVisualSettings, SpritePlacement, SpriteSide } from "@marinara-engine/shared";
+import type { SpriteCharacterVisualSettings, SpritePlacement, SpriteSide } from "@jumpchoice/shared";
 import { useCharacterSprites, type SpriteInfo } from "../../hooks/use-characters";
 import { normalizeSpriteExpressionKey, resolveSpriteExpression } from "../../lib/sprite-expression-match";
 import {

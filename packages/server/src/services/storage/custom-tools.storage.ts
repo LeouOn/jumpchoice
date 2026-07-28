@@ -5,7 +5,7 @@ import { and, asc, desc, eq } from "../../db/file-query.js";
 import type { DB } from "../../db/connection.js";
 import { agentConfigs, customTools } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
-import { parseAgentSettingsRecord, type CreateCustomToolInput } from "@marinara-engine/shared";
+import { parseAgentSettingsRecord, type CreateCustomToolInput } from "@jumpchoice/shared";
 import { isCustomToolScriptEnabled } from "../../config/runtime-config.js";
 import {
   decryptCustomToolWebhookUrl,

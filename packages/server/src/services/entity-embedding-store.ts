@@ -15,7 +15,7 @@
 //    routes through the entity's update() path (no version snapshot, no JSON
 //    merge) and never touches updatedAt (so recency-ordered lists and the chat
 //    sidebar are not churned by background vectorization).
-import { PROFESSOR_MARI_ID, type CharacterData } from "@marinara-engine/shared";
+import { PROFESSOR_MARI_ID, type CharacterData } from "@jumpchoice/shared";
 import { eq } from "../db/file-query.js";
 import type { DB } from "../db/connection.js";
 import { characters, chats, lorebooks, personas, promptPresets } from "../db/schema/index.js";

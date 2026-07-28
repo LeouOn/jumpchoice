@@ -7,7 +7,7 @@ import {
   storageMigrationNoticeSchema,
   type AppSettingsResponse,
   type StorageMigrationNotice,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 
 export const storageMigrationNoticeKeys = {

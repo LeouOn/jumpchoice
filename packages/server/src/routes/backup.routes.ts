@@ -28,7 +28,7 @@ import {
   canReparentFolder,
   normalizePersonalExtensionCapabilities,
   type ExportEnvelope,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getDataDir } from "../utils/data-dir.js";
 import { getFileStorageDir } from "../config/runtime-config.js";
 import { normalizeTimestampOverrides } from "../services/import/import-timestamps.js";

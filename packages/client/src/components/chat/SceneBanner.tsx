@@ -5,7 +5,7 @@ import { Film, ArrowRight, ArrowLeft, Trash2, ArrowRightLeft } from "lucide-reac
 import { useState } from "react";
 import { useChatStore } from "../../stores/chat.store";
 import { showConfirmDialog } from "../../lib/app-dialogs";
-import type { SceneForkMode } from "@marinara-engine/shared";
+import type { SceneForkMode } from "@jumpchoice/shared";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
 interface SceneBannerProps {

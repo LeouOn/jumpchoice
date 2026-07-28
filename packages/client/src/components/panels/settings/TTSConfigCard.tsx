@@ -40,7 +40,7 @@ import type {
   TTSVoiceMode,
   TTSAudioFormat,
   TTSConversationCallAudioInputMode,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   ELEVENLABS_TTS_LANGUAGE_OPTIONS,
   TTS_API_KEY_MASK,
@@ -48,7 +48,7 @@ import {
   TTS_DIALOGUE_PAUSE_MAX_SECONDS,
   TTS_DIALOGUE_PAUSE_MIN_SECONDS,
   ttsSourceProfileFromConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { HelpTooltip } from "../../ui/HelpTooltip";
 import { SettingsCheckbox, SettingsSwitch } from "./SettingControls";
 import { useTranslation as useUiTranslation } from "react-i18next";

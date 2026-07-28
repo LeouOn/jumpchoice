@@ -56,14 +56,14 @@ import type {
   WorldCustomField,
   Message,
   TrackerHiddenFields,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   inventoryItemTrackerLockPrefix,
   normalizeTrackerFieldLocksForState,
   normalizeTrackerHiddenFields,
   removeTrackerFieldLockPrefix,
   toggleTrackerFieldLock,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { TrackerTemperatureUnit } from "../../stores/ui.store";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

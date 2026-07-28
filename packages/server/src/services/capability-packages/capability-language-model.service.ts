@@ -5,7 +5,7 @@ import {
   type CapabilityLanguageModelCompletionOptions,
   type CapabilityLanguageModelHost,
   type CapabilityLanguageModelMessage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { fitMessagesToContext, type BaseLLMProvider, type ChatMessage, type ChatOptions } from "../llm/base-provider.js";
 import { getLocalSidecarProvider, LOCAL_SIDECAR_MODEL } from "../llm/local-sidecar.js";

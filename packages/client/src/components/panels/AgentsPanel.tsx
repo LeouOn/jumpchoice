@@ -47,7 +47,7 @@ import {
   normalizeAgentPhaseForType,
   type CustomAgentCapability,
   type AgentCategory,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { confirmNonEmptyFolderDelete, showChoiceDialog, showConfirmDialog } from "../../lib/app-dialogs";
 import { cn } from "../../lib/utils";
 import { sortBasicPanelItems } from "../../lib/panel-sort";

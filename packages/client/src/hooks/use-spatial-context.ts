@@ -8,7 +8,7 @@ import type {
   ResolvedSpatialTravel,
   SpatialContextResponse,
   SpatialDefinitionIssue,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api, ApiError } from "../lib/api-client";
 import { useChatStore } from "../stores/chat.store";
 import { dispatchCapabilityClientEvent } from "../lib/capability-client-events";

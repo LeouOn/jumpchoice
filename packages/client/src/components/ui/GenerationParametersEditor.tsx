@@ -7,7 +7,7 @@ import {
   type GenerationParameters,
   type ManagedGenerationParameterDefinition,
   type ThinkingTagPair,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { SettingsSwitch } from "../panels/settings/SettingControls";
 import { DraftTextarea } from "./DraftTextarea";

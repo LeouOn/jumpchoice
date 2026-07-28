@@ -8,7 +8,7 @@ import { assertInsideDir, safeFetch } from "../../utils/security.js";
 import { notifyGenerationFallback, type GenerationFallbackNotifier } from "../generation/fallback-notification.js";
 import { runMediaGenerationRequest } from "../image/image-generation-queue.js";
 import { buildAtlasCloudVideoRequest, runAtlasCloudPrediction } from "../media/atlas-cloud.js";
-import { buildComfyUiLoraWorkflowReplacements, type ComfyUiLoraSetting } from "@marinara-engine/shared";
+import { buildComfyUiLoraWorkflowReplacements, type ComfyUiLoraSetting } from "@jumpchoice/shared";
 
 export interface VideoReferenceImage {
   base64: string;

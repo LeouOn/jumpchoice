@@ -7,7 +7,7 @@ import {
   type PersonalExtensionRevision,
   type PersonalExtensionSource,
   type UpdatePersonalExtensionInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { desc, eq, like } from "../../db/file-query.js";
 import type { DB } from "../../db/connection.js";
 import { installedExtensions } from "../../db/schema/index.js";

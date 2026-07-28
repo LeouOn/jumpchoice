@@ -5,7 +5,7 @@ import type {
   PresentCharacter,
   SupportedStatIcon,
   TrackerStatIconAssignment,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useUpdateChatMetadata } from "../../../hooks/use-chats";
 import {
   normalizeStatIconAssignments,

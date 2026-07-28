@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RotateCcw, Sliders } from "lucide-react";
 import { useTranslation as useUiTranslation } from "react-i18next";
-import { DEFAULT_GAME_SYSTEM_PROMPT, type AgentPromptTemplateOption } from "@marinara-engine/shared";
+import { DEFAULT_GAME_SYSTEM_PROMPT, type AgentPromptTemplateOption } from "@jumpchoice/shared";
 import { MacroTextarea } from "../../../components/ui/MacroTextarea";
 import { ChatSettingsSection } from "../ChatSettingsSection";
 

@@ -19,7 +19,7 @@ import {
   type GameState,
   type TrackerFieldLocks,
   type TrackerHiddenFields,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export type GameStateVisibleAnchor = { messageId: string; swipeIndex: number };
 

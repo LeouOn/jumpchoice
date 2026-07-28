@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { HomeFeedSnapshot } from "@marinara-engine/shared";
+import type { HomeFeedSnapshot } from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 
 export const homeFeedKeys = {

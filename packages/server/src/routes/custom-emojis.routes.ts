@@ -23,7 +23,7 @@ import {
   CUSTOM_EMOJI_NAME_PATTERN,
   CUSTOM_EMOJI_MAX_DIMENSION,
   updateCustomEmojiSchema,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const CUSTOM_EMOJIS_ROOT = join(DATA_DIR, "custom-emojis");
 const ALLOWED_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]);

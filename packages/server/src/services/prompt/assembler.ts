@@ -14,8 +14,8 @@ import type {
   LorebookEntryTimingState,
   MacroContext,
   ResolveMacroOptions,
-} from "@marinara-engine/shared";
-import { DEFAULT_GENERATION_PARAMS, generationParametersSchema, resolveMacros } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { DEFAULT_GENERATION_PARAMS, generationParametersSchema, resolveMacros } from "@jumpchoice/shared";
 import { wrapContent, wrapGroup } from "./format-engine.js";
 import { sanitizePromptLeaf } from "./prompt-escaping.js";
 import { ensureLorebookScan, expandMarker, type MarkerContext } from "./marker-expander.js";

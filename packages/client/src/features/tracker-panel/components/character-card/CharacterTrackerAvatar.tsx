@@ -1,5 +1,5 @@
 import { ImagePlus } from "lucide-react";
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import { cn } from "../../../../lib/utils";
 import { visibleText } from "../../lib/tracker-display";
 import { InlineEdit } from "../controls/InlineControls";

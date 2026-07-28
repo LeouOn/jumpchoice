@@ -14,7 +14,7 @@ import {
   type CapabilitySpatialSnapshotStore,
   type SpatialContextSnapshot,
   type SpatialSnapshotSource,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { and, desc, eq, inArray, ne, or } from "../../db/file-query.js";
 import { FileUniqueConstraintError } from "../../db/file-schema.js";

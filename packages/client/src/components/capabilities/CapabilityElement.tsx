@@ -1,7 +1,7 @@
 import { createElement, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { AlertTriangle, RefreshCw, X } from "lucide-react";
-import type { CapabilityLocalizationContext } from "@marinara-engine/shared";
+import type { CapabilityLocalizationContext } from "@jumpchoice/shared";
 import { retryCapabilityClientModule, useCapabilityClientModuleState } from "../../hooks/use-capability-packages";
 import { cn } from "../../lib/utils";
 

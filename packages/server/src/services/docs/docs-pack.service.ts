@@ -20,7 +20,7 @@ import {
   DOCS_LANGUAGE_SETTINGS_KEY,
   DEFAULT_DOCS_LANGUAGE,
   normalizeDocsLanguage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { getDataDir, getMonorepoRoot } from "../../config/runtime-config.js";
 import { assertInsideDir, safeFetch } from "../../utils/security.js";

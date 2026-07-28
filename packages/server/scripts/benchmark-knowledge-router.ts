@@ -37,7 +37,7 @@
 //
 // Pipe the markdown table into the PR description.
 // ──────────────────────────────────────────────
-import type { LorebookEntry } from "@marinara-engine/shared";
+import type { LorebookEntry } from "@jumpchoice/shared";
 import { buildCatalog, formatCatalogForPrompt } from "../src/services/agents/knowledge-router.js";
 
 const CHARS_PER_TOKEN = 4;

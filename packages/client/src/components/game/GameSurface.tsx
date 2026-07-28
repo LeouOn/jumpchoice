@@ -140,8 +140,8 @@ import type {
   SpatialMapGroundingMode,
   SpatialMapDraftSize,
   PendingSpatialTransition,
-} from "@marinara-engine/shared";
-import type { AvatarCrop, SceneSegmentEffect } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { AvatarCrop, SceneSegmentEffect } from "@jumpchoice/shared";
 import {
   PROFESSOR_MARI_ID,
   SPOTIFY_RECENT_TRACK_HISTORY_LIMIT,
@@ -158,7 +158,7 @@ import {
   resolveGameSetupArtStylePrompt,
   scoreMusic,
   scoreAmbient,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { GameNarration, formatNarration } from "./GameNarration";
 import { GameInput } from "./GameInput";
 import { GameMapPanel, MobileMapButton } from "./GameMap";
@@ -228,7 +228,7 @@ import {
   ROLEPLAY_POPOVER_TITLE,
 } from "../chat/roleplay-popover-styles";
 import type { ReadableTag } from "../../lib/game-tag-parser";
-import type { DirectionCommand, GameNpc, GameStoryboardViewerDisplayMode } from "@marinara-engine/shared";
+import type { DirectionCommand, GameNpc, GameStoryboardViewerDisplayMode } from "@jumpchoice/shared";
 
 type JournalReadable = ReadableTag & {
   sourceMessageId?: string | null;
@@ -242,7 +242,7 @@ type GameAssetGenerationPayload = {
   forceBackground?: boolean;
   npcsNeedingAvatars?: Array<{ name: string; description: string; gender?: string | null; pronouns?: string | null }>;
   forceNpcAvatarNames?: string[];
-  illustration?: import("@marinara-engine/shared").SceneIllustrationRequest;
+  illustration?: import("@jumpchoice/shared").SceneIllustrationRequest;
   illustrationNarration?: string;
   useAvatarReferences?: boolean;
   includeCharacterAppearance?: boolean;
@@ -1473,7 +1473,7 @@ import type {
   GameCombatStyle,
   TacticalCombatState,
   CombatStyleNotes,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../chat/chat-area.types";
 
 /** Typewriter component for the intro screen — reveals text character-by-character. */
@@ -2424,7 +2424,7 @@ function GameSurfaceComponent({
     const existing = useGameStateStore.getState().current;
     if (existing?.chatId === activeChatId) return;
     api
-      .get<import("@marinara-engine/shared").GameState | null>(`/chats/${activeChatId}/game-state`)
+      .get<import("@jumpchoice/shared").GameState | null>(`/chats/${activeChatId}/game-state`)
       .then((gs) => {
         if (gs) {
           useGameStateStore.getState().setGameState(gs);
@@ -2701,7 +2701,7 @@ function GameSurfaceComponent({
     statuses: CombatStatusTag[];
     messageId: string;
   } | null>(null);
-  const [pendingSkillCheck, setPendingSkillCheck] = useState<import("@marinara-engine/shared").SkillCheckResult | null>(
+  const [pendingSkillCheck, setPendingSkillCheck] = useState<import("@jumpchoice/shared").SkillCheckResult | null>(
     null,
   );
   const [pendingReaction, setPendingReaction] = useState<{
@@ -4175,7 +4175,7 @@ function GameSurfaceComponent({
   // isn't displayed until backgrounds/music/etc. are ready.
   const sceneReadyMsgIdRef = useRef<string | undefined>(undefined);
   const applySceneResultRef = useRef<
-    ((result: import("@marinara-engine/shared").SceneAnalysis) => void | Promise<void>) | null
+    ((result: import("@jumpchoice/shared").SceneAnalysis) => void | Promise<void>) | null
   >(null);
   const [sceneReadyTick, setSceneReadyTick] = useState(0);
   void sceneReadyTick; // used only to trigger re-renders
@@ -8790,7 +8790,7 @@ function GameSurfaceComponent({
           rpgStats?: {
             attributes: Array<{ name: string; value: number }>;
             hp: { value: number; max: number };
-            pools?: import("@marinara-engine/shared").RPGStatPool[];
+            pools?: import("@jumpchoice/shared").RPGStatPool[];
           };
         };
       }
@@ -8838,7 +8838,7 @@ function GameSurfaceComponent({
                 | {
                     attributes: Array<{ name: string; value: number }>;
                     hp: { value: number; max: number };
-                    pools?: import("@marinara-engine/shared").RPGStatPool[];
+                    pools?: import("@jumpchoice/shared").RPGStatPool[];
                   }
                 | undefined,
             }

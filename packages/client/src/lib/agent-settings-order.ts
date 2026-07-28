@@ -1,4 +1,4 @@
-import { STORYBOARD_AGENT_ID, type BuiltInAgentManifest } from "@marinara-engine/shared";
+import { STORYBOARD_AGENT_ID, type BuiltInAgentManifest } from "@jumpchoice/shared";
 
 const AGENT_CATEGORY_ORDER: Record<string, number> = {
   writer: 0,

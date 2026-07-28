@@ -1,7 +1,7 @@
 import {
   LOCAL_SIDECAR_CONNECTION_ID,
   parseConnectionImageCaptioningDefaults,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 import { isDebugAgentsEnabled } from "../../config/runtime-config.js";
 import { logger, logDebugOverride } from "../../lib/logger.js";

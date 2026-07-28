@@ -1,4 +1,4 @@
-import type { SidecarBackend } from "@marinara-engine/shared";
+import type { SidecarBackend } from "@jumpchoice/shared";
 
 export const LOCAL_SIDECAR_REQUEST_MODEL = "local-sidecar";
 

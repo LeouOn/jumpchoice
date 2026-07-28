@@ -1,6 +1,6 @@
 import { Copy, Download, Info } from "lucide-react";
 import { toast } from "sonner";
-import type { GameInitialSetupSnapshot, GameSetupConfig, GenerationParameters } from "@marinara-engine/shared";
+import type { GameInitialSetupSnapshot, GameSetupConfig, GenerationParameters } from "@jumpchoice/shared";
 import { downloadJsonFile, sanitizeExportFilenamePart } from "../../lib/download-json";
 import { copyToClipboard } from "../../lib/utils";
 import {

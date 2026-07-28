@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { BookOpen, FilePlus2, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { LorebookEntry, LorebookFolder } from "@marinara-engine/shared";
+import type { LorebookEntry, LorebookFolder } from "@jumpchoice/shared";
 import { useCreateLorebookEntry, useLorebookEntries, useLorebookFolders } from "../../../hooks/use-lorebooks";
 import { LorebookEntryRow } from "../../../components/lorebooks/LorebookEntryRow";
 

@@ -1,4 +1,4 @@
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import type { SpriteInfo } from "../../../hooks/use-characters";
 
 export function isSpriteLookupCharacterId(characterId: string | null | undefined) {

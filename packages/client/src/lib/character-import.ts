@@ -1,5 +1,5 @@
 import { api } from "./api-client";
-import type { CharacterData } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 
 export interface EmbeddedLorebookImportPreview {
   filename: string;

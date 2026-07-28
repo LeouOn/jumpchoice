@@ -1,4 +1,4 @@
-import type { GameMap, MapEdge, MapNode } from "@marinara-engine/shared";
+import type { GameMap, MapEdge, MapNode } from "@jumpchoice/shared";
 
 const MIN_NODE_COORD = 8;
 const MAX_NODE_COORD = 92;

@@ -1,4 +1,4 @@
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 
 /** Owns only active ChatSettingsDrawer surface visibility, not the complete chat shell. */
 export const CHAT_SETTINGS_SURFACES: Record<

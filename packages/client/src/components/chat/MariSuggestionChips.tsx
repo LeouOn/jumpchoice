@@ -13,7 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import type { MariChipEntity, MariSuggestionChip } from "@marinara-engine/shared";
+import type { MariChipEntity, MariSuggestionChip } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { useTranslation as useUiTranslation } from "react-i18next";
 

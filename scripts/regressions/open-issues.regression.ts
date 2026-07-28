@@ -7309,7 +7309,7 @@ const windowsLauncherSource = readFileSync(join(REPOSITORY_ROOT, "start.bat"), "
 assert.match(windowsLauncherSource, /node --version >nul 2>&1/u);
 assert.doesNotMatch(windowsLauncherSource, /where node >nul 2>&1/u);
 for (const workspace of ["shared", "server", "client"]) {
-  assert.match(windowsLauncherSource, new RegExp(`--filter @marinara-engine/${workspace} run clean`, "u"));
+  assert.match(windowsLauncherSource, new RegExp(`--filter @jumpchoice/${workspace} run clean`, "u"));
 }
 for (const relativePath of [
   "packages/client/scripts/build.mjs",

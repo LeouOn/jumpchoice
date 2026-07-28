@@ -36,7 +36,7 @@ import type {
   DaySummaryEntry,
   WeekSummaryEntry,
   HomeFeedSnapshot,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 import { useRollingBackfillStore } from "../stores/backfill.store";
 import { homeFeedKeys } from "./use-home-feed";

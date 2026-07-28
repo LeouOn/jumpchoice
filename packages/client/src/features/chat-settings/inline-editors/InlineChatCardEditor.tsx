@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FilePenLine, Maximize2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { CharacterData } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 import { useCharacter, usePersona, useUpdateCharacter, useUpdatePersona } from "../../../hooks/use-characters";
 import { useQuoteFormatter } from "../../../hooks/use-quote-formatter";
 import { cn } from "../../../lib/utils";

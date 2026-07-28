@@ -1,4 +1,4 @@
-import { stripGenerationGuideInstruction, type GenerationGuideSource } from "@marinara-engine/shared";
+import { stripGenerationGuideInstruction, type GenerationGuideSource } from "@jumpchoice/shared";
 
 export type GenerationReplayGuideSource = GenerationGuideSource;
 

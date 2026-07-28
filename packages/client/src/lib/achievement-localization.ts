@@ -1,4 +1,4 @@
-import type { AchievementDefinition } from "@marinara-engine/shared";
+import type { AchievementDefinition } from "@jumpchoice/shared";
 import type { TOptions } from "i18next";
 
 type AchievementTranslator = (key: string, options?: TOptions) => unknown;

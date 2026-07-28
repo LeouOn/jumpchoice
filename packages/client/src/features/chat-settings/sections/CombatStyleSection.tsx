@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { Swords } from "lucide-react";
-import type { GameCombatStyle } from "@marinara-engine/shared";
+import type { GameCombatStyle } from "@jumpchoice/shared";
 import { ChatSettingsSection } from "../ChatSettingsSection";
 import { useTranslation as useUiTranslation } from "react-i18next";
 
