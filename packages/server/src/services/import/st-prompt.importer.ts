@@ -34,8 +34,8 @@ function toReasoningEffort(v: unknown): "low" | "medium" | "high" | "xhigh" | "m
   return null;
 }
 
-function toVerbosity(v: unknown): "low" | "medium" | "high" | null {
-  return v === "low" || v === "medium" || v === "high" ? v : null;
+function toVerbosity(v: unknown): "low" | "medium" | "high" | "max" | null {
+  return v === "low" || v === "medium" || v === "high" || v === "max" ? v : null;
 }
 
 function parseStringArray(raw: unknown, parseJsonString: boolean): string[] {

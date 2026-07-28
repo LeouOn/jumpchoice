@@ -2,6 +2,8 @@
 setlocal enabledelayedexpansion
 cd /d "%~dp0"
 title Marinara Engine
+
+if not defined NODE_OPTIONS set NODE_OPTIONS=--max-old-space-size=8192
 color 0A
 echo.
 echo  +==========================================+

@@ -55,7 +55,7 @@ type GenerationProviderRuntimeArgs = {
     presencePenalty: number;
     showThoughts: boolean;
     reasoningEffort: "low" | "medium" | "high" | "xhigh" | "maximum" | null;
-    verbosity: "low" | "medium" | "high" | null;
+    verbosity: "low" | "medium" | "high" | "max" | null;
     serviceTier: "flex" | "priority" | null;
     assistantPrefill: string;
     customThinkingTags: ThinkingTagPair[];
