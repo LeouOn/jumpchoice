@@ -129,3 +129,5 @@ export * from "./utils/noodle-mentions.js";
 export * from "./utils/noodle-polls.js";
 export * from "./utils/noodle-interactions.js";
 export * from "./utils/spatial-context.js";
+
+export * from "./types/jump-document.js";
