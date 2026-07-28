@@ -73,7 +73,7 @@ import {
   type TacticalCoord,
   type TacticalTerrain,
   type TacticalClass,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 // ── Props ──
 

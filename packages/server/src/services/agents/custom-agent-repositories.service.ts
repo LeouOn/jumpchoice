@@ -13,7 +13,7 @@ import {
   type CustomAgentRepositoryChange,
   type CustomAgentRepositoryPreview,
   type PackagedAgentDefinition,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { DATA_DIR } from "../../utils/data-dir.js";

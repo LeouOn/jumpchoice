@@ -1,4 +1,4 @@
-import { BUILT_IN_AGENTS } from "@marinara-engine/shared";
+import { BUILT_IN_AGENTS } from "@jumpchoice/shared";
 import type { TrackerPanelSection, TrackerStatDensity } from "../tracker-panel.types";
 export {
   DEFAULT_TRACKER_CARD_PORTRAIT_FOCUS_X as TRACKER_PORTRAIT_DEFAULT_FOCUS_X,

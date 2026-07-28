@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Target } from "lucide-react";
-import type { QuestProgress } from "@marinara-engine/shared";
+import type { QuestProgress } from "@jumpchoice/shared";
 import type { TrackerPanelSizeProfile } from "../../../../../stores/ui.store";
 import { cn } from "../../../../../lib/utils";
 import { TRACKER_TEXT_ROW } from "../../../lib/tracker-panel.constants";

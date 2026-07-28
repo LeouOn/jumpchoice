@@ -1,4 +1,4 @@
-import { decodeEncodedSpeakerTags, type TTSConfig } from "@marinara-engine/shared";
+import { decodeEncodedSpeakerTags, type TTSConfig } from "@jumpchoice/shared";
 import { DIALOGUE_QUOTE_CAPTURE_GROUP_PATTERN_SOURCE, stripSurroundingDialogueQuotes } from "./dialogue-quotes";
 
 export interface TTSUtterance {

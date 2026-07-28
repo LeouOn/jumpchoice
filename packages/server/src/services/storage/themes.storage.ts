@@ -6,7 +6,7 @@ import type { DB } from "../../db/connection.js";
 import { customThemes } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";
 import { normalizeThemeCss } from "../../utils/theme-css.js";
-import type { CreateThemeInput, Theme, UpdateThemeInput } from "@marinara-engine/shared";
+import type { CreateThemeInput, Theme, UpdateThemeInput } from "@jumpchoice/shared";
 
 type ThemeRow = typeof customThemes.$inferSelect;
 

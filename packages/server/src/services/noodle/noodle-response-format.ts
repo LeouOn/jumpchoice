@@ -1,4 +1,4 @@
-import { isOpenAIGpt56Model } from "@marinara-engine/shared";
+import { isOpenAIGpt56Model } from "@jumpchoice/shared";
 
 export const NOODLE_JSON_OUTPUT_HEADING = "# JSON Output Format";
 

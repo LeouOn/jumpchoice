@@ -1,4 +1,4 @@
-import type { NoodleAccount } from "@marinara-engine/shared";
+import type { NoodleAccount } from "@jumpchoice/shared";
 
 export function isNoodleProfileGenerated(account: Pick<NoodleAccount, "settings">): boolean {
   return account.settings.profile.profileGenerated === true;

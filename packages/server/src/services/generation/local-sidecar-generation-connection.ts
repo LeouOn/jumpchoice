@@ -1,4 +1,4 @@
-import { LOCAL_SIDECAR_CONNECTION_ID } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID } from "@jumpchoice/shared";
 
 import { LOCAL_SIDECAR_MODEL } from "../llm/local-sidecar.js";
 import { sidecarModelService } from "../sidecar/sidecar-model.service.js";

@@ -47,7 +47,7 @@ import type {
   LorebookFolder,
   LorebookMatchingSource,
   SelectiveLogic,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   ExpandableTextarea,
   FieldGroup,

@@ -15,8 +15,8 @@ import type {
   SceneSegmentEffect,
   SceneSpotifyTrackCandidate,
   SceneSpotifyTrackSelection,
-} from "@marinara-engine/shared";
-import { normalizeLocationKind, normalizeMusicGenre, normalizeMusicIntensity } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { normalizeLocationKind, normalizeMusicGenre, normalizeMusicIntensity } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 
 const VALID_DIRECTION_EFFECTS = new Set<DirectionCommand["effect"]>([

@@ -9,7 +9,7 @@ import type {
   MoveChatToFolderInput,
   ReorderFoldersInput,
   UpdateFolderInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { chatKeys } from "./use-chats";
 
 export const folderKeys = {

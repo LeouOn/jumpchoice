@@ -1,4 +1,4 @@
-import type { Chat } from "@marinara-engine/shared";
+import type { Chat } from "@jumpchoice/shared";
 import { parseChatMetadata } from "./chat-display";
 
 type GameSessionChat = Pick<Chat, "id" | "mode" | "groupId" | "metadata" | "updatedAt" | "createdAt">;

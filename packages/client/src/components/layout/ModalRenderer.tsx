@@ -4,7 +4,7 @@
 import { lazy, Suspense } from "react";
 import type { AvatarCropValue } from "../../lib/utils";
 import { useUIStore } from "../../stores/ui.store";
-import type { LorebookCategory, LorebookScope, ScenePromptPreferences } from "@marinara-engine/shared";
+import type { LorebookCategory, LorebookScope, ScenePromptPreferences } from "@jumpchoice/shared";
 
 const CreateCharacterModal = lazy(() =>
   import("../modals/CreateCharacterModal").then((module) => ({ default: module.CreateCharacterModal })),

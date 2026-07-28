@@ -7,7 +7,7 @@ import {
   normalizeTrackerHiddenFields,
   type CharacterStat,
   type PresentCharacter,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { TrackerPanelSizeProfile } from "../../../../stores/ui.store";
 import { cn } from "../../../../lib/utils";
 import type { TrackerStatDensity } from "../../tracker-panel.types";

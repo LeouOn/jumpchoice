@@ -23,7 +23,7 @@ import {
   type SidecarQuantization,
   type SidecarStatus,
   type SidecarStatusResponse,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getDataDir } from "../../utils/data-dir.js";
 import { downloadFileWithProgress, fetchJson, isAbortError } from "./sidecar-download.js";
 import { mlxRuntimeService } from "./mlx-runtime.service.js";

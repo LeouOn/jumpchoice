@@ -29,7 +29,7 @@ import type {
   NoodlerManagedStageProfile,
   NoodlerStageProfile,
   Persona,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   useCreateNoodlerInteraction,
   useCreateNoodlerStageProfile,

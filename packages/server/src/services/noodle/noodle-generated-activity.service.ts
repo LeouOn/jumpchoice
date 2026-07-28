@@ -5,7 +5,7 @@ import {
   type NoodleGeneratedRefresh,
   type NoodleInteractionType,
   type NoodleSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { basename } from "path";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";

@@ -8,14 +8,14 @@ import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createLorebooksStorage } from "../storage/lorebooks.storage.js";
 import { createRegexScriptsStorage } from "../storage/regex-scripts.storage.js";
 import { importSTLorebook } from "./st-lorebook.importer.js";
-import { isPatternSafe } from "@marinara-engine/shared";
+import { isPatternSafe } from "@jumpchoice/shared";
 import type {
   CharacterBookEntryPosition,
   CharacterBookEntryRole,
   CharacterData,
   CreateRegexScriptInput,
   RegexPlacement,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { existsSync, mkdirSync } from "fs";
 import { unlink, writeFile } from "fs/promises";
 import { join } from "path";

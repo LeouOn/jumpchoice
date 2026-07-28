@@ -7,7 +7,7 @@ import {
   type NoodlePost,
   type NoodlePrivateGenerationRequest,
   type NoodleStageProfileInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isDebugAgentsEnabled } from "../../config/runtime-config.js";
 import type { DB } from "../../db/connection.js";
 import { logDebugOverride } from "../../lib/logger.js";

@@ -1,4 +1,4 @@
-import type { ChatMode } from "@marinara-engine/shared";
+import type { ChatMode } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import type { CharacterCommand } from "../conversation/character-commands.js";
 import { getCapabilityService } from "../capability-packages/capability-service-registry.service.js";

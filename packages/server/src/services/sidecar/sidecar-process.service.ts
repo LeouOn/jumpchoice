@@ -3,7 +3,7 @@ import { logger } from "../../lib/logger.js";
 import { createWriteStream, existsSync, readFileSync, writeFileSync, type WriteStream } from "fs";
 import { createServer } from "net";
 import { dirname, join } from "path";
-import type { SidecarBackend } from "@marinara-engine/shared";
+import type { SidecarBackend } from "@jumpchoice/shared";
 import { sidecarModelService } from "./sidecar-model.service.js";
 import { isAbortError } from "./sidecar-download.js";
 import { buildLlamaArgs, buildLlamaStartupPlans } from "./sidecar-launch-plan.js";

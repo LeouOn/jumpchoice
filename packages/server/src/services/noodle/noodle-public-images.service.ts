@@ -6,7 +6,7 @@ import {
   type NoodleAccount,
   type NoodleBootstrap,
   type NoodleSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger, logDebugOverride } from "../../lib/logger.js";
 import { newId } from "../../utils/id-generator.js";

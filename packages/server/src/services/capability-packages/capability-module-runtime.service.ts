@@ -10,7 +10,7 @@ import {
   type CapabilityRuntimeHost,
   type CapabilityRuntimeLogArgument,
   type InstalledCapabilityPackage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isDebugAgentsEnabled } from "../../config/runtime-config.js";
 import { logger, logDebugOverride } from "../../lib/logger.js";
 import { DATA_DIR } from "../../utils/data-dir.js";

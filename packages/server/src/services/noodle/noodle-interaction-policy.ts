@@ -3,7 +3,7 @@ import {
   type NoodleAccount,
   type NoodleInteraction,
   type NoodlePost,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export function canCreateGeneratedNoodleInteraction(input: {
   actor: NoodleAccount;

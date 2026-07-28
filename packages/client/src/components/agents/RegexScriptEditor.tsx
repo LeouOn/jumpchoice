@@ -41,7 +41,7 @@ import {
   resolveMacros,
   type MacroContext,
   type RegexPlacement,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 // ═══════════════════════════════════════════════
 //  Placement metadata

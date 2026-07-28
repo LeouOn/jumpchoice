@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import type { Message, SpriteSide } from "@marinara-engine/shared";
+import type { Message, SpriteSide } from "@jumpchoice/shared";
 import { ConversationView } from "./ConversationView";
 import { ChatCommonOverlays } from "./ChatCommonOverlays";
 import { useRenderTimer } from "../../lib/perf-diagnostics";

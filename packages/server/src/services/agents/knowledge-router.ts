@@ -13,7 +13,7 @@
 // the box for casual users while letting power users tune precision
 // by writing tight descriptions.
 // ──────────────────────────────────────────────
-import type { AgentContext, AgentResult, LorebookEntry } from "@marinara-engine/shared";
+import type { AgentContext, AgentResult, LorebookEntry } from "@jumpchoice/shared";
 import type { BaseLLMProvider } from "../llm/base-provider.js";
 import { executeAgent, type AgentExecConfig } from "./agent-executor.js";
 import { logger } from "../../lib/logger.js";

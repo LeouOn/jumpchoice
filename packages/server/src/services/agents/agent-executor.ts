@@ -13,7 +13,7 @@ import type {
   PresentCharacter,
   TrackerHiddenFields,
   WrapFormat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   characterTrackerLockKey,
   compactQuestProgressForContext,
@@ -26,7 +26,7 @@ import {
   getDefaultAgentPrompt,
   normalizeRpgStatPools,
   resolveMacros,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getMaxToolRounds, isDebugAgentsEnabled } from "../../config/runtime-config.js";
 import { logger, logDebugOverride } from "../../lib/logger.js";
 import { wrapContent } from "../prompt/format-engine.js";

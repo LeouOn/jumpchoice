@@ -109,7 +109,7 @@ import {
   type RPGStatPool,
   type RPGStatsConfig,
   type TrackerCardColorConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useQuoteFormatter } from "../../hooks/use-quote-formatter";
 import { LorebookAssignmentSection } from "../lorebooks/LorebookAssignmentSection";
 import { ConvoProfileFields } from "../characters/ConvoProfileFields";

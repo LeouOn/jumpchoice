@@ -9,7 +9,7 @@
 // blocks, so migrate them into owner-linked lorebooks where each block remains
 // independently editable.
 
-import type { CharacterData } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";

@@ -1,4 +1,4 @@
-import { generationParametersSchema } from "@marinara-engine/shared";
+import { generationParametersSchema } from "@jumpchoice/shared";
 
 import type { ChatCompletionResult, ChatMessage, ChatOptions, LLMUsage } from "./base-provider.js";
 import { BaseLLMProvider } from "./base-provider.js";

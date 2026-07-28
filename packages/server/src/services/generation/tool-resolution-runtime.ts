@@ -1,5 +1,5 @@
-import { BUILT_IN_TOOLS, DEFAULT_AGENT_TOOLS, customAgentHasCapability } from "@marinara-engine/shared";
-import type { AgentContext } from "@marinara-engine/shared";
+import { BUILT_IN_TOOLS, DEFAULT_AGENT_TOOLS, customAgentHasCapability } from "@jumpchoice/shared";
+import type { AgentContext } from "@jumpchoice/shared";
 import type { LLMToolDefinition } from "../llm/base-provider.js";
 import type { ResolvedAgent } from "../agents/agent-pipeline.js";
 import {

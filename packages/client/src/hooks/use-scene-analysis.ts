@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import type {
   SceneAnalysis,
   SceneAnalysisRequest,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useUIStore } from "../stores/ui.store";
 
 type AnalyzeSceneInput = Omit<SceneAnalysisRequest, "debugMode"> & {

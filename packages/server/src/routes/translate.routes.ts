@@ -6,7 +6,7 @@ import { z } from "zod";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { withConnectionFallbackProvider } from "../services/llm/connection-fallback-provider.js";
-import { DEFAULT_TRANSLATION_SYSTEM_PROMPT, PROVIDERS, localAuthProviderBaseUrl } from "@marinara-engine/shared";
+import { DEFAULT_TRANSLATION_SYSTEM_PROMPT, PROVIDERS, localAuthProviderBaseUrl } from "@jumpchoice/shared";
 import { isDeeplxLocalUrlsEnabled } from "../config/runtime-config.js";
 import { safeFetch, validateOutboundUrl } from "../utils/security.js";
 import { resolveBaseUrl } from "./generate/generate-route-utils.js";

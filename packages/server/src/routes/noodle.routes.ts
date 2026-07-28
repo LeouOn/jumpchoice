@@ -32,7 +32,7 @@ import {
   readNoodlePollFromMetadata,
   type NoodleAccount,
   type NoodlerPostView,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createNoodleStorage } from "../services/storage/noodle.storage.js";

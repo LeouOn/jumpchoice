@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ExternalLink, Pencil, Sliders, Trash2 } from "lucide-react";
-import { DEFAULT_CONVERSATION_PROMPT } from "@marinara-engine/shared";
+import { DEFAULT_CONVERSATION_PROMPT } from "@jumpchoice/shared";
 import { ExpandedTextarea } from "../../../components/ui/ExpandedTextarea";
 import { ChatSettingsSection } from "../ChatSettingsSection";
 

@@ -7,7 +7,7 @@
 // emoji + segment); entries without a segment target the whole message.
 // Conversation mode only.
 // ──────────────────────────────────────────────
-import { normalizeTextForMatch, type MessageReaction } from "@marinara-engine/shared";
+import { normalizeTextForMatch, type MessageReaction } from "@jumpchoice/shared";
 
 /** Reactor id for the human (characters react with their character id instead). */
 export const USER_REACTOR = "user";

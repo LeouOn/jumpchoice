@@ -45,7 +45,7 @@ import type {
   PresentCharacter,
   QuestProgress,
   WorldCustomField,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   characterStatTrackerLockKey,
   characterCustomFieldTrackerLockKey,
@@ -69,7 +69,7 @@ import {
   renameTrackerFieldLockPrefix,
   worldCustomFieldTrackerLockKey,
   worldTrackerLockKey,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useTrackerLockContext } from "../../features/tracker-panel/components/TrackerLockContext";
 import { WorldCustomFieldIcon } from "../../features/tracker-panel/lib/world-custom-field-icons";
 import { trackerEditableText } from "../../features/tracker-panel/lib/tracker-display";

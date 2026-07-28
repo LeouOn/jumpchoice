@@ -123,7 +123,7 @@ import {
   type ConvoBehaviorConfig,
   type RPGStatPool,
   type RPGStatsConfig,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { parseTrackerCardColorConfig, serializeTrackerCardColorConfig } from "../../lib/tracker-card-colors";
 import { useQuoteFormatter } from "../../hooks/use-quote-formatter";
 import { LorebookAssignmentSection } from "../lorebooks/LorebookAssignmentSection";

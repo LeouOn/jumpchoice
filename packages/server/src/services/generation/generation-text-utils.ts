@@ -1,4 +1,4 @@
-import { stripMacroComments } from "@marinara-engine/shared";
+import { stripMacroComments } from "@jumpchoice/shared";
 import type { LLMUsage } from "../llm/base-provider.js";
 import { stripGmCommandTags } from "../game/segment-edits.js";
 

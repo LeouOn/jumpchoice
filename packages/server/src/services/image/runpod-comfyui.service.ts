@@ -22,7 +22,7 @@ import {
   mergePromptPrefix,
   type ComfyUiDefaults,
   type ImageGenerationDefaultsProfile,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { safeFetch } from "../../utils/security.js";
 import {

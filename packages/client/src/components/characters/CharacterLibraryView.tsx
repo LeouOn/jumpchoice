@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type UIEvent } from "react";
 import { ArrowLeft, ArrowUpDown, Check, Download, Hash, Pencil, Plus, Search, Star, User } from "lucide-react";
-import { includesTextForMatch, normalizeTextForMatch, type CharacterData } from "@marinara-engine/shared";
+import { includesTextForMatch, normalizeTextForMatch, type CharacterData } from "@jumpchoice/shared";
 import {
   flattenCharacterPages,
   flattenPersonaPages,

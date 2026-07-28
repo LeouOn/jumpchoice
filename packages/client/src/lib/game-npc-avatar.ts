@@ -1,4 +1,4 @@
-import { normalizeTextForMatch } from "@marinara-engine/shared";
+import { normalizeTextForMatch } from "@jumpchoice/shared";
 
 const NPC_AVATAR_REVISION_PARAM = "mariAvatarRevision";
 const TRAILING_NPC_REPUTATION_LABEL = /(?:^|[\s_-])(?:devoted|allied|friendly|neutral|unfriendly|hostile|enemy)$/i;

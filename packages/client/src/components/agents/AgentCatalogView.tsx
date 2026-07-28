@@ -14,7 +14,7 @@ import {
   Trash2,
   TriangleAlert,
 } from "lucide-react";
-import { compareCapabilityPackageVersions, type CapabilityCatalogPackage } from "@marinara-engine/shared";
+import { compareCapabilityPackageVersions, type CapabilityCatalogPackage } from "@jumpchoice/shared";
 import { toast } from "sonner";
 import {
   useCapabilityCatalog,

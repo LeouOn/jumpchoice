@@ -31,7 +31,7 @@ import {
   type MariDbRowChange,
   type MariDbValidationIssue,
   type MariDbValidationResult,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 type Row = Record<string, unknown>;
 type Table = AnyFileTable;

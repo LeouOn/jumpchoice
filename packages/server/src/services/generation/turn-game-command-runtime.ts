@@ -1,5 +1,5 @@
 import type { FastifyReply } from "fastify";
-import { getTurnGameEngine } from "@marinara-engine/shared";
+import { getTurnGameEngine } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
 import { getEnabledConversationSchedules } from "./conversation-context-utils.js";

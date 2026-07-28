@@ -5,7 +5,7 @@ import {
   type NoodleInteraction,
   type NoodlePost,
   type NoodleSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 type RandomSource = () => number;
 

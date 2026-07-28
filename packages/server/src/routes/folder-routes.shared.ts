@@ -3,7 +3,7 @@ import {
   reorderFoldersSchema,
   updateFolderSchema,
   type UpdateFolderInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { FastifyInstance } from "fastify";
 import type { ZodType } from "zod";
 import { logger } from "../lib/logger.js";

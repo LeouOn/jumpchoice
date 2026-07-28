@@ -1,5 +1,5 @@
 import { ArrowLeft, Box, MessageSquare, Puzzle, Settings2 } from "lucide-react";
-import type { BuiltInAgentManifest, InstalledCapabilityPackage } from "@marinara-engine/shared";
+import type { BuiltInAgentManifest, InstalledCapabilityPackage } from "@jumpchoice/shared";
 import { CapabilityElement } from "../capabilities/CapabilityElement";
 
 interface ActiveFeatureChat {

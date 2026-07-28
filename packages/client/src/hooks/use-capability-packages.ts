@@ -6,7 +6,7 @@ import {
   type CapabilityCatalog,
   type BuiltInAgentManifest,
   type InstalledCapabilityPackage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 
 export const capabilityPackageKeys = {

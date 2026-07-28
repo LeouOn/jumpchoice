@@ -1,4 +1,4 @@
-import { customAgentHasCapability, type AgentResult } from "@marinara-engine/shared";
+import { customAgentHasCapability, type AgentResult } from "@jumpchoice/shared";
 
 import type { ResolvedAgent } from "../../services/agents/agent-pipeline.js";
 

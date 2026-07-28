@@ -6,7 +6,7 @@ import {
   type ChatMode,
   type NoodleCarryoverTarget,
   type NoodleDigestEntry,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { wrapContent } from "../prompt/format-engine.js";
 import { createNoodleStorage } from "../storage/noodle.storage.js";

@@ -2,7 +2,7 @@
 // Game: Dice Rolling Service
 // ──────────────────────────────────────────────
 
-import type { DiceRollResult } from "@marinara-engine/shared";
+import type { DiceRollResult } from "@jumpchoice/shared";
 
 export const DICE_NOTATION_REGEX = /^(\d+)?d(\d+)([+-]\d+)?$/i;
 

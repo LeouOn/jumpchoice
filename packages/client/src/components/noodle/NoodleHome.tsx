@@ -64,7 +64,7 @@ import {
   type NoodlePollInput,
   type NoodleRefreshSchedulerStatus,
   type NoodleSettingsUpdateInput,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn, parseAvatarCropJson, type AvatarCropValue } from "../../lib/utils";
 import { renderInlineWithCustomEmojis } from "../../lib/custom-emoji-render";
 import { useActivePersona, useCharacterGroups, useCharacters, usePersonas } from "../../hooks/use-characters";

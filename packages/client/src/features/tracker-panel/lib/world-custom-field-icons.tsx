@@ -70,7 +70,7 @@ import {
   DEFAULT_WORLD_CUSTOM_FIELD_ICON,
   normalizeWorldCustomFieldIcon,
   type SupportedWorldCustomFieldIcon,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../../lib/utils";
 
 const WORLD_CUSTOM_FIELD_ICONS = {

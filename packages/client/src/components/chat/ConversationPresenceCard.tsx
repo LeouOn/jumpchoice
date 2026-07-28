@@ -3,8 +3,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarClock, ChevronDown, RefreshCw, Settings2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import type { ConversationPresenceStatus, ConversationStatusOverride, WeekSchedule } from "@marinara-engine/shared";
-import type { Message } from "@marinara-engine/shared";
+import type { ConversationPresenceStatus, ConversationStatusOverride, WeekSchedule } from "@jumpchoice/shared";
+import type { Message } from "@jumpchoice/shared";
 import { useUpdateChatMetadata } from "../../hooks/use-chats";
 import { characterKeys } from "../../hooks/use-characters";
 import { useGenerate } from "../../hooks/use-generate";

@@ -2,7 +2,7 @@
 // Hooks: Agent Configs (React Query)
 // ──────────────────────────────────────────────
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AgentSuiteRewriteInput } from "@marinara-engine/shared";
+import type { AgentSuiteRewriteInput } from "@jumpchoice/shared";
 import { ApiError, api } from "../lib/api-client";
 
 export const agentKeys = {

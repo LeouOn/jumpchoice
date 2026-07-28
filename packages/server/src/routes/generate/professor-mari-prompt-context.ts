@@ -1,4 +1,4 @@
-import { PROFESSOR_MARI_ID } from "@marinara-engine/shared";
+import { PROFESSOR_MARI_ID } from "@jumpchoice/shared";
 
 import { MARI_ASSISTANT_PROMPT } from "../../db/seed-mari.js";
 

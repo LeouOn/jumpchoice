@@ -1,4 +1,4 @@
-import type { NoodleAccount, NoodlePost } from "@marinara-engine/shared";
+import type { NoodleAccount, NoodlePost } from "@jumpchoice/shared";
 
 export function isNoodlerHiddenFromViewer(account: NoodleAccount, viewerAccountId: string): boolean {
   return account.settings.privacy.access.hiddenFromAccountIds.includes(viewerAccountId);

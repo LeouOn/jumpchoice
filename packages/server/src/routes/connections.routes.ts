@@ -17,7 +17,7 @@ import {
   isLocalAuthProvider,
   localAuthProviderBaseUrl,
   normalizeVideoGenerationProfile,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { resetMemoryRecallVectorizerCache } from "../services/memory-recall-embedding.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
@@ -477,7 +477,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       }
 
       // Simple models list fetch to verify the key works
-      const { PROVIDERS } = await import("@marinara-engine/shared");
+      const { PROVIDERS } = await import("@jumpchoice/shared");
       const provider = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
       let baseUrl = conn.baseUrl || provider?.defaultBaseUrl || "";
 
@@ -603,7 +603,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       // Claude (Subscription) has no remote /models endpoint — return the
       // curated static list for the subscription path.
       if (conn.provider === "claude_subscription") {
-        const { MODEL_LISTS } = await import("@marinara-engine/shared");
+        const { MODEL_LISTS } = await import("@jumpchoice/shared");
         const models = MODEL_LISTS.claude_subscription.map((m) => ({ id: m.id, name: m.name }));
         return { models };
       }
@@ -629,7 +629,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
         return { models };
       }
 
-      const { PROVIDERS } = await import("@marinara-engine/shared");
+      const { PROVIDERS } = await import("@jumpchoice/shared");
       const provider = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
       let baseUrl = conn.baseUrl || provider?.defaultBaseUrl || "";
 
@@ -934,7 +934,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       return reply.status(400).send({ error: "Not an image generation connection" });
     }
 
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     const baseUrl = (conn.baseUrl || providerDef?.defaultBaseUrl || "").replace(/\/+$/, "");
 
@@ -985,7 +985,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       return reply.status(400).send({ error: "Not a video generation connection" });
     }
 
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     const videoApiKey = conn.apiKey || "";
     const defaults = conn.defaultParameters
@@ -1192,7 +1192,7 @@ export async function connectionsRoutes(app: FastifyInstance) {
       return reply.status(400).send({ error: "No model configured. Set a model first." });
     }
 
-    const { PROVIDERS } = await import("@marinara-engine/shared");
+    const { PROVIDERS } = await import("@jumpchoice/shared");
     const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
     const baseUrl = (conn.baseUrl || providerDef?.defaultBaseUrl || "").replace(/\/+$/, "");
 

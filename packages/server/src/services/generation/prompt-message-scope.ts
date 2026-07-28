@@ -1,4 +1,4 @@
-import { nameToXmlTag, normalizeTextForMatch } from "@marinara-engine/shared";
+import { nameToXmlTag, normalizeTextForMatch } from "@jumpchoice/shared";
 import { pruneEmptyPromptWrappers } from "./runtime-agent-sections.js";
 
 export type GenerationPromptMessage = {

@@ -1,4 +1,4 @@
-import { PROVIDERS, type APIProvider } from "@marinara-engine/shared";
+import { PROVIDERS, type APIProvider } from "@jumpchoice/shared";
 import type { CreateConnectionPayload } from "../hooks/use-connections";
 
 export type ConnectionTransferRow = {

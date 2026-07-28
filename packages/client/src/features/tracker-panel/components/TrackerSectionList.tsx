@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { RefreshCw, Sparkles } from "lucide-react";
-import type { GameState, Persona, PresentCharacter } from "@marinara-engine/shared";
+import type { GameState, Persona, PresentCharacter } from "@jumpchoice/shared";
 import { useUpdateAgent, type AgentConfigRow } from "../../../hooks/use-agents";
 import type { GameStatePatchField } from "../../../hooks/use-game-state-patcher";
 import type {

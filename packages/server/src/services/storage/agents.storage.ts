@@ -13,7 +13,7 @@ import {
   parseAgentSettingsRecord,
   type CreateAgentConfigInput,
   type AgentResult,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const BUILTIN_AGENT_ID_PREFIX = "builtin:";
 const REMOVED_BUILT_IN_AGENT_TYPES = new Set(["editor"]);

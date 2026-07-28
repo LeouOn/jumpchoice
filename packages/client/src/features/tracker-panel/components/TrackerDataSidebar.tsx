@@ -1,11 +1,11 @@
 import { Component, useCallback, useState, type CSSProperties, type ErrorInfo, type ReactNode } from "react";
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import {
   normalizeTrackerFieldLocksForState,
   normalizeTrackerHiddenFields,
   toggleTrackerFieldLock,
   type TrackerHiddenFields,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { TRACKER_PANEL_DEFAULT_BACKGROUND_COLOR, useUIStore } from "../../../stores/ui.store";
 import { useChatStore } from "../../../stores/chat.store";
 import { useGameStateStore } from "../../../stores/game-state.store";

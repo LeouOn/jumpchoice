@@ -1,4 +1,4 @@
-import { APP_VERSION } from "@marinara-engine/shared";
+import { APP_VERSION } from "@jumpchoice/shared";
 import { safeFetch, type SafeFetchOptions } from "../../utils/security.js";
 
 const DEFAULT_TIMEOUT_MS = 30_000;

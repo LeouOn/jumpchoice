@@ -10,7 +10,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { BUILT_IN_AGENTS, type Message } from "@marinara-engine/shared";
+import { BUILT_IN_AGENTS, type Message } from "@jumpchoice/shared";
 import { useUpdateAgentRunData, type AgentConfigRow, type AgentRunRow } from "../../hooks/use-agents";
 import {
   formatAgentFailureDetail,

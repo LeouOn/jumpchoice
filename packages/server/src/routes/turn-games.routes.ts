@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { listTurnGames } from "@marinara-engine/shared";
+import { listTurnGames } from "@jumpchoice/shared";
 import {
   applyTurnGameMove,
   getTurnGameView,

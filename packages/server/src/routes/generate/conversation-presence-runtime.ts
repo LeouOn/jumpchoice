@@ -1,4 +1,4 @@
-import { normalizeTextForMatch } from "@marinara-engine/shared";
+import { normalizeTextForMatch } from "@jumpchoice/shared";
 
 import type { DB } from "../../db/connection.js";
 import {

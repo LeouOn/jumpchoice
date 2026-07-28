@@ -4,7 +4,7 @@ import {
   type CapabilityLanguageModelCompletionOptions,
   type CapabilityLanguageModelHost,
   type CapabilityLanguageModelMessage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { createLLMProvider } from "../llm/provider-registry.js";
 import { createConnectionsStorage } from "../storage/connections.storage.js";

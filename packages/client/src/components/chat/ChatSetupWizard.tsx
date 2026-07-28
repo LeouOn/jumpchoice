@@ -69,7 +69,7 @@ import {
   type ConversationCommandKey,
   type Lorebook,
   type Message,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   CHAT_PARAMETER_DEFAULTS,

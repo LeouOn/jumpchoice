@@ -1,4 +1,4 @@
-import { LOCAL_SIDECAR_CONNECTION_ID } from "@marinara-engine/shared";
+import { LOCAL_SIDECAR_CONNECTION_ID } from "@jumpchoice/shared";
 
 export type AgentConnectionWarning = {
   code: "local_sidecar_unavailable" | "default_agent_connection_active" | "agent_connection_unavailable";

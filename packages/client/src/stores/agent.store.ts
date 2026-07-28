@@ -14,7 +14,7 @@ import type {
   CharacterCardFieldUpdate,
   MariGuidedPlanStep,
   MariSuggestionChip,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { AgentFailure } from "../lib/agent-failures";
 
 /**

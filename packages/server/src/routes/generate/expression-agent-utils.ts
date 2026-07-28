@@ -1,7 +1,7 @@
 import {
   normalizeSpriteExpressionKey as normalizeUnicodeSpriteExpressionKey,
   normalizeSpriteLookupToken,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { buildSpriteExpressionChoices } from "../../services/game/sprite.service.js";
 
 export type SpriteDisplayMode = "expressions" | "full-body";

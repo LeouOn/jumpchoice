@@ -15,7 +15,7 @@ import {
   getDefaultBuiltInAgentSettings,
   localAuthProviderBaseUrl,
   normalizeAgentPhaseForType,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createAgentsStorage } from "../services/storage/agents.storage.js";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";

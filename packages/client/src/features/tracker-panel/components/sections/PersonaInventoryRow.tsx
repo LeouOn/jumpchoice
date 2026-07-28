@@ -5,7 +5,7 @@ import {
   isTrackerFieldLocked,
   renameTrackerFieldLockPrefix,
   type InventoryItem,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../../../lib/utils";
 import { visibleText } from "../../lib/tracker-display";
 import { InlineEdit, InlineNumber } from "../controls/InlineControls";

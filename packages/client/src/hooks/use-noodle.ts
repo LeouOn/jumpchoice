@@ -30,8 +30,8 @@ import type {
   NoodlerViewerScope,
   NoodlerCreateInteractionInput,
   NoodlerRemoveInteractionInput,
-} from "@marinara-engine/shared";
-import { mergeNoodlePollVoteInteractions } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { mergeNoodlePollVoteInteractions } from "@jumpchoice/shared";
 import type { ImagePromptOverride, ImagePromptReviewItem } from "../components/ui/ImagePromptReviewModal";
 
 export type NoodleRefreshResult = {

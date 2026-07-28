@@ -1,4 +1,4 @@
-import type { CharacterStat } from "@marinara-engine/shared";
+import type { CharacterStat } from "@jumpchoice/shared";
 import {
   PERSONA_ADD_STAT_DENSITY_HEIGHT_REM,
   PERSONA_STAT_DENSITY_HEIGHT_REM,

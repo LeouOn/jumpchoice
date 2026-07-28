@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CheckCircle2, Loader2, Palette, RotateCcw, Save, TriangleAlert } from "lucide-react";
-import type { Persona, PresentCharacter, TrackerCardColorConfig } from "@marinara-engine/shared";
+import type { Persona, PresentCharacter, TrackerCardColorConfig } from "@jumpchoice/shared";
 import {
   useCharacters,
   usePersonas,

@@ -8,7 +8,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Pencil, RotateCcw, Save, Smile, Trash2, Undo2, User, X } from "lucide-react";
 import { toast } from "sonner";
-import type { Chat } from "@marinara-engine/shared";
+import type { Chat } from "@jumpchoice/shared";
 import { useChat, useUpdateChatMetadata } from "../../hooks/use-chats";
 import { useCharacter, usePersonas } from "../../hooks/use-characters";
 import { useConversationCustomEmojis } from "../../hooks/use-conversation-custom-emojis";

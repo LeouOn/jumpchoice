@@ -5,7 +5,7 @@ import {
   type NoodlePost,
   type NoodleSettings,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { ChatMessage } from "../llm/base-provider.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createChatsStorage } from "../storage/chats.storage.js";

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { AchievementEvent, AchievementStatusResponse, AchievementTrackResponse } from "@marinara-engine/shared";
+import type { AchievementEvent, AchievementStatusResponse, AchievementTrackResponse } from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 import { showAchievementUnlockToasts } from "../lib/achievement-toast";
 import { useUIStore } from "../stores/ui.store";

@@ -10,7 +10,7 @@ import {
   GAME_VIDEO_PROMPT_TEMPLATE_VARIABLES,
   GAME_STORYBOARD_PROMPT_TEMPLATE_VARIABLES,
   GAME_STORYBOARD_STILL_PROMPT_TEMPLATE,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { renderTemplate } from "../template.js";
 
 // ── NPC portrait ──

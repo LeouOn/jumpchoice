@@ -2,7 +2,7 @@ import {
   noodleGeneratedProfileSchema,
   noodleGeneratedProfilesSchema,
   type NoodleGeneratedProfile,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export type RejectedNoodleGeneratedProfile = {
   index: number;

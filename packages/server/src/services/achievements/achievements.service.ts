@@ -4,13 +4,13 @@ import type {
   AchievementProgress,
   AchievementStatusResponse,
   AchievementTrackResponse,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   ACHIEVEMENT_DEFINITION_BY_ID,
   ACHIEVEMENT_DEFINITIONS,
   ACHIEVEMENT_DIRECT_EVENT_IDS,
   PROFESSOR_MARI_ID,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { isFileUniqueConstraintError } from "../../db/file-schema.js";
 import { achievementUnlocks, characters, chats, lorebooks, personas } from "../../db/schema/index.js";

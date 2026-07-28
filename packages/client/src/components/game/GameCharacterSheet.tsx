@@ -26,7 +26,7 @@ import {
   normalizeRpgStatPools,
   syncRpgHpFromPools,
   type RPGStatPool,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export interface GameCharacterSheetGameCard {
   shortDescription: string;

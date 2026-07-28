@@ -9,7 +9,7 @@ import {
   isPatternSafe,
   resolveRegexPatternLiteralMacros,
   type RegexPlacement,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { useUIStore } from "../stores/ui.store";
 
 /** How character-scoped regex scripts apply at display time (mirrors card CSS modes). */

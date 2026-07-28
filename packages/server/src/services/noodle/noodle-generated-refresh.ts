@@ -5,7 +5,7 @@ import {
   noodleGeneratedPostSchema,
   noodleGeneratedRefreshSchema,
   type NoodleGeneratedRefresh,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { parseGameJsonishSequence } from "../game/jsonish.js";
 import { normalizeNoodleHandle } from "./noodle-handle.js";
 

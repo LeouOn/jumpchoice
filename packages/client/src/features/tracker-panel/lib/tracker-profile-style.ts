@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { Persona, PresentCharacter, TrackerCardColorConfig } from "@marinara-engine/shared";
+import type { Persona, PresentCharacter, TrackerCardColorConfig } from "@jumpchoice/shared";
 import {
   DEFAULT_TRACKER_CARD_ACCENT,
   getTrackerCardCssPaintValue,

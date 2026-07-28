@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { ACHIEVEMENT_DEFINITION_BY_ID, type AchievementDefinition, type AchievementProgress } from "@marinara-engine/shared";
+import { ACHIEVEMENT_DEFINITION_BY_ID, type AchievementDefinition, type AchievementProgress } from "@jumpchoice/shared";
 
 function getAchievementLabel(achievement: AchievementDefinition) {
   return achievement.rankLabel ? `${achievement.title} ${achievement.rankLabel}` : achievement.title;

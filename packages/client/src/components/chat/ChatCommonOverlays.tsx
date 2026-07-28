@@ -1,5 +1,5 @@
 import { Suspense, lazy, type ComponentProps, type CSSProperties } from "react";
-import type { SpriteSide } from "@marinara-engine/shared";
+import type { SpriteSide } from "@jumpchoice/shared";
 import { ChevronUp, ChevronDown, Loader2, Trash2 } from "lucide-react";
 import type { PeekPromptData } from "./chat-area.types";
 import type { LocalSpriteVisualSettings } from "./local-sprite-visual-settings";

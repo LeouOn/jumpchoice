@@ -6,7 +6,7 @@
 import { AtSign, Bell, Home, MoreHorizontal, Pencil, Search, Settings2, User, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { createContext, type CSSProperties, type ReactNode, type RefObject, useContext, useRef } from "react";
-import type { NoodleAccount } from "@marinara-engine/shared";
+import type { NoodleAccount } from "@jumpchoice/shared";
 import { cn, getAvatarCropStyle, type AvatarCropValue } from "../../lib/utils";
 import { useDialogFocusScope } from "../../hooks/use-dialog-focus-scope";
 

@@ -1,4 +1,4 @@
-import type { CapabilityCatalogPackage } from "@marinara-engine/shared";
+import type { CapabilityCatalogPackage } from "@jumpchoice/shared";
 
 type CapabilityPackageKind = CapabilityCatalogPackage["manifest"]["kind"][number];
 

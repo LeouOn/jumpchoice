@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // TTS Service — Server-proxied audio playback
 // ──────────────────────────────────────────────
-import { TTS_DIALOGUE_PAUSE_MAX_SECONDS } from "@marinara-engine/shared";
+import { TTS_DIALOGUE_PAUSE_MAX_SECONDS } from "@jumpchoice/shared";
 import { getOrCreateCachedTTSAudioBlob } from "./tts-audio-cache";
 
 export type TTSState = "idle" | "loading" | "playing" | "paused" | "error";

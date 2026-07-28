@@ -1,4 +1,4 @@
-import type { SpatialContextSnapshot, SpatialSnapshotSource } from "@marinara-engine/shared";
+import type { SpatialContextSnapshot, SpatialSnapshotSource } from "@jumpchoice/shared";
 import { getCapabilityService } from "../capability-packages/capability-service-registry.service.js";
 
 export interface CreateSpatialSnapshotInput {

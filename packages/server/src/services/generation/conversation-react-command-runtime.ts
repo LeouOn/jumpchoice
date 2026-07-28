@@ -3,7 +3,7 @@ import {
   parseGroupedSpeakerSegments,
   stripLeadingMessageTimestamps,
   type ChatMode,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import {

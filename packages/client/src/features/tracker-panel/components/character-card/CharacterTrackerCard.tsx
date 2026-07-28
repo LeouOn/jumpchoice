@@ -11,7 +11,7 @@ import {
   removeTrackerFieldLockPrefix,
   renameTrackerFieldLockPrefix,
   type PresentCharacter,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   TrackerPanelSide,
   TrackerPanelSizeProfile,

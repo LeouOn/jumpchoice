@@ -1,4 +1,4 @@
-import { normalizeTextForMatch } from "@marinara-engine/shared";
+import { normalizeTextForMatch } from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import { stripConversationPromptTimestamps } from "../conversation/transcript-sanitize.js";

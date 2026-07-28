@@ -21,7 +21,7 @@ import {
   type ImageGenerationDefaultsProfile,
   type ImageStyleProfileSettings,
   type SceneIllustrationCharacterPrompt,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { ImageGenerationSize } from "../image/image-generation-settings.js";
 import { compileImagePrompt } from "../image/image-prompt-compiler.js";
 import { loadGameStoryboardImagePrompt } from "../image/game-storyboard-image-prompt.js";

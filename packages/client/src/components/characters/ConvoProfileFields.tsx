@@ -8,7 +8,7 @@ import { RotateCcw, Smile } from "lucide-react";
 import {
   type ConvoBehaviorConfig,
   type ConvoBehaviorInsertionStrategy,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { MacroTextarea } from "../ui/MacroTextarea";
 import { EmojiPicker } from "../ui/EmojiPicker";
 import { HelpTooltip } from "../ui/HelpTooltip";

@@ -14,7 +14,7 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
-import type { MessageExtra } from "@marinara-engine/shared";
+import type { MessageExtra } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { MsgAction } from "./ConversationMessageShared";
 import { ReactionAddButton } from "./ReactionAddButton";

@@ -16,7 +16,7 @@ import { buildSpotifyCandidateTokens, normalizeSpotifyText } from "../spotify/sp
 import {
   appendChatSummaryEntryToMetadata,
   SPOTIFY_RECENT_TRACK_HISTORY_LIMIT,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export interface ToolExecutionResult {
   toolCallId: string;

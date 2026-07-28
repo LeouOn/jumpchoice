@@ -3,7 +3,7 @@
 // and behavior directive. Composed ONLY from the conversation branch of
 // the generate route, so none of these fields can reach RP/VN/Game prompts.
 // ──────────────────────────────────────────────
-import type { CharacterData, ConvoBehaviorConfig, ConvoBehaviorInsertionStrategy } from "@marinara-engine/shared";
+import type { CharacterData, ConvoBehaviorConfig, ConvoBehaviorInsertionStrategy } from "@jumpchoice/shared";
 
 /** A present participant (character or the user's persona) with resolved Convo profile fields. */
 export interface ConversationProfileParticipant {

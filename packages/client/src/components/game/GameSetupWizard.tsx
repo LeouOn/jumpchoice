@@ -50,7 +50,7 @@ import {
   type SpatialMapGroundingMode,
   type SpatialMapDraftSize,
   type GameCombatStyle,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getCharacterTitle } from "../../lib/character-display";
 import { api } from "../../lib/api-client";
 import { cn, getAvatarCropStyle, parseAvatarCropJson, type AvatarCropValue } from "../../lib/utils";

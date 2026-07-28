@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Drama, RotateCcw } from "lucide-react";
-import { DEFAULT_IMPERSONATE_PROMPT } from "@marinara-engine/shared";
+import { DEFAULT_IMPERSONATE_PROMPT } from "@jumpchoice/shared";
 import { useUIStore } from "../../../stores/ui.store";
 import { HelpTooltip } from "../../../components/ui/HelpTooltip";
 import { SettingsSwitch } from "../../../components/panels/settings/SettingControls";

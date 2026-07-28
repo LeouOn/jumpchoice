@@ -40,7 +40,7 @@ import {
   isRetiredBuiltInAgentId,
   normalizeAgentPhaseForType,
   type AgentCategory,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { confirmNonEmptyFolderDelete, showConfirmDialog } from "../../lib/app-dialogs";
 import { cn } from "../../lib/utils";
 import { sortBasicPanelItems } from "../../lib/panel-sort";

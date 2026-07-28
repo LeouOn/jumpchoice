@@ -1,4 +1,4 @@
-import { normalizeSpriteExpressionKey as normalizeUnicodeSpriteExpressionKey } from "@marinara-engine/shared";
+import { normalizeSpriteExpressionKey as normalizeUnicodeSpriteExpressionKey } from "@jumpchoice/shared";
 
 export type SpriteExpressionLike = {
   expression: string;

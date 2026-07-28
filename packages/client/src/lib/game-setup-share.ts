@@ -9,7 +9,7 @@ import {
   type GameInitialSetupSnapshot,
   type GameSetupConfig,
   type GenerationParameters,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export const GAME_SETUP_SHARE_FORMAT = "marinara-game-setup";
 export const GAME_SETUP_SHARE_VERSION = 1;

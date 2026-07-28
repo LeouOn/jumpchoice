@@ -10,7 +10,7 @@ import {
   type SidecarSpeechRuntimeDiagnostics,
   type SidecarSpeechStatus,
   type SidecarSpeechStatusResponse,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { DATA_DIR } from "../../utils/data-dir.js";
 

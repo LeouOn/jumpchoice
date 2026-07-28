@@ -4,7 +4,7 @@ import {
   IMAGE_STYLE_PROFILES_STORAGE_KEY,
   normalizeImageStyleProfileSettings,
   type ImageStyleProfileSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export interface ImageGenerationSize {
   width: number;

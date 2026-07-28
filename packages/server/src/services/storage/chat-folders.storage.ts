@@ -2,7 +2,7 @@
 // Storage: Chat Folders
 // ──────────────────────────────────────────────
 import { eq } from "../../db/file-query.js";
-import type { CreateChatFolderInput, UpdateFolderInput } from "@marinara-engine/shared";
+import type { CreateChatFolderInput, UpdateFolderInput } from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { chatFolders, chats } from "../../db/schema/index.js";
 import { newId, now } from "../../utils/id-generator.js";

@@ -12,7 +12,7 @@ import type {
   Message,
   PendingSpatialTransition,
   SpatialDestinationRelation,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../components/chat/chat-area.types";
 import { api } from "../lib/api-client";
 import { useAgentStore } from "./agent.store";

@@ -4,7 +4,7 @@ import {
   type NoodlePost,
   type NoodleRefreshAttemptKind,
   type NoodleSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { logger, logDebugOverride } from "../../lib/logger.js";
 import { resolveBaseUrl } from "../generation/connection-base-url.js";

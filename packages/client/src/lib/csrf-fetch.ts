@@ -1,4 +1,4 @@
-import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@marinara-engine/shared";
+import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@jumpchoice/shared";
 import { toast } from "sonner";
 
 const UNSAFE_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);

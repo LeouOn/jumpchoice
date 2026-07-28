@@ -63,7 +63,7 @@ import { cn } from "../../lib/utils";
 import { sortBasicPanelItems } from "../../lib/panel-sort";
 import { downloadJsonFile } from "../../lib/download-json";
 import { downloadZipFile } from "../../lib/download-zip";
-import { getFolderImportEntries } from "@marinara-engine/shared";
+import { getFolderImportEntries } from "@jumpchoice/shared";
 import {
   createCustomToolFolderPackageFiles,
   importCustomToolEntries,

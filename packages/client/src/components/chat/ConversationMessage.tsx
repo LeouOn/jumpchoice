@@ -13,7 +13,7 @@ import {
   parseGroupedSpeakerSegments,
   type Message,
   type MessageReaction,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { toast } from "sonner";
 import { useUIStore, type ConversationMessageStyle } from "../../stores/ui.store";
 import { cn, copyToClipboard, getAvatarCropStyle, parseAvatarCropJson } from "../../lib/utils";

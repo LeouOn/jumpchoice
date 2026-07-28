@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import type { PresentCharacter } from "@marinara-engine/shared";
+import type { PresentCharacter } from "@jumpchoice/shared";
 import { useAgentConfigs, type AgentConfigRow } from "../../../hooks/use-agents";
 import { usePersona } from "../../../hooks/use-characters";
 import {

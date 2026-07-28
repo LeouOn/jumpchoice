@@ -62,7 +62,7 @@ import { MacroTextarea } from "../ui/MacroTextarea";
 import { applyTextareaQuoteFormat } from "../../lib/textarea-quotes";
 import { api } from "../../lib/api-client";
 import { useAgentConfigs, type AgentConfigRow } from "../../hooks/use-agents";
-import { type WrapFormat, type MarkerType } from "@marinara-engine/shared";
+import { type WrapFormat, type MarkerType } from "@jumpchoice/shared";
 import { useQuoteFormatter } from "../../hooks/use-quote-formatter";
 import { EditorTabRail } from "../ui/EditorTabRail";
 import { useTouchFolderDrag } from "../../hooks/use-touch-folder-drag";

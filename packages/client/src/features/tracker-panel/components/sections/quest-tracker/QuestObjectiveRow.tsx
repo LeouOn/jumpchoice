@@ -1,5 +1,5 @@
 import { CheckCircle2, Circle, Lock, Unlock, X } from "lucide-react";
-import { isTrackerFieldLocked, type QuestProgress } from "@marinara-engine/shared";
+import { isTrackerFieldLocked, type QuestProgress } from "@jumpchoice/shared";
 import { cn } from "../../../../../lib/utils";
 import { visibleText } from "../../../lib/tracker-display";
 import { InlineEdit } from "../../controls/InlineControls";

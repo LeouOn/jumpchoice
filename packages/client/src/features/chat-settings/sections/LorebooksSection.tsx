@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BookOpen, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
-import { LIMITS, type Lorebook } from "@marinara-engine/shared";
+import { LIMITS, type Lorebook } from "@jumpchoice/shared";
 import { isLorebookScopeActiveForChat } from "../../../lib/lorebook-scope";
 import type { ActiveLorebookView } from "../../../lib/chat-lorebooks";
 import { HelpTooltip } from "../../../components/ui/HelpTooltip";

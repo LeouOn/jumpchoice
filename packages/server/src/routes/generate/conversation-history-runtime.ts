@@ -1,9 +1,9 @@
-import type { WrapFormat } from "@marinara-engine/shared";
+import type { WrapFormat } from "@jumpchoice/shared";
 import {
   normalizeSummaryTailMessages,
   normalizeTextForMatch,
   stripLeadingMessageTimestamps,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import {

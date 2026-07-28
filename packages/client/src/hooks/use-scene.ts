@@ -18,7 +18,7 @@ import type {
   ScenePlanRequest,
   ScenePlanResponse,
   SceneFullPlan,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 /** Provides scene lifecycle mutations and the scene-to-roleplay fork action. */
 export function useScene() {

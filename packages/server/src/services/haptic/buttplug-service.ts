@@ -22,7 +22,7 @@ import type {
   HapticDeviceCommand,
   HapticFeedbackPattern,
   HapticStatus,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getIntifaceUrl } from "../../config/runtime-config.js";
 
 const POSITION_WITH_DURATION_OUTPUT =

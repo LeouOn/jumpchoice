@@ -2,7 +2,7 @@
 // Game: Session Lifecycle Service
 // ──────────────────────────────────────────────
 
-import type { SessionSummary } from "@marinara-engine/shared";
+import type { SessionSummary } from "@jumpchoice/shared";
 
 function normalizeRecapBeat(text: string | null | undefined): string {
   if (!text) return "";

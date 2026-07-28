@@ -9,8 +9,8 @@ import type {
   GameNpc,
   SessionSummary,
   HudWidget,
-} from "@marinara-engine/shared";
-import { DEFAULT_GAME_SYSTEM_PROMPT, wrapGameInstructions } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { DEFAULT_GAME_SYSTEM_PROMPT, wrapGameInstructions } from "@jumpchoice/shared";
 import type { CharacterSpriteInfo } from "./sprite.service.js";
 
 export interface GmPromptContext {

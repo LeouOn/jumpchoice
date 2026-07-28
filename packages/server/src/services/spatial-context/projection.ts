@@ -1,4 +1,4 @@
-import type { ResolvedOwnerSpatialProjection, SpatialContextDefinition } from "@marinara-engine/shared";
+import type { ResolvedOwnerSpatialProjection, SpatialContextDefinition } from "@jumpchoice/shared";
 import { getCapabilityService } from "../capability-packages/capability-service-registry.service.js";
 import { isHierarchicalMapsEnabledForChat } from "./activation.js";
 import type { ResolveSpatialStateOptions } from "./state-resolution.js";

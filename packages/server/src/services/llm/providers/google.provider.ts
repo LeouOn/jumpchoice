@@ -13,7 +13,7 @@ import {
   type LLMToolDefinition,
   type LLMUsage,
 } from "../base-provider.js";
-import { shouldSuppressUnknownModelParameters } from "@marinara-engine/shared";
+import { shouldSuppressUnknownModelParameters } from "@jumpchoice/shared";
 import { getEmbeddingRequestTimeoutMs } from "../../../config/runtime-config.js";
 import { decodePossiblyCompressedBody } from "../../../utils/security.js";
 

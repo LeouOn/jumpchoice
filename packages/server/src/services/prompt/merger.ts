@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // Merger — Adjacent same-role message merging
 // ──────────────────────────────────────────────
-import type { ChatMLMessage } from "@marinara-engine/shared";
+import type { ChatMLMessage } from "@jumpchoice/shared";
 
 function hasSameAudience(first: ChatMLMessage | undefined, second: ChatMLMessage): boolean {
   const firstAudience = first?.hiddenFromAICharacterIds ?? [];

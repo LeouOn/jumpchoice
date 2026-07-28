@@ -1,5 +1,5 @@
 import { basename } from "path";
-import { type APIProvider, type NoodleAccount } from "@marinara-engine/shared";
+import { type APIProvider, type NoodleAccount } from "@jumpchoice/shared";
 import { logger, logDebugOverride } from "../../lib/logger.js";
 import { clampGenerationMaxOutputTokens } from "../generation/output-token-limits.js";
 import { resolveStoredChatOptions, resolveStoredMaxTokens } from "../generation/generation-parameters.js";

@@ -1,4 +1,4 @@
-import { findKnownModel, type APIProvider } from "@marinara-engine/shared";
+import { findKnownModel, type APIProvider } from "@jumpchoice/shared";
 
 function resolveKnownMaxOutputTokens(provider: APIProvider | string | null | undefined, model: string): number | null {
   const knownModel = provider ? findKnownModel(provider as APIProvider, model.trim()) : undefined;

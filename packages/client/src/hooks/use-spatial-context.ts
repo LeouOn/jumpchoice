@@ -7,7 +7,7 @@ import type {
   PendingSpatialTransition,
   SpatialContextResponse,
   SpatialDefinitionIssue,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api, ApiError } from "../lib/api-client";
 import { useChatStore } from "../stores/chat.store";
 import { chatKeys } from "./use-chats";

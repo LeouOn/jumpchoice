@@ -9,7 +9,7 @@ import { createPromptsStorage } from "../services/storage/prompts.storage.js";
 import { createAppSettingsStorage } from "../services/storage/app-settings.storage.js";
 import { importMarinara } from "../services/import/marinara.importer.js";
 import { choiceBlocks, promptGroups, promptSections } from "./schema/index.js";
-import { DEFAULT_CONVERSATION_PROMPT, DEFAULT_GAME_SYSTEM_PROMPT } from "@marinara-engine/shared";
+import { DEFAULT_CONVERSATION_PROMPT, DEFAULT_GAME_SYSTEM_PROMPT } from "@jumpchoice/shared";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";

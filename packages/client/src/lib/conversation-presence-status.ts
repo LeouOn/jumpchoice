@@ -5,7 +5,7 @@ import {
   type ConversationPresenceStatus,
   type ConversationStatusOverride,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 type ConversationPresenceMeta = {
   conversationSchedulesEnabled?: unknown;

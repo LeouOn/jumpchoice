@@ -1,4 +1,4 @@
-import type { AgentResult } from "@marinara-engine/shared";
+import type { AgentResult } from "@jumpchoice/shared";
 import type { ResolvedAgent } from "../agents/agent-pipeline.js";
 import { shouldDeferSpotifyAgentEvent } from "./spotify-agent-runtime.js";
 

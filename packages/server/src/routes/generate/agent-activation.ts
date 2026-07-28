@@ -2,7 +2,7 @@ import {
   DEFAULT_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH,
   MAX_CUSTOM_AGENT_ACTIVATION_SCAN_DEPTH,
   testPrimaryKeys,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 export interface ActivationScanMessage {
   content?: unknown;

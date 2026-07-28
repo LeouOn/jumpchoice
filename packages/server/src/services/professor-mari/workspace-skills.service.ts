@@ -5,7 +5,7 @@ import type {
   MariWorkspaceSkillDetail,
   MariWorkspaceSkillSummary,
   MariWorkspaceSkillsResponse,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { DATA_DIR } from "../../utils/data-dir.js";
 import { now } from "../../utils/id-generator.js";
 import { logger } from "../../lib/logger.js";

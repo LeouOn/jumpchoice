@@ -98,7 +98,7 @@ import {
   type CustomAgentCapability,
   type CustomAgentCapabilityMap,
   type ToolDefinition,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   createAgentFolderPackageFilename,
   createAgentFolderPackageFiles,

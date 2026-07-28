@@ -2,7 +2,7 @@
 // Game: Skill Check Result Display
 // ──────────────────────────────────────────────
 import { useEffect, useState } from "react";
-import type { SkillCheckResult } from "@marinara-engine/shared";
+import type { SkillCheckResult } from "@jumpchoice/shared";
 import { cn } from "../../lib/utils";
 import { AnimatedSkillCheckResult } from "../dice/AnimatedSkillCheckResult";
 

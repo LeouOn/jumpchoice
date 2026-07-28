@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { create } from "zustand";
 import type { ChatImage } from "../hooks/use-gallery";
-import type { GeneratedSceneVideo } from "@marinara-engine/shared";
+import type { GeneratedSceneVideo } from "@jumpchoice/shared";
 
 const PINNED_GALLERY_IMAGES_STORAGE_KEY = "marinara-pinned-gallery-images";
 

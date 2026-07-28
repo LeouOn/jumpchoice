@@ -55,14 +55,14 @@ import type {
   WorldCustomField,
   Message,
   TrackerHiddenFields,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   inventoryItemTrackerLockPrefix,
   normalizeTrackerFieldLocksForState,
   normalizeTrackerHiddenFields,
   removeTrackerFieldLockPrefix,
   toggleTrackerFieldLock,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { TrackerTemperatureUnit } from "../../stores/ui.store";
 
 const ACTIONS_DROPDOWN_WIDTH_PX = 288;

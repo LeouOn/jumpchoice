@@ -2,7 +2,7 @@ import {
   CHAT_SUMMARY_OUTPUT_TOKENS,
   DEFAULT_CHAT_SUMMARY_PROMPT,
   normalizeChatSummaryPromptSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 const RETIRED_CHAT_SUMMARY_AGENT_ID = "chat-summary";
 const DEFAULT_AUTOMATIC_SUMMARY_INTERVAL = 5;

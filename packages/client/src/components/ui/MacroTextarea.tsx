@@ -10,7 +10,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { BookOpen, Maximize2, X } from "lucide-react";
-import { SUPPORTED_MACROS } from "@marinara-engine/shared";
+import { SUPPORTED_MACROS } from "@jumpchoice/shared";
 
 import { cn } from "../../lib/utils";
 import { handleTextareaTab } from "../../lib/textarea-editing";

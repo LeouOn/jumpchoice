@@ -1,4 +1,4 @@
-import type { ImageGenerationDefaultsProfile } from "@marinara-engine/shared";
+import type { ImageGenerationDefaultsProfile } from "@jumpchoice/shared";
 
 import { resolveImageGenerationService, type ImageDefaultsConnection } from "./image-generation-defaults.js";
 import { resolveNovelAiRequestSize } from "./image-generation.js";

@@ -12,7 +12,7 @@ import { Loader2, UserCog, Check, X, AlertCircle, RefreshCw } from "lucide-react
 import { Modal } from "../ui/Modal";
 import { useAgentStore } from "../../stores/agent.store";
 import { useCharacter, useUpdateCharacter } from "../../hooks/use-characters";
-import { type CharacterCardFieldUpdate, type EditableCharacterCardField } from "@marinara-engine/shared";
+import { type CharacterCardFieldUpdate, type EditableCharacterCardField } from "@jumpchoice/shared";
 import { useGenerate } from "../../hooks/use-generate";
 
 function getCharacterCardFieldValue(data: Record<string, unknown>, field: EditableCharacterCardField): string | null {

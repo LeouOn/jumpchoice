@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api-client";
-import type { HapticStatus } from "@marinara-engine/shared";
+import type { HapticStatus } from "@jumpchoice/shared";
 
 const HAPTIC_KEY = ["haptic", "status"] as const;
 export const HAPTIC_INTIFACE_URL_STORAGE_KEY = "marinara_haptic_intiface_url";

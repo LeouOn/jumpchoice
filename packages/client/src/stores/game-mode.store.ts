@@ -16,7 +16,7 @@ import type {
   HudWidget,
   GameBlueprint,
   WidgetUpdate,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 interface GameModeStore {
   /** The active game ID (groupId that links all sessions). */

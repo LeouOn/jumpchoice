@@ -71,7 +71,7 @@ import {
   type MariSuggestionChip,
   type Message,
   isInstalledCapabilityReady,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 interface Attachment {
   type: string;

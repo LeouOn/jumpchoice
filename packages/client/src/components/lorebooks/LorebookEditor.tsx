@@ -92,7 +92,7 @@ import {
   type LorebookEntry,
   type LorebookFolder,
   type LorebookCategory,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { LorebookEntryRow } from "./LorebookEntryRow";
 import { LorebookFolderRow } from "./LorebookFolderRow";
 import { ExpandableTextarea, estimateTokens } from "./LorebookFormFields";

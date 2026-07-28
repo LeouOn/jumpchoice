@@ -6,7 +6,7 @@ import {
   type NoodleBootstrap,
   type NoodleInteractionType,
   type NoodleSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createNoodleStorage, parseNoodleAvatarCrop } from "../storage/noodle.storage.js";
 import { isNoodleProfileGenerated } from "./noodle-profile-selection.js";

@@ -15,7 +15,7 @@ import {
   type CapabilityCatalog,
   type CapabilityCatalogPackage,
   type InstalledCapabilityPackage,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { DATA_DIR } from "../../utils/data-dir.js";
 import { safeFetch } from "../../utils/security.js";
 import { logger } from "../../lib/logger.js";

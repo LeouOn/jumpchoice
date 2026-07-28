@@ -9,14 +9,14 @@ import {
   isJsonRecord,
   characterDataSchema,
   lorebookFilterModeSchema,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   CharacterData,
   ExportEnvelope,
   ExportType,
   LorebookFilterMode,
   LorebookMatchingSource,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createCharacterGalleryStorage } from "../storage/character-gallery.storage.js";
 import { createLorebooksStorage } from "../storage/lorebooks.storage.js";

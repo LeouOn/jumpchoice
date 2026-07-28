@@ -1,4 +1,4 @@
-import type { ConversationStatusOverride } from "@marinara-engine/shared";
+import type { ConversationStatusOverride } from "@jumpchoice/shared";
 
 export interface SmartGroupCandidatePromptData {
   id: string;

@@ -1,4 +1,4 @@
-import type { WrapFormat } from "@marinara-engine/shared";
+import type { WrapFormat } from "@jumpchoice/shared";
 
 import type { GenerationPromptMessage } from "../../services/generation/prompt-message-scope.js";
 import { wrapContent } from "../../services/prompt/format-engine.js";

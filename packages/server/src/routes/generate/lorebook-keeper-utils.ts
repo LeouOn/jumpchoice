@@ -1,4 +1,4 @@
-import type { AgentContext, LorebookEntry } from "@marinara-engine/shared";
+import type { AgentContext, LorebookEntry } from "@jumpchoice/shared";
 import { logger } from "../../lib/logger.js";
 import { createLorebooksStorage } from "../../services/storage/lorebooks.storage.js";
 

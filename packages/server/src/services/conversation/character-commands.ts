@@ -40,7 +40,7 @@
 // - [navigate: panel="...", tab="..."]
 // - [fetch: type="character|persona|lorebook|chat|preset", name="..."]
 
-import { normalizeTextForMatch, stripLeadingMessageTimestamps } from "@marinara-engine/shared";
+import { normalizeTextForMatch, stripLeadingMessageTimestamps } from "@jumpchoice/shared";
 
 import { stripConversationPromptTimestamps } from "./transcript-sanitize.js";
 import {

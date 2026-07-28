@@ -36,7 +36,7 @@ import {
   PROFESSOR_MARI_ID,
   type MariSuggestionChip,
   type Message,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import {
   matchSlashCommand,
   shouldExecuteQuickPostAsCommand,

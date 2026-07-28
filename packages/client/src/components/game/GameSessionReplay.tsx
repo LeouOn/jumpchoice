@@ -27,7 +27,7 @@ import type {
   GameTurnStoryboard,
   GameTurnStoryboardKeyframe,
   Message,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { SpriteInfo } from "../../hooks/use-characters";
 import { useGameSessions } from "../../hooks/use-game";
 import { useGameTurnStoryboards } from "../../hooks/use-game-storyboards";

@@ -1,5 +1,5 @@
 import { ExternalLink, Pencil, Sliders, Trash2 } from "lucide-react";
-import { DEFAULT_GAME_SYSTEM_PROMPT, type AgentPromptTemplateOption } from "@marinara-engine/shared";
+import { DEFAULT_GAME_SYSTEM_PROMPT, type AgentPromptTemplateOption } from "@jumpchoice/shared";
 import { ExpandedTextarea } from "../../../components/ui/ExpandedTextarea";
 import { ChatSettingsSection } from "../ChatSettingsSection";
 

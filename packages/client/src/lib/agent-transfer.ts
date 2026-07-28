@@ -3,7 +3,7 @@ import {
   normalizeAgentPhaseForType,
   normalizeAgentPhaseValue,
   sanitizeFolderSegment,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { ZipFileInput } from "./download-zip";
 import {
   getPackagePathBasename,

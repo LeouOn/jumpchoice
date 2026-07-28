@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import type { GameState, PlayerStats } from "@marinara-engine/shared";
+import type { GameState, PlayerStats } from "@jumpchoice/shared";
 import { ApiError, api } from "../lib/api-client";
 import { useGameStateStore } from "../stores/game-state.store";
 

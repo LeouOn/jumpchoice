@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Check, ExternalLink, GitFork, Loader2, Plus, RefreshCw, Trash2, TriangleAlert } from "lucide-react";
-import type { CustomAgentRepositoryChange, CustomAgentRepositoryPreview } from "@marinara-engine/shared";
+import type { CustomAgentRepositoryChange, CustomAgentRepositoryPreview } from "@jumpchoice/shared";
 import { toast } from "sonner";
 import {
   useAddCustomAgentRepository,

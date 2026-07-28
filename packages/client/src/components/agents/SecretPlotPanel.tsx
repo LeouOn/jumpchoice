@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, Eye, EyeOff, RefreshCw, Save } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Message } from "@marinara-engine/shared";
+import type { Message } from "@jumpchoice/shared";
 import { agentKeys, useAgentMemory, useUpdateAgentMemory } from "../../hooks/use-agents";
 import { useGenerate } from "../../hooks/use-generate";
 import { showConfirmDialog } from "../../lib/app-dialogs";

@@ -79,7 +79,7 @@ import {
   type TTSConfig,
   type GameNpc,
   type SkillCheckResult,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { CharacterMap, PersonaInfo } from "../chat/chat-area.types";
 
 const GamePeekPromptButton = lazy(() => import("./GamePeekPromptButton"));

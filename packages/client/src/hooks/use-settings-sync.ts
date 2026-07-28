@@ -18,7 +18,7 @@ import {
   normalizeImageStyleProfileSettings,
   normalizeQuoteFormat,
   type AppSettingsResponse,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { api } from "../lib/api-client";
 import { normalizeConversationTimeZone } from "../lib/conversation-time-zone";
 import {

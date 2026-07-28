@@ -21,7 +21,7 @@ import {
   isXaiConfigurableReasoningModel,
   resolveOpenAIGpt56ModelForRequest,
   shouldSuppressUnknownModelParameters,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { logger } from "../../../lib/logger.js";
 import { applyGlmThinkingParameters } from "./glm-request-compat.js";
 

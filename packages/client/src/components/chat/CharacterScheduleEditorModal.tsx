@@ -6,7 +6,7 @@ import {
   type ConversationPresenceStatus,
   type ScheduleBlock,
   type WeekSchedule,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal";
 import { api } from "../../lib/api-client";
 import { cn, getAvatarCropStyle, type AvatarCrop, type LegacyAvatarCrop } from "../../lib/utils";

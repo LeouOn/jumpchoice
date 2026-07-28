@@ -24,8 +24,8 @@ import {
   type CreateLorebookFolderInput,
   type LorebookEntry,
   type UpdateLorebookFolderInput,
-} from "@marinara-engine/shared";
-import { collectEffectivelyDisabledFolderIds, collectFolderSubtreeIds } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { collectEffectivelyDisabledFolderIds, collectFolderSubtreeIds } from "@jumpchoice/shared";
 import { normalizeTimestampOverrides, type TimestampOverrides } from "../import/import-timestamps.js";
 import { GAME_LOREBOOK_KEEPER_SOURCE_ID } from "../lorebook/game-lorebook-scope.js";
 import { toPaginatedList } from "../../utils/list-pagination.js";

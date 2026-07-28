@@ -1,4 +1,4 @@
-import type { WrapFormat } from "@marinara-engine/shared";
+import type { WrapFormat } from "@jumpchoice/shared";
 
 import { logger } from "../../lib/logger.js";
 import { getZonedDayBounds } from "../conversation/timezone.js";

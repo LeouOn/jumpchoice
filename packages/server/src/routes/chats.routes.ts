@@ -29,7 +29,7 @@ import {
   normalizeTextForMatch,
   formatRpgStatsForPrompt,
   localAuthProviderBaseUrl,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type {
   CharacterData,
   ChatMemoryChunk,
@@ -42,7 +42,7 @@ import type {
   LorebookEntryTimingState,
   RPGStatsConfig,
   WorldCustomField,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createChatsStorage } from "../services/storage/chats.storage.js";
 import { createAppSettingsStorage } from "../services/storage/app-settings.storage.js";
 import { createCharactersStorage } from "../services/storage/characters.storage.js";
@@ -1169,7 +1169,7 @@ export async function chatsRoutes(app: FastifyInstance) {
 
     let baseUrl = conn.baseUrl;
     if (!baseUrl) {
-      const { PROVIDERS } = await import("@marinara-engine/shared");
+      const { PROVIDERS } = await import("@jumpchoice/shared");
       const providerDef = PROVIDERS[conn.provider as keyof typeof PROVIDERS];
       baseUrl = providerDef?.defaultBaseUrl ?? "";
     }

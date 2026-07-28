@@ -2,7 +2,7 @@ import type {
   ConversationCallCharacterVideoClipKind,
   ConversationCallCharacterVideoManifest,
   VideoGenerationUserSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { getCapabilityService } from "../capability-packages/capability-service-registry.service.js";
 import type { PromptOverridesStorage } from "../storage/prompt-overrides.storage.js";
 

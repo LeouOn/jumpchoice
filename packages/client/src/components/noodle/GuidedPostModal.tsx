@@ -1,6 +1,6 @@
 import { Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
-import type { NoodlePostAccess, NoodlerStageProfile } from "@marinara-engine/shared";
+import type { NoodlePostAccess, NoodlerStageProfile } from "@jumpchoice/shared";
 import { Modal } from "../ui/Modal";
 import { useNoodleAccent } from "./NoodleShell";
 

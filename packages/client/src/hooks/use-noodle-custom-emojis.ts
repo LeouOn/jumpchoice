@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { NoodleAccount } from "@marinara-engine/shared";
+import type { NoodleAccount } from "@jumpchoice/shared";
 import {
   useCharacterGalleryImages,
   usePersonaGalleryImages,

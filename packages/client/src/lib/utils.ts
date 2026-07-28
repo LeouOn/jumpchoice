@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { CSSProperties } from "react";
-import type { LegacyPersonaAvatarCrop, PersonaAvatarCrop } from "@marinara-engine/shared";
+import type { LegacyPersonaAvatarCrop, PersonaAvatarCrop } from "@jumpchoice/shared";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -9,7 +9,7 @@ import { useCharacterSummaries } from "../../hooks/use-characters";
 import { useChatStore } from "../../stores/chat.store";
 import { compareChatsByActivityDesc } from "../../lib/chat-recency";
 import { cn, getAvatarCropStyle, type AvatarCropValue } from "../../lib/utils";
-import type { Chat } from "@marinara-engine/shared";
+import type { Chat } from "@jumpchoice/shared";
 
 const MODE_BADGE: Record<string, { icon: React.ReactNode; label: string; logoModeClass: string }> =
   {

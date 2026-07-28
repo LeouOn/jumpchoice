@@ -2,7 +2,7 @@
 // ──────────────────────────────────────────────
 // Marinara local CLI
 // ──────────────────────────────────────────────
-import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@marinara-engine/shared";
+import { CSRF_HEADER, CSRF_HEADER_VALUE } from "@jumpchoice/shared";
 
 function serverUrl() {
   return (process.env.MARI_SERVER_URL || `http://127.0.0.1:${process.env.PORT || "7860"}`).replace(/\/+$/, "");

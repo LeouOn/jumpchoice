@@ -13,7 +13,7 @@ import {
   ROLEPLAY_POPOVER_SHELL,
   ROLEPLAY_POPOVER_TITLE,
 } from "./roleplay-popover-styles";
-import type { Chat } from "@marinara-engine/shared";
+import type { Chat } from "@jumpchoice/shared";
 import type { ChatImage } from "../../hooks/use-gallery";
 import { useInstalledCapabilityPackages } from "../../hooks/use-capability-packages";
 import { isDesktopShellNavigationTarget } from "../../lib/chat-floating-ui-events";

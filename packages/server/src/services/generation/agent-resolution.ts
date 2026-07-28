@@ -12,7 +12,7 @@ import {
   resolveAgentPromptTemplate,
   findKnownModel,
   type APIProvider,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { BaseLLMProvider } from "../llm/base-provider.js";
 import { createLLMProvider } from "../llm/provider-registry.js";
 import { getLocalSidecarProvider, LOCAL_SIDECAR_MODEL } from "../llm/local-sidecar.js";

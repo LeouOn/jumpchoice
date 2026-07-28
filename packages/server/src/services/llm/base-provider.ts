@@ -5,7 +5,7 @@ import { logger } from "../../lib/logger.js";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { getEmbeddingRequestTimeoutMs, isProviderLocalUrlsEnabled } from "../../config/runtime-config.js";
 import { requestHeadersWithIdentityEncoding, safeFetch, type SafeFetchOptions } from "../../utils/security.js";
-import type { GenerationParameterSendKey, GenerationParameterSendMap } from "@marinara-engine/shared";
+import type { GenerationParameterSendKey, GenerationParameterSendMap } from "@jumpchoice/shared";
 
 /**
  * Shared undici Agent with a 5-minute headers timeout (time to first byte)

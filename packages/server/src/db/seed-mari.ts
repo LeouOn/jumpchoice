@@ -3,8 +3,8 @@
 // ──────────────────────────────────────────────
 import type { DB } from "./connection.js";
 import { logger } from "../lib/logger.js";
-import type { CharacterData } from "@marinara-engine/shared";
-import { PROFESSOR_MARI_ID } from "@marinara-engine/shared";
+import type { CharacterData } from "@jumpchoice/shared";
+import { PROFESSOR_MARI_ID } from "@jumpchoice/shared";
 import { MARI_GUIDED_SEQUENCES } from "../services/professor-mari/guided-sequences.js";
 import { PROFESSOR_MARI_AGENT_CATALOG_KNOWLEDGE } from "../services/professor-mari/official-agent-knowledge.js";
 import { characters } from "./schema/index.js";

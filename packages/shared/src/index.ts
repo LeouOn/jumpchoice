@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────
-// @marinara-engine/shared — Public API
+// @jumpchoice/shared — Public API
 // ──────────────────────────────────────────────
 
 // Types

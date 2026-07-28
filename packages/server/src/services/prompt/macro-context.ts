@@ -13,7 +13,7 @@ import {
   type MacroContext,
   type ResolveMacroOptions,
   type WrapFormat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import type { DB } from "../../db/connection.js";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { wrapContent } from "./format-engine.js";

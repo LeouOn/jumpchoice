@@ -43,7 +43,7 @@ importers:
       '@fontsource/share-tech-mono':
         specifier: 5.2.7
         version: 5.2.7
-      '@marinara-engine/shared':
+      '@jumpchoice/shared':
         specifier: workspace:*
         version: link:../shared
       '@tanstack/react-query':
@@ -137,7 +137,7 @@ importers:
       '@huggingface/transformers':
         specifier: ^3.8.1
         version: 3.8.1
-      '@marinara-engine/shared':
+      '@jumpchoice/shared':
         specifier: workspace:*
         version: link:../shared
       adm-zip:

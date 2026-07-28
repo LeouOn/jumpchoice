@@ -34,8 +34,8 @@ import type {
   TacticalCombatState,
   TacticalAction,
   TacticalEvent,
-} from "@marinara-engine/shared";
-import type { Chat } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import type { Chat } from "@jumpchoice/shared";
 
 // ── Query Keys ──
 
@@ -524,7 +524,7 @@ export function useSkillCheck() {
       preRolledD20?: number;
       messageId?: string;
     }) =>
-      api.post<{ result: import("@marinara-engine/shared").SkillCheckResult; updatedContent?: string }>(
+      api.post<{ result: import("@jumpchoice/shared").SkillCheckResult; updatedContent?: string }>(
         "/game/skill-check",
         data,
       ),
@@ -766,7 +766,7 @@ export function useCombatRound() {
       combatants: Array<Omit<Combatant, "sprite">>;
       round: number;
       playerAction?: CombatPlayerAction;
-      mechanics?: import("@marinara-engine/shared").CombatMechanic[];
+      mechanics?: import("@jumpchoice/shared").CombatMechanic[];
     }) => api.post<{ result: CombatRoundResult; combatants: Combatant[] }>("/game/combat/round", data),
   });
 }

@@ -1,4 +1,4 @@
-import type { WrapFormat } from "@marinara-engine/shared";
+import type { WrapFormat } from "@jumpchoice/shared";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Prompt leaf handling — VERBATIM CONTENT.

@@ -43,7 +43,7 @@ import {
   useUploadLorebookImage,
   type LorebookListItem,
 } from "../../hooks/use-lorebooks";
-import type { Lorebook, LorebookCategory, LorebookEntry, LorebookFolder } from "@marinara-engine/shared";
+import type { Lorebook, LorebookCategory, LorebookEntry, LorebookFolder } from "@jumpchoice/shared";
 import { confirmNonEmptyFolderDelete, showConfirmDialog } from "../../lib/app-dialogs";
 import { cn } from "../../lib/utils";
 import { api } from "../../lib/api-client";

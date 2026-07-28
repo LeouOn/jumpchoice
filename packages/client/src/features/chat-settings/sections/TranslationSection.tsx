@@ -1,5 +1,5 @@
 import { Languages, RotateCcw } from "lucide-react";
-import { DEFAULT_TRANSLATION_SYSTEM_PROMPT } from "@marinara-engine/shared";
+import { DEFAULT_TRANSLATION_SYSTEM_PROMPT } from "@jumpchoice/shared";
 import { HelpTooltip } from "../../../components/ui/HelpTooltip";
 import { SettingsSwitch } from "../../../components/panels/settings/SettingControls";
 import { ChatSettingsSection } from "../ChatSettingsSection";

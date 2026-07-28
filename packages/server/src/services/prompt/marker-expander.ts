@@ -4,7 +4,7 @@
 // ──────────────────────────────────────────────
 import type { DB } from "../../db/connection.js";
 import { logger } from "../../lib/logger.js";
-import { formatRpgStatsForPrompt, resolveMacros, stripMacroComments } from "@marinara-engine/shared";
+import { formatRpgStatsForPrompt, resolveMacros, stripMacroComments } from "@jumpchoice/shared";
 import type {
   CharacterMacroProfile,
   MarkerConfig,
@@ -15,7 +15,7 @@ import type {
   LorebookEntryTimingState,
   MacroContext,
   ResolveMacroOptions,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createCharactersStorage } from "../storage/characters.storage.js";
 import { createAgentsStorage } from "../storage/agents.storage.js";
 import { processLorebooks, type LorebookFinalContentResolver, type LorebookScanResult } from "../lorebook/index.js";

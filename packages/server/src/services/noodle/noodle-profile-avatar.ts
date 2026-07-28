@@ -1,4 +1,4 @@
-import type { NoodleAvatarCrop } from "@marinara-engine/shared";
+import type { NoodleAvatarCrop } from "@jumpchoice/shared";
 
 export function resolveNoodleAvatarCropAfterProfileUpdate(input: {
   currentAvatarUrl: string | null;

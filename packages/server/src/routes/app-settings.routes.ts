@@ -6,7 +6,7 @@ import {
   CHAT_SUMMARY_PROMPT_SETTINGS_KEY,
   VIDEO_GENERATION_SETTINGS_KEY,
   appSettingsUpdateSchema,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { createAppSettingsStorage } from "../services/storage/app-settings.storage.js";
 
 const ALLOWED_KEYS = new Set(["ui", CHAT_SUMMARY_PROMPT_SETTINGS_KEY, VIDEO_GENERATION_SETTINGS_KEY]);

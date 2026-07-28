@@ -41,7 +41,7 @@ import {
   EyeOff,
   Shield,
 } from "lucide-react";
-import { decodeEncodedSpeakerTags, formatTextQuotes, type Message, type QuoteFormat } from "@marinara-engine/shared";
+import { decodeEncodedSpeakerTags, formatTextQuotes, type Message, type QuoteFormat } from "@jumpchoice/shared";
 import { memo, useState, useMemo, useRef, useEffect, useLayoutEffect, useCallback, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useQueryClient, type InfiniteData } from "@tanstack/react-query";

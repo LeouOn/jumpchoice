@@ -1,4 +1,4 @@
-import { inferImageSource, inferVideoSource } from "@marinara-engine/shared";
+import { inferImageSource, inferVideoSource } from "@jumpchoice/shared";
 import type { ImageGenRequest } from "../image/image-generation.js";
 import { resolveConnectionImageDefaults } from "../image/image-generation-defaults.js";
 import type { VideoGenerationRequest } from "../video/video-generation.js";

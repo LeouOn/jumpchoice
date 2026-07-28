@@ -1,4 +1,4 @@
-import type { LorebookScope } from "@marinara-engine/shared";
+import type { LorebookScope } from "@jumpchoice/shared";
 
 export const DEFAULT_LOREBOOK_SCOPE: LorebookScope = { mode: "all", chatIds: [] };
 

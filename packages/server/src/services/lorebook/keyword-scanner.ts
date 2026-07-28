@@ -11,8 +11,8 @@ import type {
   LorebookFilterMode,
   LorebookMatchingSource,
   LorebookSchedule,
-} from "@marinara-engine/shared";
-import { LIMITS, testPrimaryKeys, testSecondaryKeys } from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
+import { LIMITS, testPrimaryKeys, testSecondaryKeys } from "@jumpchoice/shared";
 import { calibrateLorebookSimilarity } from "./embeddings.js";
 import { vmRegexExecutor } from "./regex-timeout.js";
 

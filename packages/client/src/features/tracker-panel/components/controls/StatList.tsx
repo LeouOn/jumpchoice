@@ -4,7 +4,7 @@ import {
   removeTrackerFieldLockPrefix,
   renameTrackerFieldLockPrefix,
   type CharacterStat,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { cn } from "../../../../lib/utils";
 import { TRACKER_BAR, TRACKER_TEXT_ROW } from "../../lib/tracker-panel.constants";
 import type { TrackerStatDensity, TrackerStatDisplayScale } from "../../tracker-panel.types";

@@ -1,4 +1,4 @@
-import { stripGenerationGuideInstruction, type MessageExtra } from "@marinara-engine/shared";
+import { stripGenerationGuideInstruction, type MessageExtra } from "@jumpchoice/shared";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Modal } from "../ui/Modal";

@@ -33,7 +33,7 @@ import type {
   MessageSwipe,
   DaySummaryEntry,
   WeekSummaryEntry,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 
 import { useRollingBackfillStore } from "../stores/backfill.store";
 

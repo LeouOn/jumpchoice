@@ -6,7 +6,7 @@
 // ──────────────────────────────────────────────
 
 import { randomUUID } from "crypto";
-import type { SceneAnalysis } from "@marinara-engine/shared";
+import type { SceneAnalysis } from "@jumpchoice/shared";
 import { fitMessagesToContext, llmFetch, sanitizeApiError, type ChatMessage } from "../llm/base-provider.js";
 import { sidecarModelService } from "./sidecar-model.service.js";
 import { sidecarProcessService } from "./sidecar-process.service.js";

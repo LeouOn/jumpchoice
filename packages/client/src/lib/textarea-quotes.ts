@@ -1,4 +1,4 @@
-import { formatTextQuotes, type QuoteFormat } from "@marinara-engine/shared";
+import { formatTextQuotes, type QuoteFormat } from "@jumpchoice/shared";
 import { captureTextSelection, restoreTextSelectionAfterRender } from "./text-selection";
 
 const pendingSelectionRestores = new WeakMap<HTMLTextAreaElement, () => void>();

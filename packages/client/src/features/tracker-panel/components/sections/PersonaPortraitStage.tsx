@@ -1,4 +1,4 @@
-import type { Persona } from "@marinara-engine/shared";
+import type { Persona } from "@jumpchoice/shared";
 import { cn } from "../../../../lib/utils";
 import { visibleText } from "../../lib/tracker-display";
 import { TRACKER_PROFILE_ORDER_CLASS_BY_SIDE, type TrackerProfileSide } from "../../lib/tracker-profile-layout";

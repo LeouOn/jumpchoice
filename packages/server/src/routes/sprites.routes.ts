@@ -82,7 +82,7 @@ import {
   VIDEO_GENERATION_SETTINGS_KEY,
   type ImageGenerationDefaultsProfile,
   type ImageStyleProfileSettings,
-} from "@marinara-engine/shared";
+} from "@jumpchoice/shared";
 import { isAllowedImageBuffer } from "../utils/security.js";
 
 const execFileAsync = promisify(execFile);
