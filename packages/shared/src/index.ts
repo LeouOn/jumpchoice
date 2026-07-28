@@ -153,3 +153,6 @@ export * from "./utils/noodle-unseen.js";
 export * from "./utils/spatial-context.js";
 
 export * from "./types/jump-document.js";
+
+export * from "./types/learning.js";
+export * from "./constants/learning-defaults.js";
