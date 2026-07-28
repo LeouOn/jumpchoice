@@ -65,6 +65,10 @@ export function createLLMProvider(
     case "nanogpt":
     case "xai":
     case "mistral":
+    case "deepseek":
+    case "zhipu":
+    case "minimax":
+    case "longcat":
       resolved = new OpenAIProvider(
         baseUrl,
         apiKey,
