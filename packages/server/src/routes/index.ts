@@ -56,6 +56,9 @@ import { professorMariWorkspaceRoutes } from "./professor-mari-workspace.routes.
 import { noodleRoutes } from "./noodle.routes.js";
 import { capabilityPackagesRoutes } from "./capability-packages.routes.js";
 import { customAgentRepositoriesRoutes } from "./custom-agent-repositories.routes.js";
+import { cyoaRoutes } from "./cyoa.routes.js";
+import { cyoaBuildsRoutes } from "./cyoa-builds.routes.js";
+import { learningRoutes } from "./learning.routes.js";
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(chatsRoutes, { prefix: "/api/chats" });
@@ -111,6 +114,9 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(noodleRoutes, { prefix: "/api/noodle" });
   await app.register(capabilityPackagesRoutes, { prefix: "/api/capability-packages" });
   await app.register(customAgentRepositoriesRoutes, { prefix: "/api/custom-agent-repositories" });
+  await app.register(cyoaRoutes, { prefix: "/api/cyoa" });
+  await app.register(cyoaBuildsRoutes, { prefix: "/api/cyoa/builds" });
+  await app.register(learningRoutes, { prefix: "/api/learning" });
   if (process.env.MARINARA_LITE !== "true" && process.env.MARINARA_LITE !== "1") {
     await app.register(sidecarRoutes, { prefix: "/api/sidecar" });
   }
