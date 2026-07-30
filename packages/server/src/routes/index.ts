@@ -121,7 +121,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(personalExtensionsRoutes, { prefix: "/api/personal-extensions" });
   await app.register(notificationSoundRoutes, { prefix: "/api/notification-sound" });
   await app.register(cyoaRoutes, { prefix: "/api/cyoa" });
-  await app.register(cyoaBuildsRoutes, { prefix: "/api/cyoa/builds" });
+  await app.register(cyoaBuildsRoutes, { prefix: "/api/cyoa" });
   await app.register(learningRoutes, { prefix: "/api/learning" });
   if (process.env.MARINARA_LITE !== "true" && process.env.MARINARA_LITE !== "1") {
     await app.register(sidecarRoutes, { prefix: "/api/sidecar" });

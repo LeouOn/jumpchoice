@@ -413,6 +413,21 @@ export const FILE_BACKED_TABLES = [
   "installed_extensions",
   "library_folders",
   "mari_instructions",
+  // Fork-specific tables (ported from JumpChoice v1.7.0 — see AGENTS.md § Repo-Specific Cautions)
+  "cyoa_documents",
+  "cyoa_images",
+  "cyoa_choices",
+  "cyoa_builds",
+  "jump_documents",
+  "jump_document_files",
+  "jump_document_entries",
+  "jump_document_builds",
+  "languages",
+  "vocabulary",
+  "srs_state",
+  "srs_reviews",
+  "corrections",
+  "proficiency_snapshots",
 ] as const;
 
 type FileBackedTable = (typeof FILE_BACKED_TABLES)[number];
