@@ -59,6 +59,9 @@ import { personalExtensionsRoutes } from "./personal-extensions.routes.js";
 import { notificationSoundRoutes } from "./notification-sound.routes.js";
 import { libraryFoldersRoutes } from "./library-folders.routes.js";
 import { androidLocalAuthRoutes } from "../middleware/android-local-auth.js";
+import { cyoaRoutes } from "./cyoa.routes.js";
+import { cyoaBuildsRoutes } from "./cyoa-builds.routes.js";
+import { learningRoutes } from "./learning.routes.js";
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(androidLocalAuthRoutes, { prefix: "/api/android-auth" });
@@ -117,6 +120,9 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(customAgentRepositoriesRoutes, { prefix: "/api/custom-agent-repositories" });
   await app.register(personalExtensionsRoutes, { prefix: "/api/personal-extensions" });
   await app.register(notificationSoundRoutes, { prefix: "/api/notification-sound" });
+  await app.register(cyoaRoutes, { prefix: "/api/cyoa" });
+  await app.register(cyoaBuildsRoutes, { prefix: "/api/cyoa/builds" });
+  await app.register(learningRoutes, { prefix: "/api/learning" });
   if (process.env.MARINARA_LITE !== "true" && process.env.MARINARA_LITE !== "1") {
     await app.register(sidecarRoutes, { prefix: "/api/sidecar" });
   }
