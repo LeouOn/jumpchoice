@@ -6,6 +6,8 @@ This file is the release-notes source of truth for Marinara Engine. Reuse these 
 
 ### Added
 
+- Added a CYOA documents panel to the right panel rail with a full-page document editor, making the ported choose-your-own-adventure system reachable from the main UI for the first time.
+- Added a Language Learning toggle for Conversation-mode chats that opens the tutor side panel with its setup wizard, corrections, vocabulary tracker, and review sessions.
 - Added DeepSeek, Zhipu AI (GLM), MiniMax, and LongCat (Meituan) as first-class chat providers, and completed their registration across the connection schema, database provider list, and OpenAI-compatible test-message routing so they behave like the other built-in providers.
 
 ### Fixed
