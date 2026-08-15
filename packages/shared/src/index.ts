@@ -156,3 +156,6 @@ export * from "./types/jump-document.js";
 
 export * from "./types/learning.js";
 export * from "./constants/learning-defaults.js";
+
+export * from "./types/narrative.js";
+export * from "./constants/narrative-principles.js";
