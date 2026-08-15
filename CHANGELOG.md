@@ -9,7 +9,7 @@ This file is the release-notes source of truth for Marinara Engine. Reuse these 
 - Added a CYOA documents panel to the right panel rail with a full-page document editor, making the ported choose-your-own-adventure system reachable from the main UI for the first time.
 - Added a Language Learning toggle for Conversation-mode chats that opens the tutor side panel with its setup wizard, corrections, vocabulary tracker, and review sessions.
 - Added fork feature documentation: a CYOA documents guide, a Language Learning guide, a fork notice in the README, and a staged-module status note on the Narrative Engine reference.
-- Converted the fork's Narrative Engine and CYOA route test files from inert vitest files into executable regression scripts wired into `pnpm regression`.
+- Converted every remaining fork test file from inert vitest syntax into executable regression scripts wired into `pnpm regression`: CYOA document routes, the CYOA extraction/merge/analysis pipeline, narrator and adversary prompt composition, campaign builds and prompt assembly, and the learning routes (now verified against the real file-backed database). Removed one obsolete test file whose target modules were never ported.
 - Added DeepSeek, Zhipu AI (GLM), MiniMax, and LongCat (Meituan) as first-class chat providers, and completed their registration across the connection schema, database provider list, and OpenAI-compatible test-message routing so they behave like the other built-in providers.
 
 ### Fixed
