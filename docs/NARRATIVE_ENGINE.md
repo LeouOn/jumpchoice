@@ -2,6 +2,14 @@
 
 JumpChoice's narrative engine is the core system that shapes how the AI generates responses. It's designed to create immersive, character-driven storytelling that feels like collaborative fiction rather than assistant-like responses.
 
+> **Status: staged module.** The engine, persona manager, COT manager, and
+> context facade are ported and their contract is pinned by
+> `pnpm regression:narrative-engine`, but they are **not yet wired into the
+> generation pipeline**. Marinara's preset/section system owns live prompt
+> assembly; where this engine should hook in (per-chat override, preset
+> section, or global default) is an open product decision. Treat this document
+> as the design reference for that future integration.
+
 ## Architecture
 
 The narrative engine consists of four main components:
