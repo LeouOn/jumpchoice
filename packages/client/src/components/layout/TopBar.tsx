@@ -8,6 +8,7 @@ import {
   Link,
   BookOpen,
   BookOpenText,
+  GraduationCap,
   Users,
   Sparkles,
   FileText,
@@ -114,6 +115,8 @@ export function TopBar() {
   const personaDetailId = useUIStore((s) => s.personaDetailId);
   const regexDetailId = useUIStore((s) => s.regexDetailId);
   const cyoaDetailId = useUIStore((s) => s.cyoaDetailId);
+  const learningModeEnabled = useUIStore((s) => s.learningModeEnabled);
+  const toggleLearningMode = useUIStore((s) => s.toggleLearningMode);
   const botBrowserOpen = useUIStore((s) => s.botBrowserOpen);
   const gameAssetsBrowserOpen = useUIStore((s) => s.gameAssetsBrowserOpen);
   const musicPlayerEnabled = useUIStore((s) => s.musicPlayerEnabled);
@@ -335,6 +338,28 @@ export function TopBar() {
             <Home size={15} className={TOPBAR_ACCENT_ICON_CLASS} />
             {isHomeActive && (
               <span className="mari-topbar-active-underline absolute -bottom-0.5 left-1/2 h-0.5 w-3 -translate-x-1/2 rounded-full" />
+            )}
+          </button>
+
+          <button
+            onClick={toggleLearningMode}
+            data-topbar-hover-key="learning"
+            aria-pressed={learningModeEnabled}
+            className={cn(
+              TOPBAR_BUTTON_CLASS,
+              learningModeEnabled
+                ? cn(TOPBAR_ACTIVE_BUTTON_CLASS, "text-emerald-500")
+                : cn(
+                    "text-[var(--muted-foreground)] hover:text-[var(--marinara-chat-chrome-button-text-hover)]",
+                    isTopbarHovered("learning") &&
+                      cn(TOPBAR_FORCE_HOVER_CLASS, "text-[var(--marinara-chat-chrome-button-text-hover)]"),
+                  ),
+            )}
+            title={localize("Language Learning")}
+          >
+            <GraduationCap size={15} className={TOPBAR_ACCENT_ICON_CLASS} />
+            {learningModeEnabled && (
+              <span className="absolute -bottom-0.5 left-1/2 h-0.5 w-3 -translate-x-1/2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500" />
             )}
           </button>
         </div>

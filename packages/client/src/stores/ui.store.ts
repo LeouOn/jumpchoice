@@ -593,6 +593,8 @@ interface UIState {
   regexDetailId: string | null;
   /** When set, the main area shows the full-page CYOA document editor */
   cyoaDetailId: string | null;
+  /** When enabled, Conversation-mode chats render the Language Learning surface (tutor side panel). */
+  learningModeEnabled: boolean;
   /** When set, the main area shows the hierarchical map editor for this chat */
   spatialMapDetailChatId: string | null;
   /** One-shot generated map preview handed from Game setup into the spatial editor. Never persisted. */
@@ -997,6 +999,7 @@ interface UIState {
   closeRegexDetail: () => void;
   openCyoa: (id: string) => void;
   closeCyoa: () => void;
+  toggleLearningMode: () => void;
   openSpatialMapDetail: (chatId: string) => void;
   openSpatialMapDraftReview: (review: PendingSpatialMapDraftReview) => void;
   clearPendingSpatialMapDraftReview: () => void;
@@ -1397,6 +1400,7 @@ export const useUIStore = create<UIState>()(
       personaDetailId: null,
       regexDetailId: null,
       cyoaDetailId: null,
+      learningModeEnabled: false,
       spatialMapDetailChatId: null,
       pendingSpatialMapDraftReview: null,
       regexDetailDefaultCharacterIds: null,
@@ -1959,6 +1963,8 @@ export const useUIStore = create<UIState>()(
           editorDirty: false,
           ...restoreMobileDetailReturnPanel(s.detailReturnRightPanel),
         })),
+      toggleLearningMode: () =>
+        set((s) => ({ learningModeEnabled: !s.learningModeEnabled })),
       openSpatialMapDetail: (chatId) =>
         set((s) => ({
           spatialMapDetailChatId: chatId,

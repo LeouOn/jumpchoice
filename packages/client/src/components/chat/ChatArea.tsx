@@ -413,6 +413,10 @@ const ChatConversationSurface = lazy(async () => {
   const module = await import("./ChatConversationSurface");
   return { default: module.ChatConversationSurface };
 });
+const LanguageLearningSurface = lazy(async () => {
+  const module = await import("../language-learning/LanguageLearningSurface");
+  return { default: module.LanguageLearningSurface };
+});
 
 const ChatRoleplaySurface = lazy(async () => {
   const module = await import("./ChatRoleplaySurface");
@@ -456,6 +460,7 @@ export const ChatArea = memo(function ChatArea() {
   const regenerateMessageId = useChatStore((s) => s.regenerateMessageId);
   const chatBackground = useUIStore((s) => s.chatBackground);
   const weatherEffects = useUIStore((s) => s.weatherEffects);
+  const learningModeEnabled = useUIStore((s) => s.learningModeEnabled);
   const messagesPerPage = useUIStore((s) => s.messagesPerPage);
   const centerCompact = useUIStore((s) => s.centerCompact);
   const guideGenerations = useUIStore((s) => s.guideGenerations);
@@ -2915,13 +2920,14 @@ export const ChatArea = memo(function ChatArea() {
   // Conversation mode — Discord-style layout
   // ═══════════════════════════════════════════════
   if (chatMode === "conversation") {
+    const ConversationSurface = learningModeEnabled ? LanguageLearningSurface : ChatConversationSurface;
     return (
       <>
         {cardCssInjector}
         {scheduleModal}
         {resourceDropOverlay}
         <Suspense fallback={surfaceFallback}>
-          <ChatConversationSurface
+          <ConversationSurface
             activeChatId={activeChatId}
             chat={chat}
             messages={messages}
