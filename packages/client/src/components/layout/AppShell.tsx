@@ -89,6 +89,9 @@ const PersonaEditor = lazy(() =>
 const RegexScriptEditor = lazy(() =>
   import("../agents/RegexScriptEditor").then((module) => ({ default: module.RegexScriptEditor })),
 );
+const CyoaEditor = lazy(() =>
+  import("../cyoa/CyoaEditor").then((module) => ({ default: module.CyoaEditor })),
+);
 const BotBrowserView = lazy(() =>
   import("../bot-browser/BotBrowserView").then((module) => ({ default: module.BotBrowserView })),
 );
@@ -548,6 +551,7 @@ export function AppShell() {
   const toolDetailId = useUIStore((s) => s.toolDetailId);
   const personaDetailId = useUIStore((s) => s.personaDetailId);
   const regexDetailId = useUIStore((s) => s.regexDetailId);
+  const cyoaDetailId = useUIStore((s) => s.cyoaDetailId);
   const botBrowserOpen = useUIStore((s) => s.botBrowserOpen);
   const gameAssetsBrowserOpen = useUIStore((s) => s.gameAssetsBrowserOpen);
   const hasCompletedOnboarding = useUIStore((s) => s.hasCompletedOnboarding);
@@ -805,6 +809,8 @@ export function AppShell() {
     <AgentCatalogView />
   ) : lorebookDetailId ? (
     <LorebookEditor />
+  ) : cyoaDetailId ? (
+    <CyoaEditor />
   ) : null;
 
   const showAmbientDecor = isPageActive && !activeChatId && !detailView && !botBrowserOpen && !gameAssetsBrowserOpen;

@@ -7,6 +7,7 @@ import {
   Settings,
   Link,
   BookOpen,
+  BookOpenText,
   Users,
   Sparkles,
   FileText,
@@ -28,7 +29,7 @@ import {
   PersonalExtensionTopbarButtons,
 } from "./PersonalExtensionContributionsMenu";
 
-type RightPanelButtonPanel = "lorebooks" | "presets" | "connections" | "agents" | "personas";
+type RightPanelButtonPanel = "lorebooks" | "presets" | "connections" | "agents" | "personas" | "cyoa";
 
 type RightPanelButtonConfig = {
   panel: RightPanelButtonPanel;
@@ -70,6 +71,12 @@ const RIGHT_PANEL_BUTTONS: readonly RightPanelButtonConfig[] = [
     label: "Agents",
     gradientClass: "mari-panel-gradient--agents",
   },
+  {
+    panel: "cyoa" as const,
+    icon: BookOpenText,
+    label: "CYOA",
+    gradientClass: "mari-panel-gradient--cyoa",
+  },
 ] as const;
 
 const SPOTIFY_TOPBAR_MIN_WIDTH = 320;
@@ -106,6 +113,7 @@ export function TopBar() {
   const toolDetailId = useUIStore((s) => s.toolDetailId);
   const personaDetailId = useUIStore((s) => s.personaDetailId);
   const regexDetailId = useUIStore((s) => s.regexDetailId);
+  const cyoaDetailId = useUIStore((s) => s.cyoaDetailId);
   const botBrowserOpen = useUIStore((s) => s.botBrowserOpen);
   const gameAssetsBrowserOpen = useUIStore((s) => s.gameAssetsBrowserOpen);
   const musicPlayerEnabled = useUIStore((s) => s.musicPlayerEnabled);
@@ -142,6 +150,7 @@ export function TopBar() {
       (rightPanelOpen && rightPanel === "personas") ||
       Boolean(personaDetailId) ||
       (characterLibraryOpen && cardLibraryKind === "personas"),
+    cyoa: (rightPanelOpen && rightPanel === "cyoa") || Boolean(cyoaDetailId),
   };
   const isHomeActive =
     !activeChatId &&
@@ -153,6 +162,7 @@ export function TopBar() {
     !toolDetailId &&
     !personaDetailId &&
     !regexDetailId &&
+    !cyoaDetailId &&
     !botBrowserOpen &&
     !gameAssetsBrowserOpen &&
     !characterLibraryOpen;

@@ -2,7 +2,7 @@
 // Layout: Right Panel (polished with panel transitions)
 // ──────────────────────────────────────────────
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent, type ReactNode } from "react";
-import { X, Users, BookOpen, FileText, Link, Sparkles, Settings, VenetianMask, Bot, Puzzle } from "lucide-react";
+import { X, Users, BookOpen, BookOpenText, FileText, Link, Sparkles, Settings, VenetianMask, Bot, Puzzle } from "lucide-react";
 import { useUIStore } from "../../stores/ui.store";
 import { cn } from "../../lib/utils";
 import { usePersonalExtensionContributions } from "../../lib/personal-extension-contributions";
@@ -34,6 +34,9 @@ const BotBrowserPanel = lazy(() =>
 const PersonalExtensionPanel = lazy(() =>
   import("../panels/PersonalExtensionPanel").then((module) => ({ default: module.PersonalExtensionPanel })),
 );
+const CyoaPanel = lazy(() =>
+  import("../panels/CyoaPanel").then((module) => ({ default: module.CyoaPanel })),
+);
 
 const PANEL_CONFIG: Record<string, { title: string; icon: ReactNode; gradient?: string; gradientClass?: string }> = {
   "bot-browser": {
@@ -59,6 +62,11 @@ const PANEL_CONFIG: Record<string, { title: string; icon: ReactNode; gradient?: 
     icon: <VenetianMask size="0.875rem" />,
     gradient: "from-emerald-400 to-teal-500",
   },
+  cyoa: {
+    title: "CYOA",
+    icon: <BookOpenText size="0.875rem" />,
+    gradient: "from-teal-400 to-cyan-500",
+  },
   settings: { title: "Settings", icon: <Settings size="0.875rem" />, gradient: "from-gray-400 to-gray-500" },
   extensions: { title: "Extensions", icon: <Puzzle size="0.875rem" /> },
 };
@@ -73,6 +81,7 @@ const PANELS: Record<string, LazyExoticComponent<ComponentType>> = {
   personas: PersonasPanel,
   settings: SettingsPanel,
   extensions: PersonalExtensionPanel,
+  cyoa: CyoaPanel,
 };
 
 const PANEL_CONTRIBUTION_SURFACES: Partial<Record<string, Exclude<PersonalExtensionContributionSurface, "top-bar">>> = {
