@@ -121,7 +121,20 @@ function formatProviderErrorBody(body: string): string {
 }
 
 function isOpenAICompatibleProvider(provider: string): boolean {
-  return ["openai", "openrouter", "nanogpt", "xai", "mistral", "custom", "cohere", "arli"].includes(provider);
+  return [
+    "openai",
+    "openrouter",
+    "nanogpt",
+    "xai",
+    "mistral",
+    "custom",
+    "cohere",
+    "arli",
+    "deepseek",
+    "zhipu",
+    "minimax",
+    "longcat",
+  ].includes(provider);
 }
 
 function usesResponsesEndpointForTestMessage(provider: string, model: string): boolean {

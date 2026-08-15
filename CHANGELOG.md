@@ -4,6 +4,10 @@ This file is the release-notes source of truth for Marinara Engine. Reuse these 
 
 ## [Unreleased]
 
+### Added
+
+- Added DeepSeek, Zhipu AI (GLM), MiniMax, and LongCat (Meituan) as first-class chat providers, and completed their registration across the connection schema, database provider list, and OpenAI-compatible test-message routing so they behave like the other built-in providers.
+
 ### Fixed
 
 - Kept the caret at the chosen insertion point when typing quotes or apostrophes in expanded Character and Persona text editors (#4656).
