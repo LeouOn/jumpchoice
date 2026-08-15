@@ -1880,4 +1880,60 @@ assert.equal(abortedFallback.calls, 0, "user cancellation must not trigger a fal
   }
 }
 
+// Fork providers (deepseek, zhipu, minimax, longcat) route through OpenAIProvider,
+// resolve their own model catalogs, and keep provider-specific base URL shapes intact.
+{
+  for (const [provider, model, expectedContext] of [
+    ["deepseek", "deepseek-v4-pro", 1_000_000],
+    ["zhipu", "glm-5.2", 1_000_000],
+    ["minimax", "MiniMax-M2.7", 204_800],
+    ["longcat", "LongCat-2.0", 1_000_000],
+  ] as const) {
+    const known = findKnownModel(provider, model);
+    assert.ok(known, `${provider} must expose its model catalog`);
+    assert.equal(known?.context, expectedContext, `${provider} model metadata must match its catalog`);
+  }
+
+  const forkProviderRequests: Array<{ url: string; authorization: string | undefined; body: Record<string, unknown> }> =
+    [];
+  const forkProviderServer = createServer(async (request, response) => {
+    const chunks: Buffer[] = [];
+    for await (const chunk of request) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    forkProviderRequests.push({
+      url: request.url ?? "",
+      authorization: request.headers.authorization,
+      body: JSON.parse(Buffer.concat(chunks).toString("utf8")) as Record<string, unknown>,
+    });
+    response.writeHead(200, { "content-type": "application/json" });
+    response.end(JSON.stringify({ choices: [{ message: { content: "fork provider reply" }, finish_reason: "stop" }] }));
+  });
+  await new Promise<void>((resolve) => forkProviderServer.listen(0, "127.0.0.1", resolve));
+  try {
+    const address = forkProviderServer.address();
+    assert.ok(address && typeof address === "object");
+    const baseUrl = `http://127.0.0.1:${address.port}`;
+    for (const provider of ["deepseek", "zhipu", "minimax", "longcat"] as const) {
+      const providerInstance = createLLMProvider(provider, baseUrl, "fork-secret");
+      assert.ok(providerInstance instanceof OpenAIProvider, `${provider} must resolve to OpenAIProvider`);
+      assert.equal(
+        await collectProviderOutput(providerInstance, { model: "catalog-model", stream: false }),
+        "fork provider reply",
+      );
+      const captured = forkProviderRequests.at(-1);
+      assert.ok(captured, `${provider} must issue a chat request`);
+      assert.equal(captured.url, "/chat/completions", `${provider} must use chat completions`);
+      assert.equal(captured.authorization, "Bearer fork-secret", `${provider} must send the bearer key`);
+    }
+    assert.equal(
+      forkProviderRequests.length,
+      4,
+      "each fork provider must complete exactly one request in the loop",
+    );
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      forkProviderServer.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
+}
+
 process.stdout.write("Provider compatibility regression passed.\n");
