@@ -64,7 +64,7 @@ export const STRICT_CONNECTION_PARAMETER_SEND_DEFAULTS: GenerationParameterSendM
 
 export const CHAT_PARAMETER_DEFAULTS: EditableGenerationParameters = {
   temperature: 1,
-  maxTokens: 4096,
+  maxTokens: 20192,
   topP: 1,
   topK: 0,
   frequencyPenalty: 0,
@@ -81,7 +81,7 @@ export const CHAT_PARAMETER_DEFAULTS: EditableGenerationParameters = {
 
 export const ROLEPLAY_PARAMETER_DEFAULTS: EditableGenerationParameters = {
   temperature: 1,
-  maxTokens: 8192,
+  maxTokens: 20192,
   topP: 1,
   topK: 0,
   frequencyPenalty: 0,

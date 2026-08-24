@@ -136,30 +136,32 @@ export function resolveGenerationProviderRuntime(args: GenerationProviderRuntime
   );
 
   if (args.isSceneChat) {
-    runtime.maxTokens = 8192;
+    runtime.maxTokens = 20192;
     runtime.reasoningEffort = "maximum";
     runtime.verbosity = "high";
   }
 
   if (args.chatMode === "game" && !isLocalGemma) {
     runtime.temperature = 1;
-    runtime.maxTokens = 16_384;
+    runtime.maxTokens = 20_192;
     runtime.topP = 1;
     runtime.topK = 0;
     runtime.minP = 0;
     runtime.frequencyPenalty = 0;
     runtime.presencePenalty = 0;
     runtime.reasoningEffort = "maximum";
-    runtime.verbosity = null;
+    runtime.verbosity = "high";
   } else if (args.chatMode === "game" && typeof chatParams?.maxTokens !== "number") {
-    runtime.maxTokens = Math.max(runtime.maxTokens, 16_384);
+    runtime.maxTokens = Math.max(runtime.maxTokens, 20_192);
   }
+
+  applyParameterOverrides(chatParams);
 
   if (args.chatMode === "game") {
     runtime.maxTokens = clampGenerationMaxOutputTokens({
       provider: args.connection.provider,
       model: args.connection.model,
-      maxTokens: Math.max(runtime.maxTokens, 16_384),
+      maxTokens: Math.max(runtime.maxTokens, 20_192),
       maxTokensOverride: args.connection.maxTokensOverride,
     });
   }

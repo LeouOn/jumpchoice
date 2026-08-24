@@ -11,10 +11,12 @@ import { useTranslation as useUiTranslation } from "react-i18next";
 
 const DEFAULT_PARAMS = {
   temperature: 0.9,
-  maxTokens: 8192,
+  maxTokens: 20192,
   topP: 0.95,
   frequencyPenalty: 0,
   presencePenalty: 0,
+  reasoningEffort: "maximum",
+  verbosity: "high",
   serviceTier: null,
   assistantPrefill: "",
   customParameters: {},

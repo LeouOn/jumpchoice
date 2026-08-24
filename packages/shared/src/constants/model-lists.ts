@@ -83,6 +83,22 @@ export function resolveProviderReasoningEffort(args: {
   return args.reasoningEffort;
 }
 
+export type StoredVerbosity = "low" | "medium" | "high" | "max" | null;
+export type ProviderVerbosity = "low" | "medium" | "high" | null;
+
+export function resolveProviderVerbosity(args: {
+  provider?: string | null;
+  model?: string | null;
+  verbosity: StoredVerbosity | undefined;
+}): ProviderVerbosity {
+  if (!args.verbosity) return null;
+  if (args.verbosity === "max") return "high";
+  if (args.verbosity === "low" || args.verbosity === "medium" || args.verbosity === "high") {
+    return args.verbosity;
+  }
+  return "high";
+}
+
 export function isXaiConfigurableReasoningModel(model: string): boolean {
   const normalized = model.toLowerCase().replace(/^x-ai\//, "");
   return normalized.startsWith("grok-4.5") || normalized.startsWith("grok-4.3");

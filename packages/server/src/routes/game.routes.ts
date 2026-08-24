@@ -3147,7 +3147,7 @@ function gameGenOptions(
   });
   const base: ChatOptions = {
     model,
-    maxTokens: 8192,
+    maxTokens: 20192,
     verbosity: "high",
   };
   if (defaultReasoningEffort) {
@@ -3225,7 +3225,7 @@ function gameGenOptions(
 const SESSION_SUMMARY_CHARS_PER_TOKEN = 4;
 const SESSION_SUMMARY_MIN_TRANSCRIPT_CHARS = 256;
 const GAME_SETUP_MIN_OUTPUT_TOKENS = 16_384;
-const SESSION_CONCLUSION_MIN_OUTPUT_TOKENS = 8192;
+const SESSION_CONCLUSION_MIN_OUTPUT_TOKENS = 20192;
 const CAMPAIGN_PROGRESSION_MIN_OUTPUT_TOKENS = SESSION_CONCLUSION_MIN_OUTPUT_TOKENS;
 const GAME_GENERATION_TIMEOUT_MS = 5 * 60 * 1000;
 const GAME_ASSET_GENERATION_TIMEOUT_MS = 45 * 60 * 1000;
@@ -10186,7 +10186,7 @@ export async function gameRoutes(app: FastifyInstance) {
       gameGenOptions(
         conn.model ?? "",
         {
-          maxTokens: 8192,
+          maxTokens: 20192,
           signal: partyTurnAbortSignal,
         },
         gameGenerationParameters,

@@ -659,6 +659,30 @@ assert.equal(
   }
 }
 
+assert.deepEqual(
+  resolveStoredChatOptions(
+    JSON.stringify({
+      verbosity: "max",
+    }),
+    "openai",
+    "openai/gpt-5",
+  ),
+  {
+    temperature: undefined,
+    topP: undefined,
+    topK: undefined,
+    minP: undefined,
+    frequencyPenalty: undefined,
+    presencePenalty: undefined,
+    reasoningEffort: undefined,
+    verbosity: "high",
+    serviceTier: undefined,
+    stop: undefined,
+    customParameters: undefined,
+    enabledParameters: undefined,
+  },
+);
+
 let openRouterRequestBody: Record<string, unknown> | null = null;
 const openRouterServer = createServer(async (request, response) => {
   const chunks: Buffer[] = [];

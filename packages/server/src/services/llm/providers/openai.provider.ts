@@ -20,6 +20,7 @@ import {
   isXaiAutoReasoningModel,
   isXaiConfigurableReasoningModel,
   resolveOpenAIGpt56ModelForRequest,
+  resolveProviderVerbosity,
   shouldSuppressUnknownModelParameters,
 } from "@jumpchoice/shared";
 import { logger } from "../../../lib/logger.js";
@@ -950,7 +951,8 @@ export class OpenAIProvider extends BaseLLMProvider {
 
   private supportsGpt5Verbosity(model: string): boolean {
     if (this.isOpenAIChatGPTProvider()) return false;
-    return this.isGenericCustomProvider() || model.toLowerCase().startsWith("gpt-5");
+    const normalized = model.toLowerCase().replace(/^openai\//, "");
+    return this.isGenericCustomProvider() || normalized.startsWith("gpt-5");
   }
 
   private applyResponsesTextOptions(body: Record<string, unknown>, options: ChatOptions): void {
@@ -964,7 +966,14 @@ export class OpenAIProvider extends BaseLLMProvider {
       options.verbosity &&
       this.supportsGpt5Verbosity(options.model)
     ) {
-      textOptions.verbosity = options.verbosity;
+      const verbosity = resolveProviderVerbosity({
+        provider: this.isOpenAIChatGPTProvider() ? "openai_chatgpt" : "openai",
+        model: options.model,
+        verbosity: options.verbosity,
+      });
+      if (verbosity) {
+        textOptions.verbosity = verbosity;
+      }
     }
 
     if (options.responseFormat) {
@@ -1154,7 +1163,19 @@ export class OpenAIProvider extends BaseLLMProvider {
         options.verbosity &&
         this.supportsGpt5Verbosity(options.model)
       ) {
-        body.verbosity = options.verbosity;
+        const verbosity = resolveProviderVerbosity({
+          provider: this.isOpenAIChatGPTProvider() ? "openai_chatgpt" : "openai",
+          model: options.model,
+          verbosity: options.verbosity,
+        });
+        if (verbosity) {
+          body.verbosity = verbosity;
+          if (!body.text || typeof body.text !== "object" || Array.isArray(body.text)) {
+            body.text = { verbosity };
+          } else {
+            (body.text as Record<string, unknown>).verbosity = verbosity;
+          }
+        }
       }
 
       // OpenRouter provider routing preference
@@ -1436,7 +1457,19 @@ export class OpenAIProvider extends BaseLLMProvider {
         options.verbosity &&
         this.supportsGpt5Verbosity(options.model)
       ) {
-        body.verbosity = options.verbosity;
+        const verbosity = resolveProviderVerbosity({
+          provider: this.isOpenAIChatGPTProvider() ? "openai_chatgpt" : "openai",
+          model: options.model,
+          verbosity: options.verbosity,
+        });
+        if (verbosity) {
+          body.verbosity = verbosity;
+          if (!body.text || typeof body.text !== "object" || Array.isArray(body.text)) {
+            body.text = { verbosity };
+          } else {
+            (body.text as Record<string, unknown>).verbosity = verbosity;
+          }
+        }
       }
 
       // OpenRouter provider routing preference

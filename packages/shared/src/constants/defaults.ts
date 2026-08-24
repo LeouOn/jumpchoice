@@ -42,12 +42,12 @@ export const DEFAULT_GENERATION_PARAMS: GenerationParameters = {
   topP: 1,
   topK: 0,
   minP: 0,
-  maxTokens: 8192,
+  maxTokens: 20192,
   maxContext: 128000,
   frequencyPenalty: 0,
   presencePenalty: 0,
   reasoningEffort: "maximum",
-  verbosity: null,
+  verbosity: "high",
   serviceTier: null,
   assistantPrefill: "",
   customThinkingTags: [],
@@ -92,7 +92,7 @@ export const LIMITS = {
    */
   LOREBOOK_DEFAULT_SCAN_DEPTH: 10,
   /** Default global lorebook token budget per generation. 0 means unlimited when explicitly configured per chat. */
-  DEFAULT_LOREBOOK_TOKEN_BUDGET: 8192,
+  DEFAULT_LOREBOOK_TOKEN_BUDGET: 20192,
   /**
    * Per-active-character lorebook token budget for a single Noodle refresh. Noodle can batch far
    * more characters into one generation call (up to 100, or uncapped with "All invited") than a
@@ -103,7 +103,7 @@ export const LIMITS = {
   /** Minimum Noodle lorebook token budget even for a single active character. */
   NOODLE_LOREBOOK_TOKEN_BUDGET_FLOOR: 1500,
   /** Hard ceiling for all world/lore context activated by one Noodle refresh. */
-  NOODLE_LOREBOOK_TOKEN_BUDGET_MAX: 8192,
+  NOODLE_LOREBOOK_TOKEN_BUDGET_MAX: 20192,
   /** Default summary trigger: every N messages */
   SUMMARY_INTERVAL: 50,
   /** Default vectorization: top-K results */

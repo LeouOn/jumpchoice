@@ -65,7 +65,7 @@ New chats start from a built-in baseline. The table below shows those starting v
 | Parameter | Starting value | Sent by default |
 |---|---|---|
 | Temperature | 1 | No |
-| Max Output Tokens | 4096 in Conversation, 8192 in Roleplay and Game | Yes |
+| Max Output Tokens | 20192 | Yes |
 | Top P | 1 | No |
 | Top K | 0 (off) | No |
 | Frequency | 0 | No |

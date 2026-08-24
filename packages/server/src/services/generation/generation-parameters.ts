@@ -3,6 +3,7 @@ import {
   MIN_AGENT_MAX_TOKENS,
   generationParametersSchema,
   resolveProviderReasoningEffort,
+  resolveProviderVerbosity,
 } from "@jumpchoice/shared";
 import type { BaseLLMProvider, ChatOptions } from "../llm/base-provider.js";
 
@@ -63,6 +64,11 @@ export function resolveStoredChatOptions(
     model,
     reasoningEffort: parameters.reasoningEffort,
   });
+  const verbosity = resolveProviderVerbosity({
+    provider,
+    model,
+    verbosity: parameters.verbosity,
+  });
   return {
     temperature: parameters.temperature,
     topP: parameters.topP,
@@ -76,7 +82,7 @@ export function resolveStoredChatOptions(
         : parameters.reasoningEffort === null
           ? "none"
           : (reasoningEffort ?? undefined),
-    verbosity: parameters.verbosity ?? undefined,
+    verbosity: verbosity ?? undefined,
     serviceTier: parameters.serviceTier,
     stop: parameters.stopSequences,
     customParameters: parameters.customParameters,
