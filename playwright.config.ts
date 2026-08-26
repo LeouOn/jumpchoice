@@ -50,7 +50,7 @@ export default defineConfig({
           command: "node ./e2e/start-servers.mjs",
           url: baseURL,
           reuseExistingServer: false,
-          timeout: 180_000,
+          timeout: 600_000,
           env: {
             AUTO_CREATE_DEFAULT_CONNECTION: "false",
             AUTO_OPEN_BROWSER: "false",

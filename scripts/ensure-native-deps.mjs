@@ -49,7 +49,9 @@ function resolvePnpmCommand() {
   const useCurrentPnpm =
     Boolean(pnpmCliPath) && (npmUserAgent.startsWith("pnpm/") || basename(pnpmCliPath ?? "").startsWith("pnpm"));
 
+  // Standalone pnpm installs point npm_execpath at a native .exe; spawn it directly.
   if (useCurrentPnpm && pnpmCliPath) {
+    if (pnpmCliPath.toLowerCase().endsWith(".exe")) return { command: pnpmCliPath, args: [] };
     return { command: process.execPath, args: [pnpmCliPath] };
   }
 

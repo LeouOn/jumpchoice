@@ -19,8 +19,10 @@ const pnpmCliPath = process.env.npm_execpath;
 const npmUserAgent = process.env.npm_config_user_agent ?? "";
 const useCurrentPnpm =
   Boolean(pnpmCliPath) && (npmUserAgent.startsWith("pnpm/") || basename(pnpmCliPath ?? "").startsWith("pnpm"));
-const pnpmCommand = useCurrentPnpm ? process.execPath : "pnpm";
-const pnpmBaseArgs = useCurrentPnpm && pnpmCliPath ? [pnpmCliPath] : [];
+// Standalone pnpm installs point npm_execpath at a native .exe; spawn it directly.
+const pnpmIsNativeExecutable = Boolean(pnpmCliPath?.toLowerCase().endsWith(".exe"));
+const pnpmCommand = useCurrentPnpm && pnpmIsNativeExecutable ? pnpmCliPath : useCurrentPnpm ? process.execPath : "pnpm";
+const pnpmBaseArgs = useCurrentPnpm && pnpmCliPath && !pnpmIsNativeExecutable ? [pnpmCliPath] : [];
 const children = new Set();
 let shuttingDown = false;
 
