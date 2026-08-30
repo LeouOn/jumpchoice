@@ -99,6 +99,8 @@
     "regression:cyoa-narrator": "pnpm --filter @jumpchoice/server exec tsx ../../scripts/regressions/cyoa-narrator.regression.ts",
     "regression:cyoa-campaign": "pnpm --filter @jumpchoice/server exec tsx ../../scripts/regressions/cyoa-campaign.regression.ts",
     "regression:learning-routes": "pnpm --filter @jumpchoice/server exec tsx ../../scripts/regressions/learning-routes.regression.ts",
+    "regression:capability-lifecycle": "pnpm --filter @jumpchoice/server exec tsx ../../scripts/regressions/capability-package-lifecycle.regression.ts",
+    "regression:capability-version-refresh": "pnpm --filter @jumpchoice/server exec tsx ../../scripts/regressions/capability-client-version-refresh.regression.ts",
     "regression:docs": "pnpm build:shared && pnpm --filter @jumpchoice/server exec tsx ../../scripts/regressions/docs-language.regression.ts",
     "smoke:ui": "playwright test -c playwright.config.ts",
     "test": "node ./scripts/check-windows-installer-layout.mjs && pnpm regression",
