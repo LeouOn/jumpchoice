@@ -259,6 +259,11 @@ function supportsGeminiThinkingDisable(model: string): boolean {
   );
 }
 
+/** Gemini 3 and later use `thinkingLevel`; earlier thinking models use `thinkingBudget`. */
+export function usesGeminiThinkingLevel(model: string): boolean {
+  return /gemini-(?:[3-9]|\d{2,})(?:[.-]|$)/i.test(model);
+}
+
 export function resolveGeminiThinkingConfig(
   model: string,
   options: Pick<ChatOptions, "enableThinking" | "reasoningEffort">,
@@ -269,7 +274,7 @@ export function resolveGeminiThinkingConfig(
   }
   if (!options.enableThinking && !options.reasoningEffort) return undefined;
 
-  if (/gemini-3/i.test(model)) {
+  if (usesGeminiThinkingLevel(model)) {
     const levelMap = { low: "low", medium: "medium", high: "high", xhigh: "high", max: "high" } as const;
     return {
       thinkingLevel: options.reasoningEffort ? levelMap[options.reasoningEffort] : "high",
@@ -612,7 +617,7 @@ export class GoogleProvider extends BaseLLMProvider {
     const maxTokens = this.applyMaxTokensCap(contextFit.maxTokens ?? configuredMaxTokens);
     const model = options.model || "gemini-2.0-flash";
 
-    const isGemini3 = /gemini-3/i.test(model);
+    const isGemini3 = usesGeminiThinkingLevel(model);
     const supportsThinking = isGemini3 || /gemini-2\.5|gemini-2\.0-flash-thinking/i.test(model);
     const thinkingConfig =
       this.shouldSendParameter(options, "reasoningEffort") && supportsThinking
@@ -874,11 +879,11 @@ export class GoogleProvider extends BaseLLMProvider {
 
     const model = options.model || "gemini-2.0-flash";
 
-    // Gemini 3.x models use thinkingLevel; Gemini 2.5 uses thinkingBudget
-    const isGemini3 = /gemini-3/i.test(model);
+    // Gemini 3+ models use thinkingLevel; Gemini 2.5 uses thinkingBudget
+    const isGemini3 = usesGeminiThinkingLevel(model);
 
     // Only models that actually support thinking should get thinkingConfig:
-    // Gemini 3.x, 2.5-flash/pro, and 2.0-flash-thinking.
+    // Gemini 3+, 2.5-flash/pro, and 2.0-flash-thinking.
     const supportsThinking =
       !suppressModelParameters && (isGemini3 || /gemini-2\.5|gemini-2\.0-flash-thinking/i.test(model));
 

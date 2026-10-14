@@ -33,6 +33,7 @@ import {
   GoogleProvider,
   resolveGeminiThinkingConfig,
   resolveGoogleFunctionCallingMode,
+  usesGeminiThinkingLevel,
 } from "../../packages/server/src/services/llm/providers/google.provider.js";
 import {
   extractOpenAICompatibleContentBlocks,
@@ -904,6 +905,13 @@ assert.equal(
   undefined,
   "reasoning-mandatory Gemini 3 models must not receive an unsupported off value",
 );
+assert.equal(usesGeminiThinkingLevel("gemini-3.5-flash"), true);
+assert.equal(usesGeminiThinkingLevel("gemini-4-argon"), true, "Gemini 4 models must get thinkingLevel");
+assert.equal(usesGeminiThinkingLevel("gemini-2.5-pro"), false);
+assert.deepEqual(resolveGeminiThinkingConfig("gemini-4-argon", { reasoningEffort: "low" }, 4096), {
+  thinkingLevel: "low",
+  includeThoughts: true,
+});
 assert.equal(resolveGoogleFunctionCallingMode("required"), "ANY");
 assert.equal(resolveGoogleFunctionCallingMode("auto"), "AUTO");
 assert.equal(resolveGoogleFunctionCallingMode(undefined), "AUTO");
