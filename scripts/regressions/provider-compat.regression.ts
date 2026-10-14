@@ -3063,11 +3063,7 @@ assert.equal(abortedFallback.calls, 0, "user cancellation must not trigger a fal
       assert.equal(captured.url, "/chat/completions", `${provider} must use chat completions`);
       assert.equal(captured.authorization, "Bearer fork-secret", `${provider} must send the bearer key`);
     }
-    assert.equal(
-      forkProviderRequests.length,
-      4,
-      "each fork provider must complete exactly one request in the loop",
-    );
+    assert.equal(forkProviderRequests.length, 4, "each fork provider must complete exactly one request in the loop");
   } finally {
     await new Promise<void>((resolve, reject) =>
       forkProviderServer.close((error) => (error ? reject(error) : resolve())),
@@ -3671,13 +3667,11 @@ try {
             tool_calls: identifiedResult.toolCalls,
             ...(replayMetadata ? { providerMetadata: identifiedResult.providerMetadata } : {}),
           },
-          ...identifiedResult.toolCalls.map(
-            (call, index): ChatMessage => ({
-              role: "tool",
-              tool_call_id: call.id,
-              content: JSON.stringify({ total: 17 + index }),
-            }),
-          ),
+          ...identifiedResult.toolCalls.map((call, index): ChatMessage => ({
+            role: "tool",
+            tool_call_id: call.id,
+            content: JSON.stringify({ total: 17 + index }),
+          })),
         ],
         { model: "gemini-2.0-flash", tools: [rollDiceTool], onToken: () => {} },
       );
