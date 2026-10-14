@@ -12,6 +12,11 @@ When upgrading from a version that bundled first-party agents, maps, calls, or C
 
 If you use a downloaded documentation language (**Settings** → **General** → **Documentation Language**), the first start after an update also checks that language pack for changes and refreshes it automatically. If the download source cannot be reached, Marinara keeps your installed pack (any guides missing from it show in English) and tries again on the next start. Your language choice is never reset by an update.
 
+UI language packs use a separate, manual download flow. On the first upgrade from bundled UI translations,
+the interface returns to English; reselect your language in **Settings** → **General** → **Language** to download
+its pack. Later updates keep downloaded packs in the data folder. Use **Refresh language pack** for updated
+translations; missing packs or untranslated keys display English, and startup never downloads a UI pack.
+
 To learn where your data lives and how to save a copy, see [Backing Up and Restoring Marinara](data/backup-and-restore.md).
 
 ## Back up first
@@ -100,7 +105,7 @@ cd Marinara-Engine
 
 For a persistent opt-out, set `AUTO_UPDATE_ENABLED=false` in the project `.env`. This affects only launcher-managed Engine updates; manual updates and the in-app update controls remain available.
 
-If you use the Android app icon (the APK), open it and tap **Install / Start Marinara**. The APK is a sideloaded app, which means you installed it outside the official app store. It is a shell over Termux, so it updates the same Termux copy behind it.
+If you use the Android app icon (the APK), [download the latest APK](https://github.com/Pasta-Devs/Marinara-Engine/releases/latest/download/marinara-engine-android.apk) and open the downloaded file so Android updates the wrapper itself. Then open Marinara Engine and tap **Install / Start Marinara** to update and start the Termux copy behind it. The app preserves and exchanges its private localhost credential automatically; an update never asks you for signing credentials or that secret.
 
 ### iPhone and iPad
 

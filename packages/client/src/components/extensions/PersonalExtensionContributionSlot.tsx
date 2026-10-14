@@ -1,7 +1,4 @@
-import type {
-  PersonalExtensionContributionPosition,
-  PersonalExtensionContributionSurface,
-} from "@jumpchoice/shared";
+import type { PersonalExtensionContributionPosition, PersonalExtensionContributionSurface } from "@jumpchoice/shared";
 import {
   activatePersonalExtensionContribution,
   usePersonalExtensionContributions,

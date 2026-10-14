@@ -37,7 +37,13 @@ export function createLearningCoordinator(db: DB) {
       return results;
     },
 
-    async processExtractedCorrections(items: ExtractedCorrection[], userId: string, languageCode: string, chatId: string, messageId: string | null) {
+    async processExtractedCorrections(
+      items: ExtractedCorrection[],
+      userId: string,
+      languageCode: string,
+      chatId: string,
+      messageId: string | null,
+    ) {
       const results = [];
       for (const c of items) {
         const saved = await corrections.add({
@@ -63,7 +69,8 @@ export function createLearningCoordinator(db: DB) {
         if (!row) continue;
         const state = { ...row, suspended: row.suspended === "true" };
         const update = SrsScheduler.review(state, grade);
-        await db.update(srsState)
+        await db
+          .update(srsState)
           .set({
             stability: update.state.stability,
             difficulty: update.state.difficulty,

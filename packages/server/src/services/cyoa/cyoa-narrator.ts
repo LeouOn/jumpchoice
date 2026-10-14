@@ -80,7 +80,10 @@ const INFO_LEAKAGE_LANGUAGE: Record<number, string> = {
 function buildChoiceList(choices: CyoaChoice[], selectedIds: string[]): string {
   return choices
     .filter((c) => selectedIds.includes(c.id))
-    .map((c) => `- ${c.name} (${c.pointCost ?? 0} pts, Tier ${c.tier ?? "?"}, ${c.category ?? "uncategorized"})${c.description ? `: ${c.description}` : ""}`)
+    .map(
+      (c) =>
+        `- ${c.name} (${c.pointCost ?? 0} pts, Tier ${c.tier ?? "?"}, ${c.category ?? "uncategorized"})${c.description ? `: ${c.description}` : ""}`,
+    )
     .join("\n");
 }
 
@@ -89,15 +92,24 @@ function buildSynergyText(choices: CyoaChoice[], selectedIds: string[], analysis
   const synergies = raw?.topSynergies ?? [];
   const active = synergies.filter((s) => s.choiceIds.every((id) => selectedIds.includes(id)));
   if (!active.length) return "No active synergies detected.";
-  return active.map((s) => `- ${s.choiceIds.map((id) => choices.find((c) => c.id === id)?.name ?? id).join(" + ")}: ${s.description} (Value: ${s.combinedValue})`).join("\n");
+  return active
+    .map(
+      (s) =>
+        `- ${s.choiceIds.map((id) => choices.find((c) => c.id === id)?.name ?? id).join(" + ")}: ${s.description} (Value: ${s.combinedValue})`,
+    )
+    .join("\n");
 }
 
 function deriveTone(choices: CyoaChoice[]): string {
   const categories = new Set(choices.map((c) => c.category?.toLowerCase() ?? ""));
-  if (categories.has("magic") || categories.has("spells")) return "epic fantasy — wondrous, mysterious, with a sense of ancient power";
-  if (categories.has("technology") || categories.has("sci-fi")) return "analytical sci-fi — precise, technological, with wonder at what's possible";
-  if (categories.has("combat") || categories.has("martial")) return "action-oriented — visceral, tense, with brutal combat encounters";
-  if (categories.has("stealth") || categories.has("espionage")) return "noir thriller — tense, atmospheric, with deception and hidden motives";
+  if (categories.has("magic") || categories.has("spells"))
+    return "epic fantasy — wondrous, mysterious, with a sense of ancient power";
+  if (categories.has("technology") || categories.has("sci-fi"))
+    return "analytical sci-fi — precise, technological, with wonder at what's possible";
+  if (categories.has("combat") || categories.has("martial"))
+    return "action-oriented — visceral, tense, with brutal combat encounters";
+  if (categories.has("stealth") || categories.has("espionage"))
+    return "noir thriller — tense, atmospheric, with deception and hidden motives";
   return "adventure — exciting, varied, with moments of tension and wonder";
 }
 
@@ -114,7 +126,8 @@ export function buildNarratorPrompts(
   const synergyText = buildSynergyText(document.choices, build.selectedChoiceIds, document.analysis);
   const categories = [...new Set(document.choices.map((c) => c.category).filter(Boolean))];
 
-  const directorAggressionText = DIRECTOR_AGGRESSION_LANGUAGE[difficulty.directorAggression] ?? DIRECTOR_AGGRESSION_LANGUAGE[3];
+  const directorAggressionText =
+    DIRECTOR_AGGRESSION_LANGUAGE[difficulty.directorAggression] ?? DIRECTOR_AGGRESSION_LANGUAGE[3];
   const worldEscalationText = WORLD_ESCALATION_LANGUAGE[difficulty.worldEscalation] ?? WORLD_ESCALATION_LANGUAGE[3];
   const infoLeakageText = INFO_LEAKAGE_LANGUAGE[difficulty.informationLeakage] ?? INFO_LEAKAGE_LANGUAGE[3];
 

@@ -1,9 +1,6 @@
 import { useMemo, useState } from "react";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
-import {
-  isReservedManagedGenerationParameterKey,
-  type ManagedGenerationParameterDefinition,
-} from "@jumpchoice/shared";
+import { isReservedManagedGenerationParameterKey, type ManagedGenerationParameterDefinition } from "@jumpchoice/shared";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
@@ -288,7 +285,7 @@ export function CustomGenerationParametersSettings() {
             setDraft(EMPTY_DRAFT);
             setFormOpen(true);
           }}
-          className="mari-chrome-control mari-chrome-control--compact mari-chrome-control--selected w-full justify-center px-3"
+          className="mari-chrome-control mari-chrome-control--primary w-full text-xs"
         >
           <Plus size="0.75rem" />
           {t("settings.customGenerationParameters.add")}

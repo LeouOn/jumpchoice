@@ -2,14 +2,11 @@ import { nanoid } from "nanoid";
 import type { CYOAExtraction, CYOAChoice, CYOADocument } from "./cyoa-types.js";
 
 export function mergeExtractions(extractions: CYOAExtraction[]): CYOADocument {
-  const title =
-    extractions.find((e) => e.title !== null)?.title ?? "Untitled CYOA";
+  const title = extractions.find((e) => e.title !== null)?.title ?? "Untitled CYOA";
 
-  const description =
-    extractions.find((e) => e.description !== null)?.description ?? "";
+  const description = extractions.find((e) => e.description !== null)?.description ?? "";
 
-  const pointBudget =
-    extractions.find((e) => e.pointBudget !== null)?.pointBudget ?? null;
+  const pointBudget = extractions.find((e) => e.pointBudget !== null)?.pointBudget ?? null;
 
   const categoryMap = new Map<string, string>();
   for (const ext of extractions) {
@@ -84,18 +81,16 @@ export function mergeExtractions(extractions: CYOAExtraction[]): CYOADocument {
     nameToId.set(key, nanoid());
   }
 
-  const choices: CYOAChoice[] = Array.from(choiceMap.entries()).map(
-    ([key, merged]) => ({
-      id: nameToId.get(key)!,
-      name: merged.name,
-      description: merged.description,
-      category: merged.category,
-      pointCost: merged.pointCost,
-      prerequisites: merged.prerequisites,
-      tags: Array.from(merged.tags),
-      sourceImageIds: Array.from(merged.sourceImageIds),
-    }),
-  );
+  const choices: CYOAChoice[] = Array.from(choiceMap.entries()).map(([key, merged]) => ({
+    id: nameToId.get(key)!,
+    name: merged.name,
+    description: merged.description,
+    category: merged.category,
+    pointCost: merged.pointCost,
+    prerequisites: merged.prerequisites,
+    tags: Array.from(merged.tags),
+    sourceImageIds: Array.from(merged.sourceImageIds),
+  }));
 
   const imageCount = new Set(extractions.map((e) => e.imageId)).size;
 

@@ -19,7 +19,14 @@ const CYOA_DIR = join(DATA_DIR, "cyoa");
 const ALLOWED_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]);
 
 function toMime(ext: string): string {
-  const map: Record<string, string> = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".gif": "image/gif", ".webp": "image/webp", ".avif": "image/avif" };
+  const map: Record<string, string> = {
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".avif": "image/avif",
+  };
   return map[ext] ?? "application/octet-stream";
 }
 
@@ -50,14 +57,17 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const name = fields?.name?.value ?? "";
     const description = fields?.description?.value ?? "";
 
-    await app.db.insert(cyoaDocuments).values({
-      id: docId,
-      name,
-      description,
-      status: "pending_extraction",
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    }).run();
+    await app.db
+      .insert(cyoaDocuments)
+      .values({
+        id: docId,
+        name,
+        description,
+        status: "pending_extraction",
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      })
+      .run();
 
     const dir = join(CYOA_DIR, docId);
     mkdirSync(dir, { recursive: true });
@@ -73,17 +83,26 @@ export async function cyoaRoutes(app: FastifyInstance) {
     }
 
     const imgId = newId();
-    await app.db.insert(cyoaImages).values({
-      id: imgId,
-      documentId: docId,
-      filePath: docId + "/" + filename,
-      originalName: data.filename,
-      mimeType: toMime(ext),
-      byteSize,
-      createdAt: timestamp,
-    }).run();
+    await app.db
+      .insert(cyoaImages)
+      .values({
+        id: imgId,
+        documentId: docId,
+        filePath: docId + "/" + filename,
+        originalName: data.filename,
+        mimeType: toMime(ext),
+        byteSize,
+        createdAt: timestamp,
+      })
+      .run();
 
-    return { id: docId, name, description, status: "pending_extraction", images: [{ id: imgId, filePath: docId + "/" + filename, originalName: data.filename }] };
+    return {
+      id: docId,
+      name,
+      description,
+      status: "pending_extraction",
+      images: [{ id: imgId, filePath: docId + "/" + filename, originalName: data.filename }],
+    };
   });
 
   // POST /:id/add-image — add image to existing document
@@ -92,7 +111,8 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, id));
     const doc = docs[0];
     if (!doc) return reply.status(404).send({ error: "Document not found" });
-    if (doc.status !== "pending_extraction") return reply.status(400).send({ error: "Can only add images to documents in pending_extraction status" });
+    if (doc.status !== "pending_extraction")
+      return reply.status(400).send({ error: "Can only add images to documents in pending_extraction status" });
 
     const data = await req.file();
     if (!data) return reply.status(400).send({ error: "No file uploaded" });
@@ -118,16 +138,19 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const images = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, id));
     const pageNumber = images.length + 1;
 
-    await app.db.insert(cyoaImages).values({
-      id: imgId,
-      documentId: id,
-      filePath: id + "/" + filename,
-      originalName: data.filename,
-      mimeType: toMime(ext),
-      byteSize,
-      pageNumber,
-      createdAt: timestamp,
-    }).run();
+    await app.db
+      .insert(cyoaImages)
+      .values({
+        id: imgId,
+        documentId: id,
+        filePath: id + "/" + filename,
+        originalName: data.filename,
+        mimeType: toMime(ext),
+        byteSize,
+        pageNumber,
+        createdAt: timestamp,
+      })
+      .run();
 
     await app.db.update(cyoaDocuments).set({ updatedAt: timestamp }).where(eq(cyoaDocuments.id, id)).run();
 
@@ -157,14 +180,22 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, documentId));
     const doc = docs[0];
     if (!doc) return reply.status(404).send({ error: "Document not found" });
-    if (doc.status !== "pending_extraction") return reply.status(400).send({ error: "Document must be in pending_extraction status, got: " + doc.status });
+    if (doc.status !== "pending_extraction")
+      return reply.status(400).send({ error: "Document must be in pending_extraction status, got: " + doc.status });
 
     const connections = createConnectionsStorage(app.db);
     const conn = await connections.getWithKey(connectionId);
     if (!conn) return reply.status(404).send({ error: "Connection not found" });
     const baseUrl = resolveBaseUrl(conn as any);
     if (!baseUrl) return reply.status(400).send({ error: "Invalid connection configuration" });
-    const provider = createLLMProvider(conn.provider, baseUrl, conn.apiKey, conn.maxContext, conn.openrouterProvider, conn.maxTokensOverride);
+    const provider = createLLMProvider(
+      conn.provider,
+      baseUrl,
+      conn.apiKey,
+      conn.maxContext,
+      conn.openrouterProvider,
+      conn.maxTokensOverride,
+    );
 
     const fallbackProviders: FallbackProvider[] = [];
 
@@ -177,7 +208,14 @@ export async function cyoaRoutes(app: FastifyInstance) {
         if (zhipuBaseUrl) {
           const visionModel = zhipuConn.model?.includes("v") ? zhipuConn.model : "glm-4v-flash";
           fallbackProviders.push({
-            provider: createLLMProvider("zhipu", zhipuBaseUrl, zhipuConn.apiKey, zhipuConn.maxContext, zhipuConn.openrouterProvider, zhipuConn.maxTokensOverride) as any,
+            provider: createLLMProvider(
+              "zhipu",
+              zhipuBaseUrl,
+              zhipuConn.apiKey,
+              zhipuConn.maxContext,
+              zhipuConn.openrouterProvider,
+              zhipuConn.maxTokensOverride,
+            ) as any,
             model: visionModel,
             label: "zhipu-glm-vision",
           });
@@ -192,7 +230,14 @@ export async function cyoaRoutes(app: FastifyInstance) {
         const orBaseUrl = resolveBaseUrl(openrouterConn as any);
         if (orBaseUrl) {
           fallbackProviders.push({
-            provider: createLLMProvider("openrouter", orBaseUrl, openrouterConn.apiKey, openrouterConn.maxContext, openrouterConn.openrouterProvider, openrouterConn.maxTokensOverride) as any,
+            provider: createLLMProvider(
+              "openrouter",
+              orBaseUrl,
+              openrouterConn.apiKey,
+              openrouterConn.maxContext,
+              openrouterConn.openrouterProvider,
+              openrouterConn.maxTokensOverride,
+            ) as any,
             model: "google/gemini-3.5-flash",
             label: "openrouter-gemini-3.5-flash",
           });
@@ -200,9 +245,12 @@ export async function cyoaRoutes(app: FastifyInstance) {
       }
     }
 
-    logger.info("[cyoa] Extraction chain: primary=%s/%s, fallbacks=[%s]",
-      conn.provider, conn.model,
-      fallbackProviders.map((f) => `${f.label}/${f.model}`).join(", "));
+    logger.info(
+      "[cyoa] Extraction chain: primary=%s/%s, fallbacks=[%s]",
+      conn.provider,
+      conn.model,
+      fallbackProviders.map((f) => `${f.label}/${f.model}`).join(", "),
+    );
 
     const images = await app.db.select().from(cyoaImages).where(eq(cyoaImages.documentId, documentId));
     if (images.length === 0) return reply.status(400).send({ error: "No images found for document" });
@@ -221,7 +269,11 @@ export async function cyoaRoutes(app: FastifyInstance) {
           fallbackProviders,
         });
         extractions.push(extraction);
-        await app.db.update(cyoaImages).set({ extractionMethod: extraction.extractionMethod, extractionResult: JSON.stringify(extraction) }).where(eq(cyoaImages.id, img.id)).run();
+        await app.db
+          .update(cyoaImages)
+          .set({ extractionMethod: extraction.extractionMethod, extractionResult: JSON.stringify(extraction) })
+          .where(eq(cyoaImages.id, img.id))
+          .run();
       } catch (err) {
         logger.error(err, "[cyoa] Extraction failed for image %s", img.id);
         extractions.push({
@@ -244,21 +296,32 @@ export async function cyoaRoutes(app: FastifyInstance) {
       };
       // Write partial extraction data + progress into the document row so
       // GET /cyoa/:id returns real-time per-image completion as we go.
-      await app.db.update(cyoaDocuments).set({
-        extractions: JSON.stringify(extractions),
-        metadata: JSON.stringify({ ...safeJsonParse(doc.metadata ?? "{}", {}), extractionProgress: progressMeta }),
-      }).where(eq(cyoaDocuments.id, documentId)).run();
+      await app.db
+        .update(cyoaDocuments)
+        .set({
+          extractions: JSON.stringify(extractions),
+          metadata: JSON.stringify({ ...safeJsonParse(doc.metadata ?? "{}", {}), extractionProgress: progressMeta }),
+        })
+        .where(eq(cyoaDocuments.id, documentId))
+        .run();
     }
 
     const timestamp = now();
     // Build final metadata including completion marker
-    const finalMeta = { ...safeJsonParse(doc.metadata ?? "{}", {}), extractionProgress: { total: totalCount, done: totalCount, status: "done" as const } };
-    await app.db.update(cyoaDocuments).set({
-      extractions: JSON.stringify(extractions),
-      metadata: JSON.stringify(finalMeta),
-      status: "pending_review",
-      updatedAt: timestamp,
-    }).where(eq(cyoaDocuments.id, documentId)).run();
+    const finalMeta = {
+      ...safeJsonParse(doc.metadata ?? "{}", {}),
+      extractionProgress: { total: totalCount, done: totalCount, status: "done" as const },
+    };
+    await app.db
+      .update(cyoaDocuments)
+      .set({
+        extractions: JSON.stringify(extractions),
+        metadata: JSON.stringify(finalMeta),
+        status: "pending_review",
+        updatedAt: timestamp,
+      })
+      .where(eq(cyoaDocuments.id, documentId))
+      .run();
 
     return { id: documentId, status: "pending_review", extractions };
   });
@@ -266,19 +329,25 @@ export async function cyoaRoutes(app: FastifyInstance) {
   // PUT /review — accept user-corrected extractions
   app.put<{ Body: { documentId: string; extractions: any[] } }>("/review", async (req, reply) => {
     const { documentId, extractions } = req.body;
-    if (!documentId || !Array.isArray(extractions)) return reply.status(400).send({ error: "documentId and extractions array required" });
+    if (!documentId || !Array.isArray(extractions))
+      return reply.status(400).send({ error: "documentId and extractions array required" });
 
     const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, documentId));
     const doc = docs[0];
     if (!doc) return reply.status(404).send({ error: "Document not found" });
-    if (doc.status !== "pending_review") return reply.status(400).send({ error: "Document must be in pending_review status" });
+    if (doc.status !== "pending_review")
+      return reply.status(400).send({ error: "Document must be in pending_review status" });
 
     const timestamp = now();
-    await app.db.update(cyoaDocuments).set({
-      reviewedExtractions: JSON.stringify(extractions),
-      status: "reviewed",
-      updatedAt: timestamp,
-    }).where(eq(cyoaDocuments.id, documentId)).run();
+    await app.db
+      .update(cyoaDocuments)
+      .set({
+        reviewedExtractions: JSON.stringify(extractions),
+        status: "reviewed",
+        updatedAt: timestamp,
+      })
+      .where(eq(cyoaDocuments.id, documentId))
+      .run();
 
     return { id: documentId, status: "reviewed" };
   });
@@ -297,29 +366,36 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const merged = mergeExtractions(extractions);
 
     for (const choice of merged.choices) {
-      await app.db.insert(cyoaChoices).values({
-        id: choice.id,
-        documentId,
-        category: choice.category,
-        name: choice.name,
-        description: choice.description,
-        pointCost: choice.pointCost,
-        prerequisites: JSON.stringify(choice.prerequisites),
-        tags: JSON.stringify(choice.tags),
-        sourceImageIds: JSON.stringify(choice.sourceImageIds),
-        createdAt: now(),
-      }).run();
+      await app.db
+        .insert(cyoaChoices)
+        .values({
+          id: choice.id,
+          documentId,
+          category: choice.category,
+          name: choice.name,
+          description: choice.description,
+          pointCost: choice.pointCost,
+          prerequisites: JSON.stringify(choice.prerequisites),
+          tags: JSON.stringify(choice.tags),
+          sourceImageIds: JSON.stringify(choice.sourceImageIds),
+          createdAt: now(),
+        })
+        .run();
     }
 
     const timestamp = now();
-    await app.db.update(cyoaDocuments).set({
-      mergedDocument: JSON.stringify(merged),
-      name: doc.name || merged.title,
-      description: doc.description || merged.description,
-      pointBudget: merged.pointBudget,
-      status: "merged",
-      updatedAt: timestamp,
-    }).where(eq(cyoaDocuments.id, documentId)).run();
+    await app.db
+      .update(cyoaDocuments)
+      .set({
+        mergedDocument: JSON.stringify(merged),
+        name: doc.name || merged.title,
+        description: doc.description || merged.description,
+        pointBudget: merged.pointBudget,
+        status: "merged",
+        updatedAt: timestamp,
+      })
+      .where(eq(cyoaDocuments.id, documentId))
+      .run();
 
     return { id: documentId, status: "merged", mergedDocument: merged, choicesCount: merged.choices.length };
   });
@@ -339,7 +415,14 @@ export async function cyoaRoutes(app: FastifyInstance) {
     if (!conn) return reply.status(404).send({ error: "Connection not found" });
     const baseUrl = resolveBaseUrl(conn as any);
     if (!baseUrl) return reply.status(400).send({ error: "Invalid connection configuration" });
-    const provider = createLLMProvider(conn.provider, baseUrl, conn.apiKey, conn.maxContext, conn.openrouterProvider, conn.maxTokensOverride);
+    const provider = createLLMProvider(
+      conn.provider,
+      baseUrl,
+      conn.apiKey,
+      conn.maxContext,
+      conn.openrouterProvider,
+      conn.maxTokensOverride,
+    );
 
     const mergedDoc = JSON.parse(doc.mergedDocument || "{}");
     const analysis = await analyzeDocument({
@@ -351,12 +434,16 @@ export async function cyoaRoutes(app: FastifyInstance) {
     for (const [tier, analyses] of Object.entries(analysis.tierList)) {
       for (const ca of analyses as any[]) {
         try {
-          await app.db.update(cyoaChoices).set({
-            tier: ca.tier || tier,
-            costEfficiency: ca.costEfficiency,
-            analysisText: ca.analysis || "",
-            synergyIds: JSON.stringify(ca.synergies || []),
-          }).where(eq(cyoaChoices.id, ca.choiceId)).run();
+          await app.db
+            .update(cyoaChoices)
+            .set({
+              tier: ca.tier || tier,
+              costEfficiency: ca.costEfficiency,
+              analysisText: ca.analysis || "",
+              synergyIds: JSON.stringify(ca.synergies || []),
+            })
+            .where(eq(cyoaChoices.id, ca.choiceId))
+            .run();
         } catch (err) {
           logger.warn("[cyoa] Failed to update choice %s: %s", ca.choiceId, err);
         }
@@ -364,11 +451,15 @@ export async function cyoaRoutes(app: FastifyInstance) {
     }
 
     const timestamp = now();
-    await app.db.update(cyoaDocuments).set({
-      analysis: JSON.stringify(analysis),
-      status: "analyzed",
-      updatedAt: timestamp,
-    }).where(eq(cyoaDocuments.id, documentId)).run();
+    await app.db
+      .update(cyoaDocuments)
+      .set({
+        analysis: JSON.stringify(analysis),
+        status: "analyzed",
+        updatedAt: timestamp,
+      })
+      .where(eq(cyoaDocuments.id, documentId))
+      .run();
 
     return { id: documentId, status: "analyzed", analysis };
   });
@@ -378,7 +469,10 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const docs = await app.db.select().from(cyoaDocuments).orderBy(desc(cyoaDocuments.createdAt));
     const results = [];
     for (const doc of docs) {
-      const choices = await app.db.select({ id: cyoaChoices.id }).from(cyoaChoices).where(eq(cyoaChoices.documentId, doc.id));
+      const choices = await app.db
+        .select({ id: cyoaChoices.id })
+        .from(cyoaChoices)
+        .where(eq(cyoaChoices.documentId, doc.id));
       results.push({ ...doc, choiceCount: choices.length });
     }
     return results;
@@ -446,13 +540,27 @@ export async function cyoaRoutes(app: FastifyInstance) {
     if (!build || build.documentId !== documentId) return reply.status(404).send({ error: "Build not found" });
 
     const _choices = await app.db.select().from(cyoaChoices).where(eq(cyoaChoices.documentId, documentId));
-    const choices = _choices as unknown as { id: string; name: string; description: string; category: string | null; pointCost: number | null; tier: string | null; }[];
+    const choices = _choices as unknown as {
+      id: string;
+      name: string;
+      description: string;
+      category: string | null;
+      pointCost: number | null;
+      tier: string | null;
+    }[];
     const selectedChoiceIds = (() => {
-      try { const p = JSON.parse(build.selectedChoiceIds); return Array.isArray(p) ? p : []; } catch { return []; }
+      try {
+        const p = JSON.parse(build.selectedChoiceIds);
+        return Array.isArray(p) ? p : [];
+      } catch {
+        return [];
+      }
     })();
 
     let analysis = null;
-    try { analysis = JSON.parse(doc.analysis); } catch {}
+    try {
+      analysis = JSON.parse(doc.analysis);
+    } catch {}
 
     const difficultySettings = {
       directorAggression: difficulty?.directorAggression ?? 3,
@@ -514,9 +622,17 @@ export async function cyoaRoutes(app: FastifyInstance) {
     const cyoaOutputs = allMessages
       .map((m) => {
         const extra = (() => {
-          try { return JSON.parse(m.extra || "{}"); } catch { return {}; }
+          try {
+            return JSON.parse(m.extra || "{}");
+          } catch {
+            return {};
+          }
         })();
-        if (typeof extra.agentType === "string" && extra.agentType.startsWith("cyoa-") && typeof extra.agentOutput === "string") {
+        if (
+          typeof extra.agentType === "string" &&
+          extra.agentType.startsWith("cyoa-") &&
+          typeof extra.agentOutput === "string"
+        ) {
           return { id: m.id, agentType: extra.agentType, text: extra.agentOutput, createdAt: m.createdAt };
         }
         return null;
@@ -526,4 +642,3 @@ export async function cyoaRoutes(app: FastifyInstance) {
     return reply.send({ outputs: cyoaOutputs });
   });
 }
-

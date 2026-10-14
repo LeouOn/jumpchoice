@@ -63,7 +63,9 @@ export function DifficultySliders({ difficulty, onChange }: DifficultySlidersPro
             />
             <p className="mt-1 text-[10px] text-[var(--muted-foreground)]">{slider.description}</p>
             {slider.key === "informationLeakage" && value === 5 && (
-              <p className="mt-1 text-[10px] text-amber-400">{localizeUi("ui.cyoa.difficultysliders.atBlackoutDifficultyStealthAbilitiesAreRevealedToAll")}</p>
+              <p className="mt-1 text-[10px] text-amber-400">
+                {localizeUi("ui.cyoa.difficultysliders.atBlackoutDifficultyStealthAbilitiesAreRevealedToAll")}
+              </p>
             )}
           </div>
         );
@@ -78,13 +80,19 @@ export function DifficultySliders({ difficulty, onChange }: DifficultySlidersPro
             className="accent-[var(--primary)]"
           />
           <div>
-            <p className="text-xs font-medium text-[var(--foreground)]">{localizeUi("ui.cyoa.difficultysliders.enableAdversaryAgent")}</p>
-            <p className="text-[10px] text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.difficultysliders.theDevilOnTheShoulderActivelyExploitsWeaknessesEngineers")}</p>
+            <p className="text-xs font-medium text-[var(--foreground)]">
+              {localizeUi("ui.cyoa.difficultysliders.enableAdversaryAgent")}
+            </p>
+            <p className="text-[10px] text-[var(--muted-foreground)]">
+              {localizeUi("ui.cyoa.difficultysliders.theDevilOnTheShoulderActivelyExploitsWeaknessesEngineers")}
+            </p>
           </div>
         </label>
       </div>
 
-      <p className="text-[10px] text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.difficultysliders.higherDifficultyMeansTheWorldReactsFasterTheDirector")}</p>
+      <p className="text-[10px] text-[var(--muted-foreground)]">
+        {localizeUi("ui.cyoa.difficultysliders.higherDifficultyMeansTheWorldReactsFasterTheDirector")}
+      </p>
     </div>
   );
 }

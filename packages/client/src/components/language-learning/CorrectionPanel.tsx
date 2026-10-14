@@ -42,7 +42,9 @@ export function CorrectionPanel() {
     <div className="flex flex-col border-b border-[var(--border)]">
       {/* Header with filter */}
       <div className="flex items-center justify-between px-3 py-2">
-        <h3 className="text-xs font-semibold text-[var(--foreground)]">{localizeUi("ui.languageLearning.correctionpanel.corrections")}</h3>
+        <h3 className="text-xs font-semibold text-[var(--foreground)]">
+          {localizeUi("ui.languageLearning.correctionpanel.corrections")}
+        </h3>
         <div className="flex items-center gap-1">
           <Filter size="0.75rem" className="text-[var(--muted-foreground)]" />
           <select
@@ -61,10 +63,14 @@ export function CorrectionPanel() {
       <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-2">
         {isLoading && (
           <div className="flex items-center justify-center py-6 text-[var(--muted-foreground)]">
-            <Loader2 size="1rem" className="animate-spin mr-2" />{localizeUi("ui.languageLearning.correctionpanel.loadingCorrections")}</div>
+            <Loader2 size="1rem" className="animate-spin mr-2" />
+            {localizeUi("ui.languageLearning.correctionpanel.loadingCorrections")}
+          </div>
         )}
         {!isLoading && filteredGroups.length === 0 && (
-          <div className="py-6 text-center text-xs text-[var(--muted-foreground)]">{localizeUi("ui.languageLearning.correctionpanel.noCorrectionsYetKeepChatting")}</div>
+          <div className="py-6 text-center text-xs text-[var(--muted-foreground)]">
+            {localizeUi("ui.languageLearning.correctionpanel.noCorrectionsYetKeepChatting")}
+          </div>
         )}
         {filteredGroups.map((group) =>
           group.map((correction) => (
@@ -80,13 +86,7 @@ export function CorrectionPanel() {
   );
 }
 
-function CorrectionCard({
-  correction,
-  onDismiss,
-}: {
-  correction: Correction;
-  onDismiss: () => void;
-}) {
+function CorrectionCard({ correction, onDismiss }: { correction: Correction; onDismiss: () => void }) {
   const { t: localizeUi } = useUiTranslation();
   return (
     <div
@@ -108,8 +108,10 @@ function CorrectionCard({
           >
             {correction.severity === "major" ? (
               <span className="inline-flex items-center gap-0.5">
-                <AlertTriangle size="0.5rem" /> {localizeUi("ui.languageLearning.correctionpanel.major")}</span>
-            ) : (localizeUi("ui.languageLearning.correctionpanel.minor")
+                <AlertTriangle size="0.5rem" /> {localizeUi("ui.languageLearning.correctionpanel.major")}
+              </span>
+            ) : (
+              localizeUi("ui.languageLearning.correctionpanel.minor")
             )}
           </span>
 

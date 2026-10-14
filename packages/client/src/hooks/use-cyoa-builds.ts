@@ -39,8 +39,7 @@ export function useCyoaBuild(docId: string, id: string | null) {
 export function useCreateCyoaBuild(docId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: { name?: string; description?: string }) =>
-      api.post<CyoaBuild>(`/cyoa/${docId}/builds`, data),
+    mutationFn: (data: { name?: string; description?: string }) => api.post<CyoaBuild>(`/cyoa/${docId}/builds`, data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: buildKeys.all(docId) });
     },
@@ -53,8 +52,13 @@ export function useUpdateCyoaBuild(docId: string) {
     mutationFn: ({
       id,
       ...data
-    }: { id: string; name?: string; description?: string; selectedChoiceIds?: string[]; notes?: string }) =>
-      api.patch<CyoaBuild>(`/cyoa/${docId}/builds/${id}`, data),
+    }: {
+      id: string;
+      name?: string;
+      description?: string;
+      selectedChoiceIds?: string[];
+      notes?: string;
+    }) => api.patch<CyoaBuild>(`/cyoa/${docId}/builds/${id}`, data),
     onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: buildKeys.all(docId) });
       qc.invalidateQueries({ queryKey: buildKeys.detail(docId, variables.id) });
@@ -73,9 +77,9 @@ export function useDeleteCyoaBuild(docId: string) {
 }
 
 export interface CyoaDifficulty {
-  directorAggression: number;      // 1-5
-  worldEscalation: number;         // 1-5
-  informationLeakage: number;      // 1-5
+  directorAggression: number; // 1-5
+  worldEscalation: number; // 1-5
+  informationLeakage: number; // 1-5
   adversaryEnabled: boolean;
   stealthDisabled: boolean;
 }
@@ -90,7 +94,11 @@ export interface CyoaNarratorPrompts {
 
 export function useCyoaNarratorPrompts() {
   return useMutation({
-    mutationFn: ({ documentId, buildId, difficulty }: {
+    mutationFn: ({
+      documentId,
+      buildId,
+      difficulty,
+    }: {
       documentId: string;
       buildId: string;
       difficulty?: Partial<CyoaDifficulty>;

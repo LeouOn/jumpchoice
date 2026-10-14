@@ -95,8 +95,12 @@ export function UploadStep({ document, documentId }: UploadStepProps) {
         }`}
       >
         <Upload className="h-8 w-8 text-[var(--muted-foreground)]" />
-        <p className="text-sm text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.uploadstep.dragDropCyoaImagesHereOrClickToBrowse")}</p>
-        <label className="cursor-pointer rounded-md bg-[var(--primary)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90">{localizeUi("ui.cyoa.uploadstep.browseFiles")}<input
+        <p className="text-sm text-[var(--muted-foreground)]">
+          {localizeUi("ui.cyoa.uploadstep.dragDropCyoaImagesHereOrClickToBrowse")}
+        </p>
+        <label className="cursor-pointer rounded-md bg-[var(--primary)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90">
+          {localizeUi("ui.cyoa.uploadstep.browseFiles")}
+          <input
             type="file"
             accept=".jpg,.jpeg,.png,.gif,.webp,.avif"
             multiple
@@ -112,7 +116,8 @@ export function UploadStep({ document, documentId }: UploadStepProps) {
         <div className="flex flex-col gap-1">
           {uploadingFiles.map((name) => (
             <div key={name} className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
-              <Loader2 className="h-3 w-3 animate-spin" />{localizeUi("ui.noodle.noodleprofilesurface.uploading_de27240")} {name}...
+              <Loader2 className="h-3 w-3 animate-spin" />
+              {localizeUi("ui.noodle.noodleprofilesurface.uploading_de27240")} {name}...
             </div>
           ))}
         </div>
@@ -120,7 +125,9 @@ export function UploadStep({ document, documentId }: UploadStepProps) {
 
       {images.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.uploadstep.uploadedPages")}{images.length})
+          <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.uploadstep.uploadedPages")}
+            {images.length})
           </h3>
           <div className="grid grid-cols-4 gap-2">
             {images
@@ -146,7 +153,10 @@ export function UploadStep({ document, documentId }: UploadStepProps) {
 
       {images.length > 0 && (
         <div className="flex justify-end">
-          <p className="text-xs text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.uploadstep.readyToExtractChoicesFrom")} {images.length} {localizeUi("ui.cyoa.reviewstep.page")}{images.length > 1 ?localizeUi("ui.noodle.stageprofileview.s") : ""}
+          <p className="text-xs text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.uploadstep.readyToExtractChoicesFrom")} {images.length}{" "}
+            {localizeUi("ui.cyoa.reviewstep.page")}
+            {images.length > 1 ? localizeUi("ui.noodle.stageprofileview.s") : ""}
           </p>
         </div>
       )}

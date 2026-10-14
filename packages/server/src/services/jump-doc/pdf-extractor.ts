@@ -18,19 +18,7 @@ export async function extractPdfText(filePath: string): Promise<string> {
 export async function extractTextFromFile(filePath: string): Promise<string> {
   const ext = filePath.toLowerCase().split(".").pop() ?? "";
 
-  const textExts = new Set([
-    "txt",
-    "md",
-    "csv",
-    "json",
-    "xml",
-    "html",
-    "htm",
-    "log",
-    "yaml",
-    "yml",
-    "tsv",
-  ]);
+  const textExts = new Set(["txt", "md", "csv", "json", "xml", "html", "htm", "log", "yaml", "yml", "tsv"]);
 
   if (textExts.has(ext)) {
     return readFile(filePath, "utf-8");

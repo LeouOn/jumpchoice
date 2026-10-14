@@ -1,9 +1,6 @@
 import { logger } from "../../lib/logger.js";
 import { parseJSONFromLLM } from "../cyoa/json-utils.js";
-import type {
-  JumpDocumentExtraction,
-  JumpDocumentSupplement,
-} from "@jumpchoice/shared";
+import type { JumpDocumentExtraction, JumpDocumentSupplement } from "@jumpchoice/shared";
 
 export interface ExtractorProvider {
   chatComplete: (messages: any[], options: any) => Promise<{ content: string }>;
@@ -131,22 +128,20 @@ function buildExtraction(
   pageNumber: number | null,
 ): JumpDocumentExtraction {
   const warnings: string[] = [];
-  const supplements: JumpDocumentSupplement[] = (parsed.supplements ?? []).map(
-    (s: any) => ({
-      id: s.id ?? crypto.randomUUID(),
-      name: s.name ?? "Untitled Supplement",
-      description: s.description ?? "",
-      type: s.type ?? "jump",
-      budget: typeof s.budget === "number" ? s.budget : 1000,
-      origins: Array.isArray(s.origins) ? s.origins : [],
-      perks: Array.isArray(s.perks) ? s.perks : [],
-      items: Array.isArray(s.items) ? s.items : [],
-      drawbacks: Array.isArray(s.drawbacks) ? s.drawbacks : [],
-      companions: Array.isArray(s.companions) ? s.companions : [],
-      scenarios: Array.isArray(s.scenarios) ? s.scenarios : [],
-      altForms: Array.isArray(s.altForms) ? s.altForms : [],
-    }),
-  );
+  const supplements: JumpDocumentSupplement[] = (parsed.supplements ?? []).map((s: any) => ({
+    id: s.id ?? crypto.randomUUID(),
+    name: s.name ?? "Untitled Supplement",
+    description: s.description ?? "",
+    type: s.type ?? "jump",
+    budget: typeof s.budget === "number" ? s.budget : 1000,
+    origins: Array.isArray(s.origins) ? s.origins : [],
+    perks: Array.isArray(s.perks) ? s.perks : [],
+    items: Array.isArray(s.items) ? s.items : [],
+    drawbacks: Array.isArray(s.drawbacks) ? s.drawbacks : [],
+    companions: Array.isArray(s.companions) ? s.companions : [],
+    scenarios: Array.isArray(s.scenarios) ? s.scenarios : [],
+    altForms: Array.isArray(s.altForms) ? s.altForms : [],
+  }));
 
   if (supplements.length === 0) {
     warnings.push("No supplements found in document");
@@ -163,11 +158,7 @@ function buildExtraction(
   };
 }
 
-function emptyExtraction(
-  documentId: string,
-  pageNumber: number | null,
-  warnings: string[],
-): JumpDocumentExtraction {
+function emptyExtraction(documentId: string, pageNumber: number | null, warnings: string[]): JumpDocumentExtraction {
   return {
     documentId,
     pageNumber,
@@ -187,9 +178,7 @@ export async function extractFromPdf(input: ExtractPdfInput): Promise<JumpDocume
   const pdfText = await extractPdfText(filePath);
 
   if (!pdfText || pdfText === "[PDF text extraction failed]") {
-    return emptyExtraction(documentId, pageNumber, [
-      "PDF text extraction failed or returned no text",
-    ]);
+    return emptyExtraction(documentId, pageNumber, ["PDF text extraction failed or returned no text"]);
   }
 
   // Truncate if too long (keep first 100k chars for context window)

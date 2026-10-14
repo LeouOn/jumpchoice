@@ -27,12 +27,10 @@ export const useLearningStore = create<LearningState>((set) => ({
   reviewSession: null,
   newVocabCount: 0,
 
-  setActiveLanguage: (code, name) =>
-    set({ activeLanguageCode: code, activeLanguageName: name }),
+  setActiveLanguage: (code, name) => set({ activeLanguageCode: code, activeLanguageName: name }),
   setTutorPersona: (persona) => set({ tutorPersona: persona }),
   setProficiencyLevel: (level) => set({ proficiencyLevel: level }),
-  startReviewSession: (items) =>
-    set({ reviewSession: { active: true, items, currentIndex: 0 } }),
+  startReviewSession: (items) => set({ reviewSession: { active: true, items, currentIndex: 0 } }),
   endReviewSession: () => set({ reviewSession: null }),
   advanceReviewIndex: () =>
     set((s) => {

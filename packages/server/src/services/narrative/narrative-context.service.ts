@@ -1,6 +1,6 @@
-import { NarrativeEngine } from './narrative-engine.service.js';
-import { PersonaManager } from './persona-manager.service.js';
-import { COTManager } from './cot-manager.service.js';
+import { NarrativeEngine } from "./narrative-engine.service.js";
+import { PersonaManager } from "./persona-manager.service.js";
+import { COTManager } from "./cot-manager.service.js";
 
 export class NarrativeContext {
   private engine: NarrativeEngine;

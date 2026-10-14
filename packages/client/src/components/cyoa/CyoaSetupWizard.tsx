@@ -71,8 +71,14 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-2xl rounded-xl border border-[var(--border)] bg-[var(--background)] p-6 shadow-2xl">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-[var(--foreground)]">{localizeUi("ui.cyoa.cyoasetupwizard.campaignSetup")}</h2>
-          <button onClick={onCancel} disabled={submitting} className="rounded p-1 text-[var(--muted-foreground)] hover:bg-[var(--accent)]">
+          <h2 className="text-sm font-semibold text-[var(--foreground)]">
+            {localizeUi("ui.cyoa.cyoasetupwizard.campaignSetup")}
+          </h2>
+          <button
+            onClick={onCancel}
+            disabled={submitting}
+            className="rounded p-1 text-[var(--muted-foreground)] hover:bg-[var(--accent)]"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -80,10 +86,16 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
         <div className="mt-4 flex items-center gap-2">
           {STEPS.map((label, i) => (
             <div key={label} className="flex items-center gap-2">
-              <div className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium ${i === step ? "bg-[var(--primary)] text-white" : i < step ? "bg-emerald-600 text-white" : "bg-[var(--muted)] text-[var(--muted-foreground)]"}`}>
+              <div
+                className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-medium ${i === step ? "bg-[var(--primary)] text-white" : i < step ? "bg-emerald-600 text-white" : "bg-[var(--muted)] text-[var(--muted-foreground)]"}`}
+              >
                 {i + 1}
               </div>
-              <span className={`text-xs ${i === step ? "font-medium text-[var(--foreground)]" : "text-[var(--muted-foreground)]"}`}>{label}</span>
+              <span
+                className={`text-xs ${i === step ? "font-medium text-[var(--foreground)]" : "text-[var(--muted-foreground)]"}`}
+              >
+                {label}
+              </span>
               {i < STEPS.length - 1 && <div className="h-px w-8 bg-[var(--border)]" />}
             </div>
           ))}
@@ -93,7 +105,9 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
           {step === 0 && (
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.cyoasetupwizard.campaignName")}</label>
+                <label className="text-xs font-medium text-[var(--muted-foreground)]">
+                  {localizeUi("ui.cyoa.cyoasetupwizard.campaignName")}
+                </label>
                 <input
                   type="text"
                   value={build.name}
@@ -105,21 +119,31 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
               <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3">
                 <p className="text-xs font-medium text-[var(--foreground)]">{document.name}</p>
                 <p className="text-[10px] text-[var(--muted-foreground)]">
-                  {build.selectedChoiceIds.length} {localizeUi("ui.cyoa.cyoasetupwizard.choicesSelected")}</p>
+                  {build.selectedChoiceIds.length} {localizeUi("ui.cyoa.cyoasetupwizard.choicesSelected")}
+                </p>
               </div>
               <div className="rounded-md border border-[var(--border)] bg-[var(--card)] p-3">
-                <p className="text-[10px] font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.cyoasetupwizard.campaignAgents")}</p>
+                <p className="text-[10px] font-medium text-[var(--muted-foreground)]">
+                  {localizeUi("ui.cyoa.cyoasetupwizard.campaignAgents")}
+                </p>
                 <div className="mt-2 space-y-1">
                   <div className="flex items-center gap-2 text-xs text-[var(--foreground)]">
-                    <Globe className="h-3 w-3 text-[var(--primary)]" /> {localizeUi("ui.cyoa.cyoasetupwizard.worldSimulator")}</div>
+                    <Globe className="h-3 w-3 text-[var(--primary)]" />{" "}
+                    {localizeUi("ui.cyoa.cyoasetupwizard.worldSimulator")}
+                  </div>
                   <div className="flex items-center gap-2 text-xs text-[var(--foreground)]">
-                    <Eye className="h-3 w-3 text-[var(--primary)]" /> {localizeUi("ui.cyoa.cyoasetupwizard.director")}</div>
+                    <Eye className="h-3 w-3 text-[var(--primary)]" /> {localizeUi("ui.cyoa.cyoasetupwizard.director")}
+                  </div>
                   {difficulty.adversaryEnabled && (
                     <div className="flex items-center gap-2 text-xs text-[var(--foreground)]">
-                      <Skull className="h-3 w-3 text-[var(--primary)]" /> {localizeUi("ui.cyoa.cyoasetupwizard.adversary")}</div>
+                      <Skull className="h-3 w-3 text-[var(--primary)]" />{" "}
+                      {localizeUi("ui.cyoa.cyoasetupwizard.adversary")}
+                    </div>
                   )}
                   <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
-                    <MessageCircle className="h-3 w-3" /> {localizeUi("ui.cyoa.cyoasetupwizard.characterVoicesBuiltIntoNarratorPrompt")}</div>
+                    <MessageCircle className="h-3 w-3" />{" "}
+                    {localizeUi("ui.cyoa.cyoasetupwizard.characterVoicesBuiltIntoNarratorPrompt")}
+                  </div>
                 </div>
               </div>
             </div>
@@ -130,7 +154,9 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
           {step === 2 && (
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.cyoasetupwizard.characterName")}</label>
+                <label className="text-xs font-medium text-[var(--muted-foreground)]">
+                  {localizeUi("ui.cyoa.cyoasetupwizard.characterName")}
+                </label>
                 <input
                   type="text"
                   value={characterName}
@@ -139,7 +165,9 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.cyoasetupwizard.backgroundOptional")}</label>
+                <label className="text-xs font-medium text-[var(--muted-foreground)]">
+                  {localizeUi("ui.cyoa.cyoasetupwizard.backgroundOptional")}
+                </label>
                 <textarea
                   value={characterBackground}
                   onChange={(e) => setCharacterBackground(e.target.value)}
@@ -149,7 +177,9 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.cyoasetupwizard.personaOptional")}</label>
+                <label className="text-xs font-medium text-[var(--muted-foreground)]">
+                  {localizeUi("ui.cyoa.cyoasetupwizard.personaOptional")}
+                </label>
                 <select
                   value={personaId ?? ""}
                   onChange={(e) => setPersonaId(e.target.value || null)}
@@ -176,13 +206,15 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
             className="flex items-center gap-1 rounded-md border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--foreground)]"
           >
             <ChevronLeft className="h-3 w-3" />
-            {step === 0 ?localizeUi("chat.delete.dialog.cancel") :localizeUi("ui.botBrowser.importDialog.back")}
+            {step === 0 ? localizeUi("chat.delete.dialog.cancel") : localizeUi("ui.botBrowser.importDialog.back")}
           </button>
           {step < 2 ? (
             <button
               onClick={() => setStep((step + 1) as 1 | 2)}
               className="flex items-center gap-1 rounded-md bg-[var(--primary)] px-4 py-1.5 text-xs font-medium text-white"
-            >{localizeUi("onboarding.actions.next")}<ChevronRight className="h-3 w-3" />
+            >
+              {localizeUi("onboarding.actions.next")}
+              <ChevronRight className="h-3 w-3" />
             </button>
           ) : (
             <button
@@ -190,7 +222,9 @@ export function CyoaSetupWizard({ build, document, chatId, agentIds, onComplete,
               disabled={submitting}
               className="flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-1.5 text-xs font-medium text-white disabled:opacity-50"
             >
-              {submitting && <Loader2 className="h-3 w-3 animate-spin" />}{localizeUi("ui.cyoa.cyoasetupwizard.beginCampaign")}</button>
+              {submitting && <Loader2 className="h-3 w-3 animate-spin" />}
+              {localizeUi("ui.cyoa.cyoasetupwizard.beginCampaign")}
+            </button>
           )}
         </div>
       </div>

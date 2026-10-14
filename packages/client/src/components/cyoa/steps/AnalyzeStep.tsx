@@ -84,7 +84,10 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
 
   const toggleSort = (key: typeof sortKey) => {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else { setSortKey(key); setSortDir("asc"); }
+    else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
   };
 
   const sortedChoices = [...choices]
@@ -101,7 +104,9 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
     <div className="flex flex-col gap-4">
       {!isAnalyzed && (
         <div className="flex flex-col gap-2">
-          <label className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.analyzestep.selectLlmConnectionForAnalysis")}</label>
+          <label className="text-xs font-medium text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.analyzestep.selectLlmConnectionForAnalysis")}
+          </label>
           <div className="flex gap-2">
             <select
               value={connectionId}
@@ -121,7 +126,9 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
               disabled={!connectionId || analyze.isPending}
               className="flex items-center gap-2 rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
             >
-              {analyze.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <BarChart3 className="h-4 w-4" />}{localizeUi("ui.cyoa.analyzestep.analyze")}</button>
+              {analyze.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <BarChart3 className="h-4 w-4" />}
+              {localizeUi("ui.cyoa.analyzestep.analyze")}
+            </button>
           </div>
         </div>
       )}
@@ -129,7 +136,9 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
       {analyze.isPending && (
         <div className="flex flex-col items-center gap-2 py-8">
           <Loader2 className="h-6 w-6 animate-spin text-[var(--primary)]" />
-          <p className="text-sm text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.analyzestep.runningLlmAnalysis")}</p>
+          <p className="text-sm text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.analyzestep.runningLlmAnalysis")}
+          </p>
         </div>
       )}
 
@@ -140,7 +149,9 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
           </div>
 
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.analyzestep.tierList")}</h3>
+            <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+              {localizeUi("ui.cyoa.analyzestep.tierList")}
+            </h3>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setViewMode("cards")}
@@ -170,7 +181,8 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
                         {tier}
                       </span>
                       <span className="text-xs text-[var(--muted-foreground)]">
-                        {tierChoices.length} {localizeUi("ui.cyoa.analyzestep.choice")}{tierChoices.length !== 1 ?localizeUi("ui.noodle.stageprofileview.s") : ""}
+                        {tierChoices.length} {localizeUi("ui.cyoa.analyzestep.choice")}
+                        {tierChoices.length !== 1 ? localizeUi("ui.noodle.stageprofileview.s") : ""}
                       </span>
                     </div>
                     <div className="grid grid-cols-2 gap-1.5">
@@ -185,9 +197,13 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
                             <p className="text-xs font-medium">{ch?.name ?? "Unknown"}</p>
                             <div className="mt-1 flex items-center gap-2">
                               {ch?.pointCost != null && (
-                                <span className="text-[10px] opacity-70">{ch.pointCost} {localizeUi("ui.cyoa.buildsummary.pts")}</span>
+                                <span className="text-[10px] opacity-70">
+                                  {ch.pointCost} {localizeUi("ui.cyoa.buildsummary.pts")}
+                                </span>
                               )}
-                              <span className="text-[10px] opacity-70">{localizeUi("ui.cyoa.analyzestep.eff")} {ca.costEfficiency}</span>
+                              <span className="text-[10px] opacity-70">
+                                {localizeUi("ui.cyoa.analyzestep.eff")} {ca.costEfficiency}
+                              </span>
                             </div>
                           </div>
                         );
@@ -207,17 +223,27 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
                 >
                   <option value="all">{localizeUi("ui.cyoa.analyzestep.allTiers")}</option>
                   {TIER_ORDER.map((t) => (
-                    <option key={t} value={t}>{localizeUi("ui.cyoa.analyzestep.tier")} {t}</option>
+                    <option key={t} value={t}>
+                      {localizeUi("ui.cyoa.analyzestep.tier")} {t}
+                    </option>
                   ))}
                 </select>
               </div>
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-[var(--border)] text-[var(--muted-foreground)]">
-                    <th className="cursor-pointer px-2 py-1.5 text-left" onClick={() => toggleSort("name")}>{localizeUi("settings.customGenerationParameters.name")}</th>
-                    <th className="cursor-pointer px-2 py-1.5 text-left" onClick={() => toggleSort("tier")}>{localizeUi("ui.cyoa.analyzestep.tier")}</th>
-                    <th className="cursor-pointer px-2 py-1.5 text-right" onClick={() => toggleSort("cost")}>{localizeUi("ui.cyoa.analyzestep.cost")}</th>
-                    <th className="cursor-pointer px-2 py-1.5 text-right" onClick={() => toggleSort("efficiency")}>{localizeUi("ui.cyoa.analyzestep.efficiency")}</th>
+                    <th className="cursor-pointer px-2 py-1.5 text-left" onClick={() => toggleSort("name")}>
+                      {localizeUi("settings.customGenerationParameters.name")}
+                    </th>
+                    <th className="cursor-pointer px-2 py-1.5 text-left" onClick={() => toggleSort("tier")}>
+                      {localizeUi("ui.cyoa.analyzestep.tier")}
+                    </th>
+                    <th className="cursor-pointer px-2 py-1.5 text-right" onClick={() => toggleSort("cost")}>
+                      {localizeUi("ui.cyoa.analyzestep.cost")}
+                    </th>
+                    <th className="cursor-pointer px-2 py-1.5 text-right" onClick={() => toggleSort("efficiency")}>
+                      {localizeUi("ui.cyoa.analyzestep.efficiency")}
+                    </th>
                     <th className="px-2 py-1.5 text-left">{localizeUi("ui.lorebooks.lorebookeditor.category")}</th>
                   </tr>
                 </thead>
@@ -227,7 +253,9 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
                       <td className="px-2 py-1.5 text-[var(--foreground)]">{c.name}</td>
                       <td className="px-2 py-1.5">
                         {c.tier && (
-                          <span className={`inline-block rounded px-1 py-0.5 text-[10px] font-bold ${TIER_COLORS[c.tier] ?? ""}`}>
+                          <span
+                            className={`inline-block rounded px-1 py-0.5 text-[10px] font-bold ${TIER_COLORS[c.tier] ?? ""}`}
+                          >
                             {c.tier}
                           </span>
                         )}
@@ -245,15 +273,14 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
           {synergies.length > 0 && (
             <div className="flex flex-col gap-2">
               <h3 className="flex items-center gap-1.5 text-xs font-medium text-[var(--muted-foreground)]">
-                <Swords className="h-3.5 w-3.5" /> {localizeUi("ui.cyoa.analyzestep.topSynergies")}</h3>
+                <Swords className="h-3.5 w-3.5" /> {localizeUi("ui.cyoa.analyzestep.topSynergies")}
+              </h3>
               {synergies.map((syn, i) => (
-                <div
-                  key={i}
-                  className="rounded-md border border-[var(--border)] bg-[var(--card)] p-3"
-                >
+                <div key={i} className="rounded-md border border-[var(--border)] bg-[var(--card)] p-3">
                   <p className="text-sm text-[var(--foreground)]">{syn.description}</p>
                   <div className="mt-1 flex items-center gap-2">
-                    <span className="text-[10px] text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.buildsummary.value")} {syn.combinedValue}
+                    <span className="text-[10px] text-[var(--muted-foreground)]">
+                      {localizeUi("ui.cyoa.buildsummary.value")} {syn.combinedValue}
                     </span>
                     <span className="text-[10px] text-[var(--muted-foreground)]">
                       {syn.choiceIds.map((id) => choiceMap.get(id)?.name ?? id).join(" + ")}
@@ -267,16 +294,15 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
           {builds.length > 0 && (
             <div className="flex flex-col gap-2">
               <h3 className="flex items-center gap-1.5 text-xs font-medium text-[var(--muted-foreground)]">
-                <Target className="h-3.5 w-3.5" /> {localizeUi("ui.cyoa.analyzestep.buildArchetypes")}</h3>
+                <Target className="h-3.5 w-3.5" /> {localizeUi("ui.cyoa.analyzestep.buildArchetypes")}
+              </h3>
               {builds.map((build, i) => (
-                <div
-                  key={i}
-                  className="rounded-md border border-[var(--border)] bg-[var(--card)] p-3"
-                >
+                <div key={i} className="rounded-md border border-[var(--border)] bg-[var(--card)] p-3">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-[var(--foreground)]">{build.name}</p>
                     <span className="text-[10px] text-[var(--muted-foreground)]">
-                      {build.totalCost} {localizeUi("ui.cyoa.buildsummary.pts")}</span>
+                      {build.totalCost} {localizeUi("ui.cyoa.buildsummary.pts")}
+                    </span>
                   </div>
                   <p className="mt-1 text-xs text-[var(--muted-foreground)]">{build.description}</p>
                   <div className="mt-2 flex flex-wrap gap-1">
@@ -290,9 +316,11 @@ export function AnalyzeStep({ document, documentId }: AnalyzeStepProps) {
                     ))}
                   </div>
                   <div className="mt-2 flex gap-3">
-                    <div className="text-[10px] text-emerald-400">{localizeUi("ui.cyoa.analyzestep.strengths")} {build.strengths.join(", ")}
+                    <div className="text-[10px] text-emerald-400">
+                      {localizeUi("ui.cyoa.analyzestep.strengths")} {build.strengths.join(", ")}
                     </div>
-                    <div className="text-[10px] text-red-400">{localizeUi("ui.cyoa.analyzestep.weaknesses")} {build.weaknesses.join(", ")}
+                    <div className="text-[10px] text-red-400">
+                      {localizeUi("ui.cyoa.analyzestep.weaknesses")} {build.weaknesses.join(", ")}
                     </div>
                   </div>
                 </div>

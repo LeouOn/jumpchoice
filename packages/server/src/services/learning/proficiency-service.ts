@@ -6,7 +6,12 @@ import type { LanguageConfig, CefrLevel, ProficiencySource } from "@jumpchoice/s
 
 export function createProficiencyService(db: DB) {
   return {
-    async addLanguage(input: { userId: string; name: string; code: string; nativeLanguage?: string }): Promise<LanguageConfig> {
+    async addLanguage(input: {
+      userId: string;
+      name: string;
+      code: string;
+      nativeLanguage?: string;
+    }): Promise<LanguageConfig> {
       const id = newId();
       const timestamp = now();
       await db.insert(languages).values({
@@ -34,7 +39,8 @@ export function createProficiencyService(db: DB) {
     async setLevel(languageId: string, level: CefrLevel, confidence: number, source: ProficiencySource): Promise<void> {
       const lang = await this.getLanguage(languageId);
       if (!lang) throw new Error("Language not found");
-      await db.update(languages)
+      await db
+        .update(languages)
         .set({ proficiencyLevel: level, proficiencyConfidence: confidence })
         .where(eq(languages.id, languageId));
       await db.insert(proficiencySnapshots).values({
@@ -49,11 +55,10 @@ export function createProficiencyService(db: DB) {
     },
 
     async getHistory(userId: string, languageCode: string) {
-      return db.select().from(proficiencySnapshots)
-        .where(and(
-          eq(proficiencySnapshots.userId, userId),
-          eq(proficiencySnapshots.languageCode, languageCode),
-        ));
+      return db
+        .select()
+        .from(proficiencySnapshots)
+        .where(and(eq(proficiencySnapshots.userId, userId), eq(proficiencySnapshots.languageCode, languageCode)));
     },
   };
 }

@@ -27,7 +27,9 @@ export async function ocrImage(imagePath: string): Promise<string> {
   try {
     const { createWorker } = await import("tesseract.js");
     const worker = await createWorker("eng");
-    const { data: { text } } = await worker.recognize(imagePath);
+    const {
+      data: { text },
+    } = await worker.recognize(imagePath);
     await worker.terminate();
     logger.debug("[ocr] Extracted %d chars from %s", text.length, imagePath);
     return text.trim();

@@ -32,10 +32,12 @@ export function createCorrectionService(db: DB) {
     },
 
     async getByChat(chatId: string): Promise<Correction[]> {
-      const rows = await db.select().from(corrections)
+      const rows = await db
+        .select()
+        .from(corrections)
         .where(eq(corrections.chatId, chatId))
         .orderBy(desc(corrections.createdAt));
-      return rows.map(r => ({ ...r, dismissed: r.dismissed === "true" })) as unknown as Correction[];
+      return rows.map((r) => ({ ...r, dismissed: r.dismissed === "true" })) as unknown as Correction[];
     },
 
     async dismiss(id: string): Promise<void> {

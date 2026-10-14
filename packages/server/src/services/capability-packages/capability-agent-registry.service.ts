@@ -1,7 +1,4 @@
-import {
-  replaceBuiltInAgentDefinitions,
-  type BuiltInAgentManifest,
-} from "@jumpchoice/shared";
+import { replaceBuiltInAgentDefinitions, type BuiltInAgentManifest } from "@jumpchoice/shared";
 import { capabilityPackageManager } from "./package-manager.service.js";
 
 export async function initializeCapabilityAgentRegistry(): Promise<void> {

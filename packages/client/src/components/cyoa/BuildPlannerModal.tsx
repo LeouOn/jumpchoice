@@ -1,11 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import type { CyoaDocument, CyoaChoice } from "@/hooks/use-cyoa";
-import {
-  useCyoaBuilds,
-  useCreateCyoaBuild,
-  useUpdateCyoaBuild,
-  useDeleteCyoaBuild,
-} from "@/hooks/use-cyoa-builds";
+import { useCyoaBuilds, useCreateCyoaBuild, useUpdateCyoaBuild, useDeleteCyoaBuild } from "@/hooks/use-cyoa-builds";
 import { X, Plus, Trash2, Loader2 } from "lucide-react";
 import { ChoiceCatalog } from "./ChoiceCatalog";
 import { BuildSummary } from "./BuildSummary";
@@ -83,7 +78,8 @@ export function BuildPlannerModal({ document, choices, onClose }: BuildPlannerMo
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="flex h-[90vh] w-[90vw] flex-col rounded-xl border border-[var(--border)] bg-[var(--background)] shadow-2xl">
         <div className="flex items-center gap-3 border-b border-[var(--border)] px-4 py-3">
-          <h2 className="text-sm font-semibold text-[var(--foreground)]">{localizeUi("ui.cyoa.buildplannermodal.buildPlanner")} {document.name}
+          <h2 className="text-sm font-semibold text-[var(--foreground)]">
+            {localizeUi("ui.cyoa.buildplannermodal.buildPlanner")} {document.name}
           </h2>
 
           {isLoading && <Loader2 className="h-4 w-4 animate-spin text-[var(--muted-foreground)]" />}
@@ -105,7 +101,8 @@ export function BuildPlannerModal({ document, choices, onClose }: BuildPlannerMo
               disabled={createBuild.isPending}
               className="flex items-center gap-1 rounded-md bg-[var(--primary)] px-2 py-1 text-xs font-medium text-white"
             >
-              <Plus className="h-3 w-3" /> {localizeUi("ui.chat.mariediteasyviewer.actionNew")}</button>
+              <Plus className="h-3 w-3" /> {localizeUi("ui.chat.mariediteasyviewer.actionNew")}
+            </button>
             {activeBuild && (
               <button
                 onClick={() => handleDelete(activeBuild.id)}
@@ -118,25 +115,20 @@ export function BuildPlannerModal({ document, choices, onClose }: BuildPlannerMo
               <button
                 onClick={() => setShowStartCampaign(true)}
                 className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-medium text-white"
-              >{localizeUi("ui.cyoa.buildplannermodal.startCampaign")}</button>
+              >
+                {localizeUi("ui.cyoa.buildplannermodal.startCampaign")}
+              </button>
             )}
           </div>
 
-          <button
-            onClick={onClose}
-            className="rounded p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--accent)]"
-          >
+          <button onClick={onClose} className="rounded p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--accent)]">
             <X className="h-4 w-4" />
           </button>
         </div>
 
         <div className="flex flex-1 overflow-hidden">
           <div className="w-1/2 border-r border-[var(--border)] p-3">
-            <ChoiceCatalog
-              choices={choices}
-              selectedIds={selectedIds}
-              onToggle={handleToggleChoice}
-            />
+            <ChoiceCatalog choices={choices} selectedIds={selectedIds} onToggle={handleToggleChoice} />
           </div>
           <div className="w-1/2 p-3">
             {activeBuild ? (
@@ -148,18 +140,16 @@ export function BuildPlannerModal({ document, choices, onClose }: BuildPlannerMo
               />
             ) : (
               <div className="flex h-full items-center justify-center">
-                <p className="text-xs text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.buildplannermodal.createABuildToGetStarted")}</p>
+                <p className="text-xs text-[var(--muted-foreground)]">
+                  {localizeUi("ui.cyoa.buildplannermodal.createABuildToGetStarted")}
+                </p>
               </div>
             )}
           </div>
         </div>
       </div>
       {showStartCampaign && activeBuild && document && (
-        <StartCampaignModal
-          build={activeBuild}
-          document={document}
-          onClose={() => setShowStartCampaign(false)}
-        />
+        <StartCampaignModal build={activeBuild} document={document} onClose={() => setShowStartCampaign(false)} />
       )}
     </div>
   );

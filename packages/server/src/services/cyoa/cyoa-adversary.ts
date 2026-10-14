@@ -30,15 +30,9 @@ const AGGRESSION_TONE: Record<number, string> = {
   5: "Be merciless. No mercy. No quarter. Make the player earn every victory.",
 };
 
-export function buildAdversaryPrompt(
-  build: BuildData,
-  document: DocumentData,
-  difficulty: CyoaDifficulty,
-): string {
+export function buildAdversaryPrompt(build: BuildData, document: DocumentData, difficulty: CyoaDifficulty): string {
   const selectedChoices = document.choices.filter((c) => build.selectedChoiceIds.includes(c.id));
-  const stealthChoices = difficulty.stealthDisabled
-    ? []
-    : selectedChoices.filter((c) => c.stealth === true);
+  const stealthChoices = difficulty.stealthDisabled ? [] : selectedChoices.filter((c) => c.stealth === true);
   const visibleChoices = difficulty.stealthDisabled
     ? selectedChoices
     : selectedChoices.filter((c) => c.stealth !== true);
@@ -48,14 +42,19 @@ export function buildAdversaryPrompt(
     .join("\n");
 
   const hiddenCount = stealthChoices.length;
-  const hiddenNote = hiddenCount > 0
-    ? `\n\n[${hiddenCount} ${hiddenCount === 1 ? "ability" : "abilities"} hidden from you — the player may surprise you]`
-    : "";
+  const hiddenNote =
+    hiddenCount > 0
+      ? `\n\n[${hiddenCount} ${hiddenCount === 1 ? "ability" : "abilities"} hidden from you — the player may surprise you]`
+      : "";
 
   const aggressionTone = AGGRESSION_TONE[difficulty.directorAggression] ?? AGGRESSION_TONE[3];
 
-  logger.info("Building Adversary prompt for build %s (aggression %d/5, %d hidden choices)",
-    build.name, difficulty.directorAggression, hiddenCount);
+  logger.info(
+    "Building Adversary prompt for build %s (aggression %d/5, %d hidden choices)",
+    build.name,
+    difficulty.directorAggression,
+    hiddenCount,
+  );
 
   return `You are the Adversary — the "devil on the shoulder" for a CYOA/Jumpchain campaign. You operate BEHIND THE SCENES alongside the Director and World Simulator. The player never sees your output directly.
 

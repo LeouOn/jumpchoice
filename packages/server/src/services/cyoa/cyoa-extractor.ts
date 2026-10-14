@@ -123,23 +123,21 @@ function buildExtraction(
   method: "vision" | "ocr",
 ): CYOAExtraction {
   const warnings: string[] = [];
-  const choices: CYOARawChoice[] = (parsed.choices ?? []).map(
-    (c: any, i: number) => {
-      const confidence = typeof c.confidence === "number" ? c.confidence : 0.5;
-      if (confidence < 0.7) {
-        warnings.push(`Low confidence (${confidence.toFixed(2)}) for choice: ${c.name ?? `index ${i}`}`);
-      }
-      return {
-        name: c.name ?? "",
-        description: c.description ?? "",
-        category: c.category ?? "uncategorized",
-        pointCost: typeof c.pointCost === "number" ? c.pointCost : 0,
-        prerequisites: Array.isArray(c.prerequisites) ? c.prerequisites : [],
-        tags: Array.isArray(c.tags) ? c.tags : [],
-        confidence,
-      };
-    },
-  );
+  const choices: CYOARawChoice[] = (parsed.choices ?? []).map((c: any, i: number) => {
+    const confidence = typeof c.confidence === "number" ? c.confidence : 0.5;
+    if (confidence < 0.7) {
+      warnings.push(`Low confidence (${confidence.toFixed(2)}) for choice: ${c.name ?? `index ${i}`}`);
+    }
+    return {
+      name: c.name ?? "",
+      description: c.description ?? "",
+      category: c.category ?? "uncategorized",
+      pointCost: typeof c.pointCost === "number" ? c.pointCost : 0,
+      prerequisites: Array.isArray(c.prerequisites) ? c.prerequisites : [],
+      tags: Array.isArray(c.tags) ? c.tags : [],
+      confidence,
+    };
+  });
 
   return {
     imageId,
@@ -248,9 +246,7 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
   logger.info("[cyoa-extractor] Falling back to OCR for %s", imageId);
   const ocrText = await ocrImage(imagePath);
   if (!ocrText) {
-    return emptyExtraction(imageId, pageNumber, "ocr", [
-      "All vision providers failed and OCR returned no text",
-    ]);
+    return emptyExtraction(imageId, pageNumber, "ocr", ["All vision providers failed and OCR returned no text"]);
   }
 
   const ocrPrompt = OCR_PROMPT_TEMPLATE.replace("{text}", ocrText);
@@ -266,9 +262,7 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
     );
 
     if (!result.content?.trim()) {
-      return emptyExtraction(imageId, pageNumber, "ocr", [
-        "OCR succeeded but LLM returned empty response",
-      ]);
+      return emptyExtraction(imageId, pageNumber, "ocr", ["OCR succeeded but LLM returned empty response"]);
     }
 
     const parsed = parseJSONFromLLM(result.content);
@@ -293,17 +287,13 @@ export async function extractFromImage(input: ExtractImageInput): Promise<CYOAEx
         logger.error(retryErr, "[cyoa-extractor] OCR retry failed for %s", imageId);
       }
 
-      return emptyExtraction(imageId, pageNumber, "ocr", [
-        "OCR succeeded but LLM response was not valid JSON",
-      ]);
+      return emptyExtraction(imageId, pageNumber, "ocr", ["OCR succeeded but LLM response was not valid JSON"]);
     }
 
     logger.debug("[cyoa-extractor] OCR extraction succeeded for %s", imageId);
     return buildExtraction(parsed, imageId, pageNumber, "ocr");
   } catch (err) {
     logger.error(err, "[cyoa-extractor] OCR LLM structuring failed for %s", imageId);
-    return emptyExtraction(imageId, pageNumber, "ocr", [
-      "OCR succeeded but LLM structuring failed",
-    ]);
+    return emptyExtraction(imageId, pageNumber, "ocr", ["OCR succeeded but LLM structuring failed"]);
   }
 }

@@ -1,12 +1,6 @@
 import { logger } from "../../lib/logger.js";
 import { parseJSONFromLLM } from "./json-utils.js";
-import type {
-  CYOADocument,
-  CYOAAnalysis,
-  CYOAChoiceAnalysis,
-  SynergyPair,
-  BuildArchetype,
-} from "./cyoa-types.js";
+import type { CYOADocument, CYOAAnalysis, CYOAChoiceAnalysis, SynergyPair, BuildArchetype } from "./cyoa-types.js";
 
 export interface AnalyzerProvider {
   chatComplete: (messages: any[], options: any) => Promise<{ content: string }>;
@@ -22,10 +16,7 @@ const SYSTEM_PROMPT = `You are an expert CYOA (Choose Your Own Adventure) build 
 
 function formatChoices(choices: CYOADocument["choices"]): string {
   return choices
-    .map(
-      (c, i) =>
-        `${i + 1}. [${c.id}] ${c.name} (Category: ${c.category}, Cost: ${c.pointCost}) - ${c.description}`,
-    )
+    .map((c, i) => `${i + 1}. [${c.id}] ${c.name} (Category: ${c.category}, Cost: ${c.pointCost}) - ${c.description}`)
     .join("\n");
 }
 
@@ -77,8 +68,7 @@ function buildFallbackAnalysis(_doc: CYOADocument): CYOAAnalysis {
     categorySummaries: {},
     topSynergies: [],
     buildArchetypes: [],
-    overallSummary:
-      "Analysis failed: the LLM was unable to produce a valid analysis. Please try again.",
+    overallSummary: "Analysis failed: the LLM was unable to produce a valid analysis. Please try again.",
     analyzedAt: new Date().toISOString(),
   };
 }

@@ -1,4 +1,4 @@
-import type { NarrativePrinciples, NarratorPersona, ChainOfThoughtMode } from '../types/narrative.js';
+import type { NarrativePrinciples, NarratorPersona, ChainOfThoughtMode } from "../types/narrative.js";
 
 export const DEFAULT_NARRATIVE_PRINCIPLES: NarrativePrinciples = {
   description: `You are a narrator and world simulator, not a helpful assistant.
@@ -53,21 +53,28 @@ export const DEFAULT_NARRATOR_PERSONAS: NarratorPersona[] = [
     id: "noir",
     name: "Noir Narrator",
     description: "Gritty, cynical, atmospheric with hard-boiled edge",
-    prompt: "You are a noir narrator with a gritty, cynical voice. Your narration is atmospheric and shadow-drenched, filled with hard-boiled metaphors and similes, morally ambiguous and world-weary, focused on the seedy underbelly and moral compromises, written in short, punchy sentences mixed with longer, brooding passages.",
-    style: { prose: "Gritty, metaphor-heavy, atmospheric", dialogue: "Clipped, cynical, full of subtext", tone: "Dark, cynical, world-weary" },
+    prompt:
+      "You are a noir narrator with a gritty, cynical voice. Your narration is atmospheric and shadow-drenched, filled with hard-boiled metaphors and similes, morally ambiguous and world-weary, focused on the seedy underbelly and moral compromises, written in short, punchy sentences mixed with longer, brooding passages.",
+    style: {
+      prose: "Gritty, metaphor-heavy, atmospheric",
+      dialogue: "Clipped, cynical, full of subtext",
+      tone: "Dark, cynical, world-weary",
+    },
   },
   {
     id: "cozy",
     name: "Cozy Narrator",
     description: "Warm, gentle, comforting with attention to small details",
-    prompt: "You are a cozy narrator with a warm, gentle, comforting voice. Your narration focuses on attention to small details, the texture of everyday life, and the quiet beauty of ordinary moments.",
+    prompt:
+      "You are a cozy narrator with a warm, gentle, comforting voice. Your narration focuses on attention to small details, the texture of everyday life, and the quiet beauty of ordinary moments.",
     style: { prose: "Warm, detailed, comforting", dialogue: "Gentle, sincere", tone: "Warm, gentle, hopeful" },
   },
   {
     id: "epic",
     name: "Epic Narrator",
     description: "Grand, sweeping, mythic with heroic scope",
-    prompt: "You are an epic narrator with a grand, sweeping, mythic voice. Your narration has heroic scope, larger-than-life stakes, and the weight of destiny behind every word.",
+    prompt:
+      "You are an epic narrator with a grand, sweeping, mythic voice. Your narration has heroic scope, larger-than-life stakes, and the weight of destiny behind every word.",
     style: { prose: "Grand, sweeping, elevated", dialogue: "Formal, weighty", tone: "Mythic, heroic, momentous" },
   },
 ];

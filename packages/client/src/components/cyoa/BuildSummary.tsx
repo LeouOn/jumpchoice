@@ -32,9 +32,7 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
 
   const rawAnalysis = document.analysis as { topSynergies?: SynergyPair[] } | null;
   const synergies = rawAnalysis?.topSynergies ?? [];
-  const activeSynergies = synergies.filter((syn) =>
-    syn.choiceIds.every((id) => build.selectedChoiceIds.includes(id)),
-  );
+  const activeSynergies = synergies.filter((syn) => syn.choiceIds.every((id) => build.selectedChoiceIds.includes(id)));
 
   const handleNotesChange = useCallback(
     (value: string) => {
@@ -51,10 +49,13 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
     <div className="flex h-full flex-col gap-3">
       <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.buildsummary.pointBudget")}</h3>
+          <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.buildsummary.pointBudget")}
+          </h3>
           {overBudget && (
             <span className="flex items-center gap-1 text-[10px] text-red-400">
-              <AlertTriangle className="h-3 w-3" /> {localizeUi("ui.cyoa.buildsummary.overBudget")}</span>
+              <AlertTriangle className="h-3 w-3" /> {localizeUi("ui.cyoa.buildsummary.overBudget")}
+            </span>
           )}
         </div>
         <div className="mt-1.5">
@@ -62,7 +63,9 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
             <>
               <div className="flex items-baseline gap-1">
                 <span className="text-lg font-bold text-[var(--foreground)]">{totalCost}</span>
-                <span className="text-xs text-[var(--muted-foreground)]">/ {budget} {localizeUi("ui.cyoa.buildsummary.pointsSpent")}</span>
+                <span className="text-xs text-[var(--muted-foreground)]">
+                  / {budget} {localizeUi("ui.cyoa.buildsummary.pointsSpent")}
+                </span>
               </div>
               <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-[var(--muted)]">
                 <div
@@ -75,13 +78,16 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
             </>
           ) : (
             <p className="text-xs text-[var(--muted-foreground)]">
-              {totalCost} {localizeUi("ui.cyoa.buildsummary.pointsSpentNoBudgetSet")}</p>
+              {totalCost} {localizeUi("ui.cyoa.buildsummary.pointsSpentNoBudgetSet")}
+            </p>
           )}
         </div>
       </div>
 
       <div className="flex-1 space-y-1.5 overflow-y-auto">
-        <h3 className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.buildsummary.selected")}{selectedChoices.length})
+        <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+          {localizeUi("ui.cyoa.buildsummary.selected")}
+          {selectedChoices.length})
         </h3>
         {selectedChoices.map((c) => (
           <div
@@ -90,7 +96,9 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
           >
             <span className="text-xs text-[var(--foreground)]">{c.name}</span>
             {c.pointCost != null && (
-              <span className="text-[10px] text-[var(--muted-foreground)]">{c.pointCost} {localizeUi("ui.cyoa.buildsummary.pts")}</span>
+              <span className="text-[10px] text-[var(--muted-foreground)]">
+                {c.pointCost} {localizeUi("ui.cyoa.buildsummary.pts")}
+              </span>
             )}
             <button
               onClick={() => onRemoveChoice(c.id)}
@@ -101,25 +109,32 @@ export function BuildSummary({ build, document, choices, onRemoveChoice }: Build
           </div>
         ))}
         {selectedChoices.length === 0 && (
-          <p className="py-4 text-center text-xs text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.buildsummary.selectChoicesFromTheCatalog")}</p>
+          <p className="py-4 text-center text-xs text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.buildsummary.selectChoicesFromTheCatalog")}
+          </p>
         )}
       </div>
 
       {activeSynergies.length > 0 && (
         <div className="space-y-1.5">
           <h3 className="flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)]">
-            <Zap className="h-3 w-3" /> {localizeUi("ui.cyoa.buildsummary.activeSynergies")}</h3>
+            <Zap className="h-3 w-3" /> {localizeUi("ui.cyoa.buildsummary.activeSynergies")}
+          </h3>
           {activeSynergies.map((syn, i) => (
             <div key={i} className="rounded-md border border-emerald-500/30 bg-emerald-500/5 px-3 py-2">
               <p className="text-xs text-[var(--foreground)]">{syn.description}</p>
-              <span className="text-[10px] text-emerald-400">{localizeUi("ui.cyoa.buildsummary.value")} {syn.combinedValue}</span>
+              <span className="text-[10px] text-emerald-400">
+                {localizeUi("ui.cyoa.buildsummary.value")} {syn.combinedValue}
+              </span>
             </div>
           ))}
         </div>
       )}
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.buildsummary.notes")}</label>
+        <label className="text-xs font-medium text-[var(--muted-foreground)]">
+          {localizeUi("ui.cyoa.buildsummary.notes")}
+        </label>
         <textarea
           value={localNotes}
           onChange={(e) => handleNotesChange(e.target.value)}

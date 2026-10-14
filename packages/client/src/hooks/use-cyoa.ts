@@ -130,8 +130,7 @@ export function useReviewCyoa() {
 export function useMergeCyoa() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ documentId }: { documentId: string }) =>
-      api.post<CyoaDocument>("/cyoa/merge", { documentId }),
+    mutationFn: ({ documentId }: { documentId: string }) => api.post<CyoaDocument>("/cyoa/merge", { documentId }),
     onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: cyoaKeys.detail(variables.documentId) });
     },

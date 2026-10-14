@@ -21,39 +21,36 @@ export async function cyoaBuildsRoutes(app: FastifyInstance) {
     return rows.map(parseBuild);
   });
 
-  app.post<{ Params: { docId: string }; Body: { name?: string; description?: string; selectedChoiceIds?: string[]; notes?: string } }>(
-    "/:docId/builds",
-    async (req, reply) => {
-      const { docId } = req.params;
-      const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, docId));
-      if (!docs[0]) return reply.status(404).send({ error: "Document not found" });
+  app.post<{
+    Params: { docId: string };
+    Body: { name?: string; description?: string; selectedChoiceIds?: string[]; notes?: string };
+  }>("/:docId/builds", async (req, reply) => {
+    const { docId } = req.params;
+    const docs = await app.db.select().from(cyoaDocuments).where(eq(cyoaDocuments.id, docId));
+    if (!docs[0]) return reply.status(404).send({ error: "Document not found" });
 
-      const timestamp = now();
-      const id = newId();
-      const selectedChoiceIds = Array.isArray(req.body?.selectedChoiceIds)
-        ? JSON.stringify(req.body.selectedChoiceIds)
-        : "[]";
-      const build = {
-        id,
-        documentId: docId,
-        name: req.body?.name ?? "",
-        description: req.body?.description ?? "",
-        selectedChoiceIds,
-        notes: req.body?.notes ?? "",
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      };
-      await app.db.insert(cyoaBuilds).values(build).run();
-      return parseBuild(build);
-    },
-  );
+    const timestamp = now();
+    const id = newId();
+    const selectedChoiceIds = Array.isArray(req.body?.selectedChoiceIds)
+      ? JSON.stringify(req.body.selectedChoiceIds)
+      : "[]";
+    const build = {
+      id,
+      documentId: docId,
+      name: req.body?.name ?? "",
+      description: req.body?.description ?? "",
+      selectedChoiceIds,
+      notes: req.body?.notes ?? "",
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    await app.db.insert(cyoaBuilds).values(build).run();
+    return parseBuild(build);
+  });
 
   app.get<{ Params: { docId: string; buildId: string } }>("/:docId/builds/:buildId", async (req, reply) => {
     const { docId, buildId } = req.params;
-    const rows = await app.db
-      .select()
-      .from(cyoaBuilds)
-      .where(eq(cyoaBuilds.id, buildId));
+    const rows = await app.db.select().from(cyoaBuilds).where(eq(cyoaBuilds.id, buildId));
     const build = rows[0];
     if (!build || build.documentId !== docId) {
       return reply.status(404).send({ error: "Build not found" });
@@ -66,10 +63,7 @@ export async function cyoaBuildsRoutes(app: FastifyInstance) {
     Body: { name?: string; description?: string; selectedChoiceIds?: string[]; notes?: string };
   }>("/:docId/builds/:buildId", async (req, reply) => {
     const { docId, buildId } = req.params;
-    const rows = await app.db
-      .select()
-      .from(cyoaBuilds)
-      .where(eq(cyoaBuilds.id, buildId));
+    const rows = await app.db.select().from(cyoaBuilds).where(eq(cyoaBuilds.id, buildId));
     const existing = rows[0];
     if (!existing || existing.documentId !== docId) {
       return reply.status(404).send({ error: "Build not found" });
@@ -85,19 +79,13 @@ export async function cyoaBuildsRoutes(app: FastifyInstance) {
 
     await app.db.update(cyoaBuilds).set(patch).where(eq(cyoaBuilds.id, buildId)).run();
 
-    const updated = await app.db
-      .select()
-      .from(cyoaBuilds)
-      .where(eq(cyoaBuilds.id, buildId));
+    const updated = await app.db.select().from(cyoaBuilds).where(eq(cyoaBuilds.id, buildId));
     return parseBuild(updated[0]);
   });
 
   app.delete<{ Params: { docId: string; buildId: string } }>("/:docId/builds/:buildId", async (req, reply) => {
     const { docId, buildId } = req.params;
-    const rows = await app.db
-      .select()
-      .from(cyoaBuilds)
-      .where(eq(cyoaBuilds.id, buildId));
+    const rows = await app.db.select().from(cyoaBuilds).where(eq(cyoaBuilds.id, buildId));
     const existing = rows[0];
     if (!existing || existing.documentId !== docId) {
       return reply.status(404).send({ error: "Build not found" });

@@ -61,9 +61,7 @@ export function CyoaEditor() {
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
-        <h1 className="text-sm font-semibold text-[var(--foreground)]">
-          {document?.name ?? "CYOA Document"}
-        </h1>
+        <h1 className="text-sm font-semibold text-[var(--foreground)]">{document?.name ?? "CYOA Document"}</h1>
         {document && (
           <span className="rounded bg-[var(--muted)] px-2 py-0.5 text-[10px] font-medium text-[var(--muted-foreground)]">
             {status}
@@ -73,7 +71,9 @@ export function CyoaEditor() {
           <button
             onClick={() => setShowBuildPlanner(true)}
             className="ml-auto rounded-md bg-[var(--primary)] px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90"
-          >{localizeUi("ui.cyoa.cyoaeditor.buildPlanner")}</button>
+          >
+            {localizeUi("ui.cyoa.cyoaeditor.buildPlanner")}
+          </button>
         )}
       </div>
 
@@ -133,11 +133,7 @@ export function CyoaEditor() {
         )}
       </div>
       {showBuildPlanner && document && (
-        <BuildPlannerModal
-          document={document}
-          choices={document.choices}
-          onClose={() => setShowBuildPlanner(false)}
-        />
+        <BuildPlannerModal document={document} choices={document.choices} onClose={() => setShowBuildPlanner(false)} />
       )}
     </div>
   );

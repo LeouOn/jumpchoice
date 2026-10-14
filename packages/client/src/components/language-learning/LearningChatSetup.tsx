@@ -27,10 +27,7 @@ const COMMON_LANGUAGES = [
   { code: "tr", name: "Turkish" },
 ];
 
-const NATIVE_LANGUAGES = [
-  { code: "en", name: "English" },
-  ...COMMON_LANGUAGES,
-];
+const NATIVE_LANGUAGES = [{ code: "en", name: "English" }, ...COMMON_LANGUAGES];
 
 const CEFR_LEVELS: CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -112,7 +109,8 @@ export function LearningChatSetup({ onComplete }: { onComplete?: () => void }) {
             style={{ width: `${progress}%` }}
           />
         </div>
-        <div className="mt-1 text-right text-xs text-[var(--muted-foreground)]">{localizeUi("ui.game.tutorialcard.step")} {state.step} {localizeUi("ui.noodle.noodlehome.of")} {totalSteps}
+        <div className="mt-1 text-right text-xs text-[var(--muted-foreground)]">
+          {localizeUi("ui.game.tutorialcard.step")} {state.step} {localizeUi("ui.noodle.noodlehome.of")} {totalSteps}
         </div>
       </div>
 
@@ -133,10 +131,7 @@ export function LearningChatSetup({ onComplete }: { onComplete?: () => void }) {
           />
         )}
         {state.step === 3 && (
-          <StepTutorPersona
-            value={state.tutorPersona}
-            onSelect={(p) => setState((s) => ({ ...s, tutorPersona: p }))}
-          />
+          <StepTutorPersona value={state.tutorPersona} onSelect={(p) => setState((s) => ({ ...s, tutorPersona: p }))} />
         )}
         {state.step === 4 && (
           <StepStartingLevel
@@ -158,7 +153,9 @@ export function LearningChatSetup({ onComplete }: { onComplete?: () => void }) {
               : "text-[var(--foreground)] hover:bg-[var(--accent)]",
           )}
         >
-          <ChevronLeft size="0.875rem" />{localizeUi("ui.botBrowser.importDialog.back")}</button>
+          <ChevronLeft size="0.875rem" />
+          {localizeUi("ui.botBrowser.importDialog.back")}
+        </button>
 
         {state.step < totalSteps ? (
           <button
@@ -170,7 +167,9 @@ export function LearningChatSetup({ onComplete }: { onComplete?: () => void }) {
                 ? "bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:opacity-90 active:scale-95"
                 : "bg-[var(--border)] text-[var(--muted-foreground)] cursor-not-allowed",
             )}
-          >{localizeUi("onboarding.actions.next")}<ChevronRight size="0.875rem" />
+          >
+            {localizeUi("onboarding.actions.next")}
+            <ChevronRight size="0.875rem" />
           </button>
         ) : (
           <button
@@ -179,7 +178,9 @@ export function LearningChatSetup({ onComplete }: { onComplete?: () => void }) {
             className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-400 to-teal-500 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:opacity-90 active:scale-95 disabled:opacity-50"
           >
             <GraduationCap size="0.875rem" />
-            {addLanguage.isPending ?localizeUi("ui.chat.chatgallery.creating") :localizeUi("ui.languageLearning.learningchatsetup.startLearning")}
+            {addLanguage.isPending
+              ? localizeUi("ui.chat.chatgallery.creating")
+              : localizeUi("ui.languageLearning.learningchatsetup.startLearning")}
           </button>
         )}
       </div>
@@ -201,8 +202,12 @@ function StepTargetLanguage({
   const { t: localizeUi } = useUiTranslation();
   return (
     <div>
-      <h3 className="text-sm font-semibold text-[var(--foreground)]">{localizeUi("ui.languageLearning.steptargetlanguage.pickTargetLanguage")}</h3>
-      <p className="mt-1 text-xs text-[var(--muted-foreground)]">{localizeUi("ui.languageLearning.steptargetlanguage.chooseTheLanguageYouWantToLearn")}</p>
+      <h3 className="text-sm font-semibold text-[var(--foreground)]">
+        {localizeUi("ui.languageLearning.steptargetlanguage.pickTargetLanguage")}
+      </h3>
+      <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+        {localizeUi("ui.languageLearning.steptargetlanguage.chooseTheLanguageYouWantToLearn")}
+      </p>
       <div className="mt-3 grid grid-cols-2 gap-1.5">
         {COMMON_LANGUAGES.map((lang) => (
           <button
@@ -232,18 +237,16 @@ function StepTargetLanguage({
   );
 }
 
-function StepNativeLanguage({
-  value,
-  onSelect,
-}: {
-  value: string;
-  onSelect: (code: string) => void;
-}) {
+function StepNativeLanguage({ value, onSelect }: { value: string; onSelect: (code: string) => void }) {
   const { t: localizeUi } = useUiTranslation();
   return (
     <div>
-      <h3 className="text-sm font-semibold text-[var(--foreground)]">{localizeUi("ui.languageLearning.stepnativelanguage.pickNativeLanguage")}</h3>
-      <p className="mt-1 text-xs text-[var(--muted-foreground)]">{localizeUi("ui.languageLearning.stepnativelanguage.yourNativeLanguageForTranslationsAndExplanations")}</p>
+      <h3 className="text-sm font-semibold text-[var(--foreground)]">
+        {localizeUi("ui.languageLearning.stepnativelanguage.pickNativeLanguage")}
+      </h3>
+      <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+        {localizeUi("ui.languageLearning.stepnativelanguage.yourNativeLanguageForTranslationsAndExplanations")}
+      </p>
       <div className="mt-3 grid grid-cols-2 gap-1.5">
         {NATIVE_LANGUAGES.map((lang) => (
           <button
@@ -264,18 +267,16 @@ function StepNativeLanguage({
   );
 }
 
-function StepTutorPersona({
-  value,
-  onSelect,
-}: {
-  value: TutorPersona;
-  onSelect: (persona: TutorPersona) => void;
-}) {
+function StepTutorPersona({ value, onSelect }: { value: TutorPersona; onSelect: (persona: TutorPersona) => void }) {
   const { t: localizeUi } = useUiTranslation();
   return (
     <div>
-      <h3 className="text-sm font-semibold text-[var(--foreground)]">{localizeUi("ui.languageLearning.steptutorpersona.pickTutorPersona")}</h3>
-      <p className="mt-1 text-xs text-[var(--muted-foreground)]">{localizeUi("ui.languageLearning.steptutorpersona.howShouldYourAiTutorBehave")}</p>
+      <h3 className="text-sm font-semibold text-[var(--foreground)]">
+        {localizeUi("ui.languageLearning.steptutorpersona.pickTutorPersona")}
+      </h3>
+      <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+        {localizeUi("ui.languageLearning.steptutorpersona.howShouldYourAiTutorBehave")}
+      </p>
       <div className="mt-3 space-y-2">
         {(Object.entries(TUTOR_PERSONAS) as [TutorPersona, (typeof TUTOR_PERSONAS)[TutorPersona]][]).map(
           ([key, persona]) => (
@@ -290,12 +291,7 @@ function StepTutorPersona({
               )}
             >
               <div className="text-sm font-medium">{persona.label}</div>
-              <div
-                className={cn(
-                  "mt-0.5 text-xs",
-                  value === key ? "text-white/80" : "text-[var(--muted-foreground)]",
-                )}
-              >
+              <div className={cn("mt-0.5 text-xs", value === key ? "text-white/80" : "text-[var(--muted-foreground)]")}>
                 {persona.description}
               </div>
             </button>
@@ -316,8 +312,12 @@ function StepStartingLevel({
   const { t: localizeUi } = useUiTranslation();
   return (
     <div>
-      <h3 className="text-sm font-semibold text-[var(--foreground)]">{localizeUi("ui.languageLearning.stepstartinglevel.pickStartingLevel")}</h3>
-      <p className="mt-1 text-xs text-[var(--muted-foreground)]">{localizeUi("ui.languageLearning.stepstartinglevel.yourCurrentProficiencyInTheTargetLanguage")}</p>
+      <h3 className="text-sm font-semibold text-[var(--foreground)]">
+        {localizeUi("ui.languageLearning.stepstartinglevel.pickStartingLevel")}
+      </h3>
+      <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+        {localizeUi("ui.languageLearning.stepstartinglevel.yourCurrentProficiencyInTheTargetLanguage")}
+      </p>
       <div className="mt-3 grid grid-cols-3 gap-1.5">
         {CEFR_LEVELS.map((level) => (
           <button
@@ -342,7 +342,9 @@ function StepStartingLevel({
             ? "bg-gradient-to-r from-emerald-400 to-teal-500 text-white shadow-sm"
             : "bg-[var(--card)] text-[var(--foreground)] ring-1 ring-[var(--border)] hover:bg-[var(--accent)]",
         )}
-      >{localizeUi("ui.languageLearning.stepstartinglevel.letAiEstimateMyLevel")}</button>
+      >
+        {localizeUi("ui.languageLearning.stepstartinglevel.letAiEstimateMyLevel")}
+      </button>
     </div>
   );
 }

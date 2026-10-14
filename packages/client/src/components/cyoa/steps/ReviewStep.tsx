@@ -34,7 +34,9 @@ interface ReviewStepProps {
 }
 
 // ── Helpers ──
-function getImageExtractions(doc: CyoaDocument | undefined): { img: CyoaDocument["images"][number]; extraction: CyoaExtraction }[] {
+function getImageExtractions(
+  doc: CyoaDocument | undefined,
+): { img: CyoaDocument["images"][number]; extraction: CyoaExtraction }[] {
   if (!doc?.images) return [];
   return doc.images
     .filter((img) => img.extractions != null)
@@ -42,7 +44,9 @@ function getImageExtractions(doc: CyoaDocument | undefined): { img: CyoaDocument
     .map((img) => ({ img, extraction: img.extractions as unknown as CyoaExtraction }));
 }
 
-function collectAllChoices(entries: { img: CyoaDocument["images"][number]; extraction: CyoaExtraction }[]): (CyoaChoice & { pageNumber: number; imageName: string })[] {
+function collectAllChoices(
+  entries: { img: CyoaDocument["images"][number]; extraction: CyoaExtraction }[],
+): (CyoaChoice & { pageNumber: number; imageName: string })[] {
   const result: (CyoaChoice & { pageNumber: number; imageName: string })[] = [];
   for (const { extraction, img } of entries) {
     for (const choice of extraction.choices) {
@@ -111,10 +115,7 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
 
   // Derive total data for summary bar
   const totalChoices = allChoices.length;
-  const categories = useMemo(
-    () => [...new Set(allChoices.map((c) => c.category).filter(Boolean))],
-    [allChoices],
-  );
+  const categories = useMemo(() => [...new Set(allChoices.map((c) => c.category).filter(Boolean))], [allChoices]);
   const totalBudget = entries.reduce((sum, { extraction }) => sum + (extraction.pointBudget ?? 0), 0);
   const pagesWithExtractions = entries.length;
 
@@ -152,11 +153,23 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
     }
   };
 
-  const updateChoice = (imageId: string, choiceName: string, field: keyof CyoaChoice, value: string | number | boolean) => {
+  const updateChoice = (
+    imageId: string,
+    choiceName: string,
+    field: keyof CyoaChoice,
+    value: string | number | boolean,
+  ) => {
     const key = `${imageId}:${choiceName}`;
     setEditedChoices((prev) => {
       const next = new Map(prev);
-      const existing = next.get(key) ?? { name: choiceName, pointCost: 0, category: "", description: "", tags: [], prerequisites: [] };
+      const existing = next.get(key) ?? {
+        name: choiceName,
+        pointCost: 0,
+        category: "",
+        description: "",
+        tags: [],
+        prerequisites: [],
+      };
       next.set(key, { ...existing, [field]: value });
       return next;
     });
@@ -182,8 +195,12 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
     return (
       <div className="flex flex-col items-center gap-2 py-12 text-center">
         <Eye className="h-8 w-8 text-[var(--muted-foreground)]" />
-        <p className="text-sm text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.reviewstep.noExtractedDataToReviewYet")}</p>
-        <p className="text-xs text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.reviewstep.runExtractionOnTheExtractTabFirst")}</p>
+        <p className="text-sm text-[var(--muted-foreground)]">
+          {localizeUi("ui.cyoa.reviewstep.noExtractedDataToReviewYet")}
+        </p>
+        <p className="text-xs text-[var(--muted-foreground)]">
+          {localizeUi("ui.cyoa.reviewstep.runExtractionOnTheExtractTabFirst")}
+        </p>
       </div>
     );
   }
@@ -192,28 +209,42 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
     <div className="flex flex-col gap-4">
       {/* ── Summary Bar ── */}
       <div className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-2.5">
-        <span className="text-xs font-medium text-[var(--foreground)]">{localizeUi("ui.chat.summarieseditormodal.summary")}</span>
+        <span className="text-xs font-medium text-[var(--foreground)]">
+          {localizeUi("ui.chat.summarieseditormodal.summary")}
+        </span>
         <span className="text-[10px] text-[var(--muted-foreground)]">
-          {totalChoices} {localizeUi("ui.cyoa.analyzestep.choice")}{totalChoices !== 1 ?localizeUi("ui.noodle.stageprofileview.s") : ""}
+          {totalChoices} {localizeUi("ui.cyoa.analyzestep.choice")}
+          {totalChoices !== 1 ? localizeUi("ui.noodle.stageprofileview.s") : ""}
         </span>
         {totalBudget > 0 && (
           <span className="rounded bg-[var(--accent)]/60 px-1.5 py-0.5 text-[10px] text-[var(--foreground)]">
-            {totalBudget} {localizeUi("ui.cyoa.reviewstep.ptBudget")}</span>
+            {totalBudget} {localizeUi("ui.cyoa.reviewstep.ptBudget")}
+          </span>
         )}
         {categories.length > 0 && (
           <span className="text-[10px] text-[var(--muted-foreground)]">
-            {categories.length} {localizeUi("ui.cyoa.reviewstep.categor")}{categories.length !== 1 ?localizeUi("ui.characters.lorebooktab.ies") :localizeUi("ui.characters.lorebooktab.y")}: {categories.join(", ")}
+            {categories.length} {localizeUi("ui.cyoa.reviewstep.categor")}
+            {categories.length !== 1
+              ? localizeUi("ui.characters.lorebooktab.ies")
+              : localizeUi("ui.characters.lorebooktab.y")}
+            : {categories.join(", ")}
           </span>
         )}
-        <span className="text-[10px] text-[var(--muted-foreground)]">{pagesWithExtractions} {localizeUi("ui.cyoa.reviewstep.page")}{pagesWithExtractions !== 1 ?localizeUi("ui.noodle.stageprofileview.s") : ""}</span>
+        <span className="text-[10px] text-[var(--muted-foreground)]">
+          {pagesWithExtractions} {localizeUi("ui.cyoa.reviewstep.page")}
+          {pagesWithExtractions !== 1 ? localizeUi("ui.noodle.stageprofileview.s") : ""}
+        </span>
         {warnings.length > 0 && (
           <span className="flex items-center gap-1 rounded bg-amber-500/10 px-1.5 py-0.5 text-[10px] text-amber-400">
             <AlertTriangle className="h-3 w-3" />
-            {warnings.length} {localizeUi("ui.modals.stbulkimportmodal.warning")}{warnings.length !== 1 ?localizeUi("ui.noodle.stageprofileview.s") : ""}
+            {warnings.length} {localizeUi("ui.modals.stbulkimportmodal.warning")}
+            {warnings.length !== 1 ? localizeUi("ui.noodle.stageprofileview.s") : ""}
           </span>
         )}
         {hasEdits && (
-          <span className="rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[10px] font-medium text-[var(--primary)]">{localizeUi("ui.chat.mariediteasyviewer.actionEdited")}</span>
+          <span className="rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[10px] font-medium text-[var(--primary)]">
+            {localizeUi("ui.chat.mariediteasyviewer.actionEdited")}
+          </span>
         )}
       </div>
 
@@ -226,7 +257,9 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
               ? "bg-[var(--accent)] text-[var(--foreground)]"
               : "text-[var(--muted-foreground)] hover:bg-[var(--secondary)]"
           }`}
-        >{localizeUi("ui.cyoa.reviewstep.structured")}</button>
+        >
+          {localizeUi("ui.cyoa.reviewstep.structured")}
+        </button>
         <button
           onClick={() => setEditMode("json")}
           className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors ${
@@ -234,12 +267,16 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
               ? "bg-[var(--accent)] text-[var(--foreground)]"
               : "text-[var(--muted-foreground)] hover:bg-[var(--secondary)]"
           }`}
-        >{localizeUi("ui.cyoa.reviewstep.rawJson")}</button>
+        >
+          {localizeUi("ui.cyoa.reviewstep.rawJson")}
+        </button>
         <button
           onClick={expandAll}
           className="ml-auto rounded-md px-2.5 py-1 text-[11px] font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--secondary)]"
         >
-          {expandedPages.size === entries.length ?localizeUi("ui.cyoa.reviewstep.collapseAll") :localizeUi("ui.cyoa.reviewstep.expandAll")}
+          {expandedPages.size === entries.length
+            ? localizeUi("ui.cyoa.reviewstep.collapseAll")
+            : localizeUi("ui.cyoa.reviewstep.expandAll")}
         </button>
       </div>
 
@@ -250,7 +287,10 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
             <div key={i} className="flex items-start gap-1.5 text-[10px] text-amber-400">
               <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />
               <span>
-                <span className="font-medium">{localizeUi("ui.botBrowser.botbrowserview.page")} {w.pageNumber}:</span> {w.text}
+                <span className="font-medium">
+                  {localizeUi("ui.botBrowser.botbrowserview.page")} {w.pageNumber}:
+                </span>{" "}
+                {w.text}
               </span>
             </div>
           ))}
@@ -268,7 +308,10 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
             });
 
             return (
-              <div key={extraction.imageId} className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--card)]">
+              <div
+                key={extraction.imageId}
+                className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--card)]"
+              >
                 {/* Page header */}
                 <button
                   onClick={() => togglePage(extraction.pageNumber)}
@@ -279,7 +322,8 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
                   ) : (
                     <ChevronRight className="h-3.5 w-3.5 shrink-0 text-[var(--muted-foreground)]" />
                   )}
-                  <span className="text-xs font-medium text-[var(--foreground)]">{localizeUi("ui.botBrowser.botbrowserview.page")} {extraction.pageNumber}
+                  <span className="text-xs font-medium text-[var(--foreground)]">
+                    {localizeUi("ui.botBrowser.botbrowserview.page")} {extraction.pageNumber}
                   </span>
                   {extraction.title && (
                     <span className="text-[11px] text-[var(--muted-foreground)]">— {extraction.title}</span>
@@ -288,7 +332,8 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
                     {extraction.extractionMethod}
                   </span>
                   <span className="text-[10px] text-[var(--muted-foreground)]">
-                    {choices.length} {localizeUi("ui.cyoa.analyzestep.choice")}{choices.length !== 1 ?localizeUi("ui.noodle.stageprofileview.s") : ""}
+                    {choices.length} {localizeUi("ui.cyoa.analyzestep.choice")}
+                    {choices.length !== 1 ? localizeUi("ui.noodle.stageprofileview.s") : ""}
                   </span>
                 </button>
 
@@ -303,7 +348,9 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
                     )}
 
                     {choices.length === 0 ? (
-                      <p className="py-2 text-center text-[10px] text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.reviewstep.noChoicesExtractedFromThisPage")}</p>
+                      <p className="py-2 text-center text-[10px] text-[var(--muted-foreground)]">
+                        {localizeUi("ui.cyoa.reviewstep.noChoicesExtractedFromThisPage")}
+                      </p>
                     ) : (
                       <div className="flex flex-col gap-1.5">
                         {choices.map((choice, ci) => (
@@ -322,7 +369,9 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
                               <EditableField
                                 label={localizeUi("ui.cyoa.analyzestep.cost")}
                                 value={choice.pointCost}
-                                onChange={(v) => updateChoice(extraction.imageId, choice.name, "pointCost", Number(v) || 0)}
+                                onChange={(v) =>
+                                  updateChoice(extraction.imageId, choice.name, "pointCost", Number(v) || 0)
+                                }
                                 type="number"
                                 small
                               />
@@ -333,7 +382,9 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
                                 small
                               />
                               {choice.stealth && (
-                                <span className="mt-4 shrink-0 rounded bg-purple-500/15 px-1.5 py-0.5 text-[10px] font-medium text-purple-400">{localizeUi("ui.cyoa.reviewstep.stealth")}</span>
+                                <span className="mt-4 shrink-0 rounded bg-purple-500/15 px-1.5 py-0.5 text-[10px] font-medium text-purple-400">
+                                  {localizeUi("ui.cyoa.reviewstep.stealth")}
+                                </span>
                               )}
                             </div>
                             {/* Description */}
@@ -390,19 +441,17 @@ export function ReviewStep({ document, documentId }: ReviewStepProps) {
       <div className="flex items-center justify-between">
         <p className="text-[10px] text-[var(--muted-foreground)]">
           {editMode === "structured"
-            ?localizeUi("ui.cyoa.reviewstep.editAnyFieldInlineChangesAreSavedLocallyUntil")
-            :localizeUi("ui.cyoa.reviewstep.editTheRawJsonThenApproveToSave")}
+            ? localizeUi("ui.cyoa.reviewstep.editAnyFieldInlineChangesAreSavedLocallyUntil")
+            : localizeUi("ui.cyoa.reviewstep.editTheRawJsonThenApproveToSave")}
         </p>
         <button
           onClick={handleApprove}
           disabled={review.isPending}
           className="flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {review.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Check className="h-4 w-4" />
-          )}{localizeUi("ui.cyoa.reviewstep.approveContinue")}</button>
+          {review.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+          {localizeUi("ui.cyoa.reviewstep.approveContinue")}
+        </button>
       </div>
     </div>
   );

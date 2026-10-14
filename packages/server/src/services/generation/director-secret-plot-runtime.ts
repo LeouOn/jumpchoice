@@ -1,7 +1,4 @@
-import {
-  NARRATIVE_DIRECTOR_SECRET_PLOT_PROMPT,
-  type ChatMode,
-} from "@jumpchoice/shared";
+import { NARRATIVE_DIRECTOR_SECRET_PLOT_PROMPT, type ChatMode } from "@jumpchoice/shared";
 
 import type { ResolvedAgent } from "../agents/agent-pipeline.js";
 import { wrapContent } from "../prompt/format-engine.js";

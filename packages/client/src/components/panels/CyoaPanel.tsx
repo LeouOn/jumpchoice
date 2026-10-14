@@ -46,13 +46,19 @@ export function CyoaPanel() {
 
   return (
     <div className="flex flex-col gap-2 p-3">
-      <p className="px-1 text-xs text-[var(--muted-foreground)]">{localizeUi("ui.panels.cyoapanel.uploadCyoaJumpchainImagesToExtractAndAnalyzeChoices")}</p>
+      <p className="px-1 text-xs text-[var(--muted-foreground)]">
+        {localizeUi("ui.panels.cyoapanel.uploadCyoaJumpchainImagesToExtractAndAnalyzeChoices")}
+      </p>
 
       {!documents?.length && (
         <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-[var(--border)] py-10 text-center">
           <ImageIcon className="h-8 w-8 text-[var(--muted-foreground)]" />
-          <p className="text-sm text-[var(--muted-foreground)]">{localizeUi("ui.panels.cyoapanel.noCyoaDocumentsYet")}</p>
-          <p className="text-xs text-[var(--muted-foreground)]">{localizeUi("ui.panels.cyoapanel.openADocumentOrCreateOneInTheEditor")}</p>
+          <p className="text-sm text-[var(--muted-foreground)]">
+            {localizeUi("ui.panels.cyoapanel.noCyoaDocumentsYet")}
+          </p>
+          <p className="text-xs text-[var(--muted-foreground)]">
+            {localizeUi("ui.panels.cyoapanel.openADocumentOrCreateOneInTheEditor")}
+          </p>
         </div>
       )}
 
@@ -73,7 +79,8 @@ export function CyoaPanel() {
               </span>
               {doc.choiceCount > 0 && (
                 <span className="text-[10px] text-[var(--muted-foreground)]">
-                  {doc.choiceCount} {localizeUi("ui.panels.cyoapanel.choices")}</span>
+                  {doc.choiceCount} {localizeUi("ui.panels.cyoapanel.choices")}
+                </span>
               )}
             </div>
           </div>

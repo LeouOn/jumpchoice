@@ -1,7 +1,7 @@
 export interface CyoaDifficulty {
-  directorAggression: number;      // 1-5
-  worldEscalation: number;         // 1-5
-  informationLeakage: number;      // 1-5
+  directorAggression: number; // 1-5
+  worldEscalation: number; // 1-5
+  informationLeakage: number; // 1-5
   adversaryEnabled: boolean;
   stealthDisabled: boolean;
 }

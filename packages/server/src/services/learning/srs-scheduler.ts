@@ -45,9 +45,7 @@ export class SrsScheduler {
     }
 
     const intervalDays = Math.min(stability, params.maximumInterval);
-    const scheduledDate = new Date(
-      now.getTime() + intervalDays * 24 * 60 * 60 * 1000,
-    );
+    const scheduledDate = new Date(now.getTime() + intervalDays * 24 * 60 * 60 * 1000);
 
     const newState: SrsState = {
       ...state,

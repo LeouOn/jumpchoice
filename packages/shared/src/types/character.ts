@@ -11,6 +11,8 @@ export interface CharacterCardV2 {
 /** Core character data (V2 spec). */
 export interface CharacterData {
   name: string;
+  /** Short metadata synopsis for library previews. Not sent to the model. */
+  summary?: string;
   description: string;
   personality: string;
   scenario: string;
@@ -38,18 +40,41 @@ export interface CharacterExtensions {
   backstory: string;
   /** Marinara Engine extension: physical appearance description */
   appearance: string;
+  /** Marinara Engine: use `imageAppearance` instead of `appearance` in image prompts. */
+  imageAppearanceEnabled?: boolean;
+  /** Marinara Engine: appearance text used for image prompts when the override is enabled. */
+  imageAppearance?: string;
   /** Marinara Engine: Name display color/gradient (CSS value, e.g. "linear-gradient(90deg, #ff6b6b, #ffd93d)" or "#ff6b6b") */
   nameColor?: string;
   /** Marinara Engine: Dialogue highlight color — text in quotation marks is bold + colored with this */
   dialogueColor?: string;
   /** Marinara Engine: Chat bubble / dialogue box background color */
   boxColor?: string;
+  /** Marinara Engine: Alternative names/nicknames that should be colored with this
+   *  character's nameColor when they appear in chat prose. The character's primary
+   *  `name` is always a trigger; these are additional aliases (e.g. "Kate", "Kitty"). */
+  nameAliases?: string[];
   /** Marinara Engine: RPG stats toggle + custom attributes */
   rpgStats?: RPGStatsConfig;
+  /** Marinara Engine: starting builds for Game Mode rulesets, keyed by ruleset id. A game copies
+   *  the one it needs; a sheet for a ruleset that is not installed is kept dormant. */
+  rulesetSheets?: Record<string, unknown>;
   /** Marinara Engine: per-character Tracker fields copied into each new Roleplay chat. */
   trackerCustomFieldDefaults?: CharacterTrackerCustomFieldDefault[];
   /** Marinara Engine: Conversation-mode availability status */
   conversationStatus?: import("./chat.js").ConversationPresenceStatus;
+  /** Marinara Engine (Conversation mode ONLY): manual presence override. Like the
+   *  schedule, it belongs to the character and applies in every Conversation chat;
+   *  `null` means no override. Chats cache a resolved copy in
+   *  `chats.metadata.conversationStatusOverrides`. */
+  conversationStatusOverride?: import("./chat.js").ConversationStatusOverride | null;
+  /** Marinara Engine (Conversation mode ONLY): the character's weekly schedule. The
+   *  character owns it; every conversation chat caches a resolved copy in
+   *  `chats.metadata.characterSchedules`. Per-chat opt-out lives on the chat as
+   *  `conversationSchedulesEnabled`. */
+  conversationSchedule?: import("../utils/conversation-presence.js").WeekSchedule;
+  /** Renew the weekly Conversation schedule when its week ends. Defaults on when a schedule exists. */
+  conversationScheduleAutoRenew?: boolean;
   /** Marinara Engine: pronunciation override used when sending this character's name to TTS. */
   phoneticName?: string;
   /** Marinara Engine (Conversation mode ONLY): display name shown as the sender label
@@ -67,6 +92,8 @@ export interface CharacterExtensions {
   convoBehavior?: ConvoBehaviorConfig;
   /** Marinara Engine: character-specific direction for Conversation selfie image prompts. */
   conversationImageInstructions?: string;
+  /** Retain prior card revisions and automatically advance character_version on edits. */
+  versioningEnabled?: boolean;
   /** Marinara Engine: also apply conversationImageInstructions to this character's Noodle images. */
   applyConversationImageInstructionsToNoodle?: boolean;
   /** Marinara Engine: gallery image selected as this character's optional visual reference sheet. */
@@ -137,18 +164,7 @@ export interface CharacterBook {
 }
 
 export type CharacterBookEntryPosition =
-  | "before_char"
-  | "after_char"
-  | "at_depth"
-  | "depth"
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7;
+  "before_char" | "after_char" | "at_depth" | "depth" | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type CharacterBookEntryRole = "system" | "user" | "assistant" | 0 | 1 | 2;
 
 /** A single entry in a character book. */
@@ -209,6 +225,7 @@ export interface PersonaCardSnapshot {
   name: string;
   creator: string;
   personaVersion: string;
+  versioningEnabled: string;
   creatorNotes: string;
   phoneticName?: string;
   description: string;
@@ -216,6 +233,10 @@ export interface PersonaCardSnapshot {
   scenario: string;
   backstory: string;
   appearance: string;
+  /** Marinara Engine: image-prompt override flag, stored as a string like its siblings. */
+  imageAppearanceEnabled?: string;
+  /** Marinara Engine: appearance text used for image prompts while the override is on. */
+  imageAppearance?: string;
   characterSheetImageId: string;
   useCharacterSheetAsReference: string;
   avatarCrop: string;

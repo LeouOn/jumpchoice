@@ -59,10 +59,14 @@ export function VocabSidebar() {
       <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
         {isLoading && (
           <div className="flex items-center justify-center py-8 text-[var(--muted-foreground)]">
-            <Loader2 size="1rem" className="animate-spin mr-2" />{localizeUi("ui.languageLearning.vocabsidebar.loadingVocabulary")}</div>
+            <Loader2 size="1rem" className="animate-spin mr-2" />
+            {localizeUi("ui.languageLearning.vocabsidebar.loadingVocabulary")}
+          </div>
         )}
         {!isLoading && filtered.length === 0 && (
-          <div className="py-8 text-center text-xs text-[var(--muted-foreground)]">{localizeUi("ui.languageLearning.vocabsidebar.noVocabularyYetStartALearningChat")}</div>
+          <div className="py-8 text-center text-xs text-[var(--muted-foreground)]">
+            {localizeUi("ui.languageLearning.vocabsidebar.noVocabularyYetStartALearningChat")}
+          </div>
         )}
         {filtered.map((item) => (
           <VocabCard key={item.id} item={item} />
@@ -72,8 +76,12 @@ export function VocabSidebar() {
       {/* Footer stats */}
       {stats && (
         <div className="flex items-center justify-between border-t border-[var(--border)] px-3 py-2 text-xs text-[var(--muted-foreground)]">
-          <span>{stats.total} {localizeUi("ui.languageLearning.vocabsidebar.words")}</span>
-          <span>{stats.dueToday} {localizeUi("ui.languageLearning.vocabsidebar.dueToday")}</span>
+          <span>
+            {stats.total} {localizeUi("ui.languageLearning.vocabsidebar.words")}
+          </span>
+          <span>
+            {stats.dueToday} {localizeUi("ui.languageLearning.vocabsidebar.dueToday")}
+          </span>
         </div>
       )}
     </div>
@@ -94,7 +102,11 @@ function VocabCard({ item }: { item: Vocabulary }) {
           </div>
           <div className="mt-0.5 text-xs text-[var(--muted-foreground)]">{item.translation}</div>
           {item.contextSentence && (
-            <div className="mt-1 text-xs italic text-[var(--muted-foreground)] line-clamp-2">{localizeUi("ui.languageLearning.reviewsession.ldquo")}{item.contextSentence}{localizeUi("ui.languageLearning.reviewsession.rdquo")}</div>
+            <div className="mt-1 text-xs italic text-[var(--muted-foreground)] line-clamp-2">
+              {localizeUi("ui.languageLearning.reviewsession.ldquo")}
+              {item.contextSentence}
+              {localizeUi("ui.languageLearning.reviewsession.rdquo")}
+            </div>
           )}
         </div>
         <BookOpen size="0.75rem" className="mt-0.5 shrink-0 text-[var(--muted-foreground)]" />

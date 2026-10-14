@@ -56,7 +56,7 @@ export function ChoiceCatalog({ choices, selectedIds, onToggle }: ChoiceCatalogP
         >
           {categories.map((cat) => (
             <option key={cat} value={cat}>
-              {cat === "all" ?localizeUi("ui.cyoa.choicecatalog.allCategories") : cat}
+              {cat === "all" ? localizeUi("ui.cyoa.choicecatalog.allCategories") : cat}
             </option>
           ))}
         </select>
@@ -77,9 +77,7 @@ export function ChoiceCatalog({ choices, selectedIds, onToggle }: ChoiceCatalogP
             >
               <div
                 className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
-                  isSelected
-                    ? "border-[var(--primary)] bg-[var(--primary)] text-white"
-                    : "border-[var(--border)]"
+                  isSelected ? "border-[var(--primary)] bg-[var(--primary)] text-white" : "border-[var(--border)]"
                 }`}
               >
                 {isSelected && <span className="text-[10px]">&#10003;</span>}
@@ -88,23 +86,24 @@ export function ChoiceCatalog({ choices, selectedIds, onToggle }: ChoiceCatalogP
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-[var(--foreground)]">{choice.name}</span>
                   {choice.tier && (
-                    <span
-                      className={`rounded px-1 py-0.5 text-[9px] font-bold ${TIER_COLORS[choice.tier] ?? ""}`}
-                    >
+                    <span className={`rounded px-1 py-0.5 text-[9px] font-bold ${TIER_COLORS[choice.tier] ?? ""}`}>
                       {choice.tier}
                     </span>
                   )}
                 </div>
                 <div className="mt-0.5 flex items-center gap-2">
                   {choice.pointCost != null && (
-                    <span className="text-[10px] text-[var(--muted-foreground)]">{choice.pointCost} {localizeUi("ui.cyoa.buildsummary.pts")}</span>
+                    <span className="text-[10px] text-[var(--muted-foreground)]">
+                      {choice.pointCost} {localizeUi("ui.cyoa.buildsummary.pts")}
+                    </span>
                   )}
                   {choice.category && (
                     <span className="text-[10px] text-[var(--muted-foreground)]">{choice.category}</span>
                   )}
                 </div>
                 {Array.isArray(choice.prerequisites) && choice.prerequisites.length > 0 && (
-                  <p className="mt-0.5 text-[10px] text-[var(--muted-foreground)] italic">{localizeUi("ui.cyoa.choicecatalog.requires")} {choice.prerequisites.join(", ")}
+                  <p className="mt-0.5 text-[10px] text-[var(--muted-foreground)] italic">
+                    {localizeUi("ui.cyoa.choicecatalog.requires")} {choice.prerequisites.join(", ")}
                   </p>
                 )}
               </div>
@@ -112,7 +111,9 @@ export function ChoiceCatalog({ choices, selectedIds, onToggle }: ChoiceCatalogP
           );
         })}
         {filtered.length === 0 && (
-          <p className="py-4 text-center text-xs text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.choicecatalog.noChoicesMatchYourFilters")}</p>
+          <p className="py-4 text-center text-xs text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.choicecatalog.noChoicesMatchYourFilters")}
+          </p>
         )}
       </div>
     </div>

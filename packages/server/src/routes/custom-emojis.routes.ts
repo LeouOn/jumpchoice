@@ -19,11 +19,7 @@ import {
 import { readImageDimensionsFromBuffer, readImageDimensionsFromFile } from "../utils/image-metadata.js";
 import { logger } from "../lib/logger.js";
 import { isFileUniqueConstraintError } from "../db/file-schema.js";
-import {
-  CUSTOM_EMOJI_NAME_PATTERN,
-  CUSTOM_EMOJI_MAX_DIMENSION,
-  updateCustomEmojiSchema,
-} from "@jumpchoice/shared";
+import { CUSTOM_EMOJI_NAME_PATTERN, CUSTOM_EMOJI_MAX_DIMENSION, updateCustomEmojiSchema } from "@jumpchoice/shared";
 
 const CUSTOM_EMOJIS_ROOT = join(DATA_DIR, "custom-emojis");
 const ALLOWED_EXTS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"]);

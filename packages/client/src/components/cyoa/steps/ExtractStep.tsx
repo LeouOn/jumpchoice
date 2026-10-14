@@ -41,13 +41,18 @@ export function ExtractStep({ document, documentId }: ExtractStepProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.extractstep.selectLlmConnection")}</label>
+        <label className="text-xs font-medium text-[var(--muted-foreground)]">
+          {localizeUi("ui.cyoa.extractstep.selectLlmConnection")}
+        </label>
         {noConnections ? (
           <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2">
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
             <div className="text-xs text-amber-400">
               <p className="font-medium">{localizeUi("ui.cyoa.extractstep.noApiConnectionsConfigured")}</p>
-              <p className="mt-0.5">{localizeUi("ui.cyoa.extractstep.youNeedAtLeastOneLlmConnectionWithVision")}{" "}{localizeUi("ui.cyoa.extractstep.addOneInTheConnectionsPanelThenComeBack")}</p>
+              <p className="mt-0.5">
+                {localizeUi("ui.cyoa.extractstep.youNeedAtLeastOneLlmConnectionWithVision")}{" "}
+                {localizeUi("ui.cyoa.extractstep.addOneInTheConnectionsPanelThenComeBack")}
+              </p>
             </div>
           </div>
         ) : (
@@ -74,11 +79,16 @@ export function ExtractStep({ document, documentId }: ExtractStepProps) {
       >
         {isExtracting ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />{localizeUi("ui.cyoa.extractstep.extracting")}{completedCount}/{totalCount} {localizeUi("ui.cyoa.extractstep.pages")}</>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {localizeUi("ui.cyoa.extractstep.extracting")}
+            {completedCount}/{totalCount} {localizeUi("ui.cyoa.extractstep.pages")}
+          </>
         ) : (
           <>
             <Zap className="h-4 w-4" />
-            {allExtracted ?localizeUi("ui.cyoa.extractstep.extractionComplete") :localizeUi("ui.cyoa.extractstep.startExtraction")}
+            {allExtracted
+              ? localizeUi("ui.cyoa.extractstep.extractionComplete")
+              : localizeUi("ui.cyoa.extractstep.startExtraction")}
           </>
         )}
       </button>
@@ -87,7 +97,10 @@ export function ExtractStep({ document, documentId }: ExtractStepProps) {
       {isExtracting && totalCount > 0 && (
         <div className="space-y-1">
           <div className="flex items-center justify-between text-[10px] text-[var(--muted-foreground)]">
-            <span>{localizeUi("ui.cyoa.extractstep.processingPage")} {Math.min(completedCount + 1, totalCount)} {localizeUi("ui.noodle.noodlehome.of")} {totalCount}</span>
+            <span>
+              {localizeUi("ui.cyoa.extractstep.processingPage")} {Math.min(completedCount + 1, totalCount)}{" "}
+              {localizeUi("ui.noodle.noodlehome.of")} {totalCount}
+            </span>
             <span>{Math.round((completedCount / totalCount) * 100)}%</span>
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--muted)]">
@@ -101,7 +114,9 @@ export function ExtractStep({ document, documentId }: ExtractStepProps) {
 
       {images.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-xs font-medium text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.extractstep.imageProgress")}{completedCount}/{images.length})
+          <h3 className="text-xs font-medium text-[var(--muted-foreground)]">
+            {localizeUi("ui.cyoa.extractstep.imageProgress")}
+            {completedCount}/{images.length})
           </h3>
           <div className="flex flex-col gap-1.5">
             {images
@@ -110,7 +125,11 @@ export function ExtractStep({ document, documentId }: ExtractStepProps) {
                 const done = img.extractions !== null;
                 const isProcessing = isExtracting && !done;
                 const isPending = !isExtracting && !done;
-                const extraction = img.extractions as { warnings?: string[]; title?: string; choices?: unknown[] } | null;
+                const extraction = img.extractions as {
+                  warnings?: string[];
+                  title?: string;
+                  choices?: unknown[];
+                } | null;
                 const warnings = extraction?.warnings ?? [];
                 const hasWarnings = warnings.length > 0;
                 const choiceCount = extraction?.choices?.length ?? 0;
@@ -138,22 +157,19 @@ export function ExtractStep({ document, documentId }: ExtractStepProps) {
                       <XCircle className="h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
                     )}
                     <div className="min-w-0 flex-1">
-                      <span className="text-sm text-[var(--foreground)]">{localizeUi("ui.botBrowser.botbrowserview.page")} {img.pageNumber}</span>
+                      <span className="text-sm text-[var(--foreground)]">
+                        {localizeUi("ui.botBrowser.botbrowserview.page")} {img.pageNumber}
+                      </span>
                       {done && extraction?.title && (
-                        <span className="ml-2 text-[10px] text-[var(--muted-foreground)]">
-                          — {extraction.title}
-                        </span>
+                        <span className="ml-2 text-[10px] text-[var(--muted-foreground)]">— {extraction.title}</span>
                       )}
                       {done && choiceCount > 0 && (
                         <span className="ml-1 text-[10px] text-[var(--muted-foreground)]">
-                          · {choiceCount} {localizeUi("ui.cyoa.analyzestep.choice")}{choiceCount !== 1 ?localizeUi("ui.noodle.stageprofileview.s") : ""}
+                          · {choiceCount} {localizeUi("ui.cyoa.analyzestep.choice")}
+                          {choiceCount !== 1 ? localizeUi("ui.noodle.stageprofileview.s") : ""}
                         </span>
                       )}
-                      {hasWarnings && (
-                        <p className="mt-0.5 text-[10px] text-amber-400 leading-tight">
-                          {warnings[0]}
-                        </p>
-                      )}
+                      {hasWarnings && <p className="mt-0.5 text-[10px] text-amber-400 leading-tight">{warnings[0]}</p>}
                     </div>
                     <div className="flex shrink-0 items-center gap-1.5">
                       {img.extractionMethod && (
@@ -162,10 +178,14 @@ export function ExtractStep({ document, documentId }: ExtractStepProps) {
                         </span>
                       )}
                       {isPending && (
-                        <span className="text-[10px] text-[var(--muted-foreground)]">{localizeUi("ui.cyoa.extractstep.waiting")}</span>
+                        <span className="text-[10px] text-[var(--muted-foreground)]">
+                          {localizeUi("ui.cyoa.extractstep.waiting")}
+                        </span>
                       )}
                       {isProcessing && (
-                        <span className="text-[10px] text-[var(--primary)] animate-pulse">{localizeUi("ui.cyoa.extractstep.processing")}</span>
+                        <span className="text-[10px] text-[var(--primary)] animate-pulse">
+                          {localizeUi("ui.cyoa.extractstep.processing")}
+                        </span>
                       )}
                     </div>
                   </div>

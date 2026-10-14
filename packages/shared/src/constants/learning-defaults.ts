@@ -37,8 +37,7 @@ export const TUTOR_PERSONAS: Record<
   },
   encouraging: {
     label: "Encouraging",
-    description:
-      "Supportive. Stays at your level, gives gentle delayed corrections, forgives code-switching.",
+    description: "Supportive. Stays at your level, gives gentle delayed corrections, forgives code-switching.",
     codeSwitching: "forgiven",
     correctionTiming: "sidebar",
     correctionTone: "gentle",

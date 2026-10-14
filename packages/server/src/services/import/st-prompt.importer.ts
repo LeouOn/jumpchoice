@@ -222,7 +222,10 @@ function detectVariableGroups(prompts: STPromptEntry[]): PromptVariableGroup[] {
       }
       const group = groups.get(varName)!;
       if (!group.options.find((o) => o.value === varValue)) {
-        group.options.push({ label: entry.name.replace(/^[âžŠâž‹âžŒâžâžŽâžâžâž‘âž€âžâž‚âžƒâž„âž…]\s*/, ""), value: varValue });
+        group.options.push({
+          label: entry.name.replace(/^[âžŠâž‹âžŒâžâžŽâžâžâž‘âž€âžâž‚âžƒâž„âž…]\s*/, ""),
+          value: varValue,
+        });
       }
     }
   }
