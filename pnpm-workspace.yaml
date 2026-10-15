@@ -30,3 +30,8 @@ onlyBuiltDependencies:
   - onnxruntime-node
   - protobufjs
 
+# Install scripts deliberately skipped. tesseract.js's only script is an
+# opencollective donation banner; CYOA OCR runs from the prebuilt wasm in
+# tesseract.js-core, so listing it here just silences the ignored-build warning.
+ignoredBuiltDependencies:
+  - tesseract.js

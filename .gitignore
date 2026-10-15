@@ -75,3 +75,5 @@ docker-compose.override.yaml
 .playwright-mcp
 # Dev MCP local state (journal, logs, lock)
 .dev-mcp/
+# Coding-agent session state (oh-my-opencode run continuations)
+.omo/run-continuation/
