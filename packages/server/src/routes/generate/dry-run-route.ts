@@ -10,6 +10,9 @@ import {
   parseDecisionPromptQuestionLimit,
   LOCAL_SIDECAR_CONNECTION_ID,
   isClaudeAdaptiveOnlyNoSamplingModel,
+  isMaxVerbosityRequested,
+  MAX_VERBOSITY_LENGTH_INSTRUCTION,
+  MAX_VERBOSITY_OUTPUT_TOKENS,
   resolveProviderReasoningEffort,
   resolveMacros,
   DEFAULT_CONVERSATION_PROMPT,
@@ -1811,6 +1814,12 @@ export async function registerDryRunRoute(app: FastifyInstance) {
     if (modePresetParameters) applyParameterOverrides(modePresetParameters);
     applyParameterOverrides(connectionParams);
     applyParameterOverrides(chatParams);
+    // JumpChoice fork: mirror the generate route's "max" verbosity (provider-generation-runtime.ts).
+    const maxVerbosity = isMaxVerbosityRequested(chatMode, chatMeta.chatParameters);
+    if (maxVerbosity) {
+      verbosity = "high";
+      maxTokens = Math.max(maxTokens, MAX_VERBOSITY_OUTPUT_TOKENS);
+    }
 
     if (!finalMessages.length) {
       // No (or skipped) preset: fall back to raw mapped messages without any agent/tool behavior.
@@ -1991,6 +2000,11 @@ export async function registerDryRunRoute(app: FastifyInstance) {
           : 4;
       finalMessages = injectAtDepth(finalMessages as any, [
         { content: authorNotes, role: "system", depth: authorNotesDepth },
+      ]) as any;
+    }
+    if (maxVerbosity && !impersonate) {
+      finalMessages = injectAtDepth(finalMessages as any, [
+        { content: MAX_VERBOSITY_LENGTH_INSTRUCTION, role: "system", depth: 0 },
       ]) as any;
     }
 

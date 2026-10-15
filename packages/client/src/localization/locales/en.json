@@ -11848,6 +11848,8 @@
   "ui.ui.generationparametersfields.topK": "Top K",
   "ui.ui.generationparametersfields.topP": "Top P",
   "ui.ui.generationparametersfields.verbosity": "Verbosity",
+  "ui.ui.generationparametersfields.verbosityMax": "max",
+  "ui.ui.generationparametersfields.verbosityMaxHint": "Long-form story mode: sends the highest verbosity, raises the output budget to at least {{tokens}} tokens, and asks for a long, fully developed reply. Roleplay and Game chats only.",
   "ui.ui.gifpicker.createAFreeKeyPasteItInto": "Create a free key, paste it into",
   "ui.ui.gifpicker.fileThenRestartMarinara": "file, then restart Marinara.",
   "ui.ui.gifpicker.gifSearchNeedsAGiphyApiKey": "GIF search needs a GIPHY API key.",

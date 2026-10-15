@@ -126,6 +126,7 @@ import {
   isOpenAIGpt6AlwaysReasoningModel,
   isOpenAIGpt6Model,
   LOCAL_SIDECAR_CONNECTION_ID,
+  MAX_VERBOSITY_LENGTH_INSTRUCTION,
   normalizeImagePromptInstructions,
   normalizeTextForMatch,
   parseGroupedSpeakerSegments,
@@ -4128,6 +4129,12 @@ export async function generateRoutes(app: FastifyInstance, options: GenerateRout
           stopSequences,
           effectiveMaxContext,
         } = providerRuntime);
+        // JumpChoice fork: "max" verbosity asks for a long-form story reply, not just a larger budget.
+        if (providerRuntime.maxVerbosity && !input.impersonate) {
+          finalMessages = injectAtDepth(finalMessages, [
+            { content: MAX_VERBOSITY_LENGTH_INSTRUCTION, role: "system", depth: 0 },
+          ]);
+        }
 
         const chatConnectionMaxParallelJobs = Number(conn.maxParallelJobs) || 1;
         const chatConnectionKnownModel = findKnownModel(conn.provider as APIProvider, conn.model.trim());

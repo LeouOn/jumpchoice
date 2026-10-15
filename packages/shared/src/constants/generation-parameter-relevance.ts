@@ -8,6 +8,7 @@ import {
   resolveProviderReasoningEffort,
   shouldSuppressUnknownModelParameters,
 } from "./model-lists.js";
+import type { ChatVerbosityLevel } from "./max-verbosity.js";
 
 /**
  * Which chat generation settings actually change the request for a connection, and what the provider calls each
@@ -368,10 +369,14 @@ export function reasoningEffortChoices(
 
 const VERBOSITY_LEVELS: StoredVerbosityLevel[] = ["low", "medium", "high"];
 
-/** The verbosity buttons to offer, named with the provider's API values; the provider's default is described. */
+/**
+ * The verbosity buttons to offer, named with the provider's API values; the provider's default is described.
+ * `allowMax` adds the fork's long-form "max" choice, offered only for Roleplay and Game chats (max-verbosity.ts).
+ */
 export function verbosityChoices(
   context: GenerationParameterContext,
-): Array<GenerationParameterChoice<StoredVerbosityLevel | null>> {
+  options: { allowMax?: boolean } = {},
+): Array<GenerationParameterChoice<ChatVerbosityLevel | null>> {
   const providerDefault = context.capabilities?.verbosity?.default;
   return [
     {
@@ -384,5 +389,6 @@ export function verbosityChoices(
       label: level,
       ...(providerDefault === level ? { description: "Provider default", isProviderDefault: true } : {}),
     })),
+    ...(options.allowMax ? [{ value: "max" as const, label: "max" }] : []),
   ];
 }

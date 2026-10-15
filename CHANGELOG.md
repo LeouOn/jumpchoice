@@ -11,6 +11,7 @@ This file is the release-notes source of truth for Marinara Engine. Reuse these 
 - Added fork feature documentation: a CYOA documents guide, a Language Learning guide, a fork notice in the README, and a staged-module status note on the Narrative Engine reference.
 - Converted every remaining fork test file from inert vitest syntax into executable regression scripts wired into `pnpm regression`: CYOA document routes, the CYOA extraction/merge/analysis pipeline, narrator and adversary prompt composition, campaign builds and prompt assembly, and the learning routes (now verified against the real file-backed database). Removed one obsolete test file whose target modules were never ported.
 - Added DeepSeek, Zhipu AI (GLM), MiniMax, and LongCat (Meituan) as first-class chat providers, and completed their registration across the connection schema, database provider list, and OpenAI-compatible test-message routing so they behave like the other built-in providers.
+- Restored the **max** Verbosity choice for Roleplay and Game chats (Chat Settings → Advanced Parameters, and the Roleplay setup wizard). It is meant for turning a long setup into a long story: it sends the provider's highest verbosity, raises the output budget to at least 20192 tokens, and asks the model for a long, fully developed reply. A **max** saved on one of these chats loads as **max** again. Conversation chats, connection defaults and presets keep Low/Medium/High.
 
 ### Fixed
 

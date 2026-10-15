@@ -103,7 +103,8 @@ export const generationParametersSchema = z.object({
   frequencyPenalty: z.number().min(-2).max(2).default(0),
   presencePenalty: z.number().min(-2).max(2).default(0),
   reasoningEffort: z.enum(["low", "medium", "high", "xhigh", "maximum"]).nullable().default(null),
-  // JumpChoice fork: older fork builds stored a "max" verbosity level; it always meant "high".
+  // JumpChoice fork: "max" is a chat-level long-form level for Roleplay and Game chats only. Those chat
+  // parameters are read raw (isMaxVerbosityRequested in max-verbosity.ts); everywhere this schema parses, it is "high".
   verbosity: z.preprocess(
     (value) => (value === "max" ? "high" : value),
     z.enum(["low", "medium", "high"]).nullable().default(null),

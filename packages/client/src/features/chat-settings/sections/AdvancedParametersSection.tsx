@@ -219,6 +219,7 @@ export function AdvancedParametersSection({
           baseUrl={typeof conn?.baseUrl === "string" ? conn.baseUrl : null}
           modelCapabilities={connectionModelCapabilities}
           enabledParametersFallback={STRICT_CONNECTION_PARAMETER_SEND_DEFAULTS}
+          allowMaxVerbosity={!isConversation}
           onChange={setParameters}
         />
       </fieldset>
@@ -396,6 +397,8 @@ export function AdvancedParametersSection({
               id: connectionId,
               params: {
                 ...(effectiveParams as unknown as Record<string, unknown>),
+                // "max" is chat-only; connection defaults keep the provider's highest level.
+                ...(effectiveParams.verbosity === "max" ? { verbosity: "high" } : {}),
                 imageCaptioningEnabled: captioningEnabled,
                 imageCaptioningConnectionId: selectedCaptioningConnectionId,
               },

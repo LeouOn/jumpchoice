@@ -8,6 +8,8 @@ import {
   reasoningEffortChoices,
   relevantGenerationParameters,
   verbosityChoices,
+  MAX_VERBOSITY_OUTPUT_TOKENS,
+  type ChatVerbosityLevel,
   type GenerationParameterKey,
   type GenerationParameterSendKey,
   type GenerationParameterSendMap,
@@ -25,7 +27,12 @@ import { parseCustomParametersDraft } from "../../lib/generation-custom-paramete
 import { useTranslation as useUiTranslation } from "react-i18next";
 import { useCustomGenerationParameters } from "../../hooks/use-custom-generation-parameters";
 
-export type EditableGenerationParameters = Pick<
+export type EditableGenerationParameters = Omit<GenerationParameterFields, "verbosity"> & {
+  /** "max" is the fork's long-form level, offered only where `allowMaxVerbosity` is set (Roleplay and Game chats). */
+  verbosity: ChatVerbosityLevel | null;
+};
+
+type GenerationParameterFields = Pick<
   GenerationParameters,
   | "temperature"
   | "maxTokens"
@@ -170,7 +177,8 @@ export function parseEditableGenerationParameters(raw: unknown): EditableGenerat
     source.verbosity === null ||
     source.verbosity === "low" ||
     source.verbosity === "medium" ||
-    source.verbosity === "high"
+    source.verbosity === "high" ||
+    source.verbosity === "max"
   ) {
     next.verbosity = source.verbosity;
   }
@@ -250,6 +258,7 @@ export function GenerationParametersFields({
   baseUrl,
   modelCapabilities,
   enabledParametersFallback = LEGACY_PARAMETER_SEND_DEFAULTS,
+  allowMaxVerbosity = false,
 }: {
   value: EditableGenerationParameters;
   onChange: (next: EditableGenerationParameters) => void;
@@ -263,6 +272,8 @@ export function GenerationParametersFields({
   baseUrl?: string | null;
   modelCapabilities?: ModelParameterCapabilities | null;
   enabledParametersFallback?: GenerationParameterSendMap;
+  /** Offer the long-form "max" verbosity (Roleplay and Game chat parameters only). Elsewhere a saved "max" shows as "high". */
+  allowMaxVerbosity?: boolean;
 }) {
   const { t: localizeUi } = useUiTranslation();
   const effectiveHint = (key: string, displayValue?: string) => {
@@ -302,7 +313,14 @@ export function GenerationParametersFields({
   const effortChoices = reasoningEffortChoices({ ...context, selected: value.reasoningEffort }).filter(
     (choice) => choice.value !== null || !isClaudeOpus55Model(model ?? ""),
   );
-  const verbosityOptions = verbosityChoices(context);
+  // "max" also raises the output budget and adds a length instruction, so it matters even for a provider that
+  // ignores the verbosity setting; such providers get just the default and "max" buttons.
+  const verbosityRelevant = show("verbosity");
+  const showVerbosity = verbosityRelevant || allowMaxVerbosity;
+  const verbosityOptions = verbosityChoices(context, { allowMax: allowMaxVerbosity }).filter(
+    (choice) => verbosityRelevant || choice.value === null || choice.value === "max",
+  );
+  const selectedVerbosity = !allowMaxVerbosity && value.verbosity === "max" ? "high" : value.verbosity;
   const set = <K extends keyof EditableGenerationParameters>(key: K, nextValue: EditableGenerationParameters[K]) => {
     onChange({ ...value, [key]: nextValue });
   };
@@ -605,7 +623,7 @@ export function GenerationParametersFields({
             </div>
           </div>
         )}
-        {show("verbosity") && (
+        {showVerbosity && (
           <div>
             <ParameterHeader
               label={localizeUi("ui.ui.generationparametersfields.verbosity")}
@@ -619,15 +637,23 @@ export function GenerationParametersFields({
                 <button
                   key={choice.value ?? "none"}
                   type="button"
-                  title={choice.description}
+                  title={
+                    choice.value === "max"
+                      ? localizeUi("ui.ui.generationparametersfields.verbosityMaxHint", {
+                          tokens: MAX_VERBOSITY_OUTPUT_TOKENS,
+                        })
+                      : choice.description
+                  }
                   onClick={() => set("verbosity", choice.value)}
-                  aria-pressed={value.verbosity === choice.value}
+                  aria-pressed={selectedVerbosity === choice.value}
                   className={cn(
                     "rounded-md px-2 py-1 text-[0.625rem] font-medium transition-all",
-                    value.verbosity === choice.value ? PARAM_CHOICE_ACTIVE_CLASS : PARAM_CHOICE_IDLE_CLASS,
+                    selectedVerbosity === choice.value ? PARAM_CHOICE_ACTIVE_CLASS : PARAM_CHOICE_IDLE_CLASS,
                   )}
                 >
-                  {choice.label ?? localizeUi("ui.game.gamesurfacecomponent.none")}
+                  {choice.value === "max"
+                    ? localizeUi("ui.ui.generationparametersfields.verbosityMax")
+                    : (choice.label ?? localizeUi("ui.game.gamesurfacecomponent.none"))}
                 </button>
               ))}
             </div>

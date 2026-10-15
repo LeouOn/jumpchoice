@@ -1424,7 +1424,12 @@ export function GameSetupWizard({
       autoTranslate,
       translationOutputTargetLang: translationLanguage.trim() || "en",
       generationParameters: customizeParameters
-        ? { ...(importedGenerationParametersRef.current ?? {}), ...generationParameters }
+        ? {
+            ...(importedGenerationParametersRef.current ?? {}),
+            ...generationParameters,
+            // "max" is a chat-settings choice; game setup keeps the provider's highest level.
+            verbosity: generationParameters.verbosity === "max" ? "high" : generationParameters.verbosity,
+          }
         : undefined,
       promptPresetId,
       gameGmPromptTemplateId: gamePresentation === "anime" ? ANIME_GAME_PROMPT_TEMPLATE_ID : null,

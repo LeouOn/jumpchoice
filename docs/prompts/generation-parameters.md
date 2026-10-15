@@ -46,6 +46,8 @@ When the parameter switch is on, **None** asks the provider to disable thinking 
 
 **Verbosity** controls how long and detailed replies should be. The choices are **None**, **Low**, **Medium**, and **High**. **Low** keeps replies short. **High** encourages longer, more descriptive replies. Only some models use this setting.
 
+In a Roleplay or Game chat's own parameters (**Chat Settings**, then **Advanced Parameters**, or the Roleplay setup wizard), Verbosity also offers **max**. Use it when you write a long setup and want a long story back, not for ordinary back-and-forth. **max** sends **High** to models that support verbosity, raises Max Output Tokens to at least `20192`, and adds a short instruction at the end of the prompt asking for a long, fully developed reply. Because of the last two, **max** is offered even for models that ignore verbosity. Conversation chats, connection defaults and presets do not offer **max**, and a **max** saved there is treated as **High**.
+
 ## The Send switch
 
 Every numeric parameter, plus **Reasoning Effort** and **Verbosity**, has a small on and off switch next to its name. The switch has no text label in the app; this guide calls it the Send switch. Hover it to see "This parameter is sent to the model" or "This parameter is not sent to the model."
@@ -62,16 +64,16 @@ In a chat's **Advanced Parameters**, only **Max Output Tokens** and **Reasoning 
 
 The table shows fallback values displayed by the parameter editor and the default Send switches. These are not necessarily the values sent to the model: without a preset, generation starts at `20192` output tokens (this fork's long-form default) before connection and chat overrides. An active scene can use `8192`. Game uses saved connection and chat parameters, with task defaults only for unconfigured values. The **Effective** line shows the resolved value.
 
-| Parameter | Starting value | Sent by default |
-|---|---|---|
-| Temperature | 1 | No |
-| Max Output Tokens | 20192 | Yes |
-| Top P | 1 | No |
-| Top K | 0 (off) | No |
-| Frequency | 0 | No |
-| Presence | 0 | No |
-| Reasoning Effort | Maximum | Yes |
-| Verbosity | High | No |
+| Parameter         | Starting value | Sent by default |
+| ----------------- | -------------- | --------------- |
+| Temperature       | 1              | No              |
+| Max Output Tokens | 20192          | Yes             |
+| Top P             | 1              | No              |
+| Top K             | 0 (off)        | No              |
+| Frequency         | 0              | No              |
+| Presence          | 0              | No              |
+| Reasoning Effort  | Maximum        | Yes             |
+| Verbosity         | High           | No              |
 
 The value still shows in the box even when the **Send toggle** is off. It is just not sent until you turn the toggle on.
 
@@ -144,7 +146,7 @@ Parameters are resolved one field at a time, in this order:
 1. The selected preset's **Parameters**, or built-in generation defaults when no preset is used (temperature `1`, maximum output `4096`). In Roleplay, a connection's preset override takes precedence over the chat's selected preset.
 2. The connection's **Default Parameters**.
 3. This chat's **Advanced Parameters**.
-4. Mode rules: an active scene chat sets output to `8192`, reasoning to **Maximum**, and verbosity to **High**. Game uses the saved connection and chat parameters without forcing sampling, reasoning, or a minimum output size. Its helper calls also honor saved parameters; task defaults apply only when a value is not configured.
+4. Mode rules: an active scene chat sets output to `20192`, reasoning to **Maximum**, and verbosity to **High**. A Roleplay or Game chat whose own Verbosity is **max** sends **High** and at least `20192` output tokens, and gets the long-reply instruction. Game uses the saved connection and chat parameters without forcing sampling, reasoning, or a minimum output size. Its helper calls also honor saved parameters; task defaults apply only when a value is not configured.
 5. Output limits: Game applies the model's known output limit, and the connection's **Max Output Tokens override** caps requests in every mode. Available context can reduce the output budget further.
 
 The **Effective** line beside a parameter shows the saved value and its winning layer, including mode rules and output caps. In the connection editor it uses the currently open chat with that connection, or a Roleplay baseline when no chat is open. Save edits to refresh it. A disabled Send switch is shown as **not sent**; providers can still impose required parameters or normalize unsupported values. Custom Parameters and context fitting may further change the final request.

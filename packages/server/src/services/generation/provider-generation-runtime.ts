@@ -1,5 +1,7 @@
 import {
   isClaudeAdaptiveOnlyNoSamplingModel,
+  isMaxVerbosityRequested,
+  MAX_VERBOSITY_OUTPUT_TOKENS,
   normalizeThinkingTagPairs,
   resolveManagedGenerationParameters,
   resolveProviderReasoningEffort,
@@ -101,6 +103,8 @@ export type ResolvedGenerationParameters = GenerationParameterArgs["initial"] & 
   enableThinking: boolean;
   isClaudeNoSampling: boolean;
   providerTopK: number | undefined;
+  /** The chat asked for "max" verbosity and its mode supports it: add the long-form length instruction. */
+  maxVerbosity: boolean;
 };
 
 export type GenerationProviderRuntime = GenerationParameterValues &
@@ -184,6 +188,16 @@ export function resolveGenerationParameters(args: GenerationParameterArgs): Reso
     forceParameters("scene", { maxTokens: 20_192, reasoningEffort: "maximum", verbosity: "high" });
   }
 
+  // JumpChoice fork: "max" verbosity on a long-form chat sends the highest provider level and at least the
+  // long-form output budget; the generate route adds the length instruction. The game output cap below still applies.
+  const maxVerbosity = isMaxVerbosityRequested(args.chatMode, args.chatParameters);
+  if (maxVerbosity) {
+    forceParameters("chat", {
+      verbosity: "high",
+      maxTokens: Math.max(runtime.maxTokens, MAX_VERBOSITY_OUTPUT_TOKENS),
+    });
+  }
+
   if (args.chatMode === "game") {
     const capped = clampGenerationMaxOutputTokens({
       provider: args.connection.provider,
@@ -248,6 +262,7 @@ export function resolveGenerationParameters(args: GenerationParameterArgs): Reso
     enableThinking,
     isClaudeNoSampling,
     providerTopK,
+    maxVerbosity,
   };
 }
 

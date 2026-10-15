@@ -829,9 +829,12 @@ function SetupGenerationParametersPanel({
   connection,
   onEnabledChange,
   onChange,
+  allowMaxVerbosity = false,
 }: {
   enabled: boolean;
   value: EditableGenerationParameters;
+  /** Offer the long-form "max" verbosity (Roleplay setup only). */
+  allowMaxVerbosity?: boolean;
   /** The selected connection; its provider and model decide which settings are offered. */
   connection: { id?: string | null; provider?: string | null; model?: string | null; baseUrl?: unknown } | null;
   onEnabledChange: (enabled: boolean) => void;
@@ -871,6 +874,7 @@ function SetupGenerationParametersPanel({
             model={connection?.model ?? null}
             baseUrl={typeof connection?.baseUrl === "string" ? connection.baseUrl : null}
             modelCapabilities={modelCapabilities}
+            allowMaxVerbosity={allowMaxVerbosity}
             onChange={onChange}
           />
         </div>
@@ -2800,6 +2804,7 @@ function RoleplaySetupWizard({ chat, onFinish, defaultsApplied, defaultsAction }
           connection={selectedConnection}
           onEnabledChange={setCustomizeParameters}
           onChange={setGenerationParameters}
+          allowMaxVerbosity
         />
       </div>
     );
