@@ -18,6 +18,7 @@ import {
   APP_VERSION,
   compareCapabilityPackageVersions,
   getCapabilityApiCompatibilityIssue,
+  supportedCapabilityApi,
   supportsEngineVersion,
   type CapabilityCatalogPackage,
 } from "@jumpchoice/shared";
@@ -158,6 +159,34 @@ function isPackageCompatible(entry: CapabilityCatalogPackage) {
   return supportsEngineVersion(entry.manifest, APP_VERSION) && !getCapabilityApiCompatibilityIssue(entry.manifest);
 }
 
+type IncompatibilityReason =
+  | { key: "requiresNewerEngine"; params: { version: string } }
+  | { key: "requiresOlderEngine"; params: { version: string } }
+  | { key: "requiresCapabilityApi"; params: { required: string; supported: string } };
+
+/** Why this Engine can't install the catalog entry, for the disabled button's tooltip. */
+function packageIncompatibility(entry: CapabilityCatalogPackage): IncompatibilityReason | null {
+  const { engine } = entry.manifest;
+  if (compareCapabilityPackageVersions(APP_VERSION, engine.min) < 0) {
+    return { key: "requiresNewerEngine", params: { version: engine.min } };
+  }
+  if (compareCapabilityPackageVersions(APP_VERSION, engine.maxExclusive) >= 0) {
+    return { key: "requiresOlderEngine", params: { version: engine.maxExclusive } };
+  }
+  // Schema v1 manifests have no capability API requirement.
+  if (entry.manifest.schemaVersion !== 1 && getCapabilityApiCompatibilityIssue(entry.manifest)) {
+    const { major, minor } = entry.manifest.capabilityApi;
+    return {
+      key: "requiresCapabilityApi",
+      params: {
+        required: `${major}.${minor}`,
+        supported: `${supportedCapabilityApi.major}.${supportedCapabilityApi.minor}`,
+      },
+    };
+  }
+  return null;
+}
+
 export function AgentCatalogView() {
   const { t: localizeUi } = useUiTranslation();
   const closeAgentCatalog = useUIStore((state) => state.closeAgentCatalog);
@@ -249,6 +278,10 @@ export function AgentCatalogView() {
       ]
     : [];
   const selectedCompatible = selected ? isPackageCompatible(selected) : false;
+  const selectedIncompatibility = selected && !selectedCompatible ? packageIncompatibility(selected) : null;
+  const selectedIncompatibilityTitle = selectedIncompatibility
+    ? localizeUi(`ui.agents.agentcatalogview.${selectedIncompatibility.key}`, selectedIncompatibility.params)
+    : undefined;
   const selectedVersionComparison = selectedInstalled
     ? compareCapabilityPackageVersions(selected.manifest.version, selectedInstalled.version)
     : 0;
@@ -849,13 +882,7 @@ export function AgentCatalogView() {
                           type="button"
                           className={DETAIL_ACTION_CLASS}
                           disabled={packageActionPending || !selectedCompatible}
-                          title={
-                            !selectedCompatible
-                              ? localizeUi("ui.agents.agentcatalogview.requiresNewerEngine", {
-                                  version: selected.manifest.engine.min,
-                                })
-                              : undefined
-                          }
+                          title={selectedIncompatibilityTitle}
                           onClick={() => void handleInstall(selected)}
                         >
                           <Download size="0.9rem" /> {localizeUi("ui.agents.agentcatalogview.update")}
@@ -867,13 +894,7 @@ export function AgentCatalogView() {
                       type="button"
                       className={DETAIL_ACTION_CLASS}
                       disabled={packageActionPending || !selectedCompatible}
-                      title={
-                        !selectedCompatible
-                          ? localizeUi("ui.agents.agentcatalogview.requiresNewerEngine", {
-                              version: selected.manifest.engine.min,
-                            })
-                          : undefined
-                      }
+                      title={selectedIncompatibilityTitle}
                       onClick={() => void handleInstall(selected)}
                     >
                       {install.isPending ? (
