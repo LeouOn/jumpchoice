@@ -11,6 +11,8 @@ import {
   capabilityPackageManifestSchema,
   compareCapabilityPackageVersions,
   getCapabilityApiCompatibilityIssue,
+  getEngineCompatibilityIssue,
+  supportsEngineVersion,
   GM_VERB_TABLE_ASSET_PATH,
   GM_VERB_TABLE_MAX_BYTES,
   RULESET_ASSET_PATH,
@@ -487,13 +489,6 @@ async function fetchBytes(url: string, maximum: number): Promise<Buffer> {
   });
   if (!response.ok) throw new Error(`Download failed with HTTP ${response.status}`);
   return Buffer.from(await response.arrayBuffer());
-}
-
-function supportsEngineVersion(entry: CapabilityCatalogPackage, engineVersion: string): boolean {
-  return (
-    compareCapabilityPackageVersions(engineVersion, entry.manifest.engine.min) >= 0 &&
-    compareCapabilityPackageVersions(engineVersion, entry.manifest.engine.maxExclusive) < 0
-  );
 }
 
 /** Whether any row of these entries names a column the ruleset keeps up to date. Read structurally
@@ -1193,6 +1188,15 @@ function rulesetCarriesSections141Keys(ruleset: { sheet?: unknown } | undefined)
   );
 }
 
+/** Whether an unattended startup migration may install this catalog entry on this Engine. */
+function isCatalogPackageInstallableHere(entry: CapabilityCatalogPackage): boolean {
+  return (
+    supportsEngineVersion(entry, APP_VERSION) &&
+    !getCapabilityApiCompatibilityIssue(entry.manifest) &&
+    !getCapabilityPackageInstallIssue(entry.manifest)
+  );
+}
+
 export function getCapabilityPackageInstallIssue(
   manifest: CapabilityCatalogPackage["manifest"],
   rulesetDocument?: unknown,
@@ -1756,9 +1760,8 @@ async function installCatalogPackage(entry: CapabilityCatalogPackage, activateDu
   assertNotDowngrade(initiallyInstalled, manifest.version);
   const capabilityApiIssue = getCapabilityApiCompatibilityIssue(manifest);
   if (capabilityApiIssue) throw new Error(capabilityApiIssue);
-  if (!supportsEngineVersion(entry, APP_VERSION)) {
-    throw new Error(`Package requires Marinara Engine ${manifest.engine.min} to below ${manifest.engine.maxExclusive}`);
-  }
+  const engineIssue = getEngineCompatibilityIssue(manifest, APP_VERSION);
+  if (engineIssue) throw new Error(engineIssue);
   const archive = await fetchBytes(artifact.url, Math.min(artifact.bytes + 1, MAX_ARTIFACT_BYTES));
   if (archive.byteLength !== artifact.bytes) throw new Error("Downloaded package size does not match the catalog");
   const digest = createHash("sha256").update(archive).digest("hex");
@@ -2538,7 +2541,18 @@ export const capabilityPackageManager = {
     const catalog = await this.catalog(safeFetch, null);
     const installedById = new Map((await this.installed()).map((item) => [item.id, item]));
     for (const entry of catalog.packages) {
-      if (installedById.get(entry.manifest.id)?.version === entry.manifest.version) continue;
+      const installed = installedById.get(entry.manifest.id);
+      if (installed && compareCapabilityPackageVersions(installed.version, entry.manifest.version) >= 0) continue;
+      // A catalog entry this Engine cannot run must not abort startup; the
+      // user can install it from the catalog after updating the Engine.
+      if (!isCatalogPackageInstallableHere(entry)) {
+        logger.debug(
+          "Skipping package %s during legacy migration: incompatible with engine %s",
+          entry.manifest.id,
+          APP_VERSION,
+        );
+        continue;
+      }
       await installCatalogPackage(entry, true);
     }
     // Existing-install completion also depends on per-chat selections becoming
@@ -2565,10 +2579,11 @@ export const capabilityPackageManager = {
       // this path auto-installs what it finds without asking.
       const catalog = await this.catalog(safeFetch, null);
       const entry = catalog.packages.find((candidate) => candidate.manifest.id === "noodle");
-      if (!entry) {
+      if (!entry || !isCatalogPackageInstallableHere(entry)) {
         // Engine and Agents are published independently. Do not turn the short
-        // catalog propagation window into a startup warning or mark migration
-        // complete: a later startup must still install Noodle once it appears.
+        // catalog propagation window, or a Noodle that needs a newer Engine, into
+        // a startup warning or mark migration complete: a later startup must
+        // still install Noodle once a compatible version appears.
         return { migrated: false, legacy: true, pending: true as const };
       }
       await installCatalogPackage(entry, true);

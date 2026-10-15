@@ -12,6 +12,11 @@ This file is the release-notes source of truth for Marinara Engine. Reuse these 
 - Converted every remaining fork test file from inert vitest syntax into executable regression scripts wired into `pnpm regression`: CYOA document routes, the CYOA extraction/merge/analysis pipeline, narrator and adversary prompt composition, campaign builds and prompt assembly, and the learning routes (now verified against the real file-backed database). Removed one obsolete test file whose target modules were never ported.
 - Added DeepSeek, Zhipu AI (GLM), MiniMax, and LongCat (Meituan) as first-class chat providers, and completed their registration across the connection schema, database provider list, and OpenAI-compatible test-message routing so they behave like the other built-in providers.
 
+### Fixed
+
+- OpenAI-compatible connections whose base URL was pasted with a trailing `/chat/completions` or `/responses` no longer send requests to a doubled path; the suffix is stripped for chat, connection tests and Conversation mode.
+- Startup no longer fails when a catalog package (such as Beholder or Noodle) needs a newer Engine: the availability migrations skip it and stay retryable, compatible packages still install, and the Download Agents page disables **Install** and **Update** for packages this Engine cannot run.
+
 ## [2.5.0]
 
 - Release notes too long for a GitHub release are trimmed at a whole entry and end with a link to the full changelog, so publishing a large release such as this one no longer fails (#7146).

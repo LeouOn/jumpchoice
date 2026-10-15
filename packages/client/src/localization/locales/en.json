@@ -3307,6 +3307,7 @@
   "ui.agents.agentcatalogview.permissionScopeNotice": "Chat read/write permissions gate the package persistence API. Chat write also permits model-command writes. Network, storage and UI describe access; they do not sandbox package code.",
   "ui.agents.agentcatalogview.publishedAgentsWillAppearHereAutomatically": "Published agents will appear here automatically.",
   "ui.agents.agentcatalogview.readHowThisAgentWorks": "Read how this agent works",
+  "ui.agents.agentcatalogview.requiresNewerEngine": "Requires Marinara Engine v{{version}}+",
   "ui.agents.agentcatalogview.roleplayMode": "Roleplay",
   "ui.agents.agentcatalogview.searchAgents": "Search agents",
   "ui.agents.agentcatalogview.searchDownloadableAgents": "Search downloadable agents",

@@ -12,7 +12,7 @@ import { createCharactersStorage } from "../services/storage/characters.storage.
 import { createConnectionsStorage } from "../services/storage/connections.storage.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { withConnectionFallbackProvider } from "../services/llm/connection-fallback-provider.js";
-import { CONVERSATION_SCHEDULE_DAYS, PROVIDERS, localAuthProviderBaseUrl } from "@jumpchoice/shared";
+import { CONVERSATION_SCHEDULE_DAYS } from "@jumpchoice/shared";
 import type { CharacterData, ConversationStatusOverride } from "@jumpchoice/shared";
 import {
   generateCharacterSchedule,
@@ -55,16 +55,7 @@ import {
   type MessageIntent,
 } from "../services/conversation/intent.service.js";
 import { parseConversationStatusOverrides } from "../services/generation/conversation-context-utils.js";
-
-function resolveBaseUrl(connection: { baseUrl: string | null; provider: string }): string {
-  if (connection.baseUrl) return connection.baseUrl;
-  // Login-backed providers own their endpoint internally; return sentinels so
-  // downstream baseUrl gates pass.
-  const localAuthBaseUrl = localAuthProviderBaseUrl(connection.provider);
-  if (localAuthBaseUrl) return localAuthBaseUrl;
-  const providerDef = PROVIDERS[connection.provider as keyof typeof PROVIDERS];
-  return providerDef?.defaultBaseUrl ?? "";
-}
+import { resolveBaseUrl } from "../services/generation/connection-base-url.js";
 
 function hasSchedules(value: unknown): value is CharacterSchedules {
   return !!value && typeof value === "object" && Object.keys(value as Record<string, unknown>).length > 0;

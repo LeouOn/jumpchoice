@@ -37,9 +37,11 @@ import {
 } from "../../packages/server/src/services/llm/providers/google.provider.js";
 import {
   extractOpenAICompatibleContentBlocks,
+  normalizeOpenAIBaseUrl,
   normalizeOpenAIChatCompletionsResponseFormat,
   OpenAIProvider,
 } from "../../packages/server/src/services/llm/providers/openai.provider.js";
+import { resolveBaseUrl } from "../../packages/server/src/services/generation/connection-base-url.js";
 import {
   isOpenRouterApiUrl,
   OPENROUTER_APP_CATEGORIES,
@@ -1509,6 +1511,9 @@ assert.equal(
   "Provider catalogs should keep their existing unknown-model compatibility guard",
 );
 assert.equal(isNativeGlmEndpoint("https://api.z.ai/api/paas/v4/"), true);
+assert.equal(isNativeGlmEndpoint("https://api.z.ai/api/paas/v4"), true);
+assert.equal(isNativeGlmEndpoint("https://api.z.ai/api/paas/v4/chat/completions"), true);
+assert.equal(isNativeGlmEndpoint("https://open.bigmodel.cn/api/paas/v4"), true);
 assert.equal(isNativeGlmEndpoint("https://example.com/v1"), false);
 
 const glm52HighBody: Record<string, unknown> = {};
@@ -3064,11 +3069,50 @@ assert.equal(abortedFallback.calls, 0, "user cancellation must not trigger a fal
       assert.equal(captured.authorization, "Bearer fork-secret", `${provider} must send the bearer key`);
     }
     assert.equal(forkProviderRequests.length, 4, "each fork provider must complete exactly one request in the loop");
+
+    // A base URL configured with a trailing endpoint path must not be doubled.
+    const normalizedZhipu = createLLMProvider("zhipu", `${baseUrl}/chat/completions/`, "fork-secret");
+    assert.equal(
+      await collectProviderOutput(normalizedZhipu, { model: "glm-5.2", stream: false }),
+      "fork provider reply",
+    );
+    assert.equal(
+      forkProviderRequests.at(-1)?.url,
+      "/chat/completions",
+      "trailing /chat/completions in baseUrl must not be duplicated",
+    );
   } finally {
     await new Promise<void>((resolve, reject) =>
       forkProviderServer.close((error) => (error ? reject(error) : resolve())),
     );
   }
+
+  assert.equal(
+    normalizeOpenAIBaseUrl("https://api.z.ai/api/paas/v4/chat/completions/"),
+    "https://api.z.ai/api/paas/v4",
+  );
+  assert.equal(normalizeOpenAIBaseUrl("https://api.z.ai/api/paas/v4/responses"), "https://api.z.ai/api/paas/v4");
+  assert.equal(normalizeOpenAIBaseUrl(" https://api.openai.com/v1/ "), "https://api.openai.com/v1");
+  assert.equal(
+    resolveBaseUrl({ provider: "zai", baseUrl: "https://api.z.ai/api/paas/v4/chat/completions" }),
+    "https://api.z.ai/api/paas/v4",
+    "resolveBaseUrl should strip a trailing /chat/completions",
+  );
+  assert.equal(
+    resolveBaseUrl({ provider: "openai", baseUrl: "https://api.openai.com/v1/responses/" }),
+    "https://api.openai.com/v1",
+    "resolveBaseUrl should strip a trailing /responses",
+  );
+  assert.equal(
+    resolveBaseUrl({ provider: "zhipu", baseUrl: null }),
+    "https://open.bigmodel.cn/api/paas/v4",
+    "the fork's zhipu provider keeps the China endpoint; upstream's zai covers api.z.ai",
+  );
+  assert.equal(
+    resolveBaseUrl({ provider: "zhipu", baseUrl: "https://open.bigmodel.cn/api/paas/v4/chat/completions" }),
+    "https://open.bigmodel.cn/api/paas/v4",
+    "a saved zhipu China endpoint must not be rewritten to another region",
+  );
 }
 
 assert.deepEqual(

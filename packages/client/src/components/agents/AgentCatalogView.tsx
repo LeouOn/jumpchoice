@@ -14,7 +14,13 @@ import {
   Trash2,
   TriangleAlert,
 } from "lucide-react";
-import { compareCapabilityPackageVersions, type CapabilityCatalogPackage } from "@jumpchoice/shared";
+import {
+  APP_VERSION,
+  compareCapabilityPackageVersions,
+  getCapabilityApiCompatibilityIssue,
+  supportsEngineVersion,
+  type CapabilityCatalogPackage,
+} from "@jumpchoice/shared";
 import { toast } from "sonner";
 import {
   isAppCapabilityPackage,
@@ -147,6 +153,11 @@ function packageModes(packageId: string): readonly CatalogMode[] {
   return OFFICIAL_PACKAGE_MODES[packageId] ?? [];
 }
 
+/** Whether this Engine can install the catalog entry (engine range and capability API). */
+function isPackageCompatible(entry: CapabilityCatalogPackage) {
+  return supportsEngineVersion(entry.manifest, APP_VERSION) && !getCapabilityApiCompatibilityIssue(entry.manifest);
+}
+
 export function AgentCatalogView() {
   const { t: localizeUi } = useUiTranslation();
   const closeAgentCatalog = useUIStore((state) => state.closeAgentCatalog);
@@ -208,7 +219,7 @@ export function AgentCatalogView() {
   const installablePackageIds = useMemo(
     () =>
       (catalog.data?.packages ?? [])
-        .filter((entry) => !installedById.has(entry.manifest.id))
+        .filter((entry) => !installedById.has(entry.manifest.id) && isPackageCompatible(entry))
         .map((entry) => entry.manifest.id),
     [catalog.data, installedById],
   );
@@ -237,6 +248,7 @@ export function AgentCatalogView() {
           : []),
       ]
     : [];
+  const selectedCompatible = selected ? isPackageCompatible(selected) : false;
   const selectedVersionComparison = selectedInstalled
     ? compareCapabilityPackageVersions(selected.manifest.version, selectedInstalled.version)
     : 0;
@@ -836,7 +848,14 @@ export function AgentCatalogView() {
                         <button
                           type="button"
                           className={DETAIL_ACTION_CLASS}
-                          disabled={packageActionPending}
+                          disabled={packageActionPending || !selectedCompatible}
+                          title={
+                            !selectedCompatible
+                              ? localizeUi("ui.agents.agentcatalogview.requiresNewerEngine", {
+                                  version: selected.manifest.engine.min,
+                                })
+                              : undefined
+                          }
                           onClick={() => void handleInstall(selected)}
                         >
                           <Download size="0.9rem" /> {localizeUi("ui.agents.agentcatalogview.update")}
@@ -847,7 +866,14 @@ export function AgentCatalogView() {
                     <button
                       type="button"
                       className={DETAIL_ACTION_CLASS}
-                      disabled={packageActionPending}
+                      disabled={packageActionPending || !selectedCompatible}
+                      title={
+                        !selectedCompatible
+                          ? localizeUi("ui.agents.agentcatalogview.requiresNewerEngine", {
+                              version: selected.manifest.engine.min,
+                            })
+                          : undefined
+                      }
                       onClick={() => void handleInstall(selected)}
                     >
                       {install.isPending ? (

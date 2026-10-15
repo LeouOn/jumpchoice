@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { APP_VERSION } from "../constants/defaults.js";
 import { agentResultTypeSchema } from "./agent.schema.js";
 import { isRulesetCatalogAssetPath, RULESET_ASSET_PATH } from "./ruleset.schema.js";
 
@@ -1186,4 +1187,28 @@ export function compareCapabilityPackageVersions(left: string, right: string): n
 export function isInstalledCapabilityReady(installed: InstalledCapabilityPackage): boolean {
   if (installed.status !== "active") return false;
   return !installed.manifest.entrypoints.server || installed.readiness === "ready";
+}
+
+export function supportsEngineVersion(
+  target:
+    { engine: { min: string; maxExclusive: string } } | { manifest: { engine: { min: string; maxExclusive: string } } },
+  engineVersion: string = APP_VERSION,
+): boolean {
+  const engine = "manifest" in target ? target.manifest.engine : target.engine;
+  return (
+    compareCapabilityPackageVersions(engineVersion, engine.min) >= 0 &&
+    compareCapabilityPackageVersions(engineVersion, engine.maxExclusive) < 0
+  );
+}
+
+export function getEngineCompatibilityIssue(
+  target:
+    { engine: { min: string; maxExclusive: string } } | { manifest: { engine: { min: string; maxExclusive: string } } },
+  engineVersion: string = APP_VERSION,
+): string | null {
+  const engine = "manifest" in target ? target.manifest.engine : target.engine;
+  if (!supportsEngineVersion(target, engineVersion)) {
+    return `Package requires Marinara Engine ${engine.min} to below ${engine.maxExclusive}`;
+  }
+  return null;
 }

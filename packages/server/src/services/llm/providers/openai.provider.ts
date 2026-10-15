@@ -32,6 +32,7 @@ import {
   supportsXhighReasoningEffort,
 } from "@jumpchoice/shared";
 import { logger } from "../../../lib/logger.js";
+import { normalizeOpenAIBaseUrl } from "../../generation/connection-base-url.js";
 import { isLocalInferenceBaseUrl } from "../../../middleware/ip-allowlist.js";
 import {
   applyGlmThinkingParameters,
@@ -154,6 +155,8 @@ export function normalizeOpenAIChatCompletionsResponseFormat(
   return responseFormat;
 }
 
+export { normalizeOpenAIBaseUrl };
+
 /**
  * Handles OpenAI, OpenRouter, Mistral, Cohere, and any OpenAI-compatible endpoint.
  */
@@ -173,7 +176,7 @@ export class OpenAIProvider extends BaseLLMProvider {
     /** When true, body.tools is sent even if the model name triggers parameter suppression. */
     private readonly allowsToolCalling: boolean = false,
   ) {
-    super(baseUrl, apiKey, defaultMaxContext, defaultOpenrouterProvider, maxTokensOverride);
+    super(normalizeOpenAIBaseUrl(baseUrl), apiKey, defaultMaxContext, defaultOpenrouterProvider, maxTokensOverride);
   }
 
   private static openAIFileContentParts(

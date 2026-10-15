@@ -47,6 +47,7 @@ import {
 } from "../services/llm/local-context-limit.js";
 import { resetMemoryRecallVectorizerCache } from "../services/memory-recall-embedding.js";
 import { withLongTermMemoryEmbeddingChange } from "../services/generation/long-term-memory-runtime.js";
+import { normalizeOpenAIBaseUrl } from "../services/generation/connection-base-url.js";
 import { createLLMProvider } from "../services/llm/provider-registry.js";
 import { resolveStoredChatOptions, resolveStoredMaxTokens } from "../services/generation/generation-parameters.js";
 import { describeEmptyModelResponse, sentOutputBudget } from "../services/generation/empty-response-reason.js";
@@ -206,7 +207,8 @@ function describeTestMessageTarget(provider: string, baseUrl: string, model: str
   if (!baseUrl) return "(no base URL)";
   if (provider === "google_vertex") return buildGoogleVertexModelUrl(baseUrl, model, "generateContent");
   if (isOpenAICompatibleProvider(provider)) {
-    return `${baseUrl}${usesResponsesEndpointForTestMessage(provider, model) ? "/responses" : "/chat/completions"}`;
+    const cleanBase = normalizeOpenAIBaseUrl(baseUrl);
+    return `${cleanBase}${usesResponsesEndpointForTestMessage(provider, model) ? "/responses" : "/chat/completions"}`;
   }
   if (provider === "anthropic") return `${baseUrl}/messages`;
   return baseUrl;
@@ -358,6 +360,9 @@ export function buildConnectionTestCatalogUrl(
 
 function normalizeConnectionTestBaseUrl(baseUrl: string, provider: string): string {
   if (provider === "google") return normalizeGoogleGenerativeLanguageBaseUrl(baseUrl);
+  if (isOpenAICompatibleProvider(provider)) {
+    return normalizeOpenAIBaseUrl(baseUrl);
+  }
   if (provider !== "image_generation") return baseUrl.replace(/\/+$/, "");
   try {
     return normalizeLoopbackUrl(baseUrl).replace(/\/+$/, "");

@@ -1071,6 +1071,72 @@ try {
     name: "about-me-keeper",
     version: "1.1.0",
   });
+
+  capabilityPackageManager.catalog = async () => ({
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    packages: [
+      catalogEntry(
+        capabilityPackageManifestSchema.parse({
+          ...legacyManifest,
+          id: "noodle",
+          name: "Noodle",
+          version: "1.2.14",
+          engine: { min: "9.9.0", maxExclusive: "10.0.0" },
+        }),
+      ),
+    ],
+  });
+  try {
+    assert.deepEqual(
+      await capabilityPackageManager.migrateExtractedNoodleAvailability(true),
+      { migrated: false, legacy: true, pending: true },
+      "A Noodle catalog entry requiring a newer Engine must remain retryable without failing startup",
+    );
+    assert.equal(
+      existsSync(noodleMigrationPath),
+      false,
+      "An engine-incompatible Noodle entry must not prematurely complete the extraction migration",
+    );
+  } finally {
+    capabilityPackageManager.catalog = originalCatalog;
+  }
+
+  rmSync(migrationPath, { force: true });
+  writeRegistry([installedPackage("already-installed", ["agent"], "1.0.0")]);
+  capabilityPackageManager.catalog = async () => ({
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    packages: [
+      catalogEntry(
+        capabilityPackageManifestSchema.parse({
+          ...legacyManifest,
+          id: "already-installed",
+          name: "already-installed",
+          version: "1.0.0",
+        }),
+      ),
+      catalogEntry(
+        capabilityPackageManifestSchema.parse({
+          ...legacyManifest,
+          id: "incompatible-agent",
+          name: "incompatible-agent",
+          version: "1.3.6",
+          engine: { min: "9.9.0", maxExclusive: "10.0.0" },
+        }),
+      ),
+    ],
+  });
+  try {
+    const legacyMigrationResult = await capabilityPackageManager.migrateLegacyAvailability(true);
+    assert.deepEqual(
+      legacyMigrationResult,
+      { migrated: true, legacy: true, complete: false },
+      "Legacy migration must skip engine-incompatible packages without throwing an unhandled exception",
+    );
+  } finally {
+    capabilityPackageManager.catalog = originalCatalog;
+  }
   const updateCatalog = capabilityCatalogSchema.parse({
     schemaVersion: 1,
     generatedAt: "2026-07-16T00:00:00.000Z",
