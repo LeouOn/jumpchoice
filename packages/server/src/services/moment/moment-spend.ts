@@ -96,10 +96,10 @@ export function summarizeMomentSpend(
 export function evaluateMomentCaps(status: MomentSpendStatus, estimateUsd = MOMENT_ESTIMATED_COST_USD): string | null {
   const epsilon = 1e-9;
   if (status.todayUsd + estimateUsd > status.dailyCapUsd + epsilon) {
-    return `Daily moment cap reached: $${status.todayUsd.toFixed(2)} spent today, the next render is estimated at $${estimateUsd.toFixed(2)} and the daily cap is $${status.dailyCapUsd.toFixed(2)}. Raise the cap in Settings → Images → Moments, or try again tomorrow.`;
+    return `Daily moment cap reached: $${status.todayUsd.toFixed(2)} spent today, the next render is estimated at $${estimateUsd.toFixed(2)} and the daily cap is $${status.dailyCapUsd.toFixed(2)}. Raise the cap in Settings → Generations → Image Generation → Moments, or try again tomorrow.`;
   }
   if (status.totalUsd + estimateUsd > status.totalCapUsd + epsilon) {
-    return `Total moment cap reached: $${status.totalUsd.toFixed(2)} spent in total, the next render is estimated at $${estimateUsd.toFixed(2)} and the total cap is $${status.totalCapUsd.toFixed(2)}. Raise the cap in Settings → Images → Moments to continue.`;
+    return `Total moment cap reached: $${status.totalUsd.toFixed(2)} spent in total, the next render is estimated at $${estimateUsd.toFixed(2)} and the total cap is $${status.totalCapUsd.toFixed(2)}. Raise the cap in Settings → Generations → Image Generation → Moments to continue.`;
   }
   return null;
 }
@@ -111,7 +111,7 @@ export function evaluateAccountCeiling(
   estimateUsd = MOMENT_ESTIMATED_COST_USD,
 ): string | null {
   if (totalUsage + estimateUsd >= ceilingUsd) {
-    return `OpenRouter account usage ceiling reached: the account has used $${totalUsage.toFixed(2)} and the ceiling is $${ceilingUsd.toFixed(2)}. Raise or clear the ceiling in Settings → Images → Moments to continue.`;
+    return `OpenRouter account usage ceiling reached: the account has used $${totalUsage.toFixed(2)} and the ceiling is $${ceilingUsd.toFixed(2)}. Raise or clear the ceiling in Settings → Generations → Image Generation → Moments to continue.`;
   }
   return null;
 }

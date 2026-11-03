@@ -208,7 +208,7 @@ export async function momentRoutes(app: FastifyInstance, opts: { deps?: MomentRo
     if (!fallback) {
       throw new MomentRequestError(
         400,
-        "No image connection found for moments. Add an OpenRouter image connection and set it as the default Images connection, or choose one in Settings → Images → Moments.",
+        "No image connection found for moments. Add an OpenRouter image connection and set it as the default Images connection, or choose one in Settings → Generations → Image Generation → Moments.",
       );
     }
     return fallback;
