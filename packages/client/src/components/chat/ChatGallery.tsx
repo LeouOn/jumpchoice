@@ -1,7 +1,7 @@
 // ──────────────────────────────────────────────
 // Chat Gallery — Image grid for per-chat generated images
 // ──────────────────────────────────────────────
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Camera,
@@ -40,7 +40,6 @@ import { useGalleryStore } from "../../stores/gallery.store";
 import { toast } from "sonner";
 import { ImageUploadDropzone } from "../ui/ImageUploadDropzone";
 import { Modal } from "../ui/Modal";
-import { MomentRenderModal } from "./MomentRenderModal";
 import { buildCardAssetMarkdown, dispatchCardAssetInsert } from "../../lib/card-asset-links";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { cn, copyToClipboard } from "../../lib/utils";
@@ -74,6 +73,8 @@ interface ChatGalleryProps {
   /** Generate a scene video from a specific gallery illustration. */
   onAnimateImage?: (image: ChatImage) => void | Promise<void>;
 }
+
+const MomentRenderModal = lazy(() => import("./MomentRenderModal").then((m) => ({ default: m.MomentRenderModal })));
 
 const EMPTY_SCENE_VIDEOS: GeneratedSceneVideo[] = [];
 type GalleryTab = "images" | "videos";
@@ -1316,8 +1317,10 @@ export function ChatGallery({
       {sceneVideosEnabled && videoLightbox && (
         <ChatVideoLightbox video={videoLightbox} onPin={handlePinVideo} onClose={() => setVideoLightbox(null)} />
       )}
-      {momentsEnabled && (
-        <MomentRenderModal open={momentModalOpen} chatId={chatId} onClose={() => setMomentModalOpen(false)} />
+      {momentsEnabled && momentModalOpen && (
+        <Suspense fallback={null}>
+          <MomentRenderModal open={momentModalOpen} chatId={chatId} onClose={() => setMomentModalOpen(false)} />
+        </Suspense>
       )}
       <Modal
         open={promptViewImage !== null}
