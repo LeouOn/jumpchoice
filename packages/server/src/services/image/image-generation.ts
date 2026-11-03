@@ -165,6 +165,8 @@ export interface ImageGenResult {
   mimeType: string;
   /** File extension without dot */
   ext: string;
+  /** Provider-reported charge in USD for this request, when the provider returns one (OpenRouter usage.cost). */
+  costUsd?: number;
   /** The provider-specific prompt used when a fallback connection rendered the image. */
   effectivePrompt?: string;
   effectiveNegativePrompt?: string;
@@ -205,7 +207,7 @@ function normalizeExplicitImageSource(serviceHint: string): string {
   return EXPLICIT_IMAGE_SOURCES.has(normalized) ? normalized : "";
 }
 
-function resolveImageBackend(source: string, baseUrl: string, serviceHint: string, requestModel?: string): string {
+export function resolveImageBackend(source: string, baseUrl: string, serviceHint: string, requestModel?: string): string {
   const inferredSource = inferImageSource(requestModel || source, baseUrl);
   const explicitSource = normalizeExplicitImageSource(serviceHint);
 
@@ -2630,19 +2632,62 @@ async function generateOpenRouterImageApi(
   throw new Error("No image data in OpenRouter Images API response");
 }
 
-async function generateOpenRouter(baseUrl: string, apiKey: string, request: ImageGenRequest): Promise<ImageGenResult> {
-  if (usesOpenRouterImagesApi(request.model)) {
-    return generateOpenRouterImageApi(baseUrl, apiKey, request);
-  }
-
+/** Build the OpenRouter chat-completions image request body (exported for regressions). */
+export function buildOpenRouterChatImageRequest(request: ImageGenRequest): Record<string, unknown> {
   const body: Record<string, unknown> = {
     model: request.model || "google/gemini-2.5-flash-image",
     messages: [{ role: "user", content: buildChatImageMessageContent(request) }],
     modalities: openRouterModalities(request.model),
     stream: false,
+    // Ask OpenRouter to report what the request cost so callers can account for it.
+    usage: { include: true },
   };
   const aspectRatio = openRouterAspectRatio(request.width, request.height);
   if (aspectRatio) body.image_config = { aspect_ratio: aspectRatio };
+  return body;
+}
+
+/** Read OpenRouter's reported request cost (USD) from a chat-completions response, if present. */
+export function readOpenRouterUsageCost(data: unknown): number | undefined {
+  if (!data || typeof data !== "object") return undefined;
+  const usage = (data as Record<string, unknown>).usage;
+  if (!usage || typeof usage !== "object") return undefined;
+  const cost = (usage as Record<string, unknown>).cost;
+  const numeric = typeof cost === "number" ? cost : typeof cost === "string" ? Number(cost) : NaN;
+  return Number.isFinite(numeric) && numeric >= 0 ? numeric : undefined;
+}
+
+async function generateOpenRouter(baseUrl: string, apiKey: string, request: ImageGenRequest): Promise<ImageGenResult> {
+  if (usesOpenRouterImagesApi(request.model)) {
+    return generateOpenRouterImageApi(baseUrl, apiKey, request);
+  }
+
+  const body = buildOpenRouterChatImageRequest(request);
+  logDebugOverride(
+    request.debugMode === true,
+    "[debug/image/openrouter-chat] final request payload:\n%s",
+    JSON.stringify(
+      {
+        ...body,
+        messages: [
+          {
+            role: "user",
+            content: Array.isArray(body.messages)
+              ? (() => {
+                  const content = (body.messages[0] as { content: unknown }).content;
+                  if (!Array.isArray(content)) return content;
+                  return content.map((part: Record<string, unknown>) =>
+                    part.type === "image_url" ? "[reference image]" : part,
+                  );
+                })()
+              : undefined,
+          },
+        ],
+      },
+      null,
+      2,
+    ),
+  );
 
   const resp = await imageFetch(
     chatCompletionsUrl(baseUrl),
@@ -2693,7 +2738,7 @@ async function generateOpenRouter(baseUrl: string, apiKey: string, request: Imag
     return { base64, mimeType, ext: imageExtensionFromMimeType(mimeType) };
   }
 
-  let data: { choices?: Array<{ message?: unknown; finish_reason?: string }>; error?: unknown };
+  let data: { choices?: Array<{ message?: unknown; finish_reason?: string }>; error?: unknown; usage?: unknown };
   try {
     data = JSON.parse(buffer.toString("utf8")) as typeof data;
   } catch {
@@ -2727,7 +2772,9 @@ async function generateOpenRouter(baseUrl: string, apiKey: string, request: Imag
     );
   }
 
-  return downloadImageUrl(imageUrl, request.privateImageResultOrigin, request.signal);
+  const costUsd = readOpenRouterUsageCost(data);
+  const image = await downloadImageUrl(imageUrl, request.privateImageResultOrigin, request.signal);
+  return costUsd === undefined ? image : { ...image, costUsd };
 }
 
 /**
