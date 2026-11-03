@@ -428,6 +428,8 @@ export const FILE_BACKED_TABLES = [
   "srs_reviews",
   "corrections",
   "proficiency_snapshots",
+  // Fork: "Render this moment" spend ledger (additive table; older builds ignore the file)
+  "moment_spend_ledger",
 ] as const;
 
 type FileBackedTable = (typeof FILE_BACKED_TABLES)[number];
@@ -450,6 +452,7 @@ const DURABLE_ON_COMMIT_TABLES = new Set<string>([
   "noodler_reserve_state",
   "noodler_prepared_posts",
   "noodler_fan_activity_state",
+  "moment_spend_ledger",
 ]);
 
 export const CASCADES: Array<{ parent: FileBackedTable; child: FileBackedTable; parentKey: string; childKey: string }> =

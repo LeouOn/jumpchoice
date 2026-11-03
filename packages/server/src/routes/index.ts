@@ -62,6 +62,7 @@ import { androidLocalAuthRoutes } from "../middleware/android-local-auth.js";
 import { cyoaRoutes } from "./cyoa.routes.js";
 import { cyoaBuildsRoutes } from "./cyoa-builds.routes.js";
 import { learningRoutes } from "./learning.routes.js";
+import { momentRoutes } from "./moment.routes.js";
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(androidLocalAuthRoutes, { prefix: "/api/android-auth" });
@@ -123,6 +124,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(cyoaRoutes, { prefix: "/api/cyoa" });
   await app.register(cyoaBuildsRoutes, { prefix: "/api/cyoa" });
   await app.register(learningRoutes, { prefix: "/api/learning" });
+  await app.register(momentRoutes, { prefix: "/api/moments" });
   if (process.env.MARINARA_LITE !== "true" && process.env.MARINARA_LITE !== "1") {
     await app.register(sidecarRoutes, { prefix: "/api/sidecar" });
   }
