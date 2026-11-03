@@ -201,6 +201,7 @@ The full guide library is browsable inside the app: open **Documentation** from 
 | [docs/agents/built-in-agents.md](docs/agents/built-in-agents.md)                     | Complete reference for all 32 downloadable first-party agents and feature packages                                 |
 | [docs/noodle/overview.md](docs/noodle/overview.md)                                   | Noodle social timeline: setup, posting, interactions, images, and chat carryover                                   |
 | [docs/cyoa/overview.md](docs/cyoa/overview.md)                                       | JumpChoice fork: CYOA documents — upload, extract, review, merge, analyze, and campaign pipeline                   |
+| [docs/cyoa/moments.md](docs/cyoa/moments.md)                                         | JumpChoice fork: Render this moment — reviewed pixel-art scene images with a hard spending cap                     |
 | [docs/learning/overview.md](docs/learning/overview.md)                               | JumpChoice fork: Language Learning tutor panel — setup, corrections, vocabulary, and review sessions               |
 | [docs/prompts/generation-parameters.md](docs/prompts/generation-parameters.md)       | Sampler and output-parameter reference across providers                                                            |
 | [docs/REMOTE_ACCESS.md](docs/REMOTE_ACCESS.md)                                       | Remote access, Basic Auth, IP allowlists, and admin access                                                         |

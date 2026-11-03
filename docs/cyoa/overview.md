@@ -59,3 +59,7 @@ independently and the CYOA pipeline is the only one wired to the UI.
 `pnpm regression:cyoa-routes` pins the route contract: list/get/delete
 behavior, the review and merge status gates, and the real merger output against
 the file-native database in a temporary data directory.
+
+## Related
+
+- [Render this moment](moments.md): turn a campaign scene into a reviewed pixel-art image of your companion, with a hard spending cap.
