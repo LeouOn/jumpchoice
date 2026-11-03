@@ -22,6 +22,8 @@ import {
   Check,
   Bot,
   ChevronDown,
+  Clapperboard,
+  ScrollText,
 } from "lucide-react";
 import {
   useChatAssetBrowser,
@@ -37,6 +39,8 @@ import type { GeneratedSceneVideo } from "@jumpchoice/shared";
 import { useGalleryStore } from "../../stores/gallery.store";
 import { toast } from "sonner";
 import { ImageUploadDropzone } from "../ui/ImageUploadDropzone";
+import { Modal } from "../ui/Modal";
+import { MomentRenderModal } from "./MomentRenderModal";
 import { buildCardAssetMarkdown, dispatchCardAssetInsert } from "../../lib/card-asset-links";
 import { showConfirmDialog } from "../../lib/app-dialogs";
 import { cn, copyToClipboard } from "../../lib/utils";
@@ -120,6 +124,9 @@ export function ChatGallery({
   const [selectedImageIds, setSelectedImageIds] = useState<Set<string>>(() => new Set());
   const [batchOperationPending, setBatchOperationPending] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [momentModalOpen, setMomentModalOpen] = useState(false);
+  const [promptViewImage, setPromptViewImage] = useState<ChatImage | null>(null);
+  const momentsEnabled = mode === "game" || mode === "roleplay";
   const [deletingVideoId, setDeletingVideoId] = useState<string | null>(null);
   const [assetSearch, setAssetSearch] = useState("");
   const [copiedPromptImageId, setCopiedPromptImageId] = useState<string | null>(null);
@@ -570,6 +577,17 @@ export function ChatGallery({
   return (
     <>
       <div className="flex flex-col gap-3 p-4">
+        {momentsEnabled && (
+          <button
+            type="button"
+            onClick={() => setMomentModalOpen(true)}
+            className="flex w-full min-w-0 items-center justify-center gap-2 rounded-xl bg-[var(--primary)]/15 px-3 py-3 text-xs font-medium text-[var(--primary)] transition-all hover:bg-[var(--primary)]/25"
+            title={localizeUi("ui.moments.buttonHelp")}
+          >
+            <Clapperboard size="1rem" className="shrink-0" />
+            <span className="min-w-0 truncate">{localizeUi("ui.moments.button")}</span>
+          </button>
+        )}
         {(canIllustrate ||
           onGenerateSelfie ||
           onGenerateStoryboard ||
@@ -1114,6 +1132,24 @@ export function ChatGallery({
                               onClick={(event) => {
                                 event.preventDefault();
                                 event.stopPropagation();
+                                setPromptViewImage(img);
+                              }}
+                              disabled={!img.prompt.trim()}
+                              aria-label={localizeUi("ui.moments.showPrompt")}
+                              className="pointer-events-auto rounded-md bg-white/20 p-1.5 text-white transition-colors hover:bg-white/30 disabled:cursor-not-allowed disabled:opacity-45"
+                              title={
+                                img.prompt.trim()
+                                  ? localizeUi("ui.moments.showPrompt")
+                                  : localizeUi("ui.chat.chatgallery.noPromptSaved")
+                              }
+                            >
+                              <ScrollText size="0.75rem" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
                                 void handleCopyPrompt(img);
                               }}
                               disabled={!img.prompt.trim()}
@@ -1280,6 +1316,33 @@ export function ChatGallery({
       {sceneVideosEnabled && videoLightbox && (
         <ChatVideoLightbox video={videoLightbox} onPin={handlePinVideo} onClose={() => setVideoLightbox(null)} />
       )}
+      {momentsEnabled && (
+        <MomentRenderModal open={momentModalOpen} chatId={chatId} onClose={() => setMomentModalOpen(false)} />
+      )}
+      <Modal
+        open={promptViewImage !== null}
+        onClose={() => setPromptViewImage(null)}
+        title={localizeUi("ui.moments.savedPromptTitle")}
+        width="max-w-2xl"
+      >
+        <div className="flex flex-col gap-2">
+          {promptViewImage?.model ? (
+            <p className="text-xs text-[var(--muted-foreground)]">
+              {localizeUi("ui.moments.savedPromptModel", { model: promptViewImage.model })}
+            </p>
+          ) : null}
+          <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap rounded-lg bg-[var(--secondary)] p-3 font-mono text-[0.6875rem] leading-relaxed ring-1 ring-[var(--border)]">
+            {promptViewImage?.prompt ?? ""}
+          </pre>
+          <button
+            type="button"
+            onClick={() => promptViewImage && void handleCopyPrompt(promptViewImage)}
+            className="self-end rounded-lg bg-[var(--secondary)] px-3 py-1.5 text-xs ring-1 ring-[var(--border)] hover:bg-[var(--accent)]"
+          >
+            {localizeUi("ui.chat.chatgallery.copyPrompt")}
+          </button>
+        </div>
+      </Modal>
     </>
   );
 }
