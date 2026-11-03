@@ -73,6 +73,9 @@ export interface CharacterExtensions {
   characterSheetImageId?: string | null;
   /** Marinara Engine: prefer the selected character sheet over the avatar for image references. */
   useCharacterSheetAsReference?: boolean;
+  /** JumpChoice fork: text describing the character for "Render this moment" image prompts.
+   *  Falls back to `appearance` when blank. */
+  momentCard?: string;
   [key: string]: unknown;
 }
 
