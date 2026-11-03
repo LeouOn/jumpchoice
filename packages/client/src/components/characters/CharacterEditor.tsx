@@ -1336,6 +1336,15 @@ function CharacterCardTab({
             placeholder={localizeUi("ui.characters.charactercardtab.tallAndWillowyWithSilverStreakedDarkHairWears")}
             rows={8}
           />
+          <TextareaTab
+            title={localizeUi("ui.moments.cardTitle")}
+            subtitle={localizeUi("ui.moments.cardSubtitle")}
+            helpText={localizeUi("ui.moments.cardHelp")}
+            value={(formData.extensions.momentCard as string) ?? ""}
+            onChange={(v) => updateExtension("momentCard", v)}
+            placeholder={localizeUi("ui.moments.cardPlaceholder")}
+            rows={6}
+          />
         </EditorSectionAnchor>
         <EditorSectionAnchor id="character-card-scenario">
           <TextareaTab

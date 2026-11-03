@@ -150,6 +150,7 @@ import {
   SettingsSwitch,
   ToggleSetting,
 } from "./settings/SettingControls";
+import { MomentRenderSettings } from "./settings/MomentRenderSettings";
 import { TrackerCardColorSettings } from "./settings/TrackerCardColorSettings";
 import { PromptOverridesEditor } from "./settings/PromptOverridesEditor";
 import { BackgroundPicker } from "./settings/BackgroundPicker";
@@ -3898,6 +3899,9 @@ function ImageGenerationSettings() {
             />
           </div>
           <ImageStyleProfilesEditor value={imageStyleProfiles} onChange={setImageStyleProfiles} />
+        </div>
+        <div id={getSettingsControlAnchorId("moment-render")} className="mt-1 scroll-mt-3">
+          <MomentRenderSettings />
         </div>
       </div>
     </SettingsSection>
